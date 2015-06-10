@@ -6,7 +6,7 @@ thickness=3.2;
 
 // M4 bolts
 bolt_diameter=4;
-bolt_length=13;
+bolt_length=20;
 bolt_head_diameter=7;
 bolt_head_length=4;
 nut_width=7;
@@ -132,19 +132,56 @@ module front() {
 }
 
 module bottom() {
+    color("green")
     translate([0, length, 0]) mirror([0, 1, 0]) top();
 }
 
+module side() {
+    module side_top_tab() {
+        cube([top_bottom_inset + thickness + eps, side_tab_length, thickness]);
+    }
+
+    // For the bolt that holds the side and top together
+    module side_top_bolt_hole() {
+        translate([top_bottom_inset + thickness/2, side_tab_length/2, -eps])
+            cylinder(h=thickness+2*eps, r=bolt_diameter/2, $fn=60);
+    }
+
+    // For the neighboring enclosure's top bolt head to fit into
+    module side_top_bolt_head_hole() {
+        translate([top_bottom_inset + thickness/2, side_tab_length/2, -eps])
+            cylinder(h=thickness+2*eps, r=bolt_head_diameter/2, $fn=60);
+    }
+
+    color("pink")
+    translate([0, thickness, 0])
+        difference() {
+            union() {
+                translate([top_bottom_inset + thickness, 0, 0]) cube([height - 2*top_bottom_inset - 2*thickness, length - 2*thickness, thickness]);
+
+                // Tabs to join to top
+                translate([0, side_tab_length, 0]) side_top_tab();
+                translate([0, 3*side_tab_length, 0]) side_top_tab();
+                translate([height, side_tab_length, 0]) mirror([1, 0, 0]) side_top_tab();
+                translate([height, 3*side_tab_length, 0]) mirror([1, 0, 0]) side_top_tab();
+            }
+            translate([0, side_tab_length, 0]) side_top_bolt_head_hole();
+            translate([0, 3*side_tab_length, 0]) side_top_bolt_hole();
+            translate([height, side_tab_length, 0]) mirror([1, 0, 0]) side_top_bolt_hole();
+            translate([height, 3*side_tab_length, 0]) mirror([1, 0, 0]) side_top_bolt_head_hole();
+        }
+}
+
 if (exploded) {
-    //projection() {
     top();
     translate([width + part_separation, 0, 0]) bottom();
     translate([0, length + part_separation, 0]) front();
     translate([width + part_separation, length + part_separation, 0]) front();
-    //}
+    translate([(width + part_separation)*2, 0, 0]) side();
 } else {
     translate([0, 0, top_bottom_inset]) bottom();
     translate([0, 0, height - top_bottom_inset]) mirror([0,0,1]) top();
     translate([0, -eps, 0]) rotate([90, 0, 0]) translate([0, 0, -thickness]) front();
     translate([0, length+eps, 0]) mirror([0,1,0]) rotate([90, 0, 0]) translate([0, 0, -thickness]) front();
+    translate([width + eps, 0, 0]) rotate([0, -90, 0]) side();
 }
