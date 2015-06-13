@@ -1,29 +1,46 @@
-exploded=false;
+exploded=true;
+
+export=false;
+render_layers=[0,1];
+
+date="yyyy-mm-dd";
+revision="deadbeef";
+
+use <roboto/Roboto-Regular.ttf>
 
 // MDF, .125in nominal
 // http://www.ponoko.com/make-and-sell/show-material/64-mdf-natural
 thickness=3.2;
 
-// M4 bolts
-bolt_diameter=4;
-bolt_length=20;
-bolt_head_diameter=7;
-bolt_head_length=4;
-nut_width=7;
-nut_length=3.2;
-nut_inset=8;
+// M3 bolts
+bolt_diameter=3+.1;
+bolt_length=12+.5;
+bolt_head_diameter=5.5+.2;
+bolt_head_length=3+.5;
+nut_width=5.5;
+nut_length=2.4+.1;
+nut_inset=6;
+
+kerf_width=0.1;
 
 
-
-
-height=80;
-width=80;
+height=60;
+width=52;
 length=80;
 
 top_bottom_inset = thickness * 2;
 
 part_separation=5;
 eps=0.1;
+
+
+function should_render(layer_num) = len(search(layer_num, render_layers)) > 0;
+module layer(layer_num) {
+    if (should_render(layer_num)) {
+        children();
+    }
+}
+
 
 // Centered in the x dimension
 module captive_nut(thickness, bolt_diameter, bolt_length, nut_width, nut_length, nut_inset) {
@@ -46,7 +63,7 @@ front_tab_width = front_width/5;
 side_length = length - 2*thickness;
 side_tab_length = side_length/5;
 
-module top() {
+module top_bottom() {
 
     module front_tab() {
         translate([0, -2*eps, -eps])
@@ -111,7 +128,7 @@ module top() {
     }
 }
 
-module front() {
+module front_back() {
     module top_bottom_holes() {
         // Slots
         translate([front_corner_inset, 0, -eps]) cube([front_tab_width, thickness, thickness+2*eps]);
@@ -129,11 +146,6 @@ module front() {
             translate([0, height-top_bottom_inset, 0]) mirror([0, 1, 0]) top_bottom_holes();
         }
     }
-}
-
-module bottom() {
-    color("green")
-    translate([0, length, 0]) mirror([0, 1, 0]) top();
 }
 
 module side() {
@@ -172,16 +184,97 @@ module side() {
         }
 }
 
+
+
+module roboto(text, size) {
+    translate([0,0,-eps]) linear_extrude(height=thickness+2*eps) text(text=text, size=size, font="Roboto");
+}
+module version_label() {
+    inset=4;
+    text_height=3;
+    module lines(text_height, spacing=1.2) {
+        for (i = [0 : $children-1]) translate([0, text_height * spacing * ($children-1-i), 0]) children(i);
+    }
+    color("black") {
+        translate([inset+thickness, inset+bolt_length, 0]) {
+            lines(text_height) {
+                roboto("Scott Bezek", text_height);
+                roboto(str("rev. ", revision), text_height);
+                roboto(date, text_height);
+            }
+        }
+    }
+}
+
+
+
+module top() {
+    layer(0) top_bottom();
+    layer(1) version_label();
+}
+
+module bottom() {
+    layer(0)
+        color("green")
+            translate([0, length, 0]) mirror([0, 1, 0]) top_bottom();
+}
+
+module right_side() {
+    layer(0)
+        side();
+}
+
+module left_side() {
+    layer(0)
+        translate([height, 0, thickness]) rotate([0, 180, 0]) side();
+}
+
+module front() {
+    layer(0)
+        front_back();
+}
+
+module back() {
+    layer(0)
+        front_back();
+}
+
+module exploded_module() {
+    translate([3, 3, 0]) {
+        top();
+
+        // rotate 180 degrees so outside face is on top
+        translate([2 * width + part_separation, 0, thickness]) rotate([0, 180, 0]) bottom();
+
+        translate([0, length + part_separation, 0]) front();
+        translate([width + part_separation, length + part_separation, 0]) back();
+
+        translate([(width + part_separation)*2, 0, 0]) right_side();
+
+        translate([height + 2*(width+part_separation), length+part_separation, thickness]) rotate([0, 180, 0]) left_side();
+    }
+
+    if (!export) {
+        color([.3, .3, .8])
+        // Ponoko P1 size:
+        cube([181, 181, eps]);
+    }
+
+    // Registration marker (so that layers can be aligned)
+    cube([1, 1, thickness]);
+}
+
 if (exploded) {
-    top();
-    translate([width + part_separation, 0, 0]) bottom();
-    translate([0, length + part_separation, 0]) front();
-    translate([width + part_separation, length + part_separation, 0]) front();
-    translate([(width + part_separation)*2, 0, 0]) side();
+    if (export) {
+        offset(delta=kerf_width) projection(cut=true) translate([0,0,-thickness/2]) exploded_module();
+    } else {
+        exploded_module();
+    }
 } else {
     translate([0, 0, top_bottom_inset]) bottom();
-    translate([0, 0, height - top_bottom_inset]) mirror([0,0,1]) top();
+    translate([0, 0, height - top_bottom_inset - thickness]) top();
     translate([0, -eps, 0]) rotate([90, 0, 0]) translate([0, 0, -thickness]) front();
-    translate([0, length+eps, 0]) mirror([0,1,0]) rotate([90, 0, 0]) translate([0, 0, -thickness]) front();
-    translate([width + eps, 0, 0]) rotate([0, -90, 0]) side();
+    translate([0, length+eps, 0]) mirror([0,1,0]) rotate([90, 0, 0]) translate([0, 0, -thickness]) back();
+    translate([width + eps, 0, 0]) rotate([0, -90, 0]) right_side();
+    translate([thickness-eps, 0, 0]) rotate([0, -90, 0]) left_side();
 }
