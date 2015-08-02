@@ -1,9 +1,9 @@
 
 
-module flap_spool(flaps, flap_hole_radius, inner_radius, height,
+module flap_spool(flaps, flap_hole_radius, flap_gap, inner_radius, height,
         spool_strut_tab_dimens, spool_strut_tab_outset) {
     inset = flap_hole_radius;
-    separation = 1;//flap_hole_radius;
+    separation = flap_gap;
 
     pitch_radius = flaps * (flap_hole_radius*2 + separation) / (2*PI);
     outer_radiius = pitch_radius + flap_hole_radius + inset;
