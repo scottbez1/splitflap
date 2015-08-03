@@ -1,6 +1,7 @@
 use<gt2pulley.scad>;
 use<spool.scad>;
 use<publicDomainGearV1.1.scad>;
+use<28byj-48.scad>;
 
 eps=.1;
 
@@ -125,4 +126,13 @@ translate([flap_width + thickness, motor_center_y_offset, 0])
 
 echo(motor_pitch_radius=pitch_radius(drive_pitch, motor_teeth));
 
+module stepper_shaft_centered() {
+    translate([9.5, -8, 0])
+        rotate([0, 90, 0])
+            rotate([0, 0, 90])
+                StepMotor28BYJ();
+}
+
+translate([flap_width + 3*thickness, motor_center_y_offset, 0])
+    stepper_shaft_centered();
 
