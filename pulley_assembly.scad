@@ -72,36 +72,15 @@ gear_separation = 0.2;
 
 module spool_with_pulleys_assembly() {
     layer_separation = thickness;
+    color(assembly_color)
     union() {
-        color(assembly_color)
-            flap_spool_complete();
+        flap_spool_complete();
 
-/*
-        color(assembly_color)
-            translate([0,0,layer_separation])
-                add_joining_rods_and_extrude(thickness)
-                    gt2pulley(teeth, assembly_inner_radius, 0);
-
-        color(assembly_color)
-            translate([0,0,layer_separation*2])
-                add_joining_rods_and_extrude(thickness)
-                    gt2pulley(teeth, bearing_outer_radius, 0);
-        color(bearing_color)
-            translate([0,0,layer_separation*2]) 
-                add_joining_rods_and_extrude(thickness)
-                    difference() {
-                        circle(r=bearing_outer_radius, $fn=60);
-                        circle(r=rod_radius, $fn=60);
-                    }
-*/
-
-        color(assembly_color)
-            translate([0,0,thickness/2 + layer_separation])
-                gear(drive_pitch, spool_teeth, thickness, 5);
-
-        color(assembly_color)
-            translate([0,0,thickness/2 + layer_separation*2])
-                gear(drive_pitch, spool_teeth, thickness, 5);
+        // Gears on spool
+        translate([0,0,thickness/2 + layer_separation])
+            gear(drive_pitch, spool_teeth, thickness, 5);
+        translate([0,0,thickness/2 + layer_separation*2])
+            gear(drive_pitch, spool_teeth, thickness, 5);
     }
 }
 
@@ -127,21 +106,22 @@ module motor_shaft() {
 }
 
 idler_center_y_offset = -pitch_radius(drive_pitch, spool_teeth) - pitch_radius(drive_pitch, idler_teeth) - gear_separation;
-
-// motor gear
-translate([flap_width + thickness, idler_center_y_offset - pitch_radius(drive_pitch, motor_teeth) - pitch_radius(drive_pitch, idler_teeth) - gear_separation, 0])
-    rotate([0, 90, 0])
-        linear_extrude(height = thickness, center = true)
-            difference() {
-                gear(drive_pitch, motor_teeth, 0, 0);
-                motor_shaft();
-            }
+motor_center_y_offset = idler_center_y_offset - pitch_radius(drive_pitch, motor_teeth) - pitch_radius(drive_pitch, idler_teeth) - gear_separation;
 
 // idler gear
 translate([flap_width + thickness, idler_center_y_offset, 0])
     rotate([0, 90, 0])
         rotate([0, 0, 360/idler_teeth/2])
         gear(drive_pitch, idler_teeth, thickness, idler_shaft_radius*2);
+
+// motor gear
+translate([flap_width + thickness, motor_center_y_offset, 0])
+    rotate([0, 90, 0])
+        linear_extrude(height = thickness, center = true)
+            difference() {
+                gear(drive_pitch, motor_teeth, 0, 0);
+                motor_shaft();
+            }
 
 echo(motor_pitch_radius=pitch_radius(drive_pitch, motor_teeth));
 
