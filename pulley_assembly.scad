@@ -30,6 +30,28 @@ num_flaps = 40;
 flap_hole_radius = 1.5;
 flap_gap = 1;
 
+flap_pitch_radius = num_flaps * (flap_hole_radius*2 + flap_gap) / (2*PI);
+
+
+// Gears
+drive_pitch = 3;
+motor_teeth = 40;
+idler_teeth = 40;
+spool_teeth = 40;
+
+idler_shaft_radius = 1.5;
+
+gear_separation = 0.5;
+
+// Radius where flaps are expected to flap in their *most collapsed* (90 degree) state
+exclusion_radius = sqrt(flap_height*flap_height + flap_pitch_radius*flap_pitch_radius);
+
+spool_outer_radius = flap_pitch_radius + 2*flap_hole_radius;
+flap_notch = sqrt(spool_outer_radius*spool_outer_radius - flap_pitch_radius*flap_pitch_radius);
+echo(flap_notch=flap_notch);
+
+
+
 
 module joining_rod_holes() {
         translate([bearing_outer_radius + joining_rod_radius*3, 0, 0]) circle(r=joining_rod_radius, $fn=30);
@@ -64,16 +86,6 @@ module flap_spool_complete() {
     }
 }
 
-
-drive_pitch = 3;
-motor_teeth = 40;
-idler_teeth = 40;
-spool_teeth = 40;
-
-idler_shaft_radius = 1.5;
-
-gear_separation = 0.5;
-
 module spool_with_pulleys_assembly() {
     layer_separation = thickness;
     color(assembly_color)
@@ -88,22 +100,10 @@ module spool_with_pulleys_assembly() {
     }
 }
 
-// Flap area
-flap_pitch_radius = num_flaps * (flap_hole_radius*2 + flap_gap) / (2*PI);
-exclusion_radius = sqrt(flap_height*flap_height + flap_pitch_radius*flap_pitch_radius);
-echo(flap_exclusion_radius=exclusion_radius);
-%translate([thickness + flap_width_slop/2, 0, 0])
-    rotate([0, 90, 0])
-        cylinder(r=exclusion_radius, h=flap_width - 2*thickness);
-
-
-spool_outer_radius = flap_pitch_radius + 2*flap_hole_radius;
-flap_notch = sqrt(spool_outer_radius*spool_outer_radius - flap_pitch_radius*flap_pitch_radius);
-echo(flap_notch=flap_notch);
-
 module flap() {
     flap_pin_width = flap_hole_radius*2 - 1;
 
+    color("white")
     translate([0, -flap_pin_width/2, -flap_thickness/2])
     difference() {
         cube([flap_width, flap_height, flap_thickness]);
@@ -115,14 +115,34 @@ module flap() {
 }
 
 module translated_flap() {
-    color("white")
-    translate([flap_width_slop/2, flap_pitch_radius, 0])
+    translate([0, flap_pitch_radius, 0])
     rotate([90, 0, 0])
     flap();
 }
 
-for (i=[0:7]) {
-    rotate([360/num_flaps * i, 0, 0]) translated_flap();
+
+
+
+
+
+// Flap area
+echo(flap_exclusion_radius=exclusion_radius);
+*translate([thickness, 0, 0])
+    rotate([0, 90, 0])
+        cylinder(r=exclusion_radius, h=flap_width - 2*thickness);
+
+translate([flap_width_slop/2, 0, 0]) {
+    // Collapsed flaps on the top
+    for (i=[0:19]) {
+        rotate([360/num_flaps * i, 0, 0]) translated_flap();
+    }
+
+    for (i=[1:20]) {
+        angle = -360/num_flaps*i;
+        translate([0, flap_pitch_radius*cos(angle), flap_pitch_radius * sin(angle)])
+            rotate([-90, 0, 0])
+                flap();
+    }
 }
 
 
