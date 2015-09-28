@@ -10,7 +10,8 @@ thickness = 3.2;
 teeth = 45;
 
 rod_radius = 2.5;
-assembly_inner_radius = 3.5;
+rod_radius_slop = 0.25;
+assembly_inner_radius = rod_radius + rod_radius_slop;
 bearing_outer_radius = 6;
 
 
@@ -63,12 +64,16 @@ flap_pin_width = flap_hole_radius*2 - 1;
 
 enclosure_width = spool_width_slop + thickness*4 + flap_width + flap_width_slop;
 front_window_upper = (flap_height - flap_pin_width/2);
-front_window_lower = front_window_upper + (flap_pitch_radius/2); // some margin for falling flaps
+front_window_lower = front_window_upper + (flap_pitch_radius*0.75); // some margin for falling flaps
 front_window_width = spool_width_slop + flap_width + flap_width_slop;
-enclosure_vertical_margin = 10;
-enclosure_height_upper = exclusion_radius + enclosure_vertical_margin;
-enclosure_height_lower = flap_pitch_radius + flap_height + enclosure_vertical_margin;
+enclosure_vertical_margin = 10; // gap between top/bottom of flaps and top/bottom of enclosure
+enclosure_height_upper = exclusion_radius + enclosure_vertical_margin + 2*thickness;
+enclosure_height_lower = flap_pitch_radius + flap_height + enclosure_vertical_margin + 2*thickness;
 enclosure_height = enclosure_height_upper + enclosure_height_lower;
+
+front_forward_offset = flap_pitch_radius + flap_thickness/2;
+enclosure_horizontal_rear_margin = 20; // gap between back of gears and back of enclosure
+enclosure_length = front_forward_offset + pitch_radius(drive_pitch, spool_teeth) + 2*gear_separation + 2*pitch_radius(drive_pitch, idler_teeth) + 2*gear_separation + 2*pitch_radius(drive_pitch, motor_teeth) + enclosure_horizontal_rear_margin;
 
 
 module joining_rod_holes() {
@@ -169,9 +174,47 @@ module enclosure_front() {
     }
 }
 
-translate([0, flap_pitch_radius + thickness + flap_thickness/2, -enclosure_height_lower])
+module rod_mount_negative() {
+    circle(r=rod_radius, center=true, $fn=30);
+}
+
+module enclosure_left() {
+    linear_extrude(height=thickness) {
+        difference() {
+            square([enclosure_height, enclosure_length]);
+            translate([enclosure_height_lower, enclosure_length - front_forward_offset, 0])
+                rod_mount_negative();
+
+            // idler bolt hole
+            translate([enclosure_height_lower, enclosure_length - front_forward_offset - pitch_radius(drive_pitch, spool_teeth) - 2*gear_separation - pitch_radius(drive_pitch, idler_teeth), 0])
+                circle(r=idler_shaft_radius, center=true, $fn=30);
+        }
+    }
+}
+
+module enclosure_right() {
+    linear_extrude(height=thickness) {
+        difference() {
+            square([enclosure_height, enclosure_length]);
+            translate([enclosure_height_upper, enclosure_length - front_forward_offset, 0])
+                rod_mount_negative();
+        }
+    }
+}
+
+translate([0, front_forward_offset + thickness, -enclosure_height_lower])
     rotate([90, 0, 0])
         enclosure_front();
+
+//color("green")
+%translate([enclosure_width, -enclosure_length + front_forward_offset, -enclosure_height_lower])
+    rotate([0, -90, 0])
+        enclosure_left();
+
+//color("red")
+%translate([0, -enclosure_length + front_forward_offset, enclosure_height_upper])
+    rotate([0, 90, 0])
+        enclosure_right();
 
 translate([spool_width_slop/2 + thickness, 0, 0]) {
     // Flap area
