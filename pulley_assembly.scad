@@ -75,6 +75,10 @@ front_forward_offset = flap_pitch_radius + flap_thickness/2;
 enclosure_horizontal_rear_margin = 20; // gap between back of gears and back of enclosure
 enclosure_length = front_forward_offset + pitch_radius(drive_pitch, spool_teeth) + 2*gear_separation + 2*pitch_radius(drive_pitch, idler_teeth) + 2*gear_separation + 2*pitch_radius(drive_pitch, motor_teeth) + enclosure_horizontal_rear_margin;
 
+motor_shaft_radius = 2.5;
+motor_slop_radius = 3;
+
+
 
 module joining_rod_holes() {
         translate([bearing_outer_radius + joining_rod_radius*3, 0, 0]) circle(r=joining_rod_radius, $fn=30);
@@ -146,8 +150,8 @@ module translated_flap() {
 // double-flatted motor shaft of 28byj-48 motor (2D)
 module motor_shaft() {
     intersection() {
-        circle(d=5, $fn=50);
-        square([5, 3], center=true);
+        circle(r=motor_shaft_radius, $fn=50);
+        square([motor_shaft_radius*2, 3], center=true);
     }
 }
 
@@ -178,6 +182,16 @@ module rod_mount_negative() {
     circle(r=rod_radius, center=true, $fn=30);
 }
 
+
+// holes for 28byj-48 motor
+module motor_mount() {
+    circle(r=motor_shaft_radius+motor_slop_radius, center=true, $fn=30);
+    translate([-35/2, -8])
+        circle(r=2, center=true, $fn=30);
+    translate([35/2, -8])
+        circle(r=2, center=true, $fn=30);
+}
+
 module enclosure_left() {
     linear_extrude(height=thickness) {
         difference() {
@@ -186,8 +200,11 @@ module enclosure_left() {
                 rod_mount_negative();
 
             // idler bolt hole
-            translate([enclosure_height_lower, enclosure_length - front_forward_offset - pitch_radius(drive_pitch, spool_teeth) - 2*gear_separation - pitch_radius(drive_pitch, idler_teeth), 0])
+            translate([enclosure_height_lower, enclosure_length - front_forward_offset - pitch_radius(drive_pitch, spool_teeth) - gear_separation - pitch_radius(drive_pitch, idler_teeth)])
                 circle(r=idler_shaft_radius, center=true, $fn=30);
+
+            translate([enclosure_height_lower, enclosure_length - front_forward_offset - pitch_radius(drive_pitch, spool_teeth) - gear_separation - 2*pitch_radius(drive_pitch, idler_teeth) - gear_separation - pitch_radius(drive_pitch, motor_teeth)])
+                motor_mount();
         }
     }
 }
