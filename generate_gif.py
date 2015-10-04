@@ -71,7 +71,7 @@ def render_rotation(output_folder, num_frames, start_frame, variables):
     for i in range(num_frames):
         angle = 135 + i * 360 / num_frames
         run_openscad(
-            'pulley_assembly.scad',
+            'splitflap.scad',
             os.path.join(output_folder, 'frame_%05d.png' % (start_frame + i)),
             output_size = [320, 240],
             camera_translation = [0, 0, 0],
