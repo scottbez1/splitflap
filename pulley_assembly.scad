@@ -5,9 +5,17 @@ use<28byj-48.scad>;
 
 eps=.1;
 
-thickness = 3.2;
+// M3 bolts
+m3_bolt_diameter=3+.1;
+m3_bolt_length=12+.5;
+m3_bolt_cap_head_diameter=5.5+.2;
+m3_bolt_cap_head_length=3+.5;
+m3_nut_width=5.5;
+m3_nut_length=2.4+.1;
+m3_nut_inset=6;
 
-teeth = 45;
+
+thickness = 3.2;
 
 rod_radius = 2.5;
 rod_radius_slop = 0.25;
@@ -166,12 +174,31 @@ module stepper_shaft_centered() {
                 StepMotor28BYJ();
 }
 
+num_front_tabs = 3;
+module front_tabs_negative() {
+    front_tab_width = (enclosure_width - 2*thickness) / (num_front_tabs*2 - 1);
+    for (i = [0 : 2 : num_front_tabs*2-1]) {
+        translate([thickness + (i+0.5) * front_tab_width, 0, 0])
+            square([front_tab_width, thickness], center=true);
+    }
+}
+
 module enclosure_front() {
     linear_extrude(height=thickness) {
         difference() {
             square([enclosure_width, enclosure_height]);
+
+            // Viewing window cutout
             translate([thickness, enclosure_height_lower - front_window_lower])
                 square([front_window_width, front_window_lower + front_window_upper]);
+
+            // Front lower tabs
+            translate([0, thickness * 1.5, 0])
+                front_tabs_negative();
+
+            // Front upper tabs
+            translate([0, enclosure_height - thickness * 1.5, 0])
+                front_tabs_negative();
         }
     }
 }
@@ -221,13 +248,13 @@ translate([0, front_forward_offset + thickness, -enclosure_height_lower])
     rotate([90, 0, 0])
         enclosure_front();
 
-color("green")
-translate([enclosure_width, -enclosure_length + front_forward_offset, -enclosure_height_lower])
+//color("green")
+%translate([enclosure_width, -enclosure_length + front_forward_offset, -enclosure_height_lower])
     rotate([0, -90, 0])
         enclosure_left();
 
-color("red")
-translate([0, -enclosure_length + front_forward_offset, enclosure_height_upper])
+//color("red")
+%translate([0, -enclosure_length + front_forward_offset, enclosure_height_upper])
     rotate([0, 90, 0])
         enclosure_right();
 
