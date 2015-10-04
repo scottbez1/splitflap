@@ -23,7 +23,8 @@ m3_bolt_diameter=3+.1;
 m3_bolt_length=12+.5;
 m3_bolt_cap_head_diameter=5.5+.2;
 m3_bolt_cap_head_length=3+.5;
-m3_nut_width=5.5;
+m3_nut_width_flats=5.5;
+m3_nut_width_corners=6.01;
 m3_nut_length=2.4+.1;
 m3_nut_inset=6;
 
@@ -306,13 +307,22 @@ module enclosure_left() {
                 rod_mount_negative();
 
             // idler bolt hole
-            translate([enclosure_height_lower, enclosure_length - front_forward_offset - pitch_radius(drive_pitch, spool_teeth) - gear_separation - pitch_radius(drive_pitch, idler_teeth)])
+            translate([enclosure_height_lower, enclosure_length - front_forward_offset + idler_center_y_offset])
                 circle(r=idler_shaft_radius, center=true, $fn=30);
 
-            translate([enclosure_height_lower, enclosure_length - front_forward_offset - pitch_radius(drive_pitch, spool_teeth) - gear_separation - 2*pitch_radius(drive_pitch, idler_teeth) - gear_separation - pitch_radius(drive_pitch, motor_teeth)])
+            translate([enclosure_height_lower, enclosure_length - front_forward_offset + motor_center_y_offset])
                 motor_mount();
         }
     }
+}
+
+module shaft_centered_motor_hole() {
+    margin = 5;
+    width = 35 + 3.5*2 + margin*2;
+    length = 18 + 14 + margin*2;
+
+    translate([-width/2, -(margin + 18 + 8)])
+        square([width, length]);
 }
 
 module enclosure_right() {
@@ -322,7 +332,13 @@ module enclosure_right() {
             translate([enclosure_height_upper, enclosure_length - front_forward_offset, 0])
                 rod_mount_negative();
 
-            // TODO: holes for opposite motor and bolt heads
+            // hole for adjacent unit's idler bolt
+            translate([enclosure_height_upper, enclosure_length - front_forward_offset + idler_center_y_offset])
+                square([m3_nut_width_corners + 2, m3_nut_width_corners + 2], center=true);
+
+            // hole for adjacent unit's motor
+            translate([enclosure_height_upper, enclosure_length - front_forward_offset + motor_center_y_offset])
+                shaft_centered_motor_hole();
         }
     }
 }
@@ -419,7 +435,9 @@ module split_flap_3d() {
     }
 }
 
-translate([-enclosure_width/2, 0, 0])
+translate([0, 0, 0])
+    split_flap_3d();
+translate([-enclosure_width, 0, 0])
     split_flap_3d();
 
 
