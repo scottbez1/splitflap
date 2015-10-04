@@ -3,6 +3,19 @@ use<spool.scad>;
 use<publicDomainGearV1.1.scad>;
 use<28byj-48.scad>;
 
+
+// ##### RENDERING OPTIONS #####
+render_enclosure = 2;
+render_flaps = true;
+
+/*
+$vpt = [enclosure_width/2, 0, 0];
+$vpr = [60, 0, 135 + animation_angle];
+$vpd = 600;
+*/
+
+
+
 eps=.1;
 
 // M3 bolts
@@ -23,7 +36,12 @@ assembly_inner_radius = rod_radius + rod_radius_slop;
 bearing_outer_radius = 6;
 
 
-assembly_color = [.76, .60, .42, 1];
+assembly_color = [.76, .60, .42];
+assembly_color1 = [.882, .694, .486]; //"e1b17c";
+assembly_color2 = [.682, .537, .376]; //"ae8960";
+assembly_color3 = [.416, .325, .227]; //"6A533A";
+assembly_color4 = [.204, .161, .114]; //"34291D";
+
 bearing_color = [1,1,1,1];
 
 joining_rod_radius = 1;
@@ -94,6 +112,8 @@ spool_strut_width = (spool_strut_tab_outset + thickness/2) * 2;
 spool_strut_length_inset = thickness*0.25;
 spool_strut_length = flap_width + flap_width_slop + (2 * thickness) - (2 * spool_strut_length_inset);
 
+
+
 // ##### Struts for bracing spool #####
 module spool_strut_tab_hole() {
     square([thickness, spool_strut_tab_width], center=true);
@@ -139,7 +159,8 @@ module spool_strut() {
 module spool_struts() {
     for (i=[0:3]) {
         angle = 90*i;
-        color([i < 2 ? 0 : 1, i == 0 || i == 2 ? 0 : 1, 0])
+        //color([i < 2 ? 0 : 1, i == 0 || i == 2 ? 0 : 1, 0])
+        color(i % 2 == 0 ? assembly_color2 : assembly_color3)
         translate([0, sin(angle)*spool_strut_tab_outset, cos(angle)*spool_strut_tab_outset])
             rotate([-angle, 0, 0])
                 spool_strut();
@@ -306,67 +327,99 @@ module enclosure_right() {
     }
 }
 
-translate([0, front_forward_offset + thickness, -enclosure_height_lower])
-    rotate([90, 0, 0])
-        enclosure_front();
 
-//color("green")
-%translate([enclosure_width, -enclosure_length + front_forward_offset, -enclosure_height_lower])
-    rotate([0, -90, 0])
-        enclosure_left();
+module split_flap_3d() {
+    module positioned_front() {
+        translate([0, front_forward_offset + thickness, -enclosure_height_lower])
+            rotate([90, 0, 0])
+                enclosure_front();
+    }
 
-//color("red")
-%translate([0, -enclosure_length + front_forward_offset, enclosure_height_upper])
-    rotate([0, 90, 0])
-        enclosure_right();
+    module positioned_left() {
+        translate([enclosure_width, -enclosure_length + front_forward_offset, -enclosure_height_lower])
+            rotate([0, -90, 0])
+                enclosure_left();
+    }
 
-translate([spool_width_slop/2 + thickness, 0, 0]) {
-    // Flap area
-    echo(flap_exclusion_radius=exclusion_radius);
-    *translate([thickness, 0, 0])
-        rotate([0, 90, 0])
-            cylinder(r=exclusion_radius, h=flap_width - 2*thickness);
+    module positioned_right() {
+        translate([0, -enclosure_length + front_forward_offset, enclosure_height_upper])
+            rotate([0, 90, 0])
+                enclosure_right();
+    }
 
-    translate([flap_width_slop/2, 0, 0]) {
-        // Collapsed flaps on the top
-        for (i=[0:19]) {
-            rotate([360/num_flaps * i, 0, 0]) translated_flap();
-        }
-
-        for (i=[1:20]) {
-            angle = -360/num_flaps*i;
-            translate([0, flap_pitch_radius*cos(angle), flap_pitch_radius * sin(angle)])
-                rotate([-90, 0, 0])
-                    flap();
+    module positioned_enclosure() {
+        if (render_enclosure == 2) {
+            color(assembly_color1)
+                positioned_front();
+            color(assembly_color2)
+                positioned_left();
+            color(assembly_color2)
+                positioned_right();
+        } else if (render_enclosure == 1) {
+            %positioned_front();
+            %positioned_left();
+            %positioned_right();
         }
     }
 
-    spool_struts();
+    positioned_enclosure();
 
-    // spool with gears
-    color(assembly_color)
-        translate([flap_width + flap_width_slop - thickness, 0, 0]) rotate([0, 90, 0]) spool_with_pulleys_assembly();
-    color(assembly_color)
-        rotate([0, 90, 0]) flap_spool_complete();
+    translate([spool_width_slop/2 + thickness, 0, 0]) {
+        // Flap area
+        if (render_flaps) {
+            echo(flap_exclusion_radius=exclusion_radius);
+            *translate([thickness, 0, 0])
+                rotate([0, 90, 0])
+                    cylinder(r=exclusion_radius, h=flap_width - 2*thickness);
 
-    // idler gear
-    translate([flap_width + flap_width_slop + thickness, idler_center_y_offset, 0])
-        rotate([0, 90, 0])
-            rotate([0, 0, 360/idler_teeth/2])
-            gear(drive_pitch, idler_teeth, thickness, idler_shaft_radius*2);
-
-    // motor gear
-    translate([flap_width + flap_width_slop + thickness, motor_center_y_offset, 0])
-        rotate([0, 90, 0])
-            linear_extrude(height = thickness, center = true)
-                difference() {
-                    gear(drive_pitch, motor_teeth, 0, 0);
-                    motor_shaft();
+            translate([flap_width_slop/2, 0, 0]) {
+                // Collapsed flaps on the top
+                for (i=[0:19]) {
+                    rotate([360/num_flaps * i, 0, 0]) translated_flap();
                 }
 
-    echo(motor_pitch_radius=pitch_radius(drive_pitch, motor_teeth));
+                for (i=[1:20]) {
+                    angle = -360/num_flaps*i;
+                    translate([0, flap_pitch_radius*cos(angle), flap_pitch_radius * sin(angle)])
+                        rotate([-90, 0, 0])
+                            flap();
+                }
+            }
+        }
 
-    translate([flap_width + flap_width_slop + 3*thickness, motor_center_y_offset, 0])
-        stepper_shaft_centered();
+        spool_struts();
+
+        // spool with gears
+        color(assembly_color)
+            translate([flap_width + flap_width_slop - thickness, 0, 0]) rotate([0, 90, 0]) spool_with_pulleys_assembly();
+        color(assembly_color)
+            rotate([0, 90, 0]) flap_spool_complete();
+
+        // idler gear
+        color(assembly_color2)
+        translate([flap_width + flap_width_slop + thickness, idler_center_y_offset, 0])
+            rotate([0, 90, 0])
+                rotate([0, 0, 360/idler_teeth/2])
+                gear(drive_pitch, idler_teeth, thickness, idler_shaft_radius*2);
+
+        // motor gear
+        color(assembly_color1)
+        translate([flap_width + flap_width_slop + thickness, motor_center_y_offset, 0])
+            rotate([0, 90, 0])
+                linear_extrude(height = thickness, center = true)
+                    difference() {
+                        gear(drive_pitch, motor_teeth, 0, 0);
+                        motor_shaft();
+                    }
+
+        echo(motor_pitch_radius=pitch_radius(drive_pitch, motor_teeth));
+
+        translate([flap_width + flap_width_slop + 3*thickness, motor_center_y_offset, 0])
+            stepper_shaft_centered();
+    }
 }
+
+translate([-enclosure_width/2, 0, 0])
+    split_flap_3d();
+
 
