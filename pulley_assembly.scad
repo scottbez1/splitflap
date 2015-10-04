@@ -31,6 +31,7 @@ joining_rod_radius = 1;
 flap_width = 54;
 flap_height = 43;
 flap_thickness = 30 / 1000 * 25.4; // 30 mil
+flap_corner_radius = 3.1; // 2.88-3.48mm
 
 // Amount of slop of the flap side to side between the 2 spools
 flap_width_slop = 2;
@@ -138,12 +139,24 @@ module spool_with_pulleys_assembly() {
 module flap() {
     color("white")
     translate([0, -flap_pin_width/2, -flap_thickness/2])
-    difference() {
-        cube([flap_width, flap_height, flap_thickness]);
-        translate([-eps, flap_pin_width, -eps])
-            cube([eps + thickness, flap_notch, flap_thickness + 2*eps]);
-        translate([flap_width - thickness, flap_pin_width, -eps])
-            cube([eps + thickness, flap_notch, flap_thickness + 2*eps]);
+    linear_extrude(height=flap_thickness) {
+        difference() {
+            union() {
+                square([flap_width, flap_height - flap_corner_radius + eps]);
+
+                // rounded corners
+                hull() {
+                    translate([flap_corner_radius, flap_height - flap_corner_radius])
+                        circle(r=flap_corner_radius, $fn=40);
+                    translate([flap_width - flap_corner_radius, flap_height - flap_corner_radius])
+                        circle(r=flap_corner_radius, $fn=40);
+                }
+            }
+            translate([-eps, flap_pin_width])
+                square([eps + thickness, flap_notch]);
+            translate([flap_width - thickness, flap_pin_width])
+                square([eps + thickness, flap_notch]);
+        }
     }
 }
 
