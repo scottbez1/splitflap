@@ -74,7 +74,7 @@ motor_teeth = 40;
 idler_teeth = 40;
 spool_teeth = 40;
 
-idler_shaft_radius = 1.5;
+idler_shaft_radius = m3_bolt_diameter/2;
 
 gear_separation = 0.5;
 
