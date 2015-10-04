@@ -88,51 +88,96 @@ motor_shaft_radius = 2.5;
 motor_slop_radius = 3;
 
 
+spool_strut_tab_width=10;
+spool_strut_tab_outset=10;
+spool_strut_width = (spool_strut_tab_outset + thickness/2) * 2;
+spool_strut_length_inset = thickness*0.25;
+spool_strut_length = flap_width + flap_width_slop + (2 * thickness) - (2 * spool_strut_length_inset);
 
-module joining_rod_holes() {
-        translate([bearing_outer_radius + joining_rod_radius*3, 0, 0]) circle(r=joining_rod_radius, $fn=30);
-        translate([-(bearing_outer_radius + joining_rod_radius*3), 0, 0]) circle(r=joining_rod_radius, $fn=30);
+// ##### Struts for bracing spool #####
+module spool_strut_tab_hole() {
+    square([thickness, spool_strut_tab_width], center=true);
 }
+module spool_strut_tab_holes() {
+    for (i=[0:3]) {
+        angle = 90*i;
+        translate([cos(angle)*spool_strut_tab_outset, sin(angle)*spool_strut_tab_outset])
+            rotate([0,0,angle])
+                spool_strut_tab_hole();
+    }
+}
+module spool_strut() {
+    joint_tabs = 10;
+    inner_length = flap_width + flap_width_slop - 2 * thickness;
+    joint_tab_width = inner_length / joint_tabs;
+    linear_extrude(thickness, center=true) {
+        union() {
+            translate([spool_strut_length_inset, -spool_strut_tab_width / 2]) {
+                square([spool_strut_length, spool_strut_tab_width]);
+            }
+            translate([thickness, -spool_strut_width / 2]) {
+                difference() {
+                    square([inner_length, spool_strut_width]);
 
-module add_joining_rods_and_extrude(height) {
-    linear_extrude(height) {
-        add_joining_rods() {
-            children();
+                    // subtract out tabs
+                    union() {
+                        for (i = [0:2:joint_tabs-1]) {
+                            translate([i*joint_tab_width, -eps])
+                                square([joint_tab_width, thickness+eps]);
+                        }
+                        for (i = [1:2:joint_tabs-1]) {
+                            translate([i*joint_tab_width, spool_strut_width - thickness])
+                                square([joint_tab_width, thickness+eps]);
+                        }
+                    }
+                }
+            }
         }
     }
 }
-module add_joining_rods() {
-    difference() {
-        children(0);
-        joining_rod_holes();
+
+module spool_struts() {
+    for (i=[0:3]) {
+        angle = 90*i;
+        color([i < 2 ? 0 : 1, i == 0 || i == 2 ? 0 : 1, 0])
+        translate([0, sin(angle)*spool_strut_tab_outset, cos(angle)*spool_strut_tab_outset])
+            rotate([-angle, 0, 0])
+                spool_strut();
     }
 }
-
 
 
 module flap_spool_complete() {
     linear_extrude(thickness) {
         difference() {
             flap_spool(num_flaps, flap_hole_radius, flap_gap, assembly_inner_radius,
-                    height=0, 
-                    spool_strut_tab_dimens=[thickness, 10],
-                    spool_strut_tab_outset=12);
-            joining_rod_holes();
+                    height=0);
+
+            spool_strut_tab_holes();
         }
     }
 }
 
 module spool_with_pulleys_assembly() {
     layer_separation = thickness;
-    color(assembly_color)
+
+    module gear_with_strut_tab_holes() {
+        linear_extrude(height=thickness, center=true) {
+            difference() {
+                gear(drive_pitch, spool_teeth, 0, 5);
+                spool_strut_tab_holes();
+            }
+        }
+    }
+
     union() {
         flap_spool_complete();
 
         // Gears on spool
         translate([0,0,thickness/2 + layer_separation])
-            gear(drive_pitch, spool_teeth, thickness, 5);
+            gear_with_strut_tab_holes();
         translate([0,0,thickness/2 + layer_separation*2])
-            gear(drive_pitch, spool_teeth, thickness, 5);
+            gear_with_strut_tab_holes();
     }
 }
 
@@ -221,13 +266,15 @@ module rod_mount_negative() {
 }
 
 
-// holes for 28byj-48 motor
+// holes for 28byj-48 motor, centered around motor shaft
 module motor_mount() {
+    motor_mount_separation = 35;
+    motor_mount_hole_radius = 4.2/2;
     circle(r=motor_shaft_radius+motor_slop_radius, center=true, $fn=30);
-    translate([-35/2, -8])
-        circle(r=2, center=true, $fn=30);
-    translate([35/2, -8])
-        circle(r=2, center=true, $fn=30);
+    translate([-motor_mount_separation/2, -8])
+        circle(r=motor_mount_hole_radius, center=true, $fn=30);
+    translate([motor_mount_separation/2, -8])
+        circle(r=motor_mount_hole_radius, center=true, $fn=30);
 }
 
 module enclosure_left() {
@@ -253,6 +300,8 @@ module enclosure_right() {
             square([enclosure_height, enclosure_length]);
             translate([enclosure_height_upper, enclosure_length - front_forward_offset, 0])
                 rod_mount_negative();
+
+            // TODO: holes for opposite motor and bolt heads
         }
     }
 }
@@ -292,8 +341,11 @@ translate([spool_width_slop/2 + thickness, 0, 0]) {
         }
     }
 
+    spool_struts();
+
     // spool with gears
-    translate([flap_width + flap_width_slop - thickness, 0, 0]) rotate([0, 90, 0]) spool_with_pulleys_assembly();
+    color(assembly_color)
+        translate([flap_width + flap_width_slop - thickness, 0, 0]) rotate([0, 90, 0]) spool_with_pulleys_assembly();
     color(assembly_color)
         rotate([0, 90, 0]) flap_spool_complete();
 
