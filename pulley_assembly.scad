@@ -160,13 +160,11 @@ motor_center_y_offset = idler_center_y_offset - pitch_radius(drive_pitch, motor_
 
 // 28byj-48 stepper motor centered on its shaft
 module stepper_shaft_centered() {
-    translate([9.5, -8, 0])
+    translate([18.8/2+0.7, -8, 0])
         rotate([0, 90, 0])
             rotate([0, 0, 90])
                 StepMotor28BYJ();
 }
-
-
 
 module enclosure_front() {
     linear_extrude(height=thickness) {
@@ -223,13 +221,13 @@ translate([0, front_forward_offset + thickness, -enclosure_height_lower])
     rotate([90, 0, 0])
         enclosure_front();
 
-//color("green")
-%translate([enclosure_width, -enclosure_length + front_forward_offset, -enclosure_height_lower])
+color("green")
+translate([enclosure_width, -enclosure_length + front_forward_offset, -enclosure_height_lower])
     rotate([0, -90, 0])
         enclosure_left();
 
-//color("red")
-%translate([0, -enclosure_length + front_forward_offset, enclosure_height_upper])
+color("red")
+translate([0, -enclosure_length + front_forward_offset, enclosure_height_upper])
     rotate([0, 90, 0])
         enclosure_right();
 
