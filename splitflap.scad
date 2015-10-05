@@ -383,8 +383,15 @@ module front_back_tabs() {
     }
 }
 
+module side_tabs() {
+    for (i = [0 : 2 : num_side_tabs*2-1]) {
+        translate([-eps, i * side_tab_width, 0])
+            square([thickness + eps, side_tab_width]);
+    }
+}
+
 module enclosure_top() {
-    // note, this is flipped upside down when assembled so the clean side faces out
+    // note, this is flipped upside down (around the x axis) when assembled so the clean side faces out
     linear_extrude(height = thickness) {
         union() {
             square([enclosure_width - 2 * thickness, enclosure_length]);
@@ -396,6 +403,15 @@ module enclosure_top() {
             // front tabs
             mirror([0, 1, 0])
                 front_back_tabs();
+
+            // left tabs
+            translate([enclosure_width - 2 * thickness, thickness, 0])
+                side_tabs();
+
+            // right tabs
+            mirror([1, 0, 0])
+                translate([0, thickness, 0])
+                    side_tabs();
         }
     }
 }
