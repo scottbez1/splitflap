@@ -428,6 +428,15 @@ module enclosure_bottom() {
             // back tabs
             mirror([0, 1, 0])
                 front_back_tabs();
+
+            // right tabs
+            translate([enclosure_width - 2 * thickness, thickness, 0])
+                side_tabs();
+
+            // left tabs
+            mirror([1, 0, 0])
+                translate([0, thickness, 0])
+                    side_tabs();
         }
     }
 }
