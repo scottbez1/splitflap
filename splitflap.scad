@@ -127,6 +127,9 @@ spool_strut_length = flap_width + flap_width_slop + (2 * thickness) - (2 * spool
 num_front_tabs = 3;
 front_tab_width = (enclosure_width - 2*thickness) / (num_front_tabs*2 - 1);
 
+num_side_tabs = 3;
+side_tab_width = (enclosure_length - 2*thickness) / (num_side_tabs*2 - 1);
+
 // ##### Struts for bracing spool #####
 module spool_strut_tab_hole() {
     square([thickness, spool_strut_tab_width], center=true);
@@ -265,8 +268,8 @@ module stepper_shaft_centered() {
 
 module front_tabs_negative() {
     for (i = [0 : 2 : num_front_tabs*2-1]) {
-        translate([thickness + (i+0.5) * front_tab_width, 0, 0])
-            square([front_tab_width, thickness], center=true);
+        translate([thickness + i * front_tab_width, 0, 0])
+            square([front_tab_width, thickness]);
     }
 }
 
@@ -280,11 +283,11 @@ module enclosure_front() {
                 square([front_window_width, front_window_lower + front_window_upper]);
 
             // Front lower tabs
-            translate([0, thickness * 1.5, 0])
+            translate([0, thickness, 0])
                 front_tabs_negative();
 
             // Front upper tabs
-            translate([0, enclosure_height - thickness * 1.5, 0])
+            translate([0, enclosure_height - thickness * 2, 0])
                 front_tabs_negative();
         }
     }
@@ -306,6 +309,13 @@ module motor_mount() {
         circle(r=motor_mount_hole_radius, center=true, $fn=30);
 }
 
+module side_tabs_negative() {
+    for (i = [0 : 2 : num_side_tabs*2-1]) {
+        translate([0, thickness + i * side_tab_width, 0])
+            square([thickness, side_tab_width]);
+    }
+}
+
 module enclosure_left() {
     linear_extrude(height=thickness) {
         difference() {
@@ -319,6 +329,14 @@ module enclosure_left() {
 
             translate([enclosure_height_lower + motor_center_z_offset, enclosure_length - front_forward_offset + motor_center_y_offset])
                 motor_mount();
+
+            // bottom side tabs
+            translate([thickness, 0, 0])
+                side_tabs_negative();
+
+            // top side tabs
+            translate([enclosure_height - 2*thickness, 0, 0])
+                side_tabs_negative();
         }
     }
 }
@@ -346,6 +364,14 @@ module enclosure_right() {
             // hole for adjacent unit's motor
             translate([enclosure_height_upper - motor_center_z_offset, enclosure_length - front_forward_offset + motor_center_y_offset])
                 shaft_centered_motor_hole();
+
+            // top side tabs
+            translate([thickness, 0, 0])
+                side_tabs_negative();
+
+            // bottom side tabs
+            translate([enclosure_height - 2*thickness, 0, 0])
+                side_tabs_negative();
         }
     }
 }
@@ -396,11 +422,11 @@ module enclosure_back() {
             square([enclosure_width, enclosure_height]);
 
             // Back lower tabs
-            translate([0, enclosure_height - thickness * 1.5, 0])
+            translate([0, enclosure_height - thickness * 2, 0])
                 front_tabs_negative();
 
             // Back upper tabs
-            translate([0, thickness * 1.5, 0])
+            translate([0, thickness, 0])
                 front_tabs_negative();
         }
     }
