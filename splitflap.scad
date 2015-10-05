@@ -123,7 +123,9 @@ spool_strut_width = (spool_strut_tab_outset + thickness/2) * 2;
 spool_strut_length_inset = thickness*0.25;
 spool_strut_length = flap_width + flap_width_slop + (2 * thickness) - (2 * spool_strut_length_inset);
 
-
+// Enclosure connector tabs: front/back
+num_front_tabs = 3;
+front_tab_width = (enclosure_width - 2*thickness) / (num_front_tabs*2 - 1);
 
 // ##### Struts for bracing spool #####
 module spool_strut_tab_hole() {
@@ -261,9 +263,7 @@ module stepper_shaft_centered() {
                 StepMotor28BYJ();
 }
 
-num_front_tabs = 3;
 module front_tabs_negative() {
-    front_tab_width = (enclosure_width - 2*thickness) / (num_front_tabs*2 - 1);
     for (i = [0 : 2 : num_front_tabs*2-1]) {
         translate([thickness + (i+0.5) * front_tab_width, 0, 0])
             square([front_tab_width, thickness], center=true);
@@ -350,16 +350,43 @@ module enclosure_right() {
     }
 }
 
+module front_back_tabs() {
+    for (i = [0 : 2 : num_front_tabs*2-1]) {
+        translate([i * front_tab_width, -eps, 0])
+            square([front_tab_width, thickness + eps]);
+    }
+}
+
 module enclosure_top() {
     // note, this is flipped upside down when assembled so the clean side faces out
     linear_extrude(height = thickness) {
-        square([enclosure_width - 2 * thickness, enclosure_length]);
+        union() {
+            square([enclosure_width - 2 * thickness, enclosure_length]);
+
+            // back tabs
+            translate([0, enclosure_length, 0])
+                front_back_tabs();
+
+            // front tabs
+            mirror([0, 1, 0])
+                front_back_tabs();
+        }
     }
 }
 
 module enclosure_bottom() {
     linear_extrude(height = thickness) {
-        square([enclosure_width - 2 * thickness, enclosure_length]);
+        union() {
+            square([enclosure_width - 2 * thickness, enclosure_length]);
+
+            // front tabs
+            translate([0, enclosure_length, 0])
+                front_back_tabs();
+
+            // back tabs
+            mirror([0, 1, 0])
+                front_back_tabs();
+        }
     }
 }
 
