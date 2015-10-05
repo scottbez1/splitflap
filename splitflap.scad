@@ -71,9 +71,9 @@ flap_pitch_radius = num_flaps * (flap_hole_radius*2 + flap_gap) / (2*PI);
 
 // Gears
 drive_pitch = 3;
-motor_teeth = 40;
-idler_teeth = 40;
-spool_teeth = 40;
+motor_teeth = 48;
+idler_teeth = 70;
+spool_teeth = 48;
 
 idler_shaft_radius = m3_bolt_diameter/2;
 
@@ -89,6 +89,16 @@ echo(flap_notch=flap_notch);
 
 flap_pin_width = flap_hole_radius*2 - 1;
 
+idler_angle = 20;
+motor_angle = -95;
+
+idler_offset = - pitch_radius(drive_pitch, spool_teeth) - pitch_radius(drive_pitch, idler_teeth) - gear_separation;
+idler_center_y_offset = cos(idler_angle) * idler_offset;
+idler_center_z_offset = -sin(idler_angle) * idler_offset;
+motor_offset = - pitch_radius(drive_pitch, motor_teeth) - pitch_radius(drive_pitch, idler_teeth) - gear_separation;
+motor_center_y_offset = idler_center_y_offset + cos(motor_angle) * motor_offset; 
+motor_center_z_offset = idler_center_z_offset - sin(motor_angle) * motor_offset;
+
 
 enclosure_width = spool_width_slop + thickness*4 + flap_width + flap_width_slop;
 front_window_upper = (flap_height - flap_pin_width/2);
@@ -101,7 +111,7 @@ enclosure_height = enclosure_height_upper + enclosure_height_lower;
 
 front_forward_offset = flap_pitch_radius + flap_thickness/2;
 enclosure_horizontal_rear_margin = 20; // gap between back of gears and back of enclosure
-enclosure_length = front_forward_offset + pitch_radius(drive_pitch, spool_teeth) + 2*gear_separation + 2*pitch_radius(drive_pitch, idler_teeth) + 2*gear_separation + 2*pitch_radius(drive_pitch, motor_teeth) + enclosure_horizontal_rear_margin;
+enclosure_length = front_forward_offset - motor_center_y_offset + pitch_radius(drive_pitch, motor_teeth) + enclosure_horizontal_rear_margin;
 
 motor_shaft_radius = 2.5;
 motor_slop_radius = 3;
@@ -243,9 +253,6 @@ module motor_shaft() {
     }
 }
 
-idler_center_y_offset = -pitch_radius(drive_pitch, spool_teeth) - pitch_radius(drive_pitch, idler_teeth) - gear_separation;
-motor_center_y_offset = idler_center_y_offset - pitch_radius(drive_pitch, motor_teeth) - pitch_radius(drive_pitch, idler_teeth) - gear_separation;
-
 // 28byj-48 stepper motor centered on its shaft
 module stepper_shaft_centered() {
     translate([18.8/2+0.7, -8, 0])
@@ -307,10 +314,10 @@ module enclosure_left() {
                 rod_mount_negative();
 
             // idler bolt hole
-            translate([enclosure_height_lower, enclosure_length - front_forward_offset + idler_center_y_offset])
+            translate([enclosure_height_lower + idler_center_z_offset, enclosure_length - front_forward_offset + idler_center_y_offset])
                 circle(r=idler_shaft_radius, center=true, $fn=30);
 
-            translate([enclosure_height_lower, enclosure_length - front_forward_offset + motor_center_y_offset])
+            translate([enclosure_height_lower + motor_center_z_offset, enclosure_length - front_forward_offset + motor_center_y_offset])
                 motor_mount();
         }
     }
@@ -333,11 +340,11 @@ module enclosure_right() {
                 rod_mount_negative();
 
             // hole for adjacent unit's idler bolt
-            translate([enclosure_height_upper, enclosure_length - front_forward_offset + idler_center_y_offset])
+            translate([enclosure_height_upper - idler_center_z_offset, enclosure_length - front_forward_offset + idler_center_y_offset])
                 square([m3_nut_width_corners + 2, m3_nut_width_corners + 2], center=true);
 
             // hole for adjacent unit's motor
-            translate([enclosure_height_upper, enclosure_length - front_forward_offset + motor_center_y_offset])
+            translate([enclosure_height_upper - motor_center_z_offset, enclosure_length - front_forward_offset + motor_center_y_offset])
                 shaft_centered_motor_hole();
         }
     }
@@ -413,14 +420,14 @@ module split_flap_3d() {
 
         // idler gear
         color(assembly_color2)
-        translate([flap_width + flap_width_slop + thickness, idler_center_y_offset, 0])
+        translate([flap_width + flap_width_slop + thickness, idler_center_y_offset, idler_center_z_offset])
             rotate([0, 90, 0])
                 rotate([0, 0, 360/idler_teeth/2])
                 gear(drive_pitch, idler_teeth, thickness, idler_shaft_radius*2);
 
         // motor gear
         color(assembly_color1)
-        translate([flap_width + flap_width_slop + thickness, motor_center_y_offset, 0])
+        translate([flap_width + flap_width_slop + thickness, motor_center_y_offset, motor_center_z_offset])
             rotate([0, 90, 0])
                 linear_extrude(height = thickness, center = true)
                     difference() {
@@ -430,7 +437,7 @@ module split_flap_3d() {
 
         echo(motor_pitch_radius=pitch_radius(drive_pitch, motor_teeth));
 
-        translate([flap_width + flap_width_slop + 3*thickness, motor_center_y_offset, 0])
+        translate([flap_width + flap_width_slop + 3*thickness, motor_center_y_offset, motor_center_z_offset])
             stepper_shaft_centered();
     }
 }
