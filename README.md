@@ -16,9 +16,6 @@ The 3d model is built using OpenSCAD in splitflap.scad.
 
 ### TODO ###
 * Enclosure
-    * top
-    * bottom
-    * back
     * captive nut connectors
 * Fabrication
     * 2d projection and panelizing for laser cutter

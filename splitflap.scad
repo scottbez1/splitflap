@@ -5,7 +5,7 @@ use<28byj-48.scad>;
 
 
 // ##### RENDERING OPTIONS #####
-render_enclosure = 2;
+render_enclosure = 2; // 2=opaque color; 1=translucent; 0=invisible
 render_flaps = true;
 
 /*
@@ -350,6 +350,36 @@ module enclosure_right() {
     }
 }
 
+module enclosure_top() {
+    // note, this is flipped upside down when assembled so the clean side faces out
+    linear_extrude(height = thickness) {
+        square([enclosure_width - 2 * thickness, enclosure_length]);
+    }
+}
+
+module enclosure_bottom() {
+    linear_extrude(height = thickness) {
+        square([enclosure_width - 2 * thickness, enclosure_length]);
+    }
+}
+
+module enclosure_back() {
+    linear_extrude(height=thickness) {
+        difference() {
+            square([enclosure_width, enclosure_height]);
+
+            // Back lower tabs
+            translate([0, enclosure_height - thickness * 1.5, 0])
+                front_tabs_negative();
+
+            // Back upper tabs
+            translate([0, thickness * 1.5, 0])
+                front_tabs_negative();
+        }
+    }
+}
+
+
 
 module split_flap_3d() {
     module positioned_front() {
@@ -370,6 +400,23 @@ module split_flap_3d() {
                 enclosure_right();
     }
 
+    module positioned_top() {
+        translate([thickness, front_forward_offset, enclosure_height_upper - thickness])
+            rotate([180, 0, 0])
+                enclosure_top();
+    }
+
+    module positioned_bottom() {
+        translate([thickness, front_forward_offset - enclosure_length, -enclosure_height_lower + thickness])
+            enclosure_bottom();
+    }
+
+    module positioned_back() {
+        translate([0, -enclosure_length + front_forward_offset - thickness, enclosure_height_upper])
+            rotate([-90, 0, 0])
+                enclosure_back();
+    }
+
     module positioned_enclosure() {
         if (render_enclosure == 2) {
             color(assembly_color1)
@@ -378,10 +425,19 @@ module split_flap_3d() {
                 positioned_left();
             color(assembly_color2)
                 positioned_right();
+            color(assembly_color3)
+                positioned_top();
+            color(assembly_color3)
+                positioned_bottom();
+            color(assembly_color1)
+                positioned_back();
         } else if (render_enclosure == 1) {
             %positioned_front();
             %positioned_left();
             %positioned_right();
+            %positioned_top();
+            %positioned_bottom();
+            %positioned_back();
         }
     }
 
