@@ -26,7 +26,8 @@ m3_bolt_cap_head_length=3+.5;
 m3_nut_width_flats=5.5;
 m3_nut_width_corners=6.01;
 m3_nut_length=2.4+.1;
-m3_nut_inset=6;
+
+captive_nut_inset=6;
 
 
 thickness = 3.2;
@@ -124,11 +125,30 @@ spool_strut_length_inset = thickness*0.25;
 spool_strut_length = flap_width + flap_width_slop + (2 * thickness) - (2 * spool_strut_length_inset);
 
 // Enclosure connector tabs: front/back
-num_front_tabs = 3;
+num_front_tabs = 2;
 front_tab_width = (enclosure_width - 2*thickness) / (num_front_tabs*2 - 1);
 
 num_side_tabs = 3;
 side_tab_width = (enclosure_length - 2*thickness) / (num_side_tabs*2 - 1);
+
+
+
+// ##### CAPTIVE NUT NEGATIVE #####
+
+// Centered in the x dimension
+module captive_nut(bolt_diameter, bolt_length, nut_width, nut_length, nut_inset) {
+    union() {
+        translate([-bolt_diameter/2, 0, 0])
+            square([bolt_diameter, bolt_length]);
+        translate([-nut_width/2, nut_inset, 0])
+            square([nut_width, nut_length]);
+    }
+}
+module m3_captive_nut() {
+    captive_nut(m3_bolt_diameter, m3_bolt_length, m3_nut_width_flats, m3_nut_length, captive_nut_inset);
+}
+
+
 
 // ##### Struts for bracing spool #####
 module spool_strut_tab_hole() {
@@ -268,8 +288,12 @@ module stepper_shaft_centered() {
 
 module front_tabs_negative() {
     for (i = [0 : 2 : num_front_tabs*2-1]) {
-        translate([thickness + i * front_tab_width, 0, 0])
-            square([front_tab_width, thickness]);
+        translate([thickness + (i+0.5) * front_tab_width, 0, 0])
+            square([front_tab_width, thickness], center=true);
+    }
+    for (i = [1 : 2 : num_front_tabs*2-1]) {
+        translate([thickness + (i+0.5) * front_tab_width, 0, 0])
+            circle(r=m3_bolt_diameter/2, $fn=30);
     }
 }
 
@@ -283,11 +307,11 @@ module enclosure_front() {
                 square([front_window_width, front_window_lower + front_window_upper]);
 
             // Front lower tabs
-            translate([0, thickness, 0])
+            translate([0, thickness * 1.5, 0])
                 front_tabs_negative();
 
             // Front upper tabs
-            translate([0, enclosure_height - thickness * 2, 0])
+            translate([0, enclosure_height - thickness * 1.5, 0])
                 front_tabs_negative();
         }
     }
@@ -310,9 +334,13 @@ module motor_mount() {
 }
 
 module side_tabs_negative() {
-    for (i = [0 : 2 : num_side_tabs*2-1]) {
-        translate([0, thickness + i * side_tab_width, 0])
-            square([thickness, side_tab_width]);
+    for (i = [0 : 2 : num_side_tabs*2-2]) {
+        translate([0, thickness + (i + 0.5) * side_tab_width, 0])
+            square([thickness, side_tab_width], center=true);
+    }
+    for (i = [1 : 2 : num_side_tabs*2-2]) {
+        translate([0, thickness + (i + 0.5) * side_tab_width, 0])
+            circle(r=m3_bolt_diameter/2, $fn=30);
     }
 }
 
@@ -331,11 +359,11 @@ module enclosure_left() {
                 motor_mount();
 
             // bottom side tabs
-            translate([thickness, 0, 0])
+            translate([thickness * 1.5, 0, 0])
                 side_tabs_negative();
 
             // top side tabs
-            translate([enclosure_height - 2*thickness, 0, 0])
+            translate([enclosure_height - thickness * 1.5, 0, 0])
                 side_tabs_negative();
         }
     }
@@ -366,77 +394,132 @@ module enclosure_right() {
                 shaft_centered_motor_hole();
 
             // top side tabs
-            translate([thickness, 0, 0])
+            translate([1.5*thickness, 0, 0])
                 side_tabs_negative();
 
             // bottom side tabs
-            translate([enclosure_height - 2*thickness, 0, 0])
+            translate([enclosure_height - 1.5*thickness, 0, 0])
                 side_tabs_negative();
         }
     }
 }
 
 module front_back_tabs() {
-    for (i = [0 : 2 : num_front_tabs*2-1]) {
+    for (i = [0 : 2 : num_front_tabs*2-2]) {
         translate([i * front_tab_width, -eps, 0])
             square([front_tab_width, thickness + eps]);
     }
 }
 
 module side_tabs() {
-    for (i = [0 : 2 : num_side_tabs*2-1]) {
+    for (i = [0 : 2 : num_side_tabs*2-2]) {
         translate([-eps, i * side_tab_width, 0])
             square([thickness + eps, side_tab_width]);
     }
 }
 
+module front_back_captive_nuts() {
+    for (i = [1 : 2 : num_front_tabs*2-2]) {
+        translate([(i + 0.5) * front_tab_width, -eps, 0])
+            m3_captive_nut();
+    }
+}
+
+module side_captive_nuts() {
+    for (i = [1 : 2 : num_side_tabs*2-2]) {
+        translate([-eps, (i + 0.5) * side_tab_width, 0])
+            rotate([0, 0, -90])
+                m3_captive_nut();
+    }
+}
+
+
 module enclosure_top() {
     // note, this is flipped upside down (around the x axis) when assembled so the clean side faces out
     linear_extrude(height = thickness) {
-        union() {
-            square([enclosure_width - 2 * thickness, enclosure_length]);
+        difference() {
+            union() {
+                square([enclosure_width - 2 * thickness, enclosure_length]);
 
-            // back tabs
-            translate([0, enclosure_length, 0])
-                front_back_tabs();
+                // back tabs
+                translate([0, enclosure_length, 0])
+                    front_back_tabs();
 
-            // front tabs
-            mirror([0, 1, 0])
-                front_back_tabs();
+                // front tabs
+                mirror([0, 1, 0])
+                    front_back_tabs();
 
-            // left tabs
-            translate([enclosure_width - 2 * thickness, thickness, 0])
-                side_tabs();
-
-            // right tabs
-            mirror([1, 0, 0])
-                translate([0, thickness, 0])
+                // left tabs
+                translate([enclosure_width - 2 * thickness, thickness, 0])
                     side_tabs();
+
+                // right tabs
+                mirror([1, 0, 0])
+                    translate([0, thickness, 0])
+                        side_tabs();
+            }
+
+            // front captive nuts
+            front_back_captive_nuts();
+
+            // back captive nuts
+            translate([0, enclosure_length, 0])
+                mirror([0,1,0])
+                    front_back_captive_nuts();
+
+            // right captive nuts
+            translate([0, thickness, 0])
+                side_captive_nuts();
+
+            // left captive nuts
+            translate([enclosure_width - 2 * thickness, thickness, 0])
+                mirror([1, 0, 0])
+                    side_captive_nuts();
         }
     }
 }
 
 module enclosure_bottom() {
     linear_extrude(height = thickness) {
-        union() {
-            square([enclosure_width - 2 * thickness, enclosure_length]);
+        difference() {
+            union() {
+                square([enclosure_width - 2 * thickness, enclosure_length]);
 
-            // front tabs
-            translate([0, enclosure_length, 0])
-                front_back_tabs();
+                // front tabs
+                translate([0, enclosure_length, 0])
+                    front_back_tabs();
 
-            // back tabs
-            mirror([0, 1, 0])
-                front_back_tabs();
+                // back tabs
+                mirror([0, 1, 0])
+                    front_back_tabs();
 
-            // right tabs
-            translate([enclosure_width - 2 * thickness, thickness, 0])
-                side_tabs();
-
-            // left tabs
-            mirror([1, 0, 0])
-                translate([0, thickness, 0])
+                // right tabs
+                translate([enclosure_width - 2 * thickness, thickness, 0])
                     side_tabs();
+
+                // left tabs
+                mirror([1, 0, 0])
+                    translate([0, thickness, 0])
+                        side_tabs();
+            }
+
+            // back captive nuts
+            front_back_captive_nuts();
+
+            // front captive nuts
+            translate([0, enclosure_length, 0])
+                mirror([0,1,0])
+                    front_back_captive_nuts();
+
+            // left captive nuts
+            translate([0, thickness, 0])
+                side_captive_nuts();
+
+            // right captive nuts
+            translate([enclosure_width - 2 * thickness, thickness, 0])
+                mirror([1, 0, 0])
+                    side_captive_nuts();
+
         }
     }
 }
@@ -447,11 +530,11 @@ module enclosure_back() {
             square([enclosure_width, enclosure_height]);
 
             // Back lower tabs
-            translate([0, enclosure_height - thickness * 2, 0])
+            translate([0, enclosure_height - thickness * 1.5, 0])
                 front_tabs_negative();
 
             // Back upper tabs
-            translate([0, thickness, 0])
+            translate([0, thickness * 1.5, 0])
                 front_tabs_negative();
         }
     }

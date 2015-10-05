@@ -16,7 +16,7 @@ The 3d model is built using OpenSCAD in splitflap.scad.
 
 ### TODO ###
 * Enclosure
-    * captive nut connectors
+    * captive nut connectors (need to set up alternating cap head cutouts for adjacent nesting)
 * Fabrication
     * 2d projection and panelizing for laser cutter
 * Driver
@@ -24,5 +24,4 @@ The 3d model is built using OpenSCAD in splitflap.scad.
         * IR Reflectance sensor near spool? QRE1113?
 
 ### Concerns ###
-* idler bolt within flap exclusion radius - need flat head and precise bolt length to avoid affecting this or adjacent unit's flaps
 * 5mm rod friction fit - maybe need to design mount in wood that flexes to hold rod tightly (instead of requiring precise laser cut hole diameter)
