@@ -422,8 +422,8 @@ module side_tabs() {
 }
 
 module front_back_captive_nuts() {
-    for (i = [1 : 2 : num_front_tabs*2-2]) {
-        translate([(i + 0.5) * front_tab_width, -eps, 0])
+    for (i = [0 : 2 : num_front_tabs-1]) {
+        translate([(i*2 + 1.5) * front_tab_width, -thickness, 0])
             m3_captive_nut();
     }
 }
