@@ -3,10 +3,13 @@ from __future__ import division
 from __future__ import print_function
 
 import errno
+import functools
 import numbers
 import os
 import shutil
 import subprocess
+
+from multiprocessing.dummy import Pool
 
 def run_openscad(
         input_file,
@@ -66,9 +69,8 @@ def generate_gif(output_folder):
     print(command)
     subprocess.check_call(command)
 
-
 def render_rotation(output_folder, num_frames, start_frame, variables):
-    for i in range(num_frames):
+    def render_frame(i):
         angle = 135 + i * 360 / num_frames
         run_openscad(
             'splitflap.scad',
@@ -79,6 +81,10 @@ def render_rotation(output_folder, num_frames, start_frame, variables):
             camera_distance = 600,
             variables = variables,
         )
+    pool = Pool(4)
+    pool.map(render_frame, range(num_frames))
+    pool.close()
+    pool.join()
 
 output_folder = os.path.join('build', 'animation')
 
