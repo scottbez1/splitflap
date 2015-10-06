@@ -16,7 +16,9 @@ The 3d model is built using OpenSCAD in splitflap.scad.
 
 ### TODO ###
 * Enclosure
-    * captive nut connectors (need to set up alternating cap head cutouts for adjacent nesting)
+    * mounting holes?
+    * interlocking mechanism?
+    * etched timestamp/commit hash?
 * Fabrication
     * 2d projection and panelizing for laser cutter
 * Driver

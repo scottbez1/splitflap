@@ -7,6 +7,8 @@ use<28byj-48.scad>;
 // ##### RENDERING OPTIONS #####
 render_enclosure = 2; // 2=opaque color; 1=translucent; 0=invisible
 render_flaps = true;
+render_units = 2;
+render_unit_separation = 50;
 
 /*
 $vpt = [enclosure_width/2, 0, 0];
@@ -20,10 +22,10 @@ eps=.1;
 
 // M3 bolts
 m3_bolt_diameter=3+.1;
-m3_bolt_length=12+.5;
+m3_bolt_length=12+1;
 m3_bolt_cap_head_diameter=5.5+.2;
-m3_bolt_cap_head_length=3+.5;
-m3_nut_width_flats=5.5;
+m3_bolt_cap_head_length=3+1;
+m3_nut_width_flats=5.5 + .1;
 m3_nut_width_corners=6.01;
 m3_nut_length=2.4+.1;
 
@@ -287,12 +289,12 @@ module stepper_shaft_centered() {
 }
 
 module front_tabs_negative() {
-    for (i = [0 : 2 : num_front_tabs*2-1]) {
-        translate([thickness + (i+0.5) * front_tab_width, 0, 0])
+    for (i = [0 : num_front_tabs-1]) {
+        translate([thickness + (i*2+0.5) * front_tab_width, 0, 0])
             square([front_tab_width, thickness], center=true);
     }
-    for (i = [1 : 2 : num_front_tabs*2-1]) {
-        translate([thickness + (i+0.5) * front_tab_width, 0, 0])
+    for (i = [0 : num_front_tabs-2]) {
+        translate([thickness + (i*2+1.5) * front_tab_width, 0, 0])
             circle(r=m3_bolt_diameter/2, $fn=30);
     }
 }
@@ -333,14 +335,15 @@ module motor_mount() {
         circle(r=motor_mount_hole_radius, center=true, $fn=30);
 }
 
-module side_tabs_negative() {
-    for (i = [0 : 2 : num_side_tabs*2-2]) {
-        translate([0, thickness + (i + 0.5) * side_tab_width, 0])
+module side_tabs_negative(reverse=false) {
+    for (i = [0 : num_side_tabs-1]) {
+        translate([0, thickness + (i*2 + 0.5) * side_tab_width, 0])
             square([thickness, side_tab_width], center=true);
     }
-    for (i = [1 : 2 : num_side_tabs*2-2]) {
-        translate([0, thickness + (i + 0.5) * side_tab_width, 0])
-            circle(r=m3_bolt_diameter/2, $fn=30);
+    for (i = [0 : num_side_tabs-1]) {
+        bolt_head_hole = (i % 2 == (reverse ? 1 : 0));
+        translate([0, thickness + (i*2 + 1.5) * side_tab_width, 0])
+            circle(r=(bolt_head_hole ? m3_bolt_cap_head_diameter : m3_bolt_diameter)/2, $fn=30);
     }
 }
 
@@ -360,11 +363,11 @@ module enclosure_left() {
 
             // bottom side tabs
             translate([thickness * 1.5, 0, 0])
-                side_tabs_negative();
+                side_tabs_negative(reverse=true);
 
             // top side tabs
             translate([enclosure_height - thickness * 1.5, 0, 0])
-                side_tabs_negative();
+                side_tabs_negative(reverse=false);
         }
     }
 }
@@ -395,11 +398,11 @@ module enclosure_right() {
 
             // top side tabs
             translate([1.5*thickness, 0, 0])
-                side_tabs_negative();
+                side_tabs_negative(reverse=true);
 
             // bottom side tabs
             translate([enclosure_height - 1.5*thickness, 0, 0])
-                side_tabs_negative();
+                side_tabs_negative(reverse=false);
         }
     }
 }
@@ -425,11 +428,19 @@ module front_back_captive_nuts() {
     }
 }
 
-module side_captive_nuts() {
-    for (i = [1 : 2 : num_side_tabs*2-2]) {
-        translate([-eps, (i + 0.5) * side_tab_width, 0])
-            rotate([0, 0, -90])
-                m3_captive_nut();
+module side_captive_nuts(reverse = false) {
+    for (i = [0 : num_side_tabs-1]) {
+        translate([-thickness, (i*2 + 1.5) * side_tab_width, 0]) {
+            rotate([0, 0, -90]) {
+                bolt_head_hole = (i % 2 == (reverse ? 1 : 0));
+                if (bolt_head_hole) {
+                    translate([-m3_bolt_cap_head_diameter/2, 0])
+                        square([m3_bolt_cap_head_diameter, m3_bolt_cap_head_length]);
+                } else {
+                    m3_captive_nut();
+                }
+            }
+        }
     }
 }
 
@@ -469,12 +480,12 @@ module enclosure_top() {
 
             // right captive nuts
             translate([0, thickness, 0])
-                side_captive_nuts();
+                side_captive_nuts(reverse = false);
 
             // left captive nuts
             translate([enclosure_width - 2 * thickness, thickness, 0])
                 mirror([1, 0, 0])
-                    side_captive_nuts();
+                    side_captive_nuts(reverse = true);
         }
     }
 }
@@ -513,12 +524,12 @@ module enclosure_bottom() {
 
             // left captive nuts
             translate([0, thickness, 0])
-                side_captive_nuts();
+                side_captive_nuts(reverse = false);
 
             // right captive nuts
             translate([enclosure_width - 2 * thickness, thickness, 0])
                 mirror([1, 0, 0])
-                    side_captive_nuts();
+                    side_captive_nuts(reverse = true);
 
         }
     }
@@ -659,9 +670,8 @@ module split_flap_3d() {
     }
 }
 
-translate([0, 0, 0])
-    split_flap_3d();
-translate([-enclosure_width, 0, 0])
-    split_flap_3d();
-
+for (i = [0 : render_units - 1]) {
+    translate([-enclosure_width/2 + (-(render_units-1) / 2 + i)*(enclosure_width + render_unit_separation), 0, 0])
+        split_flap_3d();
+}
 
