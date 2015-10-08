@@ -319,8 +319,8 @@ module enclosure_front() {
 module rod_mount_negative() {
     union() {
         circle(r=rod_radius - rod_mount_under_radius, center=true, $fn=30);
-        square([rod_radius*4, rod_radius/4], center=true);
-        square([rod_radius/4, rod_radius*4], center=true);
+        square([rod_radius*4, rod_radius/3], center=true);
+        square([rod_radius/3, rod_radius*4], center=true);
     }
 }
 
