@@ -34,10 +34,11 @@ captive_nut_inset=6;
 
 thickness = 3.2;
 
+loose_rod_radius_slop = 0.2;
+
 rod_radius = 2.5;
-rod_radius_slop = 0.25;
-assembly_inner_radius = rod_radius + rod_radius_slop;
-bearing_outer_radius = 6;
+assembly_inner_radius = rod_radius + loose_rod_radius_slop;
+rod_mount_under_radius = 0.2;
 
 
 assembly_color = [.76, .60, .42];
@@ -46,23 +47,19 @@ assembly_color2 = [.682, .537, .376]; //"ae8960";
 assembly_color3 = [.416, .325, .227]; //"6A533A";
 assembly_color4 = [.204, .161, .114]; //"34291D";
 
-bearing_color = [1,1,1,1];
-
-joining_rod_radius = 1;
-
 flap_width = 54;
 flap_height = 43;
 flap_thickness = 30 / 1000 * 25.4; // 30 mil
-flap_corner_radius = 3.1; // 2.88-3.48mm
+flap_corner_radius = 3.1; // 2.88-3.48mm (used just for display)
 
 // Amount of slop of the flap side to side between the 2 spools
-flap_width_slop = 2;
+flap_width_slop = 1;
 
 // Amount of slop on either side of the flap pin within the spool hole
 flap_pin_slop = 1;
 
 // Amount of slop for the spool assembly side-to-side inside the enclosure
-spool_width_slop = 1;
+spool_width_slop = 2;
 
 
 num_flaps = 40;
@@ -223,7 +220,7 @@ module spool_with_pulleys_assembly() {
     module gear_with_strut_tab_holes() {
         linear_extrude(height=thickness, center=true) {
             difference() {
-                gear(drive_pitch, spool_teeth, 0, 5);
+                gear(drive_pitch, spool_teeth, 0, assembly_inner_radius * 2);
                 spool_strut_tab_holes();
             }
         }
@@ -320,7 +317,11 @@ module enclosure_front() {
 }
 
 module rod_mount_negative() {
-    circle(r=rod_radius, center=true, $fn=30);
+    union() {
+        circle(r=rod_radius - rod_mount_under_radius, center=true, $fn=30);
+        square([rod_radius*4, rod_radius/4], center=true);
+        square([rod_radius/4, rod_radius*4], center=true);
+    }
 }
 
 
@@ -651,7 +652,7 @@ module split_flap_3d() {
         translate([flap_width + flap_width_slop + thickness, idler_center_y_offset, idler_center_z_offset])
             rotate([0, 90, 0])
                 rotate([0, 0, 360/idler_teeth/2])
-                gear(drive_pitch, idler_teeth, thickness, idler_shaft_radius*2);
+                gear(drive_pitch, idler_teeth, thickness, (idler_shaft_radius+loose_rod_radius_slop)*2);
 
         // motor gear
         color(assembly_color1)
