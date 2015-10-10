@@ -2,20 +2,30 @@ use<gt2pulley.scad>;
 use<spool.scad>;
 use<publicDomainGearV1.1.scad>;
 use<28byj-48.scad>;
+use<projection_renderer.scad>;
 
 
 // ##### RENDERING OPTIONS #####
-render_enclosure = 2; // 2=opaque color; 1=translucent; 0=invisible
+
+render_3d = true;
+
+// 3d parameters:
+render_enclosure = 1; // 2=opaque color; 1=translucent; 0=invisible
 render_flaps = true;
 render_units = 2;
-render_unit_separation = 50;
+render_unit_separation = 0;
 
-/*
-$vpt = [enclosure_width/2, 0, 0];
-$vpr = [60, 0, 135 + animation_angle];
-$vpd = 600;
-*/
+// 2d parameters:
+render_index = 0;
 
+
+// Kerf based off http://blog.ponoko.com/2011/07/12/figuring-out-kerf-for-precision-parts/
+// It's better to underestimate (looser fit) than overestimate (no fit)
+kerf_width = 0.19 - 0.01;
+
+// MDF, .125in nominal
+// http://www.ponoko.com/make-and-sell/show-material/64-mdf-natural
+thickness = 3.2;
 
 
 eps=.1;
@@ -31,8 +41,6 @@ m3_nut_length=2.4+.1;
 
 captive_nut_inset=6;
 
-
-thickness = 3.2;
 
 loose_rod_radius_slop = 0.2;
 
@@ -214,26 +222,25 @@ module flap_spool_complete() {
     }
 }
 
-module spool_with_pulleys_assembly() {
-    layer_separation = thickness;
-
-    module gear_with_strut_tab_holes() {
-        linear_extrude(height=thickness, center=true) {
-            difference() {
-                gear(drive_pitch, spool_teeth, 0, assembly_inner_radius * 2);
-                spool_strut_tab_holes();
-            }
+module spool_gear() {
+    linear_extrude(height=thickness, center=true) {
+        difference() {
+            gear(drive_pitch, spool_teeth, 0, assembly_inner_radius * 2);
+            spool_strut_tab_holes();
         }
     }
+}
 
+module spool_with_pulleys_assembly() {
+    layer_separation = thickness;
     union() {
         flap_spool_complete();
 
         // Gears on spool
         translate([0,0,thickness/2 + layer_separation])
-            gear_with_strut_tab_holes();
+            spool_gear();
         translate([0,0,thickness/2 + layer_separation*2])
-            gear_with_strut_tab_holes();
+            spool_gear();
     }
 }
 
@@ -271,9 +278,12 @@ module translated_flap() {
 
 // double-flatted motor shaft of 28byj-48 motor (2D)
 module motor_shaft() {
-    intersection() {
-        circle(r=motor_shaft_radius, $fn=50);
-        square([motor_shaft_radius*2, 3], center=true);
+    union() {
+        intersection() {
+            circle(r=motor_shaft_radius-rod_mount_under_radius, $fn=50);
+            square([motor_shaft_radius*2, 3], center=true);
+        }
+        square([motor_shaft_radius/3, motor_shaft_radius*4], center=true);
     }
 }
 
@@ -552,6 +562,18 @@ module enclosure_back() {
     }
 }
 
+module idler_gear() {
+    gear(drive_pitch, idler_teeth, thickness, (idler_shaft_radius+loose_rod_radius_slop)*2);
+}
+
+module motor_gear() {
+    linear_extrude(height = thickness, center = true) {
+        difference() {
+            gear(drive_pitch, motor_teeth, 0, 0);
+            motor_shaft();
+        }
+    }
+}
 
 
 module split_flap_3d() {
@@ -652,17 +674,13 @@ module split_flap_3d() {
         translate([flap_width + flap_width_slop + thickness, idler_center_y_offset, idler_center_z_offset])
             rotate([0, 90, 0])
                 rotate([0, 0, 360/idler_teeth/2])
-                gear(drive_pitch, idler_teeth, thickness, (idler_shaft_radius+loose_rod_radius_slop)*2);
+                    idler_gear();
 
         // motor gear
         color(assembly_color1)
         translate([flap_width + flap_width_slop + thickness, motor_center_y_offset, motor_center_z_offset])
             rotate([0, 90, 0])
-                linear_extrude(height = thickness, center = true)
-                    difference() {
-                        gear(drive_pitch, motor_teeth, 0, 0);
-                        motor_shaft();
-                    }
+                motor_gear();
 
         echo(motor_pitch_radius=pitch_radius(drive_pitch, motor_teeth));
 
@@ -671,8 +689,28 @@ module split_flap_3d() {
     }
 }
 
-for (i = [0 : render_units - 1]) {
-    translate([-enclosure_width/2 + (-(render_units-1) / 2 + i)*(enclosure_width + render_unit_separation), 0, 0])
-        split_flap_3d();
+if (render_3d) {
+    for (i = [0 : render_units - 1]) {
+        translate([-enclosure_width/2 + (-(render_units-1) / 2 + i)*(enclosure_width + render_unit_separation), 0, 0])
+            split_flap_3d();
+    }
+} else {
+    projection_renderer(render_index=render_index, kerf_width=kerf_width) {
+        enclosure_front();
+        enclosure_back();
+        enclosure_left();
+        enclosure_right();
+        enclosure_top();
+        enclosure_bottom();
+        spool_strut();
+        spool_strut();
+        spool_strut();
+        spool_strut();
+        idler_gear();
+        motor_gear();
+        flap_spool_complete();
+        spool_gear();
+        spool_gear();
+    }
 }
 
