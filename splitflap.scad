@@ -708,9 +708,10 @@ if (render_3d) {
         spool_strut();
         idler_gear();
         motor_gear();
+        spool_gear();
+        spool_gear();
         flap_spool_complete();
-        spool_gear();
-        spool_gear();
+        flap_spool_complete();
     }
 }
 

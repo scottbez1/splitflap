@@ -69,6 +69,9 @@ def run(
     return stdout, stderr
 
 def extract_values(stderr):
+    """
+    Extracts values from ECHO statements as a dictionary. Values are strings.
+    """
     result = {}
     pattern = re.compile(r'^ECHO: (.+) = (.+)$')
     for line in stderr.splitlines():
