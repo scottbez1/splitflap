@@ -15,7 +15,9 @@ The 3d model is built using OpenSCAD in `splitflap.scad`
 * vinyl stickers for flap letters?
 
 ### Cost Breakdown ###
-* ? -- laser cut enclosure/mechanisms
+* $5 -- MDF 3.2mm P2 on Ponoko (http://www.ponoko.com/make-and-sell/show-material/64-mdf-natural)
+* ? -- laser cutting
+* ? -- shipping
 * ? -- m3,m4 bolts,nuts
 * ~$2 -- 28byj-48 motor
 * $6.39/2 units -- vinyl letter stickers (minimum letter duplication per pack is 2) (http://www.amazon.com/Duro-Decal-Permanent-Adhesive-Letters/dp/B0027601CM)
@@ -24,7 +26,7 @@ The 3d model is built using OpenSCAD in `splitflap.scad`
 ## Getting Started ##
 
 ### 3D Design ###
-The main design file is `spliatflap.scad`
+The main design file is `splitflap.scad`
 
 You'll need a recent version of OpenSCAD (at least 2015-03), which needs to be installed through the PPA:
 `sudo add-apt-repository ppa:openscad/releases`

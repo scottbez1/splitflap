@@ -1,11 +1,8 @@
 
 
-module flap_spool(flaps, flap_hole_radius, flap_gap, inner_radius, height) {
-    inset = flap_hole_radius;
-    separation = flap_gap;
-
-    pitch_radius = flaps * (flap_hole_radius*2 + separation) / (2*PI);
-    outer_radius = pitch_radius + flap_hole_radius + inset;
+module flap_spool(flaps, flap_hole_radius, flap_gap, inner_radius, outset, height) {
+    pitch_radius = flap_spool_pitch_radius(flaps, flap_hole_radius, flap_gap);
+    outer_radius = flap_spool_outer_radius(flaps, flap_hole_radius, flap_gap, outset);
 
 
     module flap_spool_2d() {
@@ -27,6 +24,12 @@ module flap_spool(flaps, flap_hole_radius, flap_gap, inner_radius, height) {
     }
 
 }
+
+function flap_spool_pitch_radius(flaps, flap_hole_radius, separation) = 
+    flaps * (flap_hole_radius*2 + separation) / (2*PI);
+
+function flap_spool_outer_radius(flaps, flap_hole_radius, separation, outset) = 
+    flap_spool_pitch_radius(flaps, flap_hole_radius, separation) + flap_hole_radius + outset;
 
 
 flap_spool(40, 1.5, 5, 3, 3.2);

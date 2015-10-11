@@ -74,7 +74,6 @@ num_flaps = 40;
 flap_hole_radius = 1.5;
 flap_gap = 1;
 
-flap_pitch_radius = num_flaps * (flap_hole_radius*2 + flap_gap) / (2*PI);
 
 
 // Gears
@@ -87,10 +86,13 @@ idler_shaft_radius = m3_bolt_diameter/2;
 
 gear_separation = 0.5;
 
+flap_spool_outset = flap_hole_radius;
+flap_pitch_radius = flap_spool_pitch_radius(num_flaps, flap_hole_radius, flap_gap); //num_flaps * (flap_hole_radius*2 + flap_gap) / (2*PI);
+spool_outer_radius = flap_spool_outer_radius(num_flaps, flap_hole_radius, flap_gap, flap_spool_outset); //flap_pitch_radius + 2*flap_hole_radius;
+
 // Radius where flaps are expected to flap in their *most collapsed* (90 degree) state
 exclusion_radius = sqrt(flap_height*flap_height + flap_pitch_radius*flap_pitch_radius);
 
-spool_outer_radius = flap_pitch_radius + 2*flap_hole_radius;
 flap_notch = sqrt(spool_outer_radius*spool_outer_radius - flap_pitch_radius*flap_pitch_radius);
 echo(flap_notch=flap_notch);
 
@@ -106,6 +108,9 @@ idler_center_z_offset = -sin(idler_angle) * idler_offset;
 motor_offset = - pitch_radius(drive_pitch, motor_teeth) - pitch_radius(drive_pitch, idler_teeth) - gear_separation;
 motor_center_y_offset = idler_center_y_offset + cos(motor_angle) * motor_offset; 
 motor_center_z_offset = idler_center_z_offset - sin(motor_angle) * motor_offset;
+
+idler_gear_outer_radius = outer_radius(drive_pitch, idler_teeth, 0);
+motor_gear_outer_radius = outer_radius(drive_pitch, motor_teeth, 0);
 
 
 enclosure_width = spool_width_slop + thickness*4 + flap_width + flap_width_slop;
@@ -214,7 +219,7 @@ module spool_struts() {
 module flap_spool_complete() {
     linear_extrude(thickness) {
         difference() {
-            flap_spool(num_flaps, flap_hole_radius, flap_gap, assembly_inner_radius,
+            flap_spool(num_flaps, flap_hole_radius, flap_gap, assembly_inner_radius, flap_spool_outset,
                     height=0);
 
             spool_strut_tab_holes();
@@ -695,23 +700,49 @@ if (render_3d) {
             split_flap_3d();
     }
 } else {
+    sp = 10;
     projection_renderer(render_index=render_index, kerf_width=kerf_width) {
-        enclosure_front();
-        enclosure_back();
-        enclosure_left();
-        enclosure_right();
-        enclosure_top();
-        enclosure_bottom();
-        spool_strut();
-        spool_strut();
-        spool_strut();
-        spool_strut();
-        idler_gear();
-        motor_gear();
-        spool_gear();
-        spool_gear();
-        flap_spool_complete();
-        flap_spool_complete();
+        translate([0, 0])
+            enclosure_left();
+        translate([0, enclosure_length + sp])
+            enclosure_right();
+        translate([enclosure_height + sp, 0])
+            enclosure_front();
+        translate([enclosure_height + sp + enclosure_width + sp, 0])
+            enclosure_back();
+
+        // Place spool gears inside the front window
+        translate([enclosure_height + sp + thickness + front_window_width/2, enclosure_height_lower - front_window_lower + (front_window_lower + front_window_upper)/4])
+            spool_gear();
+        translate([enclosure_height + sp + thickness + front_window_width/2, enclosure_height_lower - front_window_lower + (front_window_lower + front_window_upper)/4*3])
+            spool_gear();
+
+        translate([enclosure_height + sp, enclosure_height + sp])
+            enclosure_top();
+        translate([enclosure_height + sp + enclosure_width + sp, enclosure_height + sp])
+            enclosure_bottom();
+
+        // Spool struts 2x2 above left/right sides
+        spool_strut_y_off = (enclosure_length + sp) * 2 + spool_strut_width / 2;
+        translate([0, spool_strut_y_off])
+            spool_strut();
+        translate([0, spool_strut_y_off + spool_strut_width + sp])
+            spool_strut();
+        translate([spool_strut_length + sp, spool_strut_y_off])
+            spool_strut();
+        translate([spool_strut_length + sp, spool_strut_y_off + spool_strut_width + sp])
+            spool_strut();
+
+        // Flap spools above spool struts
+        translate([spool_outer_radius, (enclosure_length + sp)*2 + (spool_strut_width + sp)*2 + spool_outer_radius])
+            flap_spool_complete();
+        translate([spool_outer_radius*3 + sp, (enclosure_length + sp)*2 + (spool_strut_width + sp)*2 + spool_outer_radius])
+            flap_spool_complete();
+
+        translate([enclosure_height + sp + idler_gear_outer_radius, enclosure_height + sp + enclosure_length + sp + idler_gear_outer_radius])
+            idler_gear();
+        translate([enclosure_height + sp + idler_gear_outer_radius*2 + sp + motor_gear_outer_radius, enclosure_height + sp + enclosure_length + sp + motor_gear_outer_radius])
+            motor_gear();
     }
 }
 

@@ -53,6 +53,7 @@ class Renderer(object):
             )
         processor = SvgProcessor(output_file)
         processor.fix_dimens()
+        processor.delete_registration_mark()
         processor.apply_laser_cut_style()
         return processor
 
