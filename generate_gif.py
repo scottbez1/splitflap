@@ -7,6 +7,7 @@ import functools
 import logging
 import os
 import shutil
+import subprocess
 
 from multiprocessing.dummy import Pool
 
