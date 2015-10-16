@@ -48,7 +48,7 @@ loose_rod_radius_slop = 0.2;
 
 rod_radius = 2.5;
 assembly_inner_radius = rod_radius + loose_rod_radius_slop;
-rod_mount_under_radius = 0.2;
+rod_mount_under_radius = 0.3;
 
 
 assembly_color = [.76, .60, .42];
@@ -72,9 +72,9 @@ flap_pin_slop = 1;
 spool_width_slop = 2;
 
 
-num_flaps = 40;
-flap_hole_radius = 1.5;
-flap_gap = 1;
+num_flaps = 48;
+flap_hole_radius = 1.7;
+flap_gap = 1.2;
 
 
 
@@ -92,6 +92,16 @@ flap_spool_outset = flap_hole_radius;
 flap_pitch_radius = flap_spool_pitch_radius(num_flaps, flap_hole_radius, flap_gap); //num_flaps * (flap_hole_radius*2 + flap_gap) / (2*PI);
 spool_outer_radius = flap_spool_outer_radius(num_flaps, flap_hole_radius, flap_gap, flap_spool_outset); //flap_pitch_radius + 2*flap_hole_radius;
 spool_bushing_radius = 10;
+
+
+
+echo(flap_pitch_radius=flap_pitch_radius);
+
+new_strut_width = 15;
+new_strut_clearance = 1.5;
+motor_clearance = sqrt((flap_pitch_radius - flap_hole_radius - new_strut_clearance)*(flap_pitch_radius - flap_hole_radius - new_strut_clearance) - (new_strut_width/2)*(new_strut_width/2)) - thickness - new_strut_clearance;
+echo(motor_clearance=motor_clearance);
+
 
 // Radius where flaps are expected to flap in their *most collapsed* (90 degree) state
 exclusion_radius = sqrt(flap_height*flap_height + flap_pitch_radius*flap_pitch_radius);
@@ -118,7 +128,7 @@ motor_gear_outer_radius = outer_radius(drive_pitch, motor_teeth, 0);
 
 enclosure_width = spool_width_slop + thickness*5 + flap_width + flap_width_slop;
 front_window_upper = (flap_height - flap_pin_width/2);
-front_window_lower = front_window_upper + (flap_pitch_radius*0.75); // some margin for falling flaps
+front_window_lower = front_window_upper + (flap_height*0.5); // some margin for falling flaps
 front_window_width = spool_width_slop + flap_width + flap_width_slop;
 enclosure_vertical_margin = 10; // gap between top/bottom of flaps and top/bottom of enclosure
 enclosure_height_upper = exclusion_radius + enclosure_vertical_margin + 2*thickness;
@@ -176,6 +186,10 @@ module spool_strut_tab_holes() {
         translate([cos(angle)*spool_strut_tab_outset, sin(angle)*spool_strut_tab_outset])
             rotate([0,0,angle])
                 spool_strut_tab_hole();
+        translate([cos(angle)*(motor_clearance+new_strut_clearance), sin(angle)*(motor_clearance+new_strut_clearance)])
+            rotate([0,0,angle])
+                translate([0, -new_strut_width/2])
+                    square([thickness, new_strut_width]);
     }
 }
 module spool_strut() {
@@ -226,6 +240,7 @@ module flap_spool_complete() {
                     height=0);
 
             spool_strut_tab_holes();
+            circle(r=motor_clearance, $fn=30);
         }
     }
 }
@@ -686,11 +701,11 @@ module split_flap_3d() {
 
             translate([flap_width_slop/2, 0, 0]) {
                 // Collapsed flaps on the top
-                for (i=[0:19]) {
+                for (i=[0:num_flaps/2-1]) {
                     rotate([360/num_flaps * i, 0, 0]) translated_flap();
                 }
 
-                for (i=[1:20]) {
+                for (i=[1:num_flaps/2]) {
                     angle = -360/num_flaps*i;
                     translate([0, flap_pitch_radius*cos(angle), flap_pitch_radius * sin(angle)])
                         rotate([-90, 0, 0])
