@@ -3,7 +3,7 @@ use<spool.scad>;
 use<publicDomainGearV1.1.scad>;
 use<28byj-48.scad>;
 use<projection_renderer.scad>;
-
+// ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_?!.=()@#$%^&* 
 
 // ##### RENDERING OPTIONS #####
 
@@ -41,7 +41,7 @@ m3_nut_length=2.4+.1;
 
 captive_nut_inset=6;
 
-has_back = true;
+has_back = false;
 
 
 loose_rod_radius_slop = 0.2;
@@ -81,7 +81,7 @@ flap_gap = 1;
 // Gears
 drive_pitch = 3.5;
 motor_teeth = 40;
-idler_teeth = 60;
+idler_teeth = 40;
 spool_teeth = 40;
 
 idler_shaft_radius = m3_bolt_diameter/2;
@@ -91,7 +91,6 @@ gear_separation = 0.5;
 flap_spool_outset = flap_hole_radius;
 flap_pitch_radius = flap_spool_pitch_radius(num_flaps, flap_hole_radius, flap_gap); //num_flaps * (flap_hole_radius*2 + flap_gap) / (2*PI);
 spool_outer_radius = flap_spool_outer_radius(num_flaps, flap_hole_radius, flap_gap, flap_spool_outset); //flap_pitch_radius + 2*flap_hole_radius;
-spool_bushing_radius = 10;
 
 // Radius where flaps are expected to flap in their *most collapsed* (90 degree) state
 exclusion_radius = sqrt(flap_height*flap_height + flap_pitch_radius*flap_pitch_radius);
@@ -102,8 +101,8 @@ echo(flap_notch=flap_notch);
 
 flap_pin_width = flap_hole_radius*2 - 1;
 
-idler_angle = 25;
-motor_angle = -90;
+idler_angle = 0;
+motor_angle = -95;
 
 idler_offset = - pitch_radius(drive_pitch, spool_teeth) - pitch_radius(drive_pitch, idler_teeth) - gear_separation;
 idler_center_y_offset = cos(idler_angle) * idler_offset;
@@ -116,7 +115,7 @@ idler_gear_outer_radius = outer_radius(drive_pitch, idler_teeth, 0);
 motor_gear_outer_radius = outer_radius(drive_pitch, motor_teeth, 0);
 
 
-enclosure_width = spool_width_slop + thickness*5 + flap_width + flap_width_slop;
+enclosure_width = spool_width_slop + thickness*6 + flap_width + flap_width_slop;
 front_window_upper = (flap_height - flap_pin_width/2);
 front_window_lower = front_window_upper + (flap_pitch_radius*0.75); // some margin for falling flaps
 front_window_width = spool_width_slop + flap_width + flap_width_slop;
@@ -126,19 +125,21 @@ enclosure_height_lower = flap_pitch_radius + flap_height + enclosure_vertical_ma
 enclosure_height = enclosure_height_upper + enclosure_height_lower;
 
 front_forward_offset = flap_pitch_radius + flap_thickness/2;
-enclosure_horizontal_rear_margin = thickness + 15; // gap between back of gears and back of enclosure
+enclosure_horizontal_rear_margin = thickness*2; // gap between back of gears and back of enclosure
 enclosure_length = front_forward_offset - motor_center_y_offset + pitch_radius(drive_pitch, motor_teeth) + enclosure_horizontal_rear_margin;
 
 motor_shaft_radius = 2.5;
 motor_slop_radius = 3;
 motor_bushing_radius = 14 - 2;
 
-spool_strut_tabs = 3;
+spool_strut_tabs = 5;
 spool_strut_tab_width=10;
 spool_strut_tab_outset=10;
 spool_strut_width = (spool_strut_tab_outset + thickness/2) * 2;
 spool_strut_length_inset = thickness*0.25;
-spool_strut_length = flap_width + flap_width_slop + (2 * thickness) - (2 * spool_strut_length_inset);
+spool_strut_length = flap_width + flap_width_slop + (3 * thickness) - (2 * spool_strut_length_inset);
+
+spool_bushing_radius = spool_strut_tab_outset - thickness/2;
 
 // Enclosure connector tabs: front/back
 num_front_tabs = 2;
@@ -146,6 +147,11 @@ front_tab_width = (enclosure_width - 2*thickness) / (num_front_tabs*2 - 1);
 
 num_side_tabs = 3;
 side_tab_width = (enclosure_length - 2*thickness) / (num_side_tabs*2 - 1);
+
+echo(enclosure_height=enclosure_height);
+echo(enclosure_width=enclosure_width);
+echo(enclosure_length=enclosure_length);
+echo(enclosure_length_real=enclosure_length+2*thickness);
 
 
 
@@ -254,10 +260,12 @@ module spool_with_pulleys_assembly() {
         flap_spool_complete();
 
         // Gears on spool
-        translate([0,0,thickness/2 + layer_separation])
-            spool_gear();
+        translate([0,0,layer_separation])
+            spool_bushing();
         translate([0,0,thickness/2 + layer_separation*2])
             spool_gear();
+        translate([0,0,layer_separation*3])
+            spool_bushing();
     }
 }
 
@@ -705,7 +713,8 @@ module split_flap_3d() {
         color(assembly_color)
             translate([flap_width + flap_width_slop - thickness, 0, 0]) rotate([0, 90, 0]) spool_with_pulleys_assembly();
         color(assembly_color)
-            rotate([0, 90, 0]) flap_spool_complete();
+            rotate([0, 90, 0])
+                flap_spool_complete();
         color(assembly_color1)
             translate([-thickness, 0, 0])
                 rotate([0, 90, 0])
@@ -713,26 +722,26 @@ module split_flap_3d() {
 
         // idler gear
         color(assembly_color2)
-        translate([flap_width + flap_width_slop + thickness/2, idler_center_y_offset, idler_center_z_offset])
+        translate([flap_width + flap_width_slop + 3*thickness/2, idler_center_y_offset, idler_center_z_offset])
             rotate([0, 90, 0])
                 rotate([0, 0, 360/idler_teeth/2])
                     idler_gear();
 
         // motor gear
         color(assembly_color1)
-        translate([flap_width + flap_width_slop + thickness/2, motor_center_y_offset, motor_center_z_offset])
+        translate([flap_width + flap_width_slop + 3*thickness/2, motor_center_y_offset, motor_center_z_offset])
             rotate([0, 90, 0])
                 motor_gear();
 
         // motor bushing
         color(assembly_color2)
-        translate([flap_width + flap_width_slop + 3*thickness/2, motor_center_y_offset, motor_center_z_offset])
+        translate([flap_width + flap_width_slop + 5*thickness/2, motor_center_y_offset, motor_center_z_offset])
             rotate([0, 90, 0])
                 motor_bushing();
 
         echo(motor_pitch_radius=pitch_radius(drive_pitch, motor_teeth));
 
-        translate([flap_width + flap_width_slop + 3*thickness, motor_center_y_offset, motor_center_z_offset])
+        translate([flap_width + flap_width_slop + 4*thickness, motor_center_y_offset, motor_center_z_offset])
             stepper_shaft_centered();
     }
 }
