@@ -115,9 +115,13 @@ spool_gear_outer_radius = outer_radius(drive_pitch, spool_teeth, 0);
 
 
 enclosure_width = spool_width_slop + thickness*6 + flap_width + flap_width_slop;
-front_window_upper = (flap_height - flap_pin_width/2);
-front_window_lower = front_window_upper + (flap_pitch_radius*0.75); // some margin for falling flaps
-front_window_width = spool_width_slop + flap_width + flap_width_slop;
+front_window_upper_base = (flap_height - flap_pin_width/2);
+front_window_overhang = 1;
+front_window_upper = front_window_upper_base - front_window_overhang;
+front_window_lower = front_window_upper_base + (flap_pitch_radius*0.75); // some margin for falling flaps
+front_window_slop = 1;
+front_window_width = spool_width_slop + flap_width + flap_width_slop + front_window_slop;
+front_window_right_inset = thickness*2 - front_window_slop/2;
 enclosure_vertical_margin = 10; // gap between top/bottom of flaps and top/bottom of enclosure
 enclosure_height_upper = exclusion_radius + enclosure_vertical_margin + 2*thickness;
 enclosure_height_lower = flap_pitch_radius + flap_height + enclosure_vertical_margin + 2*thickness;
@@ -339,7 +343,7 @@ module enclosure_front() {
             square([enclosure_width, enclosure_height]);
 
             // Viewing window cutout
-            translate([thickness*2, enclosure_height_lower - front_window_lower])
+            translate([front_window_right_inset, enclosure_height_lower - front_window_lower])
                 square([front_window_width, front_window_lower + front_window_upper]);
 
             // Front lower tabs
@@ -711,7 +715,7 @@ if (render_3d) {
                 enclosure_front();
 
         // Place enclosure top inside the front window
-        translate([enclosure_height_lower - front_window_lower + sp + thickness, enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width - thickness*2 - enclosure_length_right - kerf_width])
+        translate([enclosure_height_lower - front_window_lower + sp + thickness, enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width - front_window_right_inset - enclosure_length_right - kerf_width])
             enclosure_top();
 
         translate([enclosure_height + kerf_width, enclosure_width])
