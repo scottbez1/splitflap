@@ -15,7 +15,7 @@ The 3d model is built using OpenSCAD in `splitflap.scad`
 * vinyl stickers for flap letters?
 
 ### Cost Breakdown ###
-* $5 -- MDF 3.2mm P2 [on Ponoko](http://www.ponoko.com/make-and-sell/show-material/64-mdf-natural)
+* $5/2 units -- MDF 3.2mm P2 [on Ponoko](http://www.ponoko.com/make-and-sell/show-material/64-mdf-natural)
 * $21 -- laser cutting on Ponoko
 * $7 -- shipping
 * ? -- m3,m4 bolts,nuts

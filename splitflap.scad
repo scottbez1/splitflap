@@ -114,7 +114,7 @@ motor_gear_outer_radius = outer_radius(drive_pitch, motor_teeth, 0);
 spool_gear_outer_radius = outer_radius(drive_pitch, spool_teeth, 0);
 
 
-enclosure_width = spool_width_slop + thickness*6 + flap_width + flap_width_slop;
+enclosure_width = spool_width_slop + thickness*5 + flap_width + flap_width_slop;
 front_window_upper = (flap_height - flap_pin_width/2);
 front_window_lower = front_window_upper + (flap_pitch_radius*0.75); // some margin for falling flaps
 front_window_width = spool_width_slop + flap_width + flap_width_slop;
@@ -339,7 +339,7 @@ module enclosure_front() {
             square([enclosure_width, enclosure_height]);
 
             // Viewing window cutout
-            translate([thickness*2, enclosure_height_lower - front_window_lower])
+            translate([thickness, enclosure_height_lower - front_window_lower])
                 square([front_window_width, front_window_lower + front_window_upper]);
 
             // Front lower tabs
@@ -632,7 +632,7 @@ module split_flap_3d() {
 
     positioned_enclosure();
 
-    translate([spool_width_slop/2 + thickness*2, 0, 0]) {
+    translate([spool_width_slop/2 + thickness, 0, 0]) {
         // Flap area
         if (render_flaps) {
             echo(flap_exclusion_radius=exclusion_radius);
@@ -663,10 +663,6 @@ module split_flap_3d() {
         color(assembly_color)
             rotate([0, 90, 0])
                 flap_spool_complete();
-        color(assembly_color1)
-            translate([-thickness, 0, 0])
-                rotate([0, 90, 0])
-                    spool_bushing();
 
         // idler gear
         color(assembly_color2)
@@ -711,7 +707,7 @@ if (render_3d) {
                 enclosure_front();
 
         // Place enclosure top inside the front window
-        translate([enclosure_height_lower - front_window_lower + sp + thickness, enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width - thickness*2 - enclosure_length_right - kerf_width])
+        translate([enclosure_height_lower - front_window_lower + sp + thickness, enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width - thickness - enclosure_length_right - kerf_width])
             enclosure_top();
 
         translate([enclosure_height + kerf_width, enclosure_width])
@@ -754,8 +750,6 @@ if (render_3d) {
         translate([motor_gear_outer_radius*2 + sp + spool_bushing_radius, spool_bushing_y_off])
             spool_bushing();
         translate([motor_gear_outer_radius*2 + sp + spool_bushing_radius*3 + sp, spool_bushing_y_off])
-            spool_bushing();
-        translate([motor_gear_outer_radius*2 + sp + spool_bushing_radius*5 + 2*sp, spool_bushing_y_off])
             spool_bushing();
     }
 }
