@@ -41,8 +41,6 @@ m3_nut_length=2.4+.1;
 
 captive_nut_inset=6;
 
-has_back = false;
-
 
 loose_rod_radius_slop = 0.2;
 
@@ -81,7 +79,7 @@ flap_gap = 1;
 // Gears
 drive_pitch = 3.5;
 motor_teeth = 40;
-idler_teeth = 40;
+idler_teeth = 20;
 spool_teeth = 40;
 
 idler_shaft_radius = m3_bolt_diameter/2;
@@ -101,8 +99,8 @@ echo(flap_notch=flap_notch);
 
 flap_pin_width = flap_hole_radius*2 - 1;
 
-idler_angle = 0;
-motor_angle = -95;
+idler_angle = -25;
+motor_angle = -75;
 
 idler_offset = - pitch_radius(drive_pitch, spool_teeth) - pitch_radius(drive_pitch, idler_teeth) - gear_separation;
 idler_center_y_offset = cos(idler_angle) * idler_offset;
@@ -113,6 +111,7 @@ motor_center_z_offset = idler_center_z_offset - sin(motor_angle) * motor_offset;
 
 idler_gear_outer_radius = outer_radius(drive_pitch, idler_teeth, 0);
 motor_gear_outer_radius = outer_radius(drive_pitch, motor_teeth, 0);
+spool_gear_outer_radius = outer_radius(drive_pitch, spool_teeth, 0);
 
 
 enclosure_width = spool_width_slop + thickness*6 + flap_width + flap_width_slop;
@@ -126,7 +125,8 @@ enclosure_height = enclosure_height_upper + enclosure_height_lower;
 
 front_forward_offset = flap_pitch_radius + flap_thickness/2;
 enclosure_horizontal_rear_margin = thickness*2; // gap between back of gears and back of enclosure
-enclosure_length = front_forward_offset - motor_center_y_offset + pitch_radius(drive_pitch, motor_teeth) + enclosure_horizontal_rear_margin;
+
+enclosure_length = front_forward_offset - motor_center_y_offset + 10 + enclosure_horizontal_rear_margin; //pitch_radius(drive_pitch, motor_teeth) 
 
 motor_shaft_radius = 2.5;
 motor_slop_radius = 3;
@@ -145,8 +145,10 @@ spool_bushing_radius = spool_strut_tab_outset - thickness/2;
 num_front_tabs = 2;
 front_tab_width = (enclosure_width - 2*thickness) / (num_front_tabs*2 - 1);
 
-num_side_tabs = 3;
+num_side_tabs = 5;
 side_tab_width = (enclosure_length - 2*thickness) / (num_side_tabs*2 - 1);
+
+enclosure_length_right = side_tab_width*5 + thickness;
 
 echo(enclosure_height=enclosure_height);
 echo(enclosure_width=enclosure_width);
@@ -371,12 +373,12 @@ module motor_mount() {
         circle(r=motor_mount_hole_radius, center=true, $fn=30);
 }
 
-module side_tabs_negative(reverse=false) {
-    for (i = [0 : num_side_tabs-1]) {
+module side_tabs_negative(reverse=false, tabs=0) {
+    for (i = [0 : tabs-1]) {
         translate([0, thickness + (i*2 + 0.5) * side_tab_width, 0])
             square([thickness, side_tab_width], center=true);
     }
-    for (i = [0 : num_side_tabs-1]) {
+    for (i = [0 : tabs-2]) {
         bolt_head_hole = (i % 2 == (reverse ? 1 : 0));
         translate([0, thickness + (i*2 + 1.5) * side_tab_width, 0])
             circle(r=(bolt_head_hole ? m3_bolt_cap_head_diameter : m3_bolt_diameter)/2, $fn=30);
@@ -399,11 +401,12 @@ module enclosure_left() {
 
             // bottom side tabs
             translate([thickness * 1.5, 0, 0])
-                side_tabs_negative(reverse=true);
+                side_tabs_negative(reverse=true, tabs=5);
 
             // top side tabs
-            translate([enclosure_height - thickness * 1.5, 0, 0])
-                side_tabs_negative(reverse=false);
+            translate([enclosure_height - thickness * 1.5, enclosure_length, 0])
+                mirror([0, 1, 0])
+                    side_tabs_negative(reverse=true, tabs=3);
         }
     }
 }
@@ -420,25 +423,19 @@ module shaft_centered_motor_hole() {
 module enclosure_right() {
     linear_extrude(height=thickness) {
         difference() {
-            square([enclosure_height, enclosure_length]);
-            translate([enclosure_height_upper, enclosure_length - front_forward_offset, 0])
+            square([enclosure_height, enclosure_length_right]);
+            translate([enclosure_height_upper, enclosure_length_right - front_forward_offset, 0])
                 rod_mount_negative();
 
-            // hole for adjacent unit's idler bolt
-            translate([enclosure_height_upper - idler_center_z_offset, enclosure_length - front_forward_offset + idler_center_y_offset])
-                square([m3_nut_width_corners + 2, m3_nut_width_corners + 2], center=true);
-
-            // hole for adjacent unit's motor
-            translate([enclosure_height_upper - motor_center_z_offset, enclosure_length - front_forward_offset + motor_center_y_offset])
-                shaft_centered_motor_hole();
-
             // top side tabs
-            translate([1.5*thickness, 0, 0])
-                side_tabs_negative(reverse=true);
+            translate([1.5*thickness, enclosure_length_right, 0])
+                mirror([0, 1, 0])
+                    side_tabs_negative(reverse=false, tabs=3);
 
             // bottom side tabs
-            translate([enclosure_height - 1.5*thickness, 0, 0])
-                side_tabs_negative(reverse=false);
+            translate([enclosure_height - 1.5*thickness, enclosure_length_right, 0])
+                mirror([0, 1, 0])
+                    side_tabs_negative(reverse=true, tabs=3);
         }
     }
 }
@@ -450,8 +447,8 @@ module front_back_tabs() {
     }
 }
 
-module side_tabs() {
-    for (i = [0 : 2 : num_side_tabs*2-2]) {
+module side_tabs(tabs) {
+    for (i = [0 : 2 : tabs*2-2]) {
         translate([-eps, i * side_tab_width, 0])
             square([thickness + eps, side_tab_width]);
     }
@@ -464,8 +461,8 @@ module front_back_captive_nuts() {
     }
 }
 
-module side_captive_nuts(reverse = false) {
-    for (i = [0 : num_side_tabs-1]) {
+module side_captive_nuts(reverse = false, tabs=0) {
+    for (i = [0 : tabs-1]) {
         translate([-thickness, (i*2 + 1.5) * side_tab_width, 0]) {
             rotate([0, 0, -90]) {
                 bolt_head_hole = (i % 2 == (reverse ? 1 : 0));
@@ -486,13 +483,7 @@ module enclosure_top() {
     linear_extrude(height = thickness) {
         difference() {
             union() {
-                square([enclosure_width - 2 * thickness, enclosure_length]);
-
-                // back tabs
-                if (has_back) {
-                    translate([0, enclosure_length, 0])
-                        front_back_tabs();
-                }
+                square([enclosure_width - 2 * thickness, enclosure_length_right]);
 
                 // front tabs
                 mirror([0, 1, 0])
@@ -500,32 +491,25 @@ module enclosure_top() {
 
                 // left tabs
                 translate([enclosure_width - 2 * thickness, thickness, 0])
-                    side_tabs();
+                    side_tabs(3);
 
                 // right tabs
                 mirror([1, 0, 0])
                     translate([0, thickness, 0])
-                        side_tabs();
+                        side_tabs(3);
             }
 
             // front captive nuts
             front_back_captive_nuts();
 
-            // back captive nuts
-            if (has_back) {
-                translate([0, enclosure_length, 0])
-                    mirror([0,1,0])
-                        front_back_captive_nuts();
-            }
-
             // right captive nuts
             translate([0, thickness, 0])
-                side_captive_nuts(reverse = false);
+                side_captive_nuts(reverse = false, tabs=2);
 
             // left captive nuts
             translate([enclosure_width - 2 * thickness, thickness, 0])
                 mirror([1, 0, 0])
-                    side_captive_nuts(reverse = true);
+                    side_captive_nuts(reverse = true, tabs=2);
         }
     }
 }
@@ -540,25 +524,16 @@ module enclosure_bottom() {
                 translate([0, enclosure_length, 0])
                     front_back_tabs();
 
-                // back tabs
-                if (has_back) {
+                // left tabs
+                translate([enclosure_width - 2 * thickness, enclosure_length - thickness, 0])
                     mirror([0, 1, 0])
-                        front_back_tabs();
-                }
+                        side_tabs(5);
 
                 // right tabs
-                translate([enclosure_width - 2 * thickness, thickness, 0])
-                    side_tabs();
-
-                // left tabs
-                mirror([1, 0, 0])
-                    translate([0, thickness, 0])
-                        side_tabs();
-            }
-
-            // back captive nuts
-            if (has_back) {
-                front_back_captive_nuts();
+                translate([0, enclosure_length - thickness, 0])
+                    mirror([0, 1, 0])
+                        mirror([1, 0, 0])
+                            side_tabs(3);
             }
 
             // front captive nuts
@@ -566,31 +541,17 @@ module enclosure_bottom() {
                 mirror([0,1,0])
                     front_back_captive_nuts();
 
-            // left captive nuts
-            translate([0, thickness, 0])
-                side_captive_nuts(reverse = false);
-
             // right captive nuts
-            translate([enclosure_width - 2 * thickness, thickness, 0])
-                mirror([1, 0, 0])
-                    side_captive_nuts(reverse = true);
+            translate([0, enclosure_length - thickness, 0])
+                mirror([0, 1, 0])
+                    side_captive_nuts(reverse = true, tabs=2);
 
-        }
-    }
-}
+            // left captive nuts
+            translate([enclosure_width - 2 * thickness, enclosure_length - thickness, 0])
+                mirror([0, 1, 0])
+                    mirror([1, 0, 0])
+                        side_captive_nuts(reverse = false, tabs=4);
 
-module enclosure_back() {
-    linear_extrude(height=thickness) {
-        difference() {
-            square([enclosure_width, enclosure_height]);
-
-            // Back lower tabs
-            translate([0, enclosure_height - thickness * 1.5, 0])
-                front_tabs_negative();
-
-            // Back upper tabs
-            translate([0, thickness * 1.5, 0])
-                front_tabs_negative();
         }
     }
 }
@@ -632,7 +593,7 @@ module split_flap_3d() {
     }
 
     module positioned_right() {
-        translate([0, -enclosure_length + front_forward_offset, enclosure_height_upper])
+        translate([0, -enclosure_length_right + front_forward_offset, enclosure_height_upper])
             rotate([0, 90, 0])
                 enclosure_right();
     }
@@ -648,12 +609,6 @@ module split_flap_3d() {
             enclosure_bottom();
     }
 
-    module positioned_back() {
-        translate([0, -enclosure_length + front_forward_offset - thickness, enclosure_height_upper])
-            rotate([-90, 0, 0])
-                enclosure_back();
-    }
-
     module positioned_enclosure() {
         if (render_enclosure == 2) {
             color(assembly_color1)
@@ -666,19 +621,12 @@ module split_flap_3d() {
                 positioned_top();
             color(assembly_color3)
                 positioned_bottom();
-            if (has_back) {
-                color(assembly_color1)
-                    positioned_back();
-            }
         } else if (render_enclosure == 1) {
             %positioned_front();
             %positioned_left();
             %positioned_right();
             %positioned_top();
             %positioned_bottom();
-            if (has_back) {
-                %positioned_back();
-            }
         }
     }
 
@@ -752,32 +700,26 @@ if (render_3d) {
             split_flap_3d();
     }
 } else {
-    sp = 10;
+    sp = 5;
     projection_renderer(render_index=render_index, kerf_width=kerf_width) {
         translate([0, 0])
             enclosure_left();
         translate([0, enclosure_length + kerf_width])
             enclosure_right();
-        translate([enclosure_height + kerf_width, 0])
-            enclosure_front();
-        if (has_back) {
-            translate([enclosure_height + kerf_width + enclosure_width + kerf_width, 0])
-                enclosure_back();
-        }
+        translate([0, enclosure_length + enclosure_length_right + enclosure_width + 2*kerf_width])
+            rotate([0, 0, -90])
+                enclosure_front();
 
-        // Place spool gears inside the front window
-        translate([enclosure_height + thickness*2 + front_window_width/2, enclosure_height_lower - front_window_lower + (front_window_lower + front_window_upper)/4])
-            spool_gear();
-        translate([enclosure_height + thickness*2 + front_window_width/2, enclosure_height_lower - front_window_lower + (front_window_lower + front_window_upper)/4*3])
-            spool_gear();
-
-        translate([enclosure_height + sp, enclosure_height + sp])
+        // Place enclosure top inside the front window
+        translate([enclosure_height_lower - front_window_lower + sp + thickness, enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width - thickness*2 - enclosure_length_right - kerf_width])
             enclosure_top();
-        translate([enclosure_height + sp + enclosure_width + sp, enclosure_height + sp])
-            enclosure_bottom();
+
+        translate([enclosure_height + kerf_width, enclosure_width])
+            rotate([0, 0, -90])
+                enclosure_bottom();
 
         // Spool struts 2x2 above left/right sides
-        spool_strut_y_off = enclosure_length*2 + sp + spool_strut_width / 2;
+        spool_strut_y_off = enclosure_length + enclosure_length_right + enclosure_width + sp + spool_strut_width / 2;
         translate([0, spool_strut_y_off])
             spool_strut();
         translate([0, spool_strut_y_off + spool_strut_width + sp])
@@ -788,21 +730,32 @@ if (render_3d) {
             spool_strut();
 
         // Flap spools above spool struts
-        translate([spool_outer_radius, enclosure_length*2 + sp + (spool_strut_width + sp)*2 + spool_outer_radius])
+        flap_spool_y_off = spool_strut_y_off + spool_strut_width*1.5 + sp*2 + spool_outer_radius;
+        translate([spool_outer_radius, flap_spool_y_off])
             flap_spool_complete();
-        translate([spool_outer_radius*3 + sp, enclosure_length*2 + sp + (spool_strut_width + sp)*2 + spool_outer_radius])
+        translate([spool_outer_radius*3 + sp, flap_spool_y_off])
             flap_spool_complete();
 
-        // idler and motor gears above top/bottom panels
-        translate([enclosure_height + sp + idler_gear_outer_radius, enclosure_height + sp + enclosure_length + sp + idler_gear_outer_radius])
-            idler_gear();
-        translate([enclosure_height + sp + idler_gear_outer_radius*2 + sp + motor_gear_outer_radius, enclosure_height + sp + enclosure_length + sp + motor_gear_outer_radius])
+        flap_spool_top = flap_spool_y_off + spool_outer_radius + sp;
+        // idler and motor gears above spools
+        translate([motor_gear_outer_radius, flap_spool_top + motor_gear_outer_radius])
             motor_gear();
-
-        // motor and spool bushings beside gears
-        translate([enclosure_height + sp + idler_gear_outer_radius*2 + sp + motor_gear_outer_radius*2 + sp + motor_bushing_radius, enclosure_height + sp + enclosure_length + sp + motor_bushing_radius])
+        translate([motor_gear_outer_radius*2 + sp + idler_gear_outer_radius, flap_spool_top + idler_gear_outer_radius])
+            idler_gear();
+        translate([motor_gear_outer_radius*2 + sp + idler_gear_outer_radius*2 + sp + motor_bushing_radius, flap_spool_top + motor_bushing_radius])
             motor_bushing();
-        translate([enclosure_height + sp + idler_gear_outer_radius*2 + sp + motor_gear_outer_radius*2 + sp + spool_bushing_radius, enclosure_height + sp + enclosure_length + sp + motor_bushing_radius*2 + sp + spool_bushing_radius])
+
+        translate([enclosure_height + sp + spool_gear_outer_radius, enclosure_width + sp + spool_gear_outer_radius])
+            spool_gear();
+
+
+        // spool bushings
+        spool_bushing_y_off = flap_spool_top + motor_bushing_radius*2 + sp + spool_bushing_radius;
+        translate([motor_gear_outer_radius*2 + sp + spool_bushing_radius, spool_bushing_y_off])
+            spool_bushing();
+        translate([motor_gear_outer_radius*2 + sp + spool_bushing_radius*3 + sp, spool_bushing_y_off])
+            spool_bushing();
+        translate([motor_gear_outer_radius*2 + sp + spool_bushing_radius*5 + 2*sp, spool_bushing_y_off])
             spool_bushing();
     }
 }

@@ -16,7 +16,7 @@ The 3d model is built using OpenSCAD in `splitflap.scad`
 
 ### Cost Breakdown ###
 * $5 -- MDF 3.2mm P2 [on Ponoko](http://www.ponoko.com/make-and-sell/show-material/64-mdf-natural)
-* $25-30 -- laser cutting on Ponoko
+* $21 -- laser cutting on Ponoko
 * $7 -- shipping
 * ? -- m3,m4 bolts,nuts
 * ~$2 -- 28byj-48 motor
