@@ -15,13 +15,16 @@ The 3d model is built using OpenSCAD in `splitflap.scad`
 * vinyl stickers for flap letters?
 
 ### Cost Breakdown ###
-* $5 -- MDF 3.2mm P2 [on Ponoko](http://www.ponoko.com/make-and-sell/show-material/64-mdf-natural)
+* $5/2 units -- MDF 3.2mm P2 [on Ponoko](http://www.ponoko.com/make-and-sell/show-material/64-mdf-natural)
 * $21 -- laser cutting on Ponoko
 * $7 -- shipping
 * ? -- m3,m4 bolts,nuts
 * ~$2 -- 28byj-48 motor
+* ~$1 -- 5mm rod
 * $6.39/2 units -- vinyl letter stickers (minimum letter duplication per pack is 2) [on Amazon](http://www.amazon.com/Duro-Decal-Permanent-Adhesive-Letters/dp/B0027601CM)
-* $12/5 units or $36/25 units -- CR80 cards (each CR80 card becomes 2 flaps, each unit requires 40 flaps) on [Amazon](http://www.amazon.com/Plastic-printers-DataCard-Evolis-Magicard/dp/B007M413BC) or [Amazon](http://www.amazon.com/Plastic-printers-DataCard-Evolis-Magicard/dp/B007M413BC or http://www.amazon.com/White-Blank-CR80-020-Graphic-Quality/dp/B007PKD6MW)
+* $12/5 units or $36/25 units -- CR80 cards (each CR80 card becomes 2 flaps, each unit requires 40 flaps) on [Amazon](http://www.amazon.com/Plastic-printers-DataCard-Evolis-Magicard/dp/B007M413BC) or [Amazon](http://www.amazon.com/White-Blank-CR80-020-Graphic-Quality/dp/B007PKD6MW)
+
+TBD:
 * $1.05 -- QRE1113 reflectance sensor [on digikey](http://www.digikey.com/product-detail/en/QRE1113GR/QRE1113GRCT-ND/965713)
 * $14/10 units -- PCB for reflectance sensor [on seeedstudio](http://www.seeedstudio.com/service/index.php?r=pcb)
 
@@ -41,6 +44,8 @@ Internally, the design uses a `projection_renderer` module (`projection_renderer
 
 The `generate_2d.py` script interacts with the `projection_renderer` module by first using it to determine the number of subcomponents to render, then runs OpenSCAD to export each component to an SVG file. It does some post-processing on the SVG output (notably adds "mm" to the document dimensions), and then combines all components into the single `combined.svg` output.
 
+Once the `combined.svg` file is generated, you'll want to remove a couple redundant cut lines that are shared by multiple adjacent pieces, to save time/cost when cutting. In Inkscape, select the "Edit paths by nodes" tool and select an edge to delete - the endpoints should turn blue. Then click "Delete segment between two non-endpoint nodes", and repeat this for all other redundant cut lines.
+
 #### Animated gif ####
 The design can be rendered to a rotating 3d animated gif (seen above) by running `generate_gif.py`, which outputs to `build/animation/animation.gif`
 
@@ -50,9 +55,6 @@ The `generate_gif.py` script runs multiple OpenSCAD instances in parallel to ren
 * Enclosure
     * mounting holes?
     * interlocking mechanism?
-    * etched timestamp/commit hash?
-* Fabrication
-    * 2d projection and panelizing for laser cutter
 * Driver
     * need some kind of home-position sensor
         * IR Reflectance sensor near spool? QRE1113?
