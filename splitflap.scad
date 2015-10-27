@@ -39,6 +39,8 @@ m3_nut_width_flats=5.5 + .1;
 m3_nut_width_corners=6.01;
 m3_nut_length=2.4+.1;
 
+m4_hole_diameter = 4.5;
+
 captive_nut_inset=6;
 
 
@@ -82,7 +84,7 @@ motor_teeth = 40;
 idler_teeth = 20;
 spool_teeth = 40;
 
-idler_shaft_radius = m3_bolt_diameter/2;
+idler_shaft_radius = m4_hole_diameter/2;
 
 gear_separation = 0.5;
 
@@ -141,7 +143,7 @@ spool_strut_tab_width=10;
 spool_strut_tab_outset=10;
 spool_strut_width = (spool_strut_tab_outset + thickness/2) * 2;
 spool_strut_length_inset = thickness*0.25;
-spool_strut_length = flap_width + flap_width_slop + (3 * thickness) - (2 * spool_strut_length_inset);
+spool_strut_length = flap_width + flap_width_slop + (4 * thickness) - (2 * spool_strut_length_inset);
 
 spool_bushing_radius = spool_strut_tab_outset - thickness/2;
 
@@ -198,7 +200,7 @@ module spool_strut() {
             translate([spool_strut_length_inset, -spool_strut_tab_width / 2]) {
                 square([spool_strut_length, spool_strut_tab_width]);
             }
-            translate([thickness, -spool_strut_width / 2]) {
+            translate([thickness*2, -spool_strut_width / 2]) {
                 difference() {
                     square([inner_length, spool_strut_width]);
 
@@ -369,7 +371,7 @@ module rod_mount_negative() {
 // holes for 28byj-48 motor, centered around motor shaft
 module motor_mount() {
     motor_mount_separation = 35;
-    motor_mount_hole_radius = 4.2/2;
+    motor_mount_hole_radius = m4_hole_diameter/2;
     circle(r=motor_shaft_radius+motor_slop_radius, center=true, $fn=30);
     translate([-motor_mount_separation/2, -8])
         circle(r=motor_mount_hole_radius, center=true, $fn=30);
@@ -561,7 +563,7 @@ module enclosure_bottom() {
 }
 
 module idler_gear() {
-    gear(drive_pitch, idler_teeth, thickness, (idler_shaft_radius+loose_rod_radius_slop)*2);
+    gear(drive_pitch, idler_teeth, thickness, (idler_shaft_radius)*2);
 }
 
 module motor_gear() {
@@ -659,7 +661,8 @@ module split_flap_3d() {
             }
         }
 
-        spool_struts();
+        translate([-thickness, 0, 0])
+            spool_struts();
 
         // spool with gears
         color(assembly_color)
