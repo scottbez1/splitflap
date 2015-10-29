@@ -11,22 +11,25 @@ The 3d model is built using OpenSCAD in `splitflap.scad`
 ### Design Highlights ###
 * laser cut enclosure and mechanisms from a single material
 * cheap, widely available 28byj-48 stepper motor (less expensive than NEMA-17 motors, and doesn't require an expensive high current stepper driver)
-* CR80 PVC cards for flaps, cheap in bulk (still need to figure out fabrication of these, or switch to laser-cut plastic...)
-* vinyl stickers for flap letters?
+* CR80 PVC cards for flaps, cheap in bulk
+* store-bought vinyl stickers for flap letters
 
 ### Cost Breakdown ###
 * $5/2 units -- MDF 3.2mm P2 [on Ponoko](http://www.ponoko.com/make-and-sell/show-material/64-mdf-natural)
 * $21 -- laser cutting on Ponoko
 * $7 -- shipping
-* ? -- m3,m4 bolts,nuts
 * ~$2 -- 28byj-48 motor
 * ~$1 -- 5mm rod
 * $6.39/2 units -- vinyl letter stickers (minimum letter duplication per pack is 2) [on Amazon](http://www.amazon.com/Duro-Decal-Permanent-Adhesive-Letters/dp/B0027601CM)
 * $12/5 units or $36/25 units -- CR80 cards (each CR80 card becomes 2 flaps, each unit requires 40 flaps) on [Amazon](http://www.amazon.com/Plastic-printers-DataCard-Evolis-Magicard/dp/B007M413BC) or [Amazon](http://www.amazon.com/White-Blank-CR80-020-Graphic-Quality/dp/B007PKD6MW)
+* ? -- m3,m4 bolts,nuts
 
 TBD:
 * $1.05 -- QRE1113 reflectance sensor [on digikey](http://www.digikey.com/product-detail/en/QRE1113GR/QRE1113GRCT-ND/965713)
 * $14/10 units -- PCB for reflectance sensor [on seeedstudio](http://www.seeedstudio.com/service/index.php?r=pcb)
+
+Tools:
+* $9.17 -- badge slot punch (for cutting notches out of cards to make flaps) [on Amazon](http://www.amazon.com/gp/product/B009YDRRB4)
 
 ## Getting Started ##
 
