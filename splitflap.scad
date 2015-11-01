@@ -1,4 +1,3 @@
-use<gt2pulley.scad>;
 use<spool.scad>;
 use<publicDomainGearV1.1.scad>;
 use<28byj-48.scad>;
