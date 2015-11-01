@@ -39,7 +39,8 @@ m3_nut_width_corners=6.01;
 m3_nut_length=2.4+.1;
 
 m4_hole_diameter = 4.5;
-m4_button_head_diameter=7.6 + .2;
+m4_button_head_diameter = 7.6 + .2;
+m4_nut_width_corners = 7.66 + .2;
 
 captive_nut_inset=6;
 
@@ -433,9 +434,9 @@ module enclosure_right() {
             translate([enclosure_height_upper, enclosure_length_right - front_forward_offset, 0])
                 rod_mount_negative();
 
-            // idler bolt hole
+            // adjacent idler bolt hole
             translate([enclosure_height_upper - idler_center_z_offset, enclosure_length_right - front_forward_offset + idler_center_y_offset])
-                circle(r=m4_button_head_diameter/2, center=true, $fn=30);
+                circle(r=m4_nut_width_corners/2, center=true, $fn=30);
 
             // top side tabs
             translate([1.5*thickness, enclosure_length_right, 0])
