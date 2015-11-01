@@ -2,7 +2,7 @@
 
 This is a work in progress DIY [split-flap display](https://en.wikipedia.org/wiki/Split-flap_display).
 
-![animated rendering](renders/animation.gif) ![2d laser cut rendering](renders/raster.png)
+![animated rendering](renders/animation.gif)
 
 The goal is to make a low-cost display that's easy to fabricate at home (e.g. custom materials can be ordered from Ponoko or similar, and other hardware is generally available).
 
@@ -13,6 +13,8 @@ The 3d model is built using OpenSCAD in `splitflap.scad`
 * cheap, widely available 28byj-48 stepper motor (less expensive than NEMA-17 motors, and doesn't require an expensive high current stepper driver)
 * CR80 PVC cards for flaps, cheap in bulk
 * store-bought vinyl stickers for flap letters
+
+![2d laser cut rendering](renders/raster.png)
 
 ### Cost Breakdown ###
 * $5/2 units -- MDF 3.2mm P2 [on Ponoko](http://www.ponoko.com/make-and-sell/show-material/64-mdf-natural)
