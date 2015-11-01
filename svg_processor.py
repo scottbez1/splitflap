@@ -34,6 +34,15 @@ class SvgProcessor(object):
                     'stroke': 'none',
                 })
 
+    def apply_raster_render_style(self):
+        # Set fill and stroke for rasterized rendering
+        for path in self.svg_node.getElementsByTagName('path'):
+                SvgProcessor._apply_attributes(path, {
+                    'fill': 'none',
+                    'stroke': '#000000',
+                    'stroke-width': '0.2',
+                })
+
     def delete_registration_mark(self):
         for path in self.svg_node.getElementsByTagName('path'):
             data = path.attributes['d']

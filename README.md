@@ -2,7 +2,7 @@
 
 This is a work in progress DIY [split-flap display](https://en.wikipedia.org/wiki/Split-flap_display).
 
-![animated rendering](renders/animation.gif)
+![animated rendering](renders/animation.gif) ![2d laser cut rendering](renders/raster.png)
 
 The goal is to make a low-cost display that's easy to fabricate at home (e.g. custom materials can be ordered from Ponoko or similar, and other hardware is generally available).
 
@@ -16,10 +16,10 @@ The 3d model is built using OpenSCAD in `splitflap.scad`
 
 ### Cost Breakdown ###
 * $5/2 units -- MDF 3.2mm P2 [on Ponoko](http://www.ponoko.com/make-and-sell/show-material/64-mdf-natural)
-* $21 -- laser cutting on Ponoko
-* $7 -- shipping
+* $19.30 -- laser cutting on Ponoko
+* $7 -- shipping from Ponoko
 * ~$2 -- 28byj-48 motor
-* ~$1 -- 5mm rod
+* ~$5/5 units -- 5mmx100mm rod
 * $6.39/2 units -- vinyl letter stickers (minimum letter duplication per pack is 2) [on Amazon](http://www.amazon.com/Duro-Decal-Permanent-Adhesive-Letters/dp/B0027601CM)
 * $12/5 units or $36/25 units -- CR80 cards (each CR80 card becomes 2 flaps, each unit requires 40 flaps) on [Amazon](http://www.amazon.com/Plastic-printers-DataCard-Evolis-Magicard/dp/B007M413BC) or [Amazon](http://www.amazon.com/White-Blank-CR80-020-Graphic-Quality/dp/B007PKD6MW)
 * ? -- m3,m4 bolts,nuts

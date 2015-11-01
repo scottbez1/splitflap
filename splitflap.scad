@@ -62,7 +62,7 @@ flap_width = 54;
 flap_height = 43;
 flap_thickness = 30 / 1000 * 25.4; // 30 mil
 flap_corner_radius = 3.1; // 2.88-3.48mm (used just for display)
-flap_rendered_angle = 80;
+flap_rendered_angle = 90;
 
 // Amount of slop of the flap side to side between the 2 spools
 flap_width_slop = 1.5;
