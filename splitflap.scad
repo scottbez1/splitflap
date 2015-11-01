@@ -40,6 +40,7 @@ m3_nut_width_corners=6.01;
 m3_nut_length=2.4+.1;
 
 m4_hole_diameter = 4.5;
+m4_button_head_diameter=7.6 + .2;
 
 captive_nut_inset=6;
 
@@ -61,27 +62,25 @@ flap_width = 54;
 flap_height = 43;
 flap_thickness = 30 / 1000 * 25.4; // 30 mil
 flap_corner_radius = 3.1; // 2.88-3.48mm (used just for display)
+flap_rendered_angle = 80;
 
 // Amount of slop of the flap side to side between the 2 spools
-flap_width_slop = 1;
-
-// Amount of slop on either side of the flap pin within the spool hole
-flap_pin_slop = 1;
+flap_width_slop = 1.5;
 
 // Amount of slop for the spool assembly side-to-side inside the enclosure
-spool_width_slop = 2;
+spool_width_slop = 1;
 
 
 num_flaps = 40;
-flap_hole_radius = 1.5;
+flap_hole_radius = 1.2;
 flap_gap = 1;
 
 
 
 // Gears
-drive_pitch = 3.5;
+drive_pitch = 3;
 motor_teeth = 40;
-idler_teeth = 20;
+idler_teeth = 25;
 spool_teeth = 40;
 
 idler_shaft_radius = m4_hole_diameter/2;
@@ -101,8 +100,8 @@ echo(flap_notch=flap_notch);
 
 flap_pin_width = flap_hole_radius*2 - 1;
 
-idler_angle = -25;
-motor_angle = -75;
+idler_angle = -50;
+motor_angle = -50;
 
 idler_offset = - pitch_radius(drive_pitch, spool_teeth) - pitch_radius(drive_pitch, idler_teeth) - gear_separation;
 idler_center_y_offset = cos(idler_angle) * idler_offset;
@@ -118,10 +117,10 @@ spool_gear_outer_radius = outer_radius(drive_pitch, spool_teeth, 0);
 
 enclosure_width = spool_width_slop + thickness*6 + flap_width + flap_width_slop;
 front_window_upper_base = (flap_height - flap_pin_width/2);
-front_window_overhang = 1;
+front_window_overhang = 0;
 front_window_upper = front_window_upper_base - front_window_overhang;
 front_window_lower = front_window_upper_base + (flap_pitch_radius*0.75); // some margin for falling flaps
-front_window_slop = 1;
+front_window_slop = 0;
 front_window_width = spool_width_slop + flap_width + flap_width_slop + front_window_slop;
 front_window_right_inset = thickness*2 - front_window_slop/2;
 enclosure_vertical_margin = 10; // gap between top/bottom of flaps and top/bottom of enclosure
@@ -134,16 +133,20 @@ enclosure_horizontal_rear_margin = thickness*2; // gap between back of gears and
 
 enclosure_length = front_forward_offset - motor_center_y_offset + 10 + enclosure_horizontal_rear_margin; //pitch_radius(drive_pitch, motor_teeth) 
 
+
+motor_mount_separation = 35; // 28byj-48 mount hole separation
 motor_shaft_radius = 2.5;
 motor_slop_radius = 3;
-motor_bushing_radius = 14 - 2;
+motor_bushing_radius = motor_mount_separation/2 - m4_button_head_diameter/2 - 2;
 
-spool_strut_tabs = 5;
-spool_strut_tab_width=10;
-spool_strut_tab_outset=10;
+spool_strut_tabs = 3;
+spool_strut_tab_width=8;
+spool_strut_tab_outset=8;
 spool_strut_width = (spool_strut_tab_outset + thickness/2) * 2;
 spool_strut_length_inset = thickness*0.25;
 spool_strut_length = flap_width + flap_width_slop + (4 * thickness) - (2 * spool_strut_length_inset);
+spool_strut_inner_length = flap_width + flap_width_slop - 2 * thickness;
+echo(spool_strut_inner_length=spool_strut_inner_length);
 
 spool_bushing_radius = spool_strut_tab_outset - thickness/2;
 
@@ -193,8 +196,7 @@ module spool_strut_tab_holes() {
     }
 }
 module spool_strut() {
-    inner_length = flap_width + flap_width_slop - 2 * thickness;
-    joint_tab_width = inner_length / spool_strut_tabs;
+    joint_tab_width = spool_strut_inner_length / spool_strut_tabs;
     linear_extrude(thickness, center=true) {
         union() {
             translate([spool_strut_length_inset, -spool_strut_tab_width / 2]) {
@@ -202,7 +204,7 @@ module spool_strut() {
             }
             translate([thickness*2, -spool_strut_width / 2]) {
                 difference() {
-                    square([inner_length, spool_strut_width]);
+                    square([spool_strut_inner_length, spool_strut_width]);
 
                     // subtract out tabs
                     union() {
@@ -303,7 +305,7 @@ module flap() {
 
 module translated_flap() {
     translate([0, flap_pitch_radius, 0])
-    rotate([90, 0, 0])
+    rotate([flap_rendered_angle, 0, 0])
     flap();
 }
 
@@ -370,7 +372,6 @@ module rod_mount_negative() {
 
 // holes for 28byj-48 motor, centered around motor shaft
 module motor_mount() {
-    motor_mount_separation = 35;
     motor_mount_hole_radius = m4_hole_diameter/2;
     circle(r=motor_shaft_radius+motor_slop_radius, center=true, $fn=30);
     translate([-motor_mount_separation/2, -8])
@@ -419,7 +420,7 @@ module enclosure_left() {
 
 module shaft_centered_motor_hole() {
     margin = 5;
-    width = 35 + 3.5*2 + margin*2;
+    width = motor_mount_separation + 3.5*2 + margin*2;
     length = 18 + 14 + margin*2;
 
     translate([-width/2, -(margin + 18 + 8)])
@@ -432,6 +433,10 @@ module enclosure_right() {
             square([enclosure_height, enclosure_length_right]);
             translate([enclosure_height_upper, enclosure_length_right - front_forward_offset, 0])
                 rod_mount_negative();
+
+            // idler bolt hole
+            translate([enclosure_height_upper - idler_center_z_offset, enclosure_length_right - front_forward_offset + idler_center_y_offset])
+                circle(r=m4_button_head_diameter/2, center=true, $fn=30);
 
             // top side tabs
             translate([1.5*thickness, enclosure_length_right, 0])
