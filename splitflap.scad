@@ -594,6 +594,21 @@ module motor_bushing() {
     }
 }
 
+pcb_height = 43;
+pcb_length = 50;
+pcb_thickness = 0.8;
+module pcb() {
+    color("green") {
+        linear_extrude(height=0.8) {
+            square([pcb_height, pcb_length]);
+        }
+    }
+    color("gray") {
+        translate([pcb_height - 15.3, 0, pcb_thickness]) {
+            cube([15.3, 17.74, 12.7]);
+        }
+    }
+}
 
 module split_flap_3d() {
     module positioned_front() {
@@ -647,6 +662,10 @@ module split_flap_3d() {
     }
 
     positioned_enclosure();
+
+    translate([enclosure_width - thickness, -pcb_length + 5, spool_gear_outer_radius - 6])
+        rotate([0, -90, 0])
+            pcb();
 
     translate([spool_width_slop/2 + thickness*2, 0, 0]) {
         // Flap area
