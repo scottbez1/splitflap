@@ -2,7 +2,8 @@ use<spool.scad>;
 use<publicDomainGearV1.1.scad>;
 use<28byj-48.scad>;
 use<projection_renderer.scad>;
-// ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_?!.=()@#$%^&* 
+use<roboto/Roboto-Regular.ttf>;
+use<label.scad>;
 
 // ##### RENDERING OPTIONS #####
 
@@ -16,6 +17,12 @@ render_unit_separation = 0;
 
 // 2d parameters:
 render_index = 0;
+render_etch = false;
+
+// Version label:
+render_revision = "deadbeef";
+render_date = "YYYY-MM-DD";
+
 
 
 // Kerf based off http://blog.ponoko.com/2011/07/12/figuring-out-kerf-for-precision-parts/
@@ -49,7 +56,7 @@ loose_rod_radius_slop = 0.2;
 
 rod_radius = 2.5;
 assembly_inner_radius = rod_radius + loose_rod_radius_slop;
-rod_mount_under_radius = 0.1;
+rod_mount_under_radius = 0.2;
 
 
 assembly_color = [.76, .60, .42];
@@ -572,6 +579,15 @@ module enclosure_bottom() {
     }
 }
 
+module enclosure_bottom_etch() {
+    color("black")
+    linear_extrude(height=2, center=true) {
+        translate([5, 12, thickness]) {
+            text_label(["github.com/scottbez1/splitflap", str("rev. ", render_revision), render_date]);
+        }
+    }
+}
+
 module idler_gear() {
     gear(drive_pitch, idler_teeth, thickness, (idler_shaft_radius)*2);
 }
@@ -621,8 +637,12 @@ module split_flap_3d() {
     }
 
     module positioned_bottom() {
-        translate([thickness, front_forward_offset - enclosure_length, -enclosure_height_lower + thickness])
+        translate([thickness, front_forward_offset - enclosure_length, -enclosure_height_lower + thickness]) {
             enclosure_bottom();
+            translate([0, 0, thickness]) {
+                enclosure_bottom_etch();
+            }
+        }
     }
 
     module positioned_enclosure() {
@@ -711,6 +731,12 @@ module split_flap_3d() {
     }
 }
 
+module laser_etch() {
+    if (render_etch) {
+        children();
+    }
+}
+
 if (render_3d) {
     for (i = [0 : render_units - 1]) {
         translate([-enclosure_width/2 + (-(render_units-1) / 2 + i)*(enclosure_width + render_unit_separation), 0, 0])
@@ -734,6 +760,11 @@ if (render_3d) {
         translate([enclosure_height + kerf_width, enclosure_width])
             rotate([0, 0, -90])
                 enclosure_bottom();
+
+        laser_etch()
+            translate([enclosure_height + kerf_width, enclosure_width])
+                rotate([0, 0, -90])
+                    enclosure_bottom_etch();
 
         // Spool struts 2x2 above left/right sides
         spool_strut_y_off = enclosure_length + enclosure_length_right + enclosure_width + sp + spool_strut_width / 2;
