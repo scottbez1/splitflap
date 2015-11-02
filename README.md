@@ -18,7 +18,7 @@ The 3d model is built using OpenSCAD in `splitflap.scad`
 
 ### Cost Breakdown ###
 * $5/2 units -- MDF 3.2mm P2 [on Ponoko](http://www.ponoko.com/make-and-sell/show-material/64-mdf-natural)
-* $19.30 -- laser cutting on Ponoko
+* $20 -- laser cutting on Ponoko (can save ~$0.70 by skipping etched label)
 * $7 -- shipping from Ponoko
 * ~$2 -- 28byj-48 motor
 * ~$5/5 units -- 5mmx100mm rod
@@ -33,7 +33,10 @@ TBD:
 Tools:
 * $9.17 -- badge slot punch (for cutting notches out of cards to make flaps) [on Amazon](http://www.amazon.com/gp/product/B009YDRRB4)
 
-## Getting Started ##
+## Build Your Own: Instructions ##
+Coming soon! This design is still being prototyped...
+
+## Design & Modification Guide ##
 
 ### 3D Design ###
 The main design file is `splitflap.scad`
