@@ -1,6 +1,7 @@
+use<roboto/Roboto-Bold.ttf>;
 
 module roboto(text, size) {
-    text(text=text, size=size, font="Roboto");
+    text(text=text, size=size, font="Roboto:style=Bold");
 }
 module text_label(lines) {
     text_height=3;

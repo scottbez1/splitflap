@@ -2,7 +2,6 @@ use<spool.scad>;
 use<publicDomainGearV1.1.scad>;
 use<28byj-48.scad>;
 use<projection_renderer.scad>;
-use<roboto/Roboto-Regular.ttf>;
 use<label.scad>;
 
 // ##### RENDERING OPTIONS #####
@@ -24,10 +23,10 @@ render_revision = "deadbeef";
 render_date = "YYYY-MM-DD";
 
 
-
 // Kerf based off http://blog.ponoko.com/2011/07/12/figuring-out-kerf-for-precision-parts/
 // It's better to underestimate (looser fit) than overestimate (no fit)
-kerf_width = 0.19 - 0.01;
+kerf_value = 0.19 - 0.01;
+kerf_width = render_etch ? -kerf_value : kerf_value;
 
 // MDF, .125in nominal
 // http://www.ponoko.com/make-and-sell/show-material/64-mdf-natural
