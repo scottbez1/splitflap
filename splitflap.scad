@@ -31,7 +31,7 @@ eps=.1;
 
 // M3 bolts
 m3_bolt_diameter=3+.1;
-m3_bolt_length=12+1;
+m3_bolt_length=16+1;
 m3_bolt_cap_head_diameter=5.5+.2;
 m3_bolt_cap_head_length=3+1;
 m3_nut_width_flats=5.5 + .1;
@@ -49,7 +49,7 @@ loose_rod_radius_slop = 0.2;
 
 rod_radius = 2.5;
 assembly_inner_radius = rod_radius + loose_rod_radius_slop;
-rod_mount_under_radius = 0.2;
+rod_mount_under_radius = 0.1;
 
 
 assembly_color = [.76, .60, .42];
@@ -146,7 +146,6 @@ spool_strut_width = (spool_strut_tab_outset + thickness/2) * 2;
 spool_strut_length_inset = thickness*0.25;
 spool_strut_length = flap_width + flap_width_slop + (4 * thickness) - (2 * spool_strut_length_inset);
 spool_strut_inner_length = flap_width + flap_width_slop - 2 * thickness;
-echo(spool_strut_inner_length=spool_strut_inner_length);
 
 spool_bushing_radius = spool_strut_tab_outset - thickness/2;
 
@@ -162,7 +161,13 @@ enclosure_length_right = side_tab_width*5 + thickness;
 echo(enclosure_height=enclosure_height);
 echo(enclosure_width=enclosure_width);
 echo(enclosure_length=enclosure_length);
-echo(enclosure_length_real=enclosure_length+2*thickness);
+echo(enclosure_length_right=enclosure_length_right);
+echo(enclosure_length_real=enclosure_length+thickness);
+echo(spool_strut_inner_length=spool_strut_inner_length);
+echo(front_window_width=front_window_width);
+echo(front_window_upper=front_window_upper);
+echo(front_window_lower=front_window_lower);
+echo(front_window_height=front_window_lower+front_window_upper);
 
 
 
