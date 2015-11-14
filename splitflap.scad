@@ -391,10 +391,11 @@ module motor_mount() {
         circle(r=motor_mount_hole_radius, center=true, $fn=30);
 }
 
-module side_tabs_negative(reverse=false, tabs=0) {
+module side_tabs_negative(reverse=false, tabs=0, extend_last_tab=false) {
     for (i = [0 : tabs-1]) {
-        translate([0, thickness + (i*2 + 0.5) * side_tab_width, 0])
-            square([thickness, side_tab_width], center=true);
+        length = (extend_last_tab && i == tabs-1) ? side_tab_width + eps : side_tab_width;
+        translate([-thickness / 2, thickness + (i*2) * side_tab_width, 0])
+            square([thickness, length]);
     }
     for (i = [0 : tabs-2]) {
         bolt_head_hole = (i % 2 == (reverse ? 1 : 0));
@@ -452,12 +453,12 @@ module enclosure_right() {
             // top side tabs
             translate([1.5*thickness, enclosure_length_right, 0])
                 mirror([0, 1, 0])
-                    side_tabs_negative(reverse=false, tabs=3);
+                    side_tabs_negative(reverse=false, tabs=3, extend_last_tab=true);
 
             // bottom side tabs
             translate([enclosure_height - 1.5*thickness, enclosure_length_right, 0])
                 mirror([0, 1, 0])
-                    side_tabs_negative(reverse=true, tabs=3);
+                    side_tabs_negative(reverse=true, tabs=3, extend_last_tab=true);
         }
     }
 }
