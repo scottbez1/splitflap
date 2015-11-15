@@ -99,6 +99,10 @@ spool_outer_radius = flap_spool_outer_radius(num_flaps, flap_hole_radius, flap_g
 
 // Radius where flaps are expected to flap in their *most collapsed* (90 degree) state
 exclusion_radius = sqrt(flap_height*flap_height + flap_pitch_radius*flap_pitch_radius);
+// Radius where flaps are expected to flap in their *most extended* state
+outer_exclusion_radius = flap_pitch_radius + flap_height + 2;
+
+front_forward_offset = flap_pitch_radius + flap_thickness/2;
 
 flap_notch = sqrt(spool_outer_radius*spool_outer_radius - flap_pitch_radius*flap_pitch_radius);
 echo(flap_notch=flap_notch);
@@ -123,9 +127,9 @@ spool_gear_outer_radius = outer_radius(drive_pitch, spool_teeth, 0);
 
 enclosure_width = spool_width_slop + thickness*6 + flap_width + flap_width_slop;
 front_window_upper_base = (flap_height - flap_pin_width/2);
-front_window_overhang = 0;
+front_window_overhang = 3;
 front_window_upper = front_window_upper_base - front_window_overhang;
-front_window_lower = front_window_upper_base + (flap_pitch_radius*0.75); // some margin for falling flaps
+front_window_lower = sqrt(outer_exclusion_radius*outer_exclusion_radius - front_forward_offset*front_forward_offset);
 front_window_slop = 0;
 front_window_width = spool_width_slop + flap_width + flap_width_slop + front_window_slop;
 front_window_right_inset = thickness*2 - front_window_slop/2;
@@ -134,7 +138,6 @@ enclosure_height_upper = exclusion_radius + enclosure_vertical_margin + 2*thickn
 enclosure_height_lower = flap_pitch_radius + flap_height + enclosure_vertical_margin + 2*thickness;
 enclosure_height = enclosure_height_upper + enclosure_height_lower;
 
-front_forward_offset = flap_pitch_radius + flap_thickness/2;
 enclosure_horizontal_rear_margin = thickness*2; // gap between back of gears and back of enclosure
 
 enclosure_length = front_forward_offset - motor_center_y_offset + 10 + enclosure_horizontal_rear_margin; //pitch_radius(drive_pitch, motor_teeth) 
@@ -672,9 +675,14 @@ module split_flap_3d() {
         // Flap area
         if (render_flaps) {
             echo(flap_exclusion_radius=exclusion_radius);
-            *translate([thickness, 0, 0])
-                rotate([0, 90, 0])
+            *rotate([0, 90, 0]) {
+                translate([0, 0, thickness]) {
                     cylinder(r=exclusion_radius, h=flap_width - 2*thickness);
+                }
+                translate([0, 0, thickness + (flap_width - 2*thickness)/4]) {
+                    cylinder(r=outer_exclusion_radius, h=(flap_width - 2*thickness)/2);
+                }
+            }
 
             translate([flap_width_slop/2, 0, 0]) {
                 // Collapsed flaps on the top
