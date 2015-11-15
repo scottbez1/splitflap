@@ -35,15 +35,7 @@ thickness = 3.2;
 
 eps=.1;
 
-// M3 bolts
-m3_bolt_diameter=3+.1;
-m3_bolt_length=16;
-m3_bolt_cap_head_diameter=5.5+.2;
-m3_bolt_cap_head_length=3+1;
-m3_nut_width_flats=5.5 + .1;
-m3_nut_width_corners=6.01;
-m3_nut_length=2.4+.2;
-
+// M4 bolts
 m4_hole_diameter = 4.5;
 m4_bolt_length = 12;
 m4_button_head_diameter = 7.6 + .2;
@@ -196,9 +188,6 @@ module captive_nut(bolt_diameter, bolt_length, nut_width, nut_length, nut_inset)
         translate([-nut_width/2, nut_inset, 0])
             square([nut_width, nut_length]);
     }
-}
-module m3_captive_nut(bolt_length=m3_bolt_length) {
-    captive_nut(m3_bolt_diameter, bolt_length + 1, m3_nut_width_flats, m3_nut_length, captive_nut_inset);
 }
 module m4_captive_nut(bolt_length=m4_bolt_length) {
     captive_nut(m4_hole_diameter, bolt_length + 1, m4_nut_width_flats, m4_nut_length, captive_nut_inset);
