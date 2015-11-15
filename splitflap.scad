@@ -55,7 +55,7 @@ loose_rod_radius_slop = 0.2;
 
 rod_radius = 2.5;
 assembly_inner_radius = rod_radius + loose_rod_radius_slop;
-rod_mount_under_radius = 0.2;
+rod_mount_under_radius = 0.1;
 
 
 assembly_color = [.76, .60, .42];
