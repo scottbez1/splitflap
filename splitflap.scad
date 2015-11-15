@@ -47,6 +47,7 @@ m3_nut_length=2.4+.2;
 m4_hole_diameter = 4.5;
 m4_bolt_length = 12;
 m4_button_head_diameter = 7.6 + .2;
+m4_button_head_length = 2.2 + .2;
 m4_nut_width_flats = 7 + .2;
 m4_nut_width_corners = 7.66 + .4;
 m4_nut_length = 3.2 + .2;
@@ -167,8 +168,9 @@ front_tab_width = (enclosure_width - 2*thickness) / (num_front_tabs*2 - 1);
 
 num_side_tabs = 5;
 side_tab_width = (enclosure_length - 2*thickness) / (num_side_tabs*2 - 1);
+side_tab_width_fraction = 0.75;
 
-enclosure_length_right = side_tab_width*5 + thickness;
+enclosure_length_right = side_tab_width*5 + thickness - side_tab_width * (1-side_tab_width_fraction)/2;
 
 echo(enclosure_height=enclosure_height);
 echo(enclosure_width=enclosure_width);
@@ -357,7 +359,7 @@ module front_tabs_negative() {
     }
     for (i = [0 : num_front_tabs-2]) {
         translate([thickness + (i*2+1.5) * front_tab_width, 0, 0])
-            circle(r=m3_bolt_diameter/2, $fn=30);
+            circle(r=m4_hole_diameter/2, $fn=30);
     }
 }
 
@@ -400,16 +402,15 @@ module motor_mount() {
         circle(r=motor_mount_hole_radius, center=true, $fn=30);
 }
 
-module side_tabs_negative(reverse=false, tabs=0, extend_last_tab=false) {
+module side_tabs_negative(reverse=false, tabs=0) {
     for (i = [0 : tabs-1]) {
-        length = (extend_last_tab && i == tabs-1) ? side_tab_width + eps : side_tab_width;
-        translate([-thickness / 2, thickness + (i*2) * side_tab_width, 0])
-            square([thickness, length]);
+        translate([-thickness / 2, thickness + (i*2) * side_tab_width + side_tab_width * (1 - side_tab_width_fraction)/2, 0])
+            square([thickness, side_tab_width * side_tab_width_fraction]);
     }
     for (i = [0 : tabs-2]) {
         bolt_head_hole = (i % 2 == (reverse ? 1 : 0));
         translate([0, thickness + (i*2 + 1.5) * side_tab_width, 0])
-            circle(r=(bolt_head_hole ? m3_bolt_cap_head_diameter : m3_bolt_diameter)/2, $fn=30);
+            circle(r=(bolt_head_hole ? m4_button_head_diameter : m4_hole_diameter)/2, $fn=30);
     }
 }
 
@@ -481,15 +482,15 @@ module front_back_tabs() {
 
 module side_tabs(tabs) {
     for (i = [0 : 2 : tabs*2-2]) {
-        translate([-eps, i * side_tab_width, 0])
-            square([thickness + eps, side_tab_width]);
+        translate([-eps, i * side_tab_width + side_tab_width * (1 - side_tab_width_fraction)/2, 0])
+            square([thickness + eps, side_tab_width * side_tab_width_fraction]);
     }
 }
 
 module front_back_captive_nuts() {
     for (i = [0 : 2 : num_front_tabs-1]) {
         translate([(i*2 + 1.5) * front_tab_width, -thickness, 0])
-            m3_captive_nut();
+            m4_captive_nut();
     }
 }
 
@@ -499,10 +500,10 @@ module side_captive_nuts(reverse = false, tabs=0) {
             rotate([0, 0, -90]) {
                 bolt_head_hole = (i % 2 == (reverse ? 1 : 0));
                 if (bolt_head_hole) {
-                    translate([-m3_bolt_cap_head_diameter/2, 0])
-                        square([m3_bolt_cap_head_diameter, m3_bolt_cap_head_length]);
+                    translate([-m4_button_head_diameter/2, 0])
+                        square([m4_button_head_diameter, m4_button_head_length]);
                 } else {
-                    m3_captive_nut();
+                    m4_captive_nut();
                 }
             }
         }
