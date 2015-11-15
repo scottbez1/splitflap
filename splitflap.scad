@@ -37,16 +37,19 @@ eps=.1;
 
 // M3 bolts
 m3_bolt_diameter=3+.1;
-m3_bolt_length=16+1;
+m3_bolt_length=16;
 m3_bolt_cap_head_diameter=5.5+.2;
 m3_bolt_cap_head_length=3+1;
 m3_nut_width_flats=5.5 + .1;
 m3_nut_width_corners=6.01;
-m3_nut_length=2.4+.1;
+m3_nut_length=2.4+.2;
 
 m4_hole_diameter = 4.5;
+m4_bolt_length = 12;
 m4_button_head_diameter = 7.6 + .2;
-m4_nut_width_corners = 7.66 + .2;
+m4_nut_width_flats = 7 + .2;
+m4_nut_width_corners = 7.66 + .4;
+m4_nut_length = 3.2 + .2;
 
 captive_nut_inset=6;
 
@@ -177,6 +180,7 @@ echo(front_window_width=front_window_width);
 echo(front_window_upper=front_window_upper);
 echo(front_window_lower=front_window_lower);
 echo(front_window_height=front_window_lower+front_window_upper);
+echo(front_forward_offset=front_forward_offset);
 
 
 
@@ -191,10 +195,12 @@ module captive_nut(bolt_diameter, bolt_length, nut_width, nut_length, nut_inset)
             square([nut_width, nut_length]);
     }
 }
-module m3_captive_nut() {
-    captive_nut(m3_bolt_diameter, m3_bolt_length, m3_nut_width_flats, m3_nut_length, captive_nut_inset);
+module m3_captive_nut(bolt_length=m3_bolt_length) {
+    captive_nut(m3_bolt_diameter, bolt_length + 1, m3_nut_width_flats, m3_nut_length, captive_nut_inset);
 }
-
+module m4_captive_nut(bolt_length=m4_bolt_length) {
+    captive_nut(m4_hole_diameter, bolt_length + 1, m4_nut_width_flats, m4_nut_length, captive_nut_inset);
+}
 
 
 // ##### Struts for bracing spool #####
@@ -540,6 +546,30 @@ module enclosure_top() {
     }
 }
 
+backstop_radius = 19.2/2;
+backstop_length = 40;
+backstop_tab_length = 5;
+module flap_backstop() {
+    linear_extrude(height=thickness, center=true) {
+        difference() {
+            union() {
+                translate([backstop_radius, 0]) {
+                    circle(r=backstop_radius, $fn=30);
+                }
+                translate([0, backstop_radius - backstop_length]) {
+                    square([backstop_radius, backstop_length]);
+                }
+                translate([-thickness, backstop_radius - backstop_length]) {
+                    square([thickness+eps, backstop_tab_length]);
+                }
+            }
+            rotate([0, 0, -90]) {
+                m4_captive_nut();
+            }
+        }
+    }
+}
+
 module enclosure_bottom() {
     linear_extrude(height = thickness) {
         difference() {
@@ -648,6 +678,15 @@ module split_flap_3d() {
         }
     }
 
+    module positioned_backstop() {
+        x = spool_width_slop + flap_width + flap_width_slop;
+        translate([thickness*2 + x/3, 4, -enclosure_height_lower + 2*thickness]) {
+            rotate([0, -90, 0]) {
+                flap_backstop();
+            }
+        }
+    }
+
     module positioned_enclosure() {
         if (render_enclosure == 2) {
             color(assembly_color1)
@@ -660,7 +699,10 @@ module split_flap_3d() {
                 positioned_top();
             color(assembly_color3)
                 positioned_bottom();
+            color(assembly_color1)
+                positioned_backstop();
         } else if (render_enclosure == 1) {
+            %positioned_backstop();
             %positioned_front();
             %positioned_left();
             %positioned_right();
