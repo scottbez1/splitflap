@@ -1,6 +1,7 @@
 # DIY Split-Flap Display
 
 This is a work in progress DIY [split-flap display](https://en.wikipedia.org/wiki/Split-flap_display).
+Initial prototype: [video](https://www.youtube.com/watch?v=wuriphgWN40).
 
 ![animated rendering](renders/animation.gif)
 
@@ -43,6 +44,8 @@ The main design file is `splitflap.scad`
 
 You'll need a recent version of OpenSCAD (at least 2015-03), which needs to be installed through the PPA:
 `sudo add-apt-repository ppa:openscad/releases`
+
+Note that while the design is parameterized and many values may be tweaked, there is currently no error checking for invalid parameters or combinations of parameters. Please take care to validate the design if you change any parameters. For instance, while most of the design would correctly adjust to a tweaked material `thickness` value, the `thickness` plays a role in the alignment of the gears, so changing this value may result in misaligned gears or issues with the motor shaft length.
 
 ### Rendering ###
 #### Laser-cutter vector files ####
