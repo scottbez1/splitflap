@@ -130,8 +130,9 @@ front_window_slop = 0;
 front_window_width = spool_width_slop + flap_width + flap_width_slop + front_window_slop;
 front_window_right_inset = thickness*2 - front_window_slop/2;
 enclosure_vertical_margin = 10; // gap between top/bottom of flaps and top/bottom of enclosure
-enclosure_height_upper = exclusion_radius + enclosure_vertical_margin + 2*thickness;
-enclosure_height_lower = flap_pitch_radius + flap_height + enclosure_vertical_margin + 2*thickness;
+enclosure_vertical_inset = thickness; // distance from top of sides to top of the top piece
+enclosure_height_upper = exclusion_radius + enclosure_vertical_margin + thickness + enclosure_vertical_inset;
+enclosure_height_lower = flap_pitch_radius + flap_height + enclosure_vertical_margin + thickness + enclosure_vertical_inset;
 enclosure_height = enclosure_height_upper + enclosure_height_lower;
 
 enclosure_horizontal_rear_margin = thickness*2; // gap between back of gears and back of enclosure
@@ -362,11 +363,11 @@ module enclosure_front() {
                 square([front_window_width, front_window_lower + front_window_upper]);
 
             // Front lower tabs
-            translate([0, thickness * 1.5, 0])
+            translate([0, thickness * 0.5 + enclosure_vertical_inset, 0])
                 front_tabs_negative();
 
             // Front upper tabs
-            translate([0, enclosure_height - thickness * 1.5, 0])
+            translate([0, enclosure_height - thickness * 0.5 - enclosure_vertical_inset, 0])
                 front_tabs_negative();
         }
     }
@@ -418,11 +419,11 @@ module enclosure_left() {
                 motor_mount();
 
             // bottom side tabs
-            translate([thickness * 1.5, 0, 0])
+            translate([thickness * 0.5 + enclosure_vertical_inset, 0, 0])
                 side_tabs_negative(reverse=true, tabs=5);
 
             // top side tabs
-            translate([enclosure_height - thickness * 1.5, enclosure_length, 0])
+            translate([enclosure_height - thickness * 0.5 - enclosure_vertical_inset, enclosure_length, 0])
                 mirror([0, 1, 0])
                     side_tabs_negative(reverse=true, tabs=3);
         }
@@ -450,12 +451,12 @@ module enclosure_right() {
                 circle(r=m4_nut_width_corners/2, center=true, $fn=30);
 
             // top side tabs
-            translate([1.5*thickness, enclosure_length_right, 0])
+            translate([0.5*thickness + enclosure_vertical_inset, enclosure_length_right, 0])
                 mirror([0, 1, 0])
                     side_tabs_negative(reverse=false, tabs=3, extend_last_tab=true);
 
             // bottom side tabs
-            translate([enclosure_height - 1.5*thickness, enclosure_length_right, 0])
+            translate([enclosure_height - 0.5*thickness - enclosure_vertical_inset, enclosure_length_right, 0])
                 mirror([0, 1, 0])
                     side_tabs_negative(reverse=true, tabs=3, extend_last_tab=true);
         }
@@ -654,13 +655,13 @@ module split_flap_3d() {
     }
 
     module positioned_top() {
-        translate([thickness, front_forward_offset, enclosure_height_upper - thickness])
+        translate([thickness, front_forward_offset, enclosure_height_upper - enclosure_vertical_inset])
             rotate([180, 0, 0])
                 enclosure_top();
     }
 
     module positioned_bottom() {
-        translate([thickness, front_forward_offset - enclosure_length, -enclosure_height_lower + thickness]) {
+        translate([thickness, front_forward_offset - enclosure_length, -enclosure_height_lower + enclosure_vertical_inset]) {
             enclosure_bottom();
             translate([0, 0, thickness]) {
                 enclosure_bottom_etch();
@@ -670,7 +671,7 @@ module split_flap_3d() {
 
     module positioned_backstop() {
         x = spool_width_slop + flap_width + flap_width_slop;
-        translate([thickness*2 + x/3, 4, -enclosure_height_lower + 2*thickness]) {
+        translate([thickness*2 + x/3, 4, -enclosure_height_lower + thickness + enclosure_vertical_inset]) {
             rotate([0, -90, 0]) {
                 flap_backstop();
             }
