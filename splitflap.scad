@@ -130,7 +130,7 @@ front_window_slop = 0;
 front_window_width = spool_width_slop + flap_width + flap_width_slop + front_window_slop;
 front_window_right_inset = thickness*2 - front_window_slop/2;
 enclosure_vertical_margin = 10; // gap between top/bottom of flaps and top/bottom of enclosure
-enclosure_vertical_inset = thickness; // distance from top of sides to top of the top piece
+enclosure_vertical_inset = thickness*1.5; // distance from top of sides to top of the top piece
 enclosure_height_upper = exclusion_radius + enclosure_vertical_margin + thickness + enclosure_vertical_inset;
 enclosure_height_lower = flap_pitch_radius + flap_height + enclosure_vertical_margin + thickness + enclosure_vertical_inset;
 enclosure_height = enclosure_height_upper + enclosure_height_lower;
@@ -161,7 +161,7 @@ front_tab_width = (enclosure_width - 2*thickness) / (num_front_tabs*2 - 1);
 
 num_side_tabs = 5;
 side_tab_width = (enclosure_length - 2*thickness) / (num_side_tabs*2 - 1);
-side_tab_width_fraction = 0.75;
+side_tab_width_fraction = 0.5;
 
 enclosure_length_right = side_tab_width*5 + thickness - side_tab_width * (1-side_tab_width_fraction)/2;
 
