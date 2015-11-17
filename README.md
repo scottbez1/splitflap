@@ -25,7 +25,8 @@ The 3d model is built using OpenSCAD in `splitflap.scad`
 * ~$5/5 units -- 5mmx100mm rod
 * $6.39/2 units -- vinyl letter stickers (minimum letter duplication per pack is 2) [on Amazon](http://www.amazon.com/Duro-Decal-Permanent-Adhesive-Letters/dp/B0027601CM)
 * $12/5 units or $36/25 units -- CR80 cards (each CR80 card becomes 2 flaps, each unit requires 40 flaps) on [Amazon](http://www.amazon.com/Plastic-printers-DataCard-Evolis-Magicard/dp/B007M413BC) or [Amazon](http://www.amazon.com/White-Blank-CR80-020-Graphic-Quality/dp/B007PKD6MW)
-* ? -- m3,m4 bolts,nuts
+* ? -- M4x12mm button head bolts (e.g. ISO 7380)
+* ? -- M4 nuts
 
 TBD:
 * $1.05 -- QRE1113 reflectance sensor [on digikey](http://www.digikey.com/product-detail/en/QRE1113GR/QRE1113GRCT-ND/965713)
