@@ -392,10 +392,11 @@ module motor_mount() {
         circle(r=motor_mount_hole_radius, center=true, $fn=30);
 }
 
-module side_tabs_negative(reverse=false, tabs=0) {
+module side_tabs_negative(reverse=false, tabs=0, extend_last_tab=false) {
     for (i = [0 : tabs-1]) {
+        length = (extend_last_tab && i == tabs - 1) ? side_tab_width * side_tab_width_fraction + eps : side_tab_width * side_tab_width_fraction;
         translate([-thickness / 2, thickness + (i*2) * side_tab_width + side_tab_width * (1 - side_tab_width_fraction)/2, 0])
-            square([thickness, side_tab_width * side_tab_width_fraction]);
+            square([thickness, length]);
     }
     for (i = [0 : tabs-2]) {
         bolt_head_hole = (i % 2 == (reverse ? 1 : 0));
