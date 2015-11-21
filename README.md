@@ -5,7 +5,7 @@ Initial prototype: [video](https://www.youtube.com/watch?v=wuriphgWN40).
 
 ![animated rendering](renders/animation.gif)
 
-The goal is to make a low-cost display that's easy to fabricate at home (e.g. custom materials can be ordered from Ponoko or similar, and other hardware is generally available).
+The goal is to make a low-cost display that's easy to fabricate at home in small/single quantities (e.g. custom materials can be ordered from Ponoko or similar, and other hardware is generally available).
 
 The 3d model is built using OpenSCAD in `splitflap.scad`
 
@@ -36,7 +36,7 @@ Tools:
 * $9.17 -- badge slot punch (for cutting notches out of cards to make flaps) [on Amazon](http://www.amazon.com/gp/product/B009YDRRB4)
 
 ## Build Your Own: Instructions ##
-Coming soon! This design is still being prototyped...
+A build log/instructions for building a split-flap display of your own is posted in [the wiki](https://github.com/scottbez1/splitflap/wiki).
 
 ## Design & Modification Guide ##
 
@@ -49,7 +49,7 @@ You'll need a recent version of OpenSCAD (at least 2015-03), which needs to be i
 Note that while the design is parameterized and many values may be tweaked, there is currently no error checking for invalid parameters or combinations of parameters. Please take care to validate the design if you change any parameters. For instance, while most of the design would correctly adjust to a tweaked material `thickness` value, the `thickness` plays a role in the alignment of the gears, so changing this value may result in misaligned gears or issues with the motor shaft length.
 
 ### Rendering ###
-#### Laser-cutter vector files ####
+#### Laser-cut vector files ####
 The design can be rendered to 2d for laser cutting by running `generate_2d.py`, which outputs to `build/laser_parts/combined.svg`
 
 Internally, the design uses a `projection_renderer` module (`projection_renderer.scad`), which takes a list of child elements to render, and depending on the `render_index` renders a single child at a time. It also _adds_ material to each shape to account for the kerf that will be cut away by the laser.
