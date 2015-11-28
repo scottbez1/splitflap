@@ -561,30 +561,6 @@ module enclosure_top() {
     }
 }
 
-backstop_radius = 19.2/2;
-backstop_length = 40;
-backstop_tab_length = 5;
-module flap_backstop() {
-    linear_extrude(height=thickness, center=true) {
-        difference() {
-            union() {
-                translate([backstop_radius, 0]) {
-                    circle(r=backstop_radius, $fn=30);
-                }
-                translate([0, backstop_radius - backstop_length]) {
-                    square([backstop_radius, backstop_length]);
-                }
-                translate([-thickness, backstop_radius - backstop_length]) {
-                    square([thickness+eps, backstop_tab_length]);
-                }
-            }
-            rotate([0, 0, -90]) {
-                m4_captive_nut();
-            }
-        }
-    }
-}
-
 module enclosure_bottom() {
     linear_extrude(height = thickness) {
         difference() {
@@ -693,15 +669,6 @@ module split_flap_3d() {
         }
     }
 
-    module positioned_backstop() {
-        x = spool_width_slop + flap_width + flap_width_slop;
-        translate([thickness*2 + x/3, 4, -enclosure_height_lower + thickness + enclosure_vertical_inset]) {
-            rotate([0, -90, 0]) {
-                flap_backstop();
-            }
-        }
-    }
-
     module positioned_enclosure() {
         if (render_enclosure == 2) {
             color(assembly_color1)
@@ -714,10 +681,7 @@ module split_flap_3d() {
                 positioned_top();
             color(assembly_color3)
                 positioned_bottom();
-            color(assembly_color1)
-                positioned_backstop();
         } else if (render_enclosure == 1) {
-            %positioned_backstop();
             %positioned_front();
             %positioned_left();
             %positioned_right();
