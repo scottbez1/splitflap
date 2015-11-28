@@ -511,15 +511,15 @@ module front_back_captive_nuts() {
     }
 }
 
-module side_captive_nuts(reverse = false, tabs=0) {
-    for (i = [0 : tabs-1]) {
+module side_captive_nuts(hole_types=[]) {
+    for (i = [0 : len(hole_types)-1]) {
+        hole_type = hole_types[i];
         translate([-thickness, (i*2 + 1.5) * side_tab_width, 0]) {
             rotate([0, 0, -90]) {
-                bolt_head_hole = (i % 2 == (reverse ? 1 : 0));
-                if (bolt_head_hole) {
+                if (hole_type == 2) {
                     translate([-m4_button_head_diameter/2, 0])
                         square([m4_button_head_diameter, m4_button_head_length]);
-                } else {
+                } else if (hole_type == 1) {
                     m4_captive_nut();
                 }
             }
@@ -554,12 +554,12 @@ module enclosure_top() {
 
             // right captive nuts
             translate([0, thickness, 0])
-                side_captive_nuts(reverse = false, tabs=2);
+                side_captive_nuts(hole_types = [2,1]);
 
             // left captive nuts
             translate([enclosure_width - 2 * thickness, thickness, 0])
                 mirror([1, 0, 0])
-                    side_captive_nuts(reverse = true, tabs=2);
+                    side_captive_nuts(hole_types = [1,2]);
         }
     }
 }
@@ -594,13 +594,13 @@ module enclosure_bottom() {
             // right captive nuts
             translate([0, enclosure_length - thickness, 0])
                 mirror([0, 1, 0])
-                    side_captive_nuts(reverse = true, tabs=2);
+                    side_captive_nuts(hole_types = [1,2]);
 
             // left captive nuts
             translate([enclosure_width - 2 * thickness, enclosure_length - thickness, 0])
                 mirror([0, 1, 0])
                     mirror([1, 0, 0])
-                        side_captive_nuts(reverse = false, tabs=4);
+                        side_captive_nuts(hole_types = [2,1,0,1]);
 
         }
     }
