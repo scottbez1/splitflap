@@ -13,6 +13,7 @@ render_enclosure = 1; // 2=opaque color; 1=translucent; 0=invisible
 render_flaps = true;
 render_units = 2;
 render_unit_separation = 0;
+render_flap_area = 0;
 
 // 2d parameters:
 render_index = 0;
@@ -164,6 +165,9 @@ side_tab_width = (enclosure_length - 2*thickness) / (num_side_tabs*2 - 1);
 side_tab_width_fraction = 0.5;
 
 enclosure_length_right = side_tab_width*5 + thickness - side_tab_width * (1-side_tab_width_fraction)/2;
+
+backstop_bolt_vertical_offset = - (exclusion_radius + outer_exclusion_radius)/2;
+backstop_bolt_forward_range = 14;
 
 echo(enclosure_height=enclosure_height);
 echo(enclosure_width=enclosure_width);
@@ -405,6 +409,15 @@ module side_tabs_negative(reverse=false, tabs=0, extend_last_tab=false) {
     }
 }
 
+module backstop_bolt_slot(radius) {
+    hull() {
+        circle(r=radius, $fn=15);
+        translate([0, backstop_bolt_forward_range]) {
+            circle(r=radius, $fn=15);
+        }
+    }
+}
+
 module enclosure_left() {
     linear_extrude(height=thickness) {
         difference() {
@@ -418,6 +431,11 @@ module enclosure_left() {
 
             translate([enclosure_height_lower + motor_center_z_offset, enclosure_length - front_forward_offset + motor_center_y_offset])
                 motor_mount();
+
+            // adjacent backstop bolt slot
+            translate([enclosure_height_lower + backstop_bolt_vertical_offset, enclosure_length - front_forward_offset, 0]) {
+                backstop_bolt_slot(radius = m4_button_head_diameter/2);
+            }
 
             // bottom side tabs
             translate([thickness * 0.5 + enclosure_vertical_inset, 0, 0])
@@ -450,6 +468,11 @@ module enclosure_right() {
             // adjacent idler bolt hole
             translate([enclosure_height_upper - idler_center_z_offset, enclosure_length_right - front_forward_offset + idler_center_y_offset])
                 circle(r=m4_nut_width_corners/2, center=true, $fn=30);
+
+            // backstop bolt slot
+            translate([enclosure_height_upper - backstop_bolt_vertical_offset, enclosure_length_right - front_forward_offset, 0]) {
+                backstop_bolt_slot(radius = m4_hole_diameter/2);
+            }
 
             // top side tabs
             translate([0.5*thickness + enclosure_vertical_inset, enclosure_length_right, 0])
@@ -709,12 +732,16 @@ module split_flap_3d() {
         // Flap area
         if (render_flaps) {
             echo(flap_exclusion_radius=exclusion_radius);
-            *rotate([0, 90, 0]) {
-                translate([0, 0, thickness]) {
-                    cylinder(r=exclusion_radius, h=flap_width - 2*thickness);
+            rotate([0, 90, 0]) {
+                if (render_flap_area >= 1) {
+                    translate([0, 0, thickness]) {
+                        cylinder(r=exclusion_radius, h=flap_width - 2*thickness);
+                    }
                 }
-                translate([0, 0, thickness + (flap_width - 2*thickness)/4]) {
-                    cylinder(r=outer_exclusion_radius, h=(flap_width - 2*thickness)/2);
+                if (render_flap_area >= 2) {
+                    translate([0, 0, thickness + (flap_width - 2*thickness)/4]) {
+                        cylinder(r=outer_exclusion_radius, h=(flap_width - 2*thickness)/2);
+                    }
                 }
             }
 
