@@ -43,8 +43,10 @@ A build log/instructions for building a split-flap display of your own is posted
 ### 3D Design ###
 The main design file is `splitflap.scad`
 
-You'll need a recent version of OpenSCAD (at least 2015-03), which needs to be installed through the PPA:
+You'll need a recent version of OpenSCAD (e.g. 2015-03), which may need to be installed through the PPA:
 `sudo add-apt-repository ppa:openscad/releases`
+
+In general, solid objects such as the gears or enclosure sides are built from 2d primitives and then extruded to the appropriate thickness for 3d rendering, rather than using 3d primitives. This simplifies the design without losing expressiveness; the perpendicular laser cut beam doesn't allow for cuts that vary in the Z dimension anyway.
 
 Note that while the design is parameterized and many values may be tweaked, there is currently no error checking for invalid parameters or combinations of parameters. Please take care to validate the design if you change any parameters. For instance, while most of the design would correctly adjust to a tweaked material `thickness` value, the `thickness` plays a role in the alignment of the gears, so changing this value may result in misaligned gears or issues with the motor shaft length.
 
