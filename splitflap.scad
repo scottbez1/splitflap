@@ -11,9 +11,9 @@ render_3d = true;
 // 3d parameters:
 render_enclosure = 1; // 2=opaque color; 1=translucent; 0=invisible
 render_flaps = true;
+render_flap_area = 0; // 0=invisible; 1=collapsed flap exclusion; 2=collapsed+extended flap exclusion
 render_units = 2;
 render_unit_separation = 0;
-render_flap_area = 0;
 
 // 2d parameters:
 render_index = 0;
@@ -396,16 +396,19 @@ module motor_mount() {
         circle(r=motor_mount_hole_radius, center=true, $fn=30);
 }
 
-module side_tabs_negative(reverse=false, tabs=0, extend_last_tab=false) {
-    for (i = [0 : tabs-1]) {
-        length = (extend_last_tab && i == tabs - 1) ? side_tab_width * side_tab_width_fraction + eps : side_tab_width * side_tab_width_fraction;
+module side_tabs_negative(hole_sizes=[], extend_last_tab=false) {
+    for (i = [0 : len(hole_sizes)]) {
+        length = (extend_last_tab && i == len(hole_sizes)) ? side_tab_width * side_tab_width_fraction + eps : side_tab_width * side_tab_width_fraction;
         translate([-thickness / 2, thickness + (i*2) * side_tab_width + side_tab_width * (1 - side_tab_width_fraction)/2, 0])
             square([thickness, length]);
     }
-    for (i = [0 : tabs-2]) {
-        bolt_head_hole = (i % 2 == (reverse ? 1 : 0));
-        translate([0, thickness + (i*2 + 1.5) * side_tab_width, 0])
-            circle(r=(bolt_head_hole ? m4_button_head_diameter : m4_hole_diameter)/2, $fn=30);
+    for (i = [0 : len(hole_sizes) - 1]) {
+        hole_size = hole_sizes[i];
+        if (hole_size > 0) {
+            bolt_head_hole = hole_size == 2;
+            translate([0, thickness + (i*2 + 1.5) * side_tab_width, 0])
+                circle(r=(bolt_head_hole ? m4_button_head_diameter : m4_hole_diameter)/2, $fn=30);
+        }
     }
 }
 
@@ -439,12 +442,12 @@ module enclosure_left() {
 
             // bottom side tabs
             translate([thickness * 0.5 + enclosure_vertical_inset, 0, 0])
-                side_tabs_negative(reverse=true, tabs=5);
+                side_tabs_negative(hole_sizes=[1, 0, 1, 2]);
 
             // top side tabs
             translate([enclosure_height - thickness * 0.5 - enclosure_vertical_inset, enclosure_length, 0])
                 mirror([0, 1, 0])
-                    side_tabs_negative(reverse=true, tabs=3);
+                    side_tabs_negative(hole_sizes=[1,2]);
         }
     }
 }
@@ -477,12 +480,12 @@ module enclosure_right() {
             // top side tabs
             translate([0.5*thickness + enclosure_vertical_inset, enclosure_length_right, 0])
                 mirror([0, 1, 0])
-                    side_tabs_negative(reverse=false, tabs=3, extend_last_tab=true);
+                    side_tabs_negative(hole_sizes=[2,1], extend_last_tab=true);
 
             // bottom side tabs
             translate([enclosure_height - 0.5*thickness - enclosure_vertical_inset, enclosure_length_right, 0])
                 mirror([0, 1, 0])
-                    side_tabs_negative(reverse=true, tabs=3, extend_last_tab=true);
+                    side_tabs_negative(hole_sizes=[1,2], extend_last_tab=true);
         }
     }
 }
