@@ -2,7 +2,7 @@ use<spool.scad>;
 use<publicDomainGearV1.1.scad>;
 use<28byj-48.scad>;
 use<projection_renderer.scad>;
-// ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_?!.=()@#$%^&* 
+use<label.scad>;
 
 // ##### RENDERING OPTIONS #####
 
@@ -11,16 +11,23 @@ render_3d = true;
 // 3d parameters:
 render_enclosure = 1; // 2=opaque color; 1=translucent; 0=invisible
 render_flaps = true;
+render_flap_area = 0; // 0=invisible; 1=collapsed flap exclusion; 2=collapsed+extended flap exclusion
 render_units = 2;
 render_unit_separation = 0;
 
 // 2d parameters:
 render_index = 0;
+render_etch = false;
+
+// Version label:
+render_revision = "deadbeef";
+render_date = "YYYY-MM-DD";
 
 
 // Kerf based off http://blog.ponoko.com/2011/07/12/figuring-out-kerf-for-precision-parts/
 // It's better to underestimate (looser fit) than overestimate (no fit)
-kerf_width = 0.19 - 0.01;
+kerf_value = 0.19 - 0.01;
+kerf_width = render_etch ? -kerf_value : kerf_value;
 
 // MDF, .125in nominal
 // http://www.ponoko.com/make-and-sell/show-material/64-mdf-natural
@@ -29,18 +36,14 @@ thickness = 3.2;
 
 eps=.1;
 
-// M3 bolts
-m3_bolt_diameter=3+.1;
-m3_bolt_length=16+1;
-m3_bolt_cap_head_diameter=5.5+.2;
-m3_bolt_cap_head_length=3+1;
-m3_nut_width_flats=5.5 + .1;
-m3_nut_width_corners=6.01;
-m3_nut_length=2.4+.1;
-
+// M4 bolts
 m4_hole_diameter = 4.5;
+m4_bolt_length = 12;
 m4_button_head_diameter = 7.6 + .2;
-m4_nut_width_corners = 7.66 + .2;
+m4_button_head_length = 2.2 + .2;
+m4_nut_width_flats = 7 + .2;
+m4_nut_width_corners = 7.66 + .4;
+m4_nut_length = 3.2 + .2;
 
 captive_nut_inset=6;
 
@@ -93,6 +96,10 @@ spool_outer_radius = flap_spool_outer_radius(num_flaps, flap_hole_radius, flap_g
 
 // Radius where flaps are expected to flap in their *most collapsed* (90 degree) state
 exclusion_radius = sqrt(flap_height*flap_height + flap_pitch_radius*flap_pitch_radius);
+// Radius where flaps are expected to flap in their *most extended* state
+outer_exclusion_radius = flap_pitch_radius + flap_height + 2;
+
+front_forward_offset = flap_pitch_radius + flap_thickness/2;
 
 flap_notch = sqrt(spool_outer_radius*spool_outer_radius - flap_pitch_radius*flap_pitch_radius);
 echo(flap_notch=flap_notch);
@@ -117,18 +124,18 @@ spool_gear_outer_radius = outer_radius(drive_pitch, spool_teeth, 0);
 
 enclosure_width = spool_width_slop + thickness*6 + flap_width + flap_width_slop;
 front_window_upper_base = (flap_height - flap_pin_width/2);
-front_window_overhang = 0;
+front_window_overhang = 3;
 front_window_upper = front_window_upper_base - front_window_overhang;
-front_window_lower = front_window_upper_base + (flap_pitch_radius*0.75); // some margin for falling flaps
+front_window_lower = sqrt(outer_exclusion_radius*outer_exclusion_radius - front_forward_offset*front_forward_offset);
 front_window_slop = 0;
 front_window_width = spool_width_slop + flap_width + flap_width_slop + front_window_slop;
 front_window_right_inset = thickness*2 - front_window_slop/2;
 enclosure_vertical_margin = 10; // gap between top/bottom of flaps and top/bottom of enclosure
-enclosure_height_upper = exclusion_radius + enclosure_vertical_margin + 2*thickness;
-enclosure_height_lower = flap_pitch_radius + flap_height + enclosure_vertical_margin + 2*thickness;
+enclosure_vertical_inset = thickness*1.5; // distance from top of sides to top of the top piece
+enclosure_height_upper = exclusion_radius + enclosure_vertical_margin + thickness + enclosure_vertical_inset;
+enclosure_height_lower = flap_pitch_radius + flap_height + enclosure_vertical_margin + thickness + enclosure_vertical_inset;
 enclosure_height = enclosure_height_upper + enclosure_height_lower;
 
-front_forward_offset = flap_pitch_radius + flap_thickness/2;
 enclosure_horizontal_rear_margin = thickness*2; // gap between back of gears and back of enclosure
 
 enclosure_length = front_forward_offset - motor_center_y_offset + 10 + enclosure_horizontal_rear_margin; //pitch_radius(drive_pitch, motor_teeth) 
@@ -155,8 +162,12 @@ front_tab_width = (enclosure_width - 2*thickness) / (num_front_tabs*2 - 1);
 
 num_side_tabs = 5;
 side_tab_width = (enclosure_length - 2*thickness) / (num_side_tabs*2 - 1);
+side_tab_width_fraction = 0.5;
 
-enclosure_length_right = side_tab_width*5 + thickness;
+enclosure_length_right = side_tab_width*5 + thickness - side_tab_width * (1-side_tab_width_fraction)/2;
+
+backstop_bolt_vertical_offset = - (exclusion_radius + outer_exclusion_radius)/2;
+backstop_bolt_forward_range = 14;
 
 echo(enclosure_height=enclosure_height);
 echo(enclosure_width=enclosure_width);
@@ -168,6 +179,7 @@ echo(front_window_width=front_window_width);
 echo(front_window_upper=front_window_upper);
 echo(front_window_lower=front_window_lower);
 echo(front_window_height=front_window_lower+front_window_upper);
+echo(front_forward_offset=front_forward_offset);
 
 
 
@@ -182,10 +194,9 @@ module captive_nut(bolt_diameter, bolt_length, nut_width, nut_length, nut_inset)
             square([nut_width, nut_length]);
     }
 }
-module m3_captive_nut() {
-    captive_nut(m3_bolt_diameter, m3_bolt_length, m3_nut_width_flats, m3_nut_length, captive_nut_inset);
+module m4_captive_nut(bolt_length=m4_bolt_length) {
+    captive_nut(m4_hole_diameter, bolt_length + 1, m4_nut_width_flats, m4_nut_length, captive_nut_inset);
 }
-
 
 
 // ##### Struts for bracing spool #####
@@ -342,7 +353,7 @@ module front_tabs_negative() {
     }
     for (i = [0 : num_front_tabs-2]) {
         translate([thickness + (i*2+1.5) * front_tab_width, 0, 0])
-            circle(r=m3_bolt_diameter/2, $fn=30);
+            circle(r=m4_hole_diameter/2, $fn=30);
     }
 }
 
@@ -356,11 +367,11 @@ module enclosure_front() {
                 square([front_window_width, front_window_lower + front_window_upper]);
 
             // Front lower tabs
-            translate([0, thickness * 1.5, 0])
+            translate([0, thickness * 0.5 + enclosure_vertical_inset, 0])
                 front_tabs_negative();
 
             // Front upper tabs
-            translate([0, enclosure_height - thickness * 1.5, 0])
+            translate([0, enclosure_height - thickness * 0.5 - enclosure_vertical_inset, 0])
                 front_tabs_negative();
         }
     }
@@ -385,15 +396,28 @@ module motor_mount() {
         circle(r=motor_mount_hole_radius, center=true, $fn=30);
 }
 
-module side_tabs_negative(reverse=false, tabs=0) {
-    for (i = [0 : tabs-1]) {
-        translate([0, thickness + (i*2 + 0.5) * side_tab_width, 0])
-            square([thickness, side_tab_width], center=true);
+module side_tabs_negative(hole_sizes=[], extend_last_tab=false) {
+    for (i = [0 : len(hole_sizes)]) {
+        length = (extend_last_tab && i == len(hole_sizes)) ? side_tab_width * side_tab_width_fraction + eps : side_tab_width * side_tab_width_fraction;
+        translate([-thickness / 2, thickness + (i*2) * side_tab_width + side_tab_width * (1 - side_tab_width_fraction)/2, 0])
+            square([thickness, length]);
     }
-    for (i = [0 : tabs-2]) {
-        bolt_head_hole = (i % 2 == (reverse ? 1 : 0));
-        translate([0, thickness + (i*2 + 1.5) * side_tab_width, 0])
-            circle(r=(bolt_head_hole ? m3_bolt_cap_head_diameter : m3_bolt_diameter)/2, $fn=30);
+    for (i = [0 : len(hole_sizes) - 1]) {
+        hole_size = hole_sizes[i];
+        if (hole_size > 0) {
+            bolt_head_hole = hole_size == 2;
+            translate([0, thickness + (i*2 + 1.5) * side_tab_width, 0])
+                circle(r=(bolt_head_hole ? m4_button_head_diameter : m4_hole_diameter)/2, $fn=30);
+        }
+    }
+}
+
+module backstop_bolt_slot(radius) {
+    hull() {
+        circle(r=radius, $fn=15);
+        translate([0, backstop_bolt_forward_range]) {
+            circle(r=radius, $fn=15);
+        }
     }
 }
 
@@ -411,14 +435,19 @@ module enclosure_left() {
             translate([enclosure_height_lower + motor_center_z_offset, enclosure_length - front_forward_offset + motor_center_y_offset])
                 motor_mount();
 
+            // adjacent backstop bolt slot
+            translate([enclosure_height_lower + backstop_bolt_vertical_offset, enclosure_length - front_forward_offset, 0]) {
+                backstop_bolt_slot(radius = m4_button_head_diameter/2);
+            }
+
             // bottom side tabs
-            translate([thickness * 1.5, 0, 0])
-                side_tabs_negative(reverse=true, tabs=5);
+            translate([thickness * 0.5 + enclosure_vertical_inset, 0, 0])
+                side_tabs_negative(hole_sizes=[1, 0, 1, 2]);
 
             // top side tabs
-            translate([enclosure_height - thickness * 1.5, enclosure_length, 0])
+            translate([enclosure_height - thickness * 0.5 - enclosure_vertical_inset, enclosure_length, 0])
                 mirror([0, 1, 0])
-                    side_tabs_negative(reverse=true, tabs=3);
+                    side_tabs_negative(hole_sizes=[1,2]);
         }
     }
 }
@@ -443,15 +472,20 @@ module enclosure_right() {
             translate([enclosure_height_upper - idler_center_z_offset, enclosure_length_right - front_forward_offset + idler_center_y_offset])
                 circle(r=m4_nut_width_corners/2, center=true, $fn=30);
 
+            // backstop bolt slot
+            translate([enclosure_height_upper - backstop_bolt_vertical_offset, enclosure_length_right - front_forward_offset, 0]) {
+                backstop_bolt_slot(radius = m4_hole_diameter/2);
+            }
+
             // top side tabs
-            translate([1.5*thickness, enclosure_length_right, 0])
+            translate([0.5*thickness + enclosure_vertical_inset, enclosure_length_right, 0])
                 mirror([0, 1, 0])
-                    side_tabs_negative(reverse=false, tabs=3);
+                    side_tabs_negative(hole_sizes=[2,1], extend_last_tab=true);
 
             // bottom side tabs
-            translate([enclosure_height - 1.5*thickness, enclosure_length_right, 0])
+            translate([enclosure_height - 0.5*thickness - enclosure_vertical_inset, enclosure_length_right, 0])
                 mirror([0, 1, 0])
-                    side_tabs_negative(reverse=true, tabs=3);
+                    side_tabs_negative(hole_sizes=[1,2], extend_last_tab=true);
         }
     }
 }
@@ -465,28 +499,28 @@ module front_back_tabs() {
 
 module side_tabs(tabs) {
     for (i = [0 : 2 : tabs*2-2]) {
-        translate([-eps, i * side_tab_width, 0])
-            square([thickness + eps, side_tab_width]);
+        translate([-eps, i * side_tab_width + side_tab_width * (1 - side_tab_width_fraction)/2, 0])
+            square([thickness + eps, side_tab_width * side_tab_width_fraction]);
     }
 }
 
 module front_back_captive_nuts() {
     for (i = [0 : 2 : num_front_tabs-1]) {
         translate([(i*2 + 1.5) * front_tab_width, -thickness, 0])
-            m3_captive_nut();
+            m4_captive_nut();
     }
 }
 
-module side_captive_nuts(reverse = false, tabs=0) {
-    for (i = [0 : tabs-1]) {
+module side_captive_nuts(hole_types=[]) {
+    for (i = [0 : len(hole_types)-1]) {
+        hole_type = hole_types[i];
         translate([-thickness, (i*2 + 1.5) * side_tab_width, 0]) {
             rotate([0, 0, -90]) {
-                bolt_head_hole = (i % 2 == (reverse ? 1 : 0));
-                if (bolt_head_hole) {
-                    translate([-m3_bolt_cap_head_diameter/2, 0])
-                        square([m3_bolt_cap_head_diameter, m3_bolt_cap_head_length]);
-                } else {
-                    m3_captive_nut();
+                if (hole_type == 2) {
+                    translate([-m4_button_head_diameter/2, 0])
+                        square([m4_button_head_diameter, m4_button_head_length]);
+                } else if (hole_type == 1) {
+                    m4_captive_nut();
                 }
             }
         }
@@ -520,12 +554,12 @@ module enclosure_top() {
 
             // right captive nuts
             translate([0, thickness, 0])
-                side_captive_nuts(reverse = false, tabs=2);
+                side_captive_nuts(hole_types = [2,1]);
 
             // left captive nuts
             translate([enclosure_width - 2 * thickness, thickness, 0])
                 mirror([1, 0, 0])
-                    side_captive_nuts(reverse = true, tabs=2);
+                    side_captive_nuts(hole_types = [1,2]);
         }
     }
 }
@@ -560,14 +594,23 @@ module enclosure_bottom() {
             // right captive nuts
             translate([0, enclosure_length - thickness, 0])
                 mirror([0, 1, 0])
-                    side_captive_nuts(reverse = true, tabs=2);
+                    side_captive_nuts(hole_types = [1,2]);
 
             // left captive nuts
             translate([enclosure_width - 2 * thickness, enclosure_length - thickness, 0])
                 mirror([0, 1, 0])
                     mirror([1, 0, 0])
-                        side_captive_nuts(reverse = false, tabs=4);
+                        side_captive_nuts(hole_types = [2,1,0,1]);
 
+        }
+    }
+}
+
+module enclosure_bottom_etch() {
+    color("black")
+    linear_extrude(height=2, center=true) {
+        translate([5, 12, thickness]) {
+            text_label(["github.com/scottbez1/splitflap", str("rev. ", render_revision), render_date]);
         }
     }
 }
@@ -630,14 +673,18 @@ module split_flap_3d() {
     }
 
     module positioned_top() {
-        translate([thickness, front_forward_offset, enclosure_height_upper - thickness])
+        translate([thickness, front_forward_offset, enclosure_height_upper - enclosure_vertical_inset])
             rotate([180, 0, 0])
                 enclosure_top();
     }
 
     module positioned_bottom() {
-        translate([thickness, front_forward_offset - enclosure_length, -enclosure_height_lower + thickness])
+        translate([thickness, front_forward_offset - enclosure_length, -enclosure_height_lower + enclosure_vertical_inset]) {
             enclosure_bottom();
+            translate([0, 0, thickness]) {
+                enclosure_bottom_etch();
+            }
+        }
     }
 
     module positioned_enclosure() {
@@ -671,9 +718,18 @@ module split_flap_3d() {
         // Flap area
         if (render_flaps) {
             echo(flap_exclusion_radius=exclusion_radius);
-            *translate([thickness, 0, 0])
-                rotate([0, 90, 0])
-                    cylinder(r=exclusion_radius, h=flap_width - 2*thickness);
+            rotate([0, 90, 0]) {
+                if (render_flap_area >= 1) {
+                    translate([0, 0, thickness]) {
+                        cylinder(r=exclusion_radius, h=flap_width - 2*thickness);
+                    }
+                }
+                if (render_flap_area >= 2) {
+                    translate([0, 0, thickness + (flap_width - 2*thickness)/4]) {
+                        cylinder(r=outer_exclusion_radius, h=(flap_width - 2*thickness)/2);
+                    }
+                }
+            }
 
             translate([flap_width_slop/2, 0, 0]) {
                 // Collapsed flaps on the top
@@ -730,6 +786,12 @@ module split_flap_3d() {
     }
 }
 
+module laser_etch() {
+    if (render_etch) {
+        children();
+    }
+}
+
 if (render_3d) {
     for (i = [0 : render_units - 1]) {
         translate([-enclosure_width/2 + (-(render_units-1) / 2 + i)*(enclosure_width + render_unit_separation), 0, 0])
@@ -753,6 +815,11 @@ if (render_3d) {
         translate([enclosure_height + kerf_width, enclosure_width])
             rotate([0, 0, -90])
                 enclosure_bottom();
+
+        laser_etch()
+            translate([enclosure_height + kerf_width, enclosure_width])
+                rotate([0, 0, -90])
+                    enclosure_bottom_etch();
 
         // Spool struts 2x2 above left/right sides
         spool_strut_y_off = enclosure_length + enclosure_length_right + enclosure_width + sp + spool_strut_width / 2;

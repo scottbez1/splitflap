@@ -9,23 +9,31 @@ import openscad
 from svg_processor import SvgProcessor
 
 class Renderer(object):
-    def __init__(self, input_file, output_folder):
+    def __init__(self, input_file, output_folder, extra_variables=None):
         self.input_file = input_file
         self.output_folder = output_folder
+        if extra_variables is None:
+            extra_variables = {}
+        self.extra_variables = extra_variables
 
     def clean(self):
         shutil.rmtree(self.output_folder, ignore_errors=True)
         os.makedirs(self.output_folder)
+
+    def _get_variables(self, variables):
+         v = self.extra_variables.copy()
+         v.update(variables)
+         return v
 
     def _get_num_components(self):
         stdout, stderr = openscad.run(
             self.input_file,
             os.path.join(self.output_folder, 'dummy.png'),
             output_size=[1,1],
-            variables = {
+            variables = self._get_variables({
                 'render_3d': False,
                 'render_index': 0,
-            },
+            }),
             capture_output=True,
         )
         return openscad.extract_values(stderr)['num_components']
@@ -35,19 +43,30 @@ class Renderer(object):
 
     def _render_component(self, i):
         output_file = self._get_component_file(i)
-        stdout, stderr = openscad.run(
-                self.input_file,
-                output_file,
-                variables = {
-                    'render_3d': False,
-                    'render_index': i,
-                },
-                capture_output=True,
-            )
-        processor = SvgProcessor(output_file)
-        processor.fix_dimens()
-        processor.delete_registration_mark()
-        processor.apply_laser_cut_style()
+        for style in ('cut', 'etch'):
+            logging.debug('Rendering component %d, %s', i, style)
+            stdout, stderr = openscad.run(
+                    self.input_file,
+                    output_file,
+                    variables = self._get_variables({
+                        'render_3d': False,
+                        'render_index': i,
+                        'render_etch': style == 'etch',
+                    }),
+                    capture_output=True,
+                )
+            processor = SvgProcessor(output_file)
+            processor.fix_dimens()
+            if processor.delete_registration_mark():
+                if style == 'cut':
+                    processor.apply_laser_cut_style()
+                elif style == 'etch':
+                    processor.apply_laser_etch_style()
+                break
+            else:
+                logging.info("Nothing rendered for %d, %s", i, style)
+        else:
+            raise ValueError("Invalid component!", i)
         return processor
 
     def render_svgs(self):
@@ -55,7 +74,6 @@ class Renderer(object):
         logging.info('Found %d components to render', num_components)
         svg_output = None
         for i in range(num_components):
-            logging.debug('Rendering component %d', i)
             svg_processor = self._render_component(i)
             if svg_output is None:
                 svg_output = svg_processor

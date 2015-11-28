@@ -2,6 +2,7 @@
 from __future__ import division
 from __future__ import print_function
 
+import datetime
 import logging
 import os
 import subprocess
@@ -13,7 +14,19 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
     laser_parts_directory = os.path.join('build', 'laser_parts')
 
-    renderer = Renderer('splitflap.scad', laser_parts_directory)
+    git_rev = subprocess.check_output([
+        'git',
+        'rev-parse',
+        '--short',
+        'HEAD',
+    ]).strip()
+
+    extra_variables = {
+        'render_revision': git_rev,
+        'render_date': datetime.date.today().strftime('%Y-%m-%d'),
+    }
+
+    renderer = Renderer('splitflap.scad', laser_parts_directory, extra_variables)
     renderer.clean()
     svg_output = renderer.render_svgs()
 
