@@ -171,6 +171,17 @@ enclosure_length_right = side_tab_width*5 + thickness - side_tab_width * (1-side
 backstop_bolt_vertical_offset = - (exclusion_radius + outer_exclusion_radius)/2;
 backstop_bolt_forward_range = 14;
 
+// PCB parameters
+pcb_offset_radius = spool_strut_exclusion_radius + 1;
+pcb_offset_angle = 0;
+pcb_height = 48;
+pcb_length = 48;
+pcb_thickness = 0.8;
+pcb_mount_inset_vertical = 4;
+pcb_mount_inset_horizontal = 7;
+pcb_mount_slot_delta = 4;
+
+
 echo(enclosure_height=enclosure_height);
 echo(enclosure_width=enclosure_width);
 echo(enclosure_length=enclosure_length);
@@ -450,6 +461,10 @@ module enclosure_left() {
             translate([enclosure_height - thickness * 0.5 - enclosure_vertical_inset, enclosure_length, 0])
                 mirror([0, 1, 0])
                     side_tabs_negative(hole_sizes=[1,2]);
+
+            translate([enclosure_height_lower + sin(pcb_offset_angle)*pcb_offset_radius, enclosure_length - front_forward_offset - pcb_length - cos(pcb_offset_angle)*pcb_offset_radius]) {
+                pcb_mounting_holes(slots = true);
+            }
         }
     }
 }
@@ -639,24 +654,35 @@ module motor_bushing() {
     }
 }
 
-pcb_offset_radius = spool_strut_exclusion_radius + 1;
-pcb_offset_angle = 0;
-pcb_height = 48;
-pcb_length = 48;
-pcb_thickness = 0.8;
-pcb_mount_inset_vertical = m4_hole_diameter/2 + 2;
-pcb_mount_inset_horizontal = m4_hole_diameter/2 + 5;
+module pcb_mounting_holes(slots=false) {
+    module mounting_hole() {
+        if (slots) {
+            hull() {
+                translate([-pcb_mount_slot_delta, 0]) {
+                    circle(r=m4_hole_diameter/2, $fn=15);
+                }
+                translate([pcb_mount_slot_delta, 0]) {
+                    circle(r=m4_hole_diameter/2, $fn=15);
+                }
+            }
+        } else {
+            circle(r=m4_hole_diameter/2, $fn=15);
+        }
+    }
+    translate([pcb_mount_inset_vertical, pcb_mount_inset_horizontal]) {
+        mounting_hole();
+    }
+    translate([pcb_height - pcb_mount_inset_vertical, pcb_mount_inset_horizontal]) {
+        mounting_hole();
+    }
+}
+
 module pcb() {
     color("green") {
         linear_extrude(height=pcb_thickness) {
             difference() {
                 square([pcb_height, pcb_length]);
-                translate([pcb_mount_inset_vertical, pcb_mount_inset_horizontal]) {
-                    circle(r=m4_hole_diameter/2, $fn=15);
-                }
-                translate([pcb_height - pcb_mount_inset_vertical, pcb_mount_inset_horizontal]) {
-                    circle(r=m4_hole_diameter/2, $fn=15);
-                }
+                pcb_mounting_holes(slots=false);
             }
         }
     }
