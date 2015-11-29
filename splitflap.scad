@@ -154,6 +154,8 @@ spool_strut_length_inset = thickness*0.25;
 spool_strut_length = flap_width + flap_width_slop + (4 * thickness) - (2 * spool_strut_length_inset);
 spool_strut_inner_length = flap_width + flap_width_slop - 2 * thickness;
 
+spool_strut_exclusion_radius = sqrt((spool_strut_tab_outset+thickness/2)*(spool_strut_tab_outset+thickness/2) + (spool_strut_tab_width/2)*(spool_strut_tab_width/2));
+
 spool_bushing_radius = spool_strut_tab_outset - thickness/2;
 
 // Enclosure connector tabs: front/back
@@ -637,18 +639,25 @@ module motor_bushing() {
     }
 }
 
-pcb_height = 43;
-pcb_length = 50;
+pcb_offset_radius = spool_strut_exclusion_radius + 1;
+pcb_offset_angle = 0;
+pcb_height = 48;
+pcb_length = 48;
 pcb_thickness = 0.8;
+pcb_mount_inset_vertical = m4_hole_diameter/2 + 2;
+pcb_mount_inset_horizontal = m4_hole_diameter/2 + 5;
 module pcb() {
     color("green") {
-        linear_extrude(height=0.8) {
-            square([pcb_height, pcb_length]);
-        }
-    }
-    color("gray") {
-        translate([pcb_height - 15.3, 0, pcb_thickness]) {
-            cube([15.3, 17.74, 12.7]);
+        linear_extrude(height=pcb_thickness) {
+            difference() {
+                square([pcb_height, pcb_length]);
+                translate([pcb_mount_inset_vertical, pcb_mount_inset_horizontal]) {
+                    circle(r=m4_hole_diameter/2, $fn=15);
+                }
+                translate([pcb_height - pcb_mount_inset_vertical, pcb_mount_inset_horizontal]) {
+                    circle(r=m4_hole_diameter/2, $fn=15);
+                }
+            }
         }
     }
 }
@@ -710,7 +719,7 @@ module split_flap_3d() {
 
     positioned_enclosure();
 
-    translate([enclosure_width - thickness, -pcb_length + 5, spool_gear_outer_radius - 6])
+    translate([enclosure_width - thickness, -pcb_length - cos(pcb_offset_angle)*pcb_offset_radius, sin(pcb_offset_angle)*pcb_offset_radius])
         rotate([0, -90, 0])
             pcb();
 
