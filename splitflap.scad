@@ -1,3 +1,19 @@
+/*
+   Copyright 2015 Scott Bezek
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+
 use<spool.scad>;
 use<publicDomainGearV1.1.scad>;
 use<28byj-48.scad>;
@@ -33,7 +49,6 @@ kerf_width = render_etch ? -kerf_value : kerf_value;
 // MDF, .125in nominal
 // http://www.ponoko.com/make-and-sell/show-material/64-mdf-natural
 thickness = 3.2;
-
 
 eps=.1;
 
@@ -316,14 +331,6 @@ module motor_shaft() {
         }
         square([motor_shaft_radius/3, motor_shaft_radius*4], center=true);
     }
-}
-
-// 28byj-48 stepper motor centered on its shaft
-module stepper_shaft_centered() {
-    translate([18.8/2+0.7, 0, -8])
-        rotate([0, 90, 0])
-            rotate([0, 0, 180])
-                StepMotor28BYJ();
 }
 
 module front_tabs_negative() {
@@ -775,8 +782,11 @@ module split_flap_3d() {
 
         echo(motor_pitch_radius=pitch_radius(drive_pitch, motor_teeth));
 
-        translate([flap_width + flap_width_slop + 2*thickness, motor_center_y_offset, motor_center_z_offset])
-            stepper_shaft_centered();
+        translate([flap_width + flap_width_slop + 2*thickness + spool_width_slop/2, motor_center_y_offset, motor_center_z_offset]) {
+            rotate([0, -90, 0]) {
+                Stepper28BYJ48();
+            }
+        }
     }
 }
 
