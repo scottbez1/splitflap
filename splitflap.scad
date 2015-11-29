@@ -173,13 +173,14 @@ backstop_bolt_forward_range = 14;
 
 // PCB parameters
 pcb_offset_radius = spool_strut_exclusion_radius + 1;
-pcb_offset_angle = 0;
 pcb_height = 48;
 pcb_length = 48;
 pcb_thickness = 0.8;
 pcb_mount_inset_vertical = 4;
-pcb_mount_inset_horizontal = 7;
+pcb_mount_inset_horizontal = 8;
 pcb_mount_slot_delta = 4;
+pcb_reference_horizontal = -pcb_length - pcb_offset_radius;
+pcb_reference_vertical = -4;
 
 
 echo(enclosure_height=enclosure_height);
@@ -462,7 +463,7 @@ module enclosure_left() {
                 mirror([0, 1, 0])
                     side_tabs_negative(hole_sizes=[1,2]);
 
-            translate([enclosure_height_lower + sin(pcb_offset_angle)*pcb_offset_radius, enclosure_length - front_forward_offset - pcb_length - cos(pcb_offset_angle)*pcb_offset_radius]) {
+            translate([enclosure_height_lower + pcb_reference_vertical, enclosure_length - front_forward_offset + pcb_reference_horizontal]) {
                 pcb_mounting_holes(slots = true);
             }
         }
@@ -745,7 +746,7 @@ module split_flap_3d() {
 
     positioned_enclosure();
 
-    translate([enclosure_width - thickness, -pcb_length - cos(pcb_offset_angle)*pcb_offset_radius, sin(pcb_offset_angle)*pcb_offset_radius])
+    translate([enclosure_width - thickness, pcb_reference_horizontal, pcb_reference_vertical])
         rotate([0, -90, 0])
             pcb();
 

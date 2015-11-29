@@ -29,7 +29,7 @@ The 3d model is built using OpenSCAD in `splitflap.scad`
 * ? -- M4 nuts
 
 TBD:
-* $1.05 -- QRE1113 reflectance sensor [on digikey](http://www.digikey.com/product-detail/en/QRE1113GR/QRE1113GRCT-ND/965713)
+* $0.76 -- GP2S60 reflectance sensor [on digikey](http://www.digikey.com/product-detail/en/GP2S60B/425-2670-1-ND/1642454)
 * $14/10 units -- PCB for reflectance sensor [on seeedstudio](http://www.seeedstudio.com/service/index.php?r=pcb)
 
 Tools:
@@ -71,5 +71,5 @@ The `generate_gif.py` script runs multiple OpenSCAD instances in parallel to ren
     * interlocking mechanism?
 * Driver
     * need some kind of home-position sensor
-        * IR Reflectance sensor near spool? QRE1113?
+        * IR Reflectance sensor near spool
 
