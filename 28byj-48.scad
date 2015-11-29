@@ -1,102 +1,106 @@
-// 28BYJ-48 from RGriffoGoes 
-// at http://www.thingiverse.com/thing:204734
-// named and measured dimensions, and
-// added details by J.Beale 21 July 2014
 
-MBH = 18.8;   // motor body height
-MBD = 28.25;  // motor body OD
-SBD = 9.1;    // shaft boss OD
-SBH = 1.45;   // shaft boss height above motor body
-SBO = 7.875;  // offset of shaft/boss center from motor center
-SHD = 4.93;   // motor shaft OD
-SHDF = 3.0;   // motor shaft diameter, across flats
-SHHF = 6.0;   // motor shaft flats height, or depth in from end
-SHH = 9.75;   // height of shaft above motor body 
+// Basic 28BYJ-48 model based on various dimensioned drawings.
+// Origin is centered on the shaft, on the front face of the motor, with the shaft in the +z direction
+module Stepper28BYJ48() {
+    $fn = 60;
 
-MBFH = 0.7;   // height of body edge flange protruding above surface
-MBFW = 1.0;   // width of edge flange
-MBFNW = 8;    // width of notch in edge flange
-MBFNW2 = 17.8;  // width of edge flange notch above wiring box
+    eps = 0.01;
+    chassis_radius = 28/2;
+    chassis_height = 19;
+    shaft_offset = 8;
+    mount_outer_radius = 3.5;
+    mount_hole_radius = 4.2/2;
+    mount_center_offset = 35/2;
+    mount_bracket_height = 0.8;
 
-MHCC = 35.0;  // mounting hole center-to-center
-MTH  = 0.8;   // mounting tab thickness
-MTW  = 7.0;   // mounting tab width
-WBH  = 16.7;  // plastic wiring box height
-WBW  = 14.6;  // plastic wiring box width
-WBD  = 31.3;  // body diameter to outer surface of wiring box
+    shaft_collar_radius = 9/2;
+    shaft_collar_height = 1.5;
 
-WRD = 1.0;     // diameter of electrical wires
-WRL = 30;      // length of electrical wires
-WRO = 2.2;		// offset of wires below top motor surface
+    shaft_radius = 5/2;
+    shaft_height = 10;
+    shaft_slotted_width = 3;
+    shaft_slotted_height = 6;
 
-// =========================================================
-eps = 0.05;   // small number to avoid coincident faces
+    backpack_width = 14.6;
+    backpack_extent = 18; // seen values from 17-18
+    backpack_height = 16;
 
+    gray = [0.7, 0.7, 0.7];
+    gold = "gold";
+    blue = "blue";
 
-module wires() {
- 
-  color([0.9,0.9,0]) translate([0,WRD*2,0]) cylinder(h=WRL,r=WRD/2, $fn = 7);
-  color([.9,.45,0]) translate([0,WRD*1,0]) cylinder(h=WRL,r=WRD/2, $fn = 7);   
-  color([1,0,0]) translate([0,0,0]) cylinder(h=WRL,r=WRD/2, $fn = 7);
-  color([1,.6,.6]) translate([0,-WRD*1,0]) cylinder(h=WRL,r=WRD/2, $fn = 7);
-  color([.2,.2,1]) translate([0,-WRD*2,0]) cylinder(h=WRL,r=WRD/2, $fn = 7);
-}
-
-module StepMotor28BYJ()
-{
-  difference(){
-    union(){
-	   color("gray") translate([0,0,-(MBH+MBFH)/2])
-		  difference() {  // flange at top rim
-         cylinder(h = MBFH+eps, r = MBD/2, center = true, $fn = 50);
-         cylinder(h = MBFH+2*eps, r = (MBD-MBFW)/2, center = true, $fn = 32);
-			cube([MBFNW,MHCC,MBFH*2],center=true); // notches in rim
-			cube([MBD+2*MBFW,SBD,MBFH*2],center=true);
-		   translate([-MBD/2,0,0]) cube([MBD,MBFNW2,MBFH*2],center=true);
-        }
-		color("gray") // motor body
-			cylinder(h = MBH, r = MBD/2, center = true, $fn = 50);
-		color("gray") translate([SBO,0,-SBH])	// shaft boss
-			cylinder(h = MBH, r = SBD/2, center = true, $fn = 32);
-
-		translate([SBO,0,-SHH])	// motor shaft
+    module mounting_holes() {
+        linear_extrude(height=mount_bracket_height) {
         difference() {
-			color("gold") cylinder(h = MBH, r = SHD/2, center = true, $fn = 32);
-				// shaft flats
-		   color("red") translate([(SHD+SHDF)/2,0,-(eps+MBH-SHHF)/2]) 
-				cube([SHD,SHD,SHHF], center = true);
-		   color("red") translate([-(SHD+SHDF)/2,0,-(eps+MBH-SHHF)/2]) 
-				cube([SHD,SHD,SHHF], center = true);
+            hull() {
+                translate([mount_center_offset, 0]) {
+                    circle(r=mount_outer_radius);
+                }
+                translate([-mount_center_offset, 0]) {
+                    circle(r=mount_outer_radius);
+                }
+            }
+
+            translate([mount_center_offset, 0]) {
+                circle(r=mount_hole_radius);
+            }
+            translate([-mount_center_offset, 0]) {
+                circle(r=mount_hole_radius);
+            }
         }
+        }
+    }
 
+    module shaft_collar() {
+        cylinder(r=shaft_collar_radius, h=shaft_collar_height + eps);
+    }
 
-		color("Silver") translate([0,0,-(MBH-MTH-eps)/2]) // mounting tab 
-			cube([MTW,MHCC,MTH], center = true);				
-		color("Silver") translate([0,MHCC/2,-(MBH-MTH)/2]) // mt.tab rounded end
-			cylinder(h = MTH, r = MTW/2, center = true, $fn = 32);
-		color("Silver") translate([0,-MHCC/2,-(MBH-MTH)/2]) // mt.tab rounded end
-			cylinder(h = MTH, r = MTW/2, center = true, $fn = 32);
+    module shaft() {
+        color(gold) {
+            difference() {
+                cylinder(r=shaft_radius, h=shaft_height);
+                translate([-(shaft_radius + eps), shaft_slotted_width / 2, shaft_height - shaft_slotted_height]) {
+                    cube([(shaft_radius+eps)*2, shaft_radius, shaft_slotted_height+eps]);
+                }
+                translate([-(shaft_radius + eps), - shaft_radius - (shaft_slotted_width / 2), shaft_height - shaft_slotted_height]) {
+                    cube([(shaft_radius+eps)*2, shaft_radius, shaft_slotted_height+eps]);
+                }
+            }
+        }
+    }
 
+    module chassis() {
+        color(gray) {
+            translate([0, 0, -chassis_height]) {
+                cylinder(r=chassis_radius, h=chassis_height);
+            }
+            translate([0, 0, -mount_bracket_height]) {
+                mounting_holes();
+            }
+            translate([0, shaft_offset, -eps]) {
+                shaft_collar();
+            }
+        }
+    }
 
-		color("blue") translate([-(WBD-MBD),0,eps-(MBH-WBH)/2]) // plastic wire box
-			cube([MBD,WBW,WBH], center = true);
-	   color("blue") translate([-2,0,0])	
-			cube([24.5,16,15], center = true);
-		}
+    module backpack() {
+        color(blue) {
+            translate([-backpack_width/2, 0, -backpack_height - eps]) {
+                cube([backpack_width, backpack_extent, backpack_height]);
+            }
+        }
+    }
 
-				// mounting holes in tabs on side
-		color("red") translate([0,MHCC/2,-MBH/2])	
-				cylinder(h = 2, r = 2, center = true, $fn = 32);
-		color("red") translate([0,-MHCC/2,-MBH/2])	
-				cylinder(h = 2, r = 2, center = true, $fn = 32);
-		}
-	}
-
-rotate([180,0,0]) {
-
-  StepMotor28BYJ();  // motor body (without wires)
-
-  // 5 colored hookup wires
-  translate([0,0,-(MBH/2 - WRO)]) rotate([0,-90,0])  
-	  wires();
+    translate([0, -shaft_offset, 0]) {
+        chassis();
+        translate([0, shaft_offset, 0]) {
+            shaft();
+        }
+        translate([0, -backpack_extent, 0]) {
+            backpack();
+        }
+    }
 }
+
+Stepper28BYJ48();
+
