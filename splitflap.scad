@@ -182,6 +182,7 @@ pcb_mount_slot_delta = 4;
 pcb_reference_horizontal = -pcb_length - pcb_offset_radius;
 pcb_reference_vertical = -4;
 
+connector_bolt_offset = 40;
 
 echo(enclosure_height=enclosure_height);
 echo(enclosure_width=enclosure_width);
@@ -463,8 +464,17 @@ module enclosure_left() {
                 mirror([0, 1, 0])
                     side_tabs_negative(hole_sizes=[1,2]);
 
+            // PCB mounting holes
             translate([enclosure_height_lower + pcb_reference_vertical, enclosure_length - front_forward_offset + pcb_reference_horizontal]) {
                 pcb_mounting_holes(slots = true);
+            }
+
+            // Adjacent unit connector
+            translate([enclosure_height_lower + connector_bolt_offset, enclosure_length - front_forward_offset]) {
+                circle(r=m4_hole_diameter/2, $fn=15);
+            }
+            translate([enclosure_height_lower - connector_bolt_offset, enclosure_length - front_forward_offset]) {
+                circle(r=m4_hole_diameter/2, $fn=15);
             }
         }
     }
@@ -504,6 +514,14 @@ module enclosure_right() {
             translate([enclosure_height - 0.5*thickness - enclosure_vertical_inset, enclosure_length_right, 0])
                 mirror([0, 1, 0])
                     side_tabs_negative(hole_sizes=[1,2], extend_last_tab=true);
+
+            // Adjacent unit connector
+            translate([enclosure_height_upper - connector_bolt_offset, enclosure_length_right - front_forward_offset]) {
+                circle(r=m4_hole_diameter/2, $fn=15);
+            }
+            translate([enclosure_height_upper + connector_bolt_offset, enclosure_length_right - front_forward_offset]) {
+                circle(r=m4_hole_diameter/2, $fn=15);
+            }
         }
     }
 }

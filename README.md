@@ -68,7 +68,6 @@ The `generate_gif.py` script runs multiple OpenSCAD instances in parallel to ren
 ### TODO ###
 * Enclosure
     * mounting holes?
-    * interlocking mechanism?
 * Driver
     * need some kind of home-position sensor
         * IR Reflectance sensor near spool
