@@ -3,6 +3,7 @@ use<publicDomainGearV1.1.scad>;
 use<28byj-48.scad>;
 use<projection_renderer.scad>;
 use<label.scad>;
+use<assert.scad>;
 
 // ##### RENDERING OPTIONS #####
 
@@ -74,7 +75,7 @@ flap_width_slop = 1.5;
 spool_width_slop = 1;
 
 
-num_flaps = 48;
+num_flaps = 52;
 flap_hole_radius = 1.7; // 1.2
 flap_gap = 1.2; // 1
 
@@ -84,13 +85,14 @@ flap_spool_outset = flap_hole_radius;
 flap_pitch_radius = flap_spool_pitch_radius(num_flaps, flap_hole_radius, flap_gap); //num_flaps * (flap_hole_radius*2 + flap_gap) / (2*PI);
 spool_outer_radius = flap_spool_outer_radius(num_flaps, flap_hole_radius, flap_gap, flap_spool_outset); //flap_pitch_radius + 2*flap_hole_radius;
 
-
-
 echo(flap_pitch_radius=flap_pitch_radius);
 
 new_strut_width = 15;
 new_strut_clearance = 1.5;
 motor_clearance = sqrt((flap_pitch_radius - flap_hole_radius - new_strut_clearance)*(flap_pitch_radius - flap_hole_radius - new_strut_clearance) - (new_strut_width/2)*(new_strut_width/2)) - thickness - new_strut_clearance;
+
+required_motor_clearance = sqrt((17+8)*(17+8) + 7.5*7.5) + 1;
+assert(motor_clearance >= required_motor_clearance, str("Not enough motor clearance. Required ", required_motor_clearance, " but found ", motor_clearance));
 echo(motor_clearance=motor_clearance);
 
 
