@@ -1,4 +1,4 @@
-update=Thu 12 Nov 2015 01:09:55 AM PST
+update=Sun 29 Nov 2015 08:26:11 PM PST
 version=1
 last_client=kicad
 [pcbnew]
@@ -60,3 +60,4 @@ LibName28=atmel
 LibName29=contrib
 LibName30=valves
 LibName31=lib/gp2s60
+LibName32=lib/usb_micro_b
