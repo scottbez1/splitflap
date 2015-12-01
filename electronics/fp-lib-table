@@ -1,4 +1,6 @@
 (fp_lib_table
   (lib (name JST_XH_Connectors)(type KiCad)(uri "$(KIPRJMOD)/lib/JST_XH_Connectors.pretty")(options "")(descr ""))
   (lib (name GP2S60)(type KiCad)(uri "$(KIPRJMOD)/lib/GP2S60.pretty")(options "")(descr ""))
+  (lib (name PJ-202A)(type KiCad)(uri "$(KIPRJMOD)/lib/PJ-202A.pretty")(options "")(descr ""))
+  (lib (name MountingHoles)(type KiCad)(uri "$(KIPRJMOD)/lib/MountingHoles.pretty")(options "")(descr ""))
 )

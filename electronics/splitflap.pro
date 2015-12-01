@@ -1,4 +1,4 @@
-update=Sun 29 Nov 2015 08:26:11 PM PST
+update=Tue 01 Dec 2015 01:25:48 AM PST
 version=1
 last_client=kicad
 [pcbnew]
@@ -61,3 +61,4 @@ LibName29=contrib
 LibName30=valves
 LibName31=lib/gp2s60
 LibName32=lib/usb_micro_b
+LibName33=lib/mount
