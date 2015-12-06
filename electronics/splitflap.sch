@@ -745,8 +745,6 @@ Wire Wire Line
 Wire Wire Line
 	5250 3200 6800 3200
 Wire Wire Line
-	5250 3100 6800 3100
-Wire Wire Line
 	5250 3300 5800 3300
 Wire Wire Line
 	5800 3300 5800 2950
@@ -757,11 +755,7 @@ Wire Wire Line
 Wire Wire Line
 	6400 3000 6800 3000
 Wire Wire Line
-	5250 3400 6550 3400
-Wire Wire Line
-	6550 3400 6550 2900
-Wire Wire Line
-	6550 2900 6800 2900
+	5250 3400 6600 3400
 Wire Wire Line
 	8200 2200 8200 4700
 Wire Wire Line
@@ -797,4 +791,14 @@ Wire Wire Line
 	2000 2550 2200 2550
 Wire Wire Line
 	2200 2550 2200 2650
+Wire Wire Line
+	6600 3400 6600 3100
+Wire Wire Line
+	6600 3100 6800 3100
+Wire Wire Line
+	5250 3100 6550 3100
+Wire Wire Line
+	6550 3100 6550 2900
+Wire Wire Line
+	6550 2900 6800 2900
 $EndSCHEMATC
