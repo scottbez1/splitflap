@@ -581,7 +581,7 @@ Wire Wire Line
 Wire Wire Line
 	2000 3050 2300 3050
 Wire Wire Line
-	2300 3050 2300 2700
+	2300 2700 2300 3150
 Connection ~ 2900 2700
 Wire Wire Line
 	2550 1900 3000 1900
@@ -864,4 +864,29 @@ Wire Wire Line
 Wire Wire Line
 	6550 900  6300 900 
 Connection ~ 5650 1700
+$Comp
+L C_Small C1
+U 1 1 566515C6
+P 2300 3250
+F 0 "C1" H 2310 3320 50  0000 L CNN
+F 1 "0.1uF" H 2310 3170 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805_HandSoldering" H 2300 3250 50  0001 C CNN
+F 3 "" H 2300 3250 50  0000 C CNN
+	1    2300 3250
+	1    0    0    -1  
+$EndComp
+Connection ~ 2300 3050
+$Comp
+L GND #PWR016
+U 1 1 56651711
+P 2300 3450
+F 0 "#PWR016" H 2300 3200 50  0001 C CNN
+F 1 "GND" H 2300 3300 50  0000 C CNN
+F 2 "" H 2300 3450 50  0000 C CNN
+F 3 "" H 2300 3450 50  0000 C CNN
+	1    2300 3450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2300 3450 2300 3350
 $EndSCHEMATC
