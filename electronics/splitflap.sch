@@ -474,6 +474,27 @@ F 3 "" H 7450 1900 60  0000 C CNN
 	1    7450 1900
 	1    0    0    -1  
 $EndComp
+NoConn ~ 8100 2700
+NoConn ~ 8100 2800
+NoConn ~ 6800 2800
+NoConn ~ 6800 2700
+NoConn ~ 6800 3900
+NoConn ~ 6800 4000
+NoConn ~ 6800 4100
+NoConn ~ 8100 4100
+NoConn ~ 8100 4000
+NoConn ~ 8100 3900
+$Comp
+L CONN_02X03 P10
+U 1 1 5664D2A4
+P 6050 900
+F 0 "P10" H 6050 1100 50  0000 C CNN
+F 1 "CONN_02X03" H 6050 700 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_2x03" H 6050 -300 50  0001 C CNN
+F 3 "" H 6050 -300 50  0000 C CNN
+	1    6050 900 
+	1    0    0    -1  
+$EndComp
 Wire Wire Line
 	1750 6050 2250 6050
 Wire Wire Line
@@ -598,7 +619,7 @@ Connection ~ 2000 4900
 Wire Wire Line
 	2700 1250 2900 1250
 Wire Wire Line
-	2900 1250 2900 1650
+	2900 900  2900 1650
 Wire Wire Line
 	2900 1650 2700 1650
 Connection ~ 2900 1500
@@ -775,16 +796,6 @@ Wire Wire Line
 Wire Wire Line
 	8550 4700 8550 4600
 Connection ~ 8200 4700
-NoConn ~ 8100 2700
-NoConn ~ 8100 2800
-NoConn ~ 6800 2800
-NoConn ~ 6800 2700
-NoConn ~ 6800 3900
-NoConn ~ 6800 4000
-NoConn ~ 6800 4100
-NoConn ~ 8100 4100
-NoConn ~ 8100 4000
-NoConn ~ 8100 3900
 Wire Wire Line
 	2000 2550 2200 2550
 Wire Wire Line
@@ -797,4 +808,60 @@ Wire Wire Line
 	6550 2900 6550 3400
 Wire Wire Line
 	6550 3400 5250 3400
+Wire Wire Line
+	5450 1800 5450 800 
+Wire Wire Line
+	5450 800  5800 800 
+Connection ~ 5450 1800
+Wire Wire Line
+	5550 1600 5550 900 
+Wire Wire Line
+	5550 900  5800 900 
+Connection ~ 5550 1600
+Connection ~ 2900 1250
+Text Label 2900 1100 1    60   ~ 0
+RESET
+Wire Wire Line
+	5800 1000 4750 1000
+Text Label 4800 1000 0    60   ~ 0
+RESET
+$Comp
+L +5V #PWR014
+U 1 1 5664D9BB
+P 6400 700
+F 0 "#PWR014" H 6400 550 50  0001 C CNN
+F 1 "+5V" H 6400 840 50  0000 C CNN
+F 2 "" H 6400 700 50  0000 C CNN
+F 3 "" H 6400 700 50  0000 C CNN
+	1    6400 700 
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6300 800  6400 800 
+Wire Wire Line
+	6400 800  6400 700 
+$Comp
+L GND #PWR015
+U 1 1 5664DAD2
+P 6400 1100
+F 0 "#PWR015" H 6400 850 50  0001 C CNN
+F 1 "GND" H 6400 950 50  0000 C CNN
+F 2 "" H 6400 1100 50  0000 C CNN
+F 3 "" H 6400 1100 50  0000 C CNN
+	1    6400 1100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6300 1000 6400 1000
+Wire Wire Line
+	6400 1000 6400 1100
+Wire Wire Line
+	5650 1700 5650 1350
+Wire Wire Line
+	5650 1350 6550 1350
+Wire Wire Line
+	6550 1350 6550 900 
+Wire Wire Line
+	6550 900  6300 900 
+Connection ~ 5650 1700
 $EndSCHEMATC
