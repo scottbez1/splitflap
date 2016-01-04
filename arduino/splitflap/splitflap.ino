@@ -31,21 +31,14 @@ int flaps[NUM_FLAPS] = {
   '\'',
 };
 
-void setup() {
-  // put your setup code here, to run once:
-  DDRA = 0xFF;
-  pinMode(13, OUTPUT);
-  Serial.begin(115200);
-}
-
 uint8_t step_pattern[] = {
-  B0001,
   B1001,
-  B1000,
+  B1001,
   B1100,
-  B0100,
+  B1100,
   B0110,
-  B0010,
+  B0110,
+  B0011,
   B0011,
 };
 
@@ -54,7 +47,7 @@ long current = 0;
 float desired = 0;
 
 long MAX_PERIOD = 6000;
-long MIN_PERIOD = 700;
+long MIN_PERIOD = 780;
 long VEL_STEP = 80;
 
 long maxVel = MAX_PERIOD - MIN_PERIOD;
@@ -63,6 +56,7 @@ long accelSteps = maxVel / VEL_STEP;
 long curVel = 0;
 long stepPeriod = 0;
 
+int lastHome = LOW;
 
 int desiredFlapIndex = 0;
 
@@ -73,6 +67,18 @@ int findFlapIndex(int character) {
     }
   }
   return -1;
+}
+
+void setup() {
+  // put your setup code here, to run once:
+  DDRA = 0xFF;
+  pinMode(13, OUTPUT);
+  Serial.begin(115200);
+
+  pinMode(31, INPUT);
+  digitalWrite(31, HIGH);
+  delay(5);
+  lastHome = digitalRead(31);
 }
 
 void loop() {
@@ -123,6 +129,10 @@ void loop() {
       Serial.write("\n\n");
     }
 
+    int curHome = digitalRead(31);
+    bool shift = curHome == HIGH && lastHome == LOW;
+    lastHome = curHome;
+      
     float delta = desired - current;
     if (delta > -1 && delta < 1) {
       curVel = 0;
@@ -135,6 +145,10 @@ void loop() {
       while (current < -64) {
         current += 64;
         desired += 64;
+      }
+
+      if (shift) {
+          desired += STEPS_PER_FLAP;
       }
       return;
     }

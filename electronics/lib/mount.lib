@@ -1,0 +1,16 @@
+EESchema-LIBRARY Version 2.3
+#encoding utf-8
+#
+# MOUNT
+#
+DEF MOUNT Z 0 40 N N 1 F N
+F0 "Z" 0 -50 60 H V C CNN
+F1 "MOUNT" 0 50 60 H V C CNN
+F2 "" 0 0 60 H V C CNN
+F3 "" 0 0 60 H V C CNN
+DRAW
+X MOUNT 1 0 0 200 R 50 50 1 1 N N
+ENDDRAW
+ENDDEF
+#
+#End Library
