@@ -65,12 +65,19 @@ The design can be rendered to a rotating 3d animated gif (seen above) by running
 
 The `generate_gif.py` script runs multiple OpenSCAD instances in parallel to render the design from 360 degrees to individual png frames, which are then combined into the final gif animation. As part of building the animation, `generate_gif.py` renders the design with multiple configurations (opaque enclosure, see-through enclosure, no-enclosure and no flaps) by setting the `render_enclosure` and `render_flaps` variables.
 
-### TODO ###
-* Enclosure
-    * mounting holes?
-* Driver
-    * need some kind of home-position sensor
-        * IR Reflectance sensor near spool
+### Driver Electronics ###
+There is a work-in-progress (untested) driver circuit based on an ATmega32U4 AVR under `electronics/splitflap.pro` (KiCad project). The driver supports 4 stepper motors using ULN2003 darlington arrays (which you easily remove from the 28byj-48 driver boards that often come with the motors) and 4 optical home position inputs (for GP2S60 IR reflectance sensors), with a micro-USB connector for computer control.
+
+![pcb rendering](renders/splitflap-brd.svg)
+
+The PCB layout is designed to fit within the 5cm x 5cm bounds for a number of low-cost PCB manufacturers (e.g. Seeed Studio), and can be populated in two separate configurations (since many low-cost PCB manufacturers have a minimum order of identical PCBs):
+1. As a 4-channel driver board, with ATmega32U4, ULN2003s, USB, etc
+1. As a home sensor board for a single character, with GP2S60 and 3-pin connector
+
+This way, with an order of 5 identical PCBs you can populate a single 4-channel driver board and four home sensor boards for a complete electronics set for 4 split-flap units.
+
+### Driver Firmware ###
+TODO. Eventually the driver firmware will be a standalone avr-gcc project, using [LUFA](http://www.fourwalledcubicle.com/LUFA.php) for USB serial emulation. For testing purposes in the meantime there is some basic Arduino code for an Arduino Mega under `arduino/splitflap/splitflap.ino`.
 
 ## License ##
 This project is licensed under Apache v2.
