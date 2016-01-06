@@ -70,13 +70,13 @@ There is a work-in-progress (untested) driver circuit based on an ATmega32U4 AVR
 
 ![pcb rendering](renders/splitflap-brd.png)
 
-![pcb 3d rendering](renders/splitflap-brd-3d.png)
-
 The PCB layout is designed to fit within the 5cm x 5cm bounds for a number of low-cost PCB manufacturers (e.g. Seeed Studio), and can be populated in two separate configurations (since many low-cost PCB manufacturers have a minimum order of identical PCBs):
 1. As a 4-channel driver board, with ATmega32U4, ULN2003s, USB, etc
 1. As a home sensor board for a single character, with GP2S60 and 3-pin connector
 
 This way, with an order of 5 identical PCBs you can populate a single 4-channel driver board and four home sensor boards for a complete electronics set for 4 split-flap units.
+
+![pcb 3d rendering](renders/splitflap-brd-3d.png)
 
 ### Driver Firmware ###
 TODO. Eventually the driver firmware will be a standalone avr-gcc project, using [LUFA](http://www.fourwalledcubicle.com/LUFA.php) for USB serial emulation. For testing purposes in the meantime there is some basic Arduino code for an Arduino Mega under `arduino/splitflap/splitflap.ino`.
