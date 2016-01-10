@@ -21,7 +21,7 @@ The 3d model is built using OpenSCAD in `splitflap.scad`
 * $5/2 units -- MDF 3.2mm P2 [on Ponoko](http://www.ponoko.com/make-and-sell/show-material/64-mdf-natural)
 * $20 -- laser cutting on Ponoko (can save ~$0.70 by skipping etched label)
 * $7 -- shipping from Ponoko
-* ~$2 -- 28byj-48 motor
+* ~$2 -- 28byj-48 motor and ULN2003 driver (see [motor notes](https://github.com/scottbez1/splitflap/wiki/Motor-info) for specific details)
 * ~$5/5 units -- 5mmx100mm rod
 * $6.39/2 units -- vinyl letter stickers (minimum letter duplication per pack is 2) [on Amazon](http://www.amazon.com/Duro-Decal-Permanent-Adhesive-Letters/dp/B0027601CM)
 * $12/5 units or $36/25 units -- CR80 cards (each CR80 card becomes 2 flaps, each unit requires 40 flaps) on [Amazon](http://www.amazon.com/Plastic-printers-DataCard-Evolis-Magicard/dp/B007M413BC) or [Amazon](http://www.amazon.com/White-Blank-CR80-020-Graphic-Quality/dp/B007PKD6MW)
