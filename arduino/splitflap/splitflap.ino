@@ -18,7 +18,8 @@
 
 #define NUM_FLAPS (40)
 
-#define STEPS_PER_REVOLUTION (63.68395 * 64)
+#define STEPS_PER_REVOLUTION (4096.0)
+//(63.68395 * 64)
 #define STEPS_PER_FLAP (STEPS_PER_REVOLUTION / NUM_FLAPS)
 
 int flaps[NUM_FLAPS] = {
@@ -46,14 +47,18 @@ unsigned long lastUpdate = 0;
 long current = 0;
 float desired = 0;
 
-long MAX_PERIOD = 6000;
-long MIN_PERIOD = 780;
-long VEL_STEP = 80;
+#define MAX_PERIOD_MICROS (10000)
+#define MIN_PERIOD_MICROS (550)
 
-long maxVel = MAX_PERIOD - MIN_PERIOD;
-long accelSteps = maxVel / VEL_STEP;
+#define ACCEL_TIME_MICROS (200000)
+#define MAX_RAMP_LEVELS (ACCEL_TIME_MICROS/MIN_PERIOD_MICROS)
 
-long curVel = 0;
+int RAMP_PERIODS[MAX_RAMP_LEVELS+2];
+
+int computedMaxRampLevel;
+
+int curRampLevel = 0;
+
 long stepPeriod = 0;
 
 int lastHome = LOW;
@@ -79,14 +84,57 @@ void setup() {
   digitalWrite(31, HIGH);
   delay(5);
   lastHome = digitalRead(31);
+
+  computeAccelerationRamp();
+}
+
+void computeAccelerationRamp() {
+  float minVel = 1000000. / MAX_PERIOD_MICROS;
+  float maxVel = 1000000. / MIN_PERIOD_MICROS;
+  long t = 0;
+  int i = 1;
+  RAMP_PERIODS[0] = 0;
+  while (t < ACCEL_TIME_MICROS) {
+    float vel = minVel + (maxVel - minVel) * ((float)t/ACCEL_TIME_MICROS);
+    if (vel > maxVel) {
+      vel = maxVel;
+    }
+    int period = (int)(1000000. / vel);
+
+    Serial.print(i);
+    Serial.write(": ");
+    Serial.print(vel);
+    Serial.write(" == ");
+    Serial.print(period);
+    Serial.write('\n');
+
+    RAMP_PERIODS[i] = period;
+    t += period;
+    i++;
+
+    if (i >= MAX_RAMP_LEVELS + 1) {
+      panic();
+    }
+  }
+  computedMaxRampLevel = i - 1;
+}
+
+void panic() {
+  pinMode(13, OUTPUT);
+  while (1) {
+    digitalWrite(13, HIGH);
+    delay(100);
+    digitalWrite(13, LOW);
+    delay(100);
+  }
 }
 
 void loop() {
   unsigned long now = micros();
   if (now - lastUpdate >= stepPeriod) {
-    if (curVel > 0) {
+    if (curRampLevel > 0) {
       current++;
-    } else if (curVel < 0) {
+    } else if (curRampLevel < 0) {
       current--;
     }
     lastUpdate = now;
@@ -115,6 +163,8 @@ void loop() {
           int flapIndex = findFlapIndex(b);
           if (flapIndex != -1) {
             int deltaFlaps = flapIndex - desiredFlapIndex;
+
+            // Always only travel in the forward direction
             if (deltaFlaps <= 0) {
               deltaFlaps += NUM_FLAPS;
             }
@@ -123,10 +173,6 @@ void loop() {
           }
           break;
       }
-      Serial.print(desired);
-      Serial.write('\n');
-      Serial.print(current);
-      Serial.write("\n\n");
     }
 
     int curHome = digitalRead(31);
@@ -135,7 +181,7 @@ void loop() {
       
     float delta = desired - current;
     if (delta > -1 && delta < 1) {
-      curVel = 0;
+      curRampLevel = 0;
       stepPeriod = 0;
       PORTA = 0;
       while (current > 64) {
@@ -172,22 +218,20 @@ void loop() {
 
     PORTA = step_pattern[current & B111];
 
-    long desiredVel = 0;
-    if (delta > accelSteps) {
-      desiredVel = maxVel;
-    } else if (delta < -accelSteps) {
-      desiredVel = -maxVel;
+    int desiredRampLevel = 0;
+    if (delta > computedMaxRampLevel) {
+      desiredRampLevel = computedMaxRampLevel;
+    } else if (delta < -computedMaxRampLevel) {
+      desiredRampLevel = -computedMaxRampLevel;
     } else {
-      desiredVel = delta * VEL_STEP;
+      desiredRampLevel = (int)delta;
     }
-    if (curVel > desiredVel) {
-      curVel -= VEL_STEP;
-    } else if (curVel < desiredVel) {
-      curVel += VEL_STEP;
+    if (curRampLevel > desiredRampLevel) {
+      curRampLevel--;
+    } else if (curRampLevel < desiredRampLevel) {
+      curRampLevel++;
     }
-    if (curVel > maxVel) curVel = maxVel;
-    if (curVel < -maxVel) curVel = -maxVel;
 
-    stepPeriod = curVel > 0 ? MAX_PERIOD - curVel : MAX_PERIOD + curVel;
+    stepPeriod = curRampLevel > 0 ? RAMP_PERIODS[curRampLevel] : RAMP_PERIODS[-curRampLevel];
   }
 }
