@@ -48,7 +48,7 @@ long current = 0;
 float desired = 0;
 
 #define MAX_PERIOD_MICROS (10000)
-#define MIN_PERIOD_MICROS (550)
+#define MIN_PERIOD_MICROS (600)
 
 #define ACCEL_TIME_MICROS (200000)
 #define MAX_RAMP_LEVELS (ACCEL_TIME_MICROS/MIN_PERIOD_MICROS)
@@ -117,15 +117,41 @@ void computeAccelerationRamp() {
     }
   }
   computedMaxRampLevel = i - 1;
+
+  goHome();
 }
 
 void panic() {
+  PORTA = 0;
   pinMode(13, OUTPUT);
   while (1) {
     digitalWrite(13, HIGH);
     delay(100);
     digitalWrite(13, LOW);
     delay(100);
+  }
+}
+
+void goHome() {
+  boolean foundHome = false;
+
+  for (int i = 0; i < STEPS_PER_REVOLUTION + STEPS_PER_FLAP * 5; i++) {
+    int curHome = digitalRead(31);
+    bool shift = curHome == HIGH && lastHome == LOW;
+    lastHome = curHome;
+
+    if (shift) {
+      foundHome = true;
+      break;
+    }
+
+    PORTA = step_pattern[i & B111];
+    delayMicroseconds(RAMP_PERIODS[computedMaxRampLevel/4]);
+  }
+  PORTA = 0;
+
+  if (!foundHome) {
+    panic();
   }
 }
 
@@ -158,6 +184,11 @@ void loop() {
           if (PORTA == 0) {
             desiredFlapIndex = 0;
           }
+          break;
+        case '@':
+          goHome();
+          desiredFlapIndex = 0;
+          current = (int)desired;
           break;
         default:
           int flapIndex = findFlapIndex(b);
