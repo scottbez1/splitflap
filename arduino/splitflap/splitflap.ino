@@ -22,7 +22,7 @@
 //(63.68395 * 64)
 #define STEPS_PER_FLAP (STEPS_PER_REVOLUTION / NUM_FLAPS)
 
-int flaps[NUM_FLAPS] = {
+const int flaps[NUM_FLAPS] = {
   ' ',
   'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
   'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
@@ -43,12 +43,15 @@ uint8_t step_pattern[] = {
   B0011,
 };
 
+bool initializing = false;
+long initStartMicros;
+
 unsigned long lastUpdate = 0;
 long current = 0;
 float desired = 0;
 
 #define MAX_PERIOD_MICROS (10000)
-#define MIN_PERIOD_MICROS (600)
+#define MIN_PERIOD_MICROS (800)
 
 #define ACCEL_TIME_MICROS (200000)
 #define MAX_RAMP_LEVELS (ACCEL_TIME_MICROS/MIN_PERIOD_MICROS)
@@ -76,7 +79,7 @@ int findFlapIndex(int character) {
 
 void setup() {
   // put your setup code here, to run once:
-  DDRA = 0xFF;
+  DDRD = 0xF;
   pinMode(13, OUTPUT);
   Serial.begin(115200);
 
@@ -85,6 +88,7 @@ void setup() {
   delay(5);
   lastHome = digitalRead(31);
 
+  while(!Serial) {}
   computeAccelerationRamp();
 }
 
@@ -94,6 +98,7 @@ void computeAccelerationRamp() {
   long t = 0;
   int i = 1;
   RAMP_PERIODS[0] = 0;
+  Serial.print("Computing acceleration table: \n[\n");
   while (t < ACCEL_TIME_MICROS) {
     float vel = minVel + (maxVel - minVel) * ((float)t/ACCEL_TIME_MICROS);
     if (vel > maxVel) {
@@ -101,12 +106,8 @@ void computeAccelerationRamp() {
     }
     int period = (int)(1000000. / vel);
 
-    Serial.print(i);
-    Serial.write(": ");
-    Serial.print(vel);
-    Serial.write(" == ");
     Serial.print(period);
-    Serial.write('\n');
+    Serial.print(",\n");
 
     RAMP_PERIODS[i] = period;
     t += period;
@@ -117,12 +118,19 @@ void computeAccelerationRamp() {
     }
   }
   computedMaxRampLevel = i - 1;
+  Serial.print("]\n\nVelocity steps: ");
+  Serial.print(computedMaxRampLevel);
+  Serial.print("\n\n");
 
-  goHome();
+//  goHome();
+//  delay(200);
+  initializing = true;
+  initStartMicros = micros();
+  desired = STEPS_PER_REVOLUTION;
 }
 
 void panic() {
-  PORTA = 0;
+  PORTD = 0;
   pinMode(13, OUTPUT);
   while (1) {
     digitalWrite(13, HIGH);
@@ -145,10 +153,10 @@ void goHome() {
       break;
     }
 
-    PORTA = step_pattern[i & B111];
-    delayMicroseconds(RAMP_PERIODS[computedMaxRampLevel/4]);
+    PORTD = step_pattern[i & B111];
+    delayMicroseconds(RAMP_PERIODS[computedMaxRampLevel/6]);
   }
-  PORTA = 0;
+  PORTD = 0;
 
   if (!foundHome) {
     panic();
@@ -181,7 +189,7 @@ void loop() {
           desired -= STEPS_PER_FLAP / 4;
           break;
         case '!':
-          if (PORTA == 0) {
+          if (PORTD == 0) {
             desiredFlapIndex = 0;
           }
           break;
@@ -205,16 +213,19 @@ void loop() {
           break;
       }
     }
-
-    int curHome = digitalRead(31);
-    bool shift = curHome == HIGH && lastHome == LOW;
-    lastHome = curHome;
       
     float delta = desired - current;
     if (delta > -1 && delta < 1) {
       curRampLevel = 0;
       stepPeriod = 0;
-      PORTA = 0;
+      PORTD = 0;
+
+      if (initializing) {
+        initializing = false;
+        Serial.print((micros() - initStartMicros));
+        Serial.print(" us per revolution\n\n"); 
+      }
+
       while (current > 64) {
         current -= 64;
         desired -= 64;
@@ -223,31 +234,27 @@ void loop() {
         current += 64;
         desired += 64;
       }
-
-      if (shift) {
-          desired += STEPS_PER_FLAP;
-      }
       return;
     }
 
-    if (PORTA == 0) {
-      PORTA = step_pattern[current & B111];
+    if (PORTD == 0) {
+      PORTD = step_pattern[current & B111];
       delay(10);
-      PORTA = step_pattern[(current-1) & B111];
+      PORTD = step_pattern[(current-1) & B111];
       delay(10);
-      PORTA = step_pattern[(current-2) & B111];
+      PORTD = step_pattern[(current-2) & B111];
       delay(10);
-      PORTA = step_pattern[(current-3) & B111];
+      PORTD = step_pattern[(current-3) & B111];
       delay(10);
-      PORTA = step_pattern[(current-2) & B111];
+      PORTD = step_pattern[(current-2) & B111];
       delay(10);
-      PORTA = step_pattern[(current-1) & B111];
+      PORTD = step_pattern[(current-1) & B111];
       delay(10);
-      PORTA = step_pattern[current & B111];
+      PORTD = step_pattern[current & B111];
       delay(10);
     }
 
-    PORTA = step_pattern[current & B111];
+    PORTD = step_pattern[current & B111];
 
     int desiredRampLevel = 0;
     if (delta > computedMaxRampLevel) {
