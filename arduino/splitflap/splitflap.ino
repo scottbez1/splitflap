@@ -38,7 +38,8 @@ const uint8_t step_pattern[] = {
   B00000011,
 };
 
-SplitflapModule moduleA(flaps, step_pattern, DDRD, PORTD);
+SplitflapModule moduleA(flaps, step_pattern, DDRD, PORTD, 0x0F);
+SplitflapModule moduleB(flaps, step_pattern, DDRB, PORTB, 0x0F);
 
 void setup() {
   // put your setup code here, to run once:
@@ -50,13 +51,15 @@ void setup() {
   digitalWrite(13, HIGH);
   moduleA.init();
   moduleA.testing();
+  moduleB.init();
+  moduleB.testing();
   digitalWrite(13, LOW);
 
   initializing = true;
   initStartMicros = micros();
 }
 
-
+boolean a = true;
 void loop() {
   if (Serial.available() > 0) {
     int b = Serial.read();
@@ -82,9 +85,15 @@ void loop() {
         moduleA.goHome();
         break;
       default:
-        moduleA.goToFlap(b);
+        if (a) {
+          moduleA.goToFlap(b);
+        } else {
+          moduleB.goToFlap(b);
+        }
+        a = !a;
         break;
     }
   }
   moduleA.update();
+  moduleB.update();
 }

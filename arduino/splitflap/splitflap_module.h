@@ -25,7 +25,7 @@
 #define STEPS_PER_FLAP (STEPS_PER_REVOLUTION / NUM_FLAPS)
 
 #define MAX_PERIOD_MICROS (20000)
-#define MIN_PERIOD_MICROS (1600)
+#define MIN_PERIOD_MICROS (1200)
 
 #define ACCEL_TIME_MICROS (200000)
 #define MAX_RAMP_LEVELS (ACCEL_TIME_MICROS/MIN_PERIOD_MICROS)
@@ -37,6 +37,7 @@ private:
   const uint8_t (&stepPattern)[4];
   volatile uint8_t &ddr;
   volatile uint8_t &port;
+  const uint8_t mask;
   
   int RAMP_PERIODS[MAX_RAMP_LEVELS+2];
   int lastHome;
@@ -54,7 +55,13 @@ private:
   void computeAccelerationRamp();
   
 public:
-  SplitflapModule(const int (&flaps)[NUM_FLAPS], const uint8_t (&stepPattern)[4], volatile uint8_t &ddr, volatile uint8_t &port);
+  SplitflapModule(
+    const int (&flaps)[NUM_FLAPS],
+    const uint8_t (&stepPattern)[4],
+    volatile uint8_t &ddr,
+    volatile uint8_t &port,
+    const uint8_t mask
+  );
   void update();
   void goHome();
   bool goToFlap(int character);

@@ -16,11 +16,17 @@
 
 #include "splitflap_module.h"
 
-SplitflapModule::SplitflapModule(const int (&flaps)[NUM_FLAPS], const uint8_t (&stepPattern)[4], volatile uint8_t &ddr, volatile uint8_t &port) : 
+SplitflapModule::SplitflapModule(
+  const int (&flaps)[NUM_FLAPS],
+  const uint8_t (&stepPattern)[4],
+  volatile uint8_t &ddr,
+  volatile uint8_t &port,
+  const uint8_t mask) : 
     flaps(flaps),
     stepPattern(stepPattern),
     ddr(ddr),
-    port(port)
+    port(port),
+    mask(mask)
 {
 }
 
@@ -34,7 +40,7 @@ int SplitflapModule::findFlapIndex(int character) {
 }
 
 void SplitflapModule::init() {
-  ddr = 0xF;
+  ddr |= mask;
   
   pinMode(31, INPUT);
   digitalWrite(31, HIGH);
@@ -76,7 +82,7 @@ void SplitflapModule::computeAccelerationRamp() {
 }
 
 void SplitflapModule::panic() {
-  port = 0;
+  port &= ~(mask);
   pinMode(13, OUTPUT);
   while (1) {
     digitalWrite(13, HIGH);
@@ -87,29 +93,29 @@ void SplitflapModule::panic() {
 }
 
 void SplitflapModule::goHome() {
-  boolean foundHome = false;
-
-  for (int i = 0; i < STEPS_PER_REVOLUTION + STEPS_PER_FLAP * 5; i++) {
-    int curHome = digitalRead(31);
-    bool shift = curHome == HIGH && lastHome == LOW;
-    lastHome = curHome;
-
-    if (shift) {
-      foundHome = true;
-      break;
-    }
-
-    port = stepPattern[i & B11];
-    delayMicroseconds(RAMP_PERIODS[computedMaxRampLevel/6]);
-  }
-  port = 0;
-
-  if (!foundHome) {
-    panic();
-  }
-  
-  desiredFlapIndex = 0;
-  current = (int)desired;
+//  boolean foundHome = false;
+//
+//  for (int i = 0; i < STEPS_PER_REVOLUTION + STEPS_PER_FLAP * 5; i++) {
+//    int curHome = digitalRead(31);
+//    bool shift = curHome == HIGH && lastHome == LOW;
+//    lastHome = curHome;
+//
+//    if (shift) {
+//      foundHome = true;
+//      break;
+//    }
+//
+//    port = stepPattern[i & B11];
+//    delayMicroseconds(RAMP_PERIODS[computedMaxRampLevel/6]);
+//  }
+//  port = 0;
+//
+//  if (!foundHome) {
+//    panic();
+//  }
+//  
+//  desiredFlapIndex = 0;
+//  current = (int)desired;
 }
 
 void SplitflapModule::testing() {
@@ -148,7 +154,7 @@ void SplitflapModule::update() {
     if (delta > -1 && delta < 1) {
       curRampLevel = 0;
       stepPeriod = 0;
-      port = 0;
+      port &= ~(mask);
 
       while (current > 64) {
         current -= 64;
@@ -178,7 +184,7 @@ void SplitflapModule::update() {
 //      delay(10);
 //    }
 
-    port = stepPattern[current & B11];
+    port = (port & ~(mask)) | stepPattern[current & B11];
 
     int desiredRampLevel = 0;
     if (delta > computedMaxRampLevel) {
