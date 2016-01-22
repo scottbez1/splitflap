@@ -2,12 +2,13 @@
 
 This is a work in progress DIY [split-flap display](https://en.wikipedia.org/wiki/Split-flap_display).
 Initial prototype: [video](https://www.youtube.com/watch?v=wuriphgWN40).
+Two character display: [video](https://www.youtube.com/watch?v=bslkflVv-Hw).
 
 ![animated rendering](renders/animation.gif)
 
 The goal is to make a low-cost display that's easy to fabricate at home in small/single quantities (e.g. custom materials can be ordered from Ponoko or similar, and other hardware is generally available).
 
-The 3d model is built using OpenSCAD in `splitflap.scad`
+The 3d model is built using OpenSCAD in `3d/splitflap.scad`, the driver board is designed in KiCAD in `electronics/splitflap.pro`, and the driver firmware is written using Arduino in `arduino/splitflap/splitflap.ino`.
 
 ### Design Highlights ###
 * laser cut enclosure and mechanisms from a single material
@@ -41,7 +42,7 @@ A build log/instructions for building a split-flap display of your own is posted
 ## Design & Modification Guide ##
 
 ### 3D Design ###
-The main design file is `splitflap.scad`
+The main design file is `3d/splitflap.scad`
 
 You'll need a recent version of OpenSCAD (e.g. 2015-03), which may need to be installed through the PPA:
 `sudo add-apt-repository ppa:openscad/releases`
@@ -50,18 +51,18 @@ In general, solid objects such as the gears or enclosure sides are built from 2d
 
 Note that while the design is parameterized and many values may be tweaked, there is currently no error checking for invalid parameters or combinations of parameters. Please take care to validate the design if you change any parameters. For instance, while most of the design would correctly adjust to a tweaked material `thickness` value, the `thickness` plays a role in the alignment of the gears, so changing this value may result in misaligned gears or issues with the motor shaft length.
 
-### Rendering ###
-#### Laser-cut vector files ####
-The design can be rendered to 2d for laser cutting by running `generate_2d.py`, which outputs to `build/laser_parts/combined.svg`
+#### Rendering ####
+##### Laser-cut vector files #####
+The design can be rendered to 2d for laser cutting by running `3d/generate_2d.py`, which outputs to `3d/build/laser_parts/combined.svg`
 
-Internally, the design uses a `projection_renderer` module (`projection_renderer.scad`), which takes a list of child elements to render, and depending on the `render_index` renders a single child at a time. It also _adds_ material to each shape to account for the kerf that will be cut away by the laser.
+Internally, the design uses a `projection_renderer` module (`3d/projection_renderer.scad`), which takes a list of child elements to render, and depending on the `render_index` renders a single child at a time. It also _adds_ material to each shape to account for the kerf that will be cut away by the laser.
 
 The `generate_2d.py` script interacts with the `projection_renderer` module by first using it to determine the number of subcomponents to render, then runs OpenSCAD to export each component to an SVG file. It does some post-processing on the SVG output (notably adds "mm" to the document dimensions), and then combines all components into the single `combined.svg` output.
 
-Once the `combined.svg` file is generated, you'll want to remove a couple redundant cut lines that are shared by multiple adjacent pieces, to save time/cost when cutting. In Inkscape, select the "Edit paths by nodes" tool and select an edge to delete - the endpoints should turn blue. Then click "Delete segment between two non-endpoint nodes", and repeat this for all other redundant cut lines.
+Once the `combined.svg` file is generated, you'll want to manually remove a couple redundant cut lines that are shared by multiple adjacent pieces, to save time/cost when cutting. In Inkscape, select the "Edit paths by nodes" tool and select an edge to delete - the endpoints should turn blue. Then click "Delete segment between two non-endpoint nodes", and repeat this for all other redundant cut lines.
 
-#### Animated gif ####
-The design can be rendered to a rotating 3d animated gif (seen above) by running `generate_gif.py`, which outputs to `build/animation/animation.gif`
+##### Animated gif #####
+The design can be rendered to a rotating 3d animated gif (seen above) by running `3d/generate_gif.py`, which outputs to `3d/build/animation/animation.gif`
 
 The `generate_gif.py` script runs multiple OpenSCAD instances in parallel to render the design from 360 degrees to individual png frames, which are then combined into the final gif animation. As part of building the animation, `generate_gif.py` renders the design with multiple configurations (opaque enclosure, see-through enclosure, no-enclosure and no flaps) by setting the `render_enclosure` and `render_flaps` variables.
 
@@ -71,15 +72,18 @@ There is a work-in-progress (untested) driver circuit based on an ATmega32U4 AVR
 ![pcb rendering](renders/splitflap-brd.png)
 
 The PCB layout is designed to fit within the 5cm x 5cm bounds for a number of low-cost PCB manufacturers (e.g. Seeed Studio), and can be populated in two separate configurations (since many low-cost PCB manufacturers have a minimum order of identical PCBs):
-1. As a 4-channel driver board, with ATmega32U4, ULN2003s, USB, etc
-1. As a home sensor board for a single character, with GP2S60 and 3-pin connector
+
+1. As a 4-channel driver board, with ATmega32U4, 3x ULN2003, USB, etc
+1. As a home sensor board for a single character, with GP2S60 IR reflectance sensor and 3-pin connector
 
 This way, with an order of 5 identical PCBs you can populate a single 4-channel driver board and four home sensor boards for a complete electronics set for 4 split-flap units.
 
 ![pcb 3d rendering](renders/splitflap-brd-3d.png)
 
 ### Driver Firmware ###
-TODO. Eventually the driver firmware will be a standalone avr-gcc project, using [LUFA](http://www.fourwalledcubicle.com/LUFA.php) for USB serial emulation. For testing purposes in the meantime there is some basic Arduino code for an Arduino Mega under `arduino/splitflap/splitflap.ino`.
+The driver firmware is written using Arduino (targeting the Arduino Micro board which is based on the ATmega32U4) and is available at `arduino/splitflap/splitflap.ino`. To avoid the need for an ICSP programmer to flash the Arduino bootloader, the plan is to compile using Arduino (Sketch -> Export compiled binary) but install the .hex file using `dfu-programmer` via the stock bootloader.
+
+So far there is some initial progress on an open-loop controller that accepts letters over USB serial and uses a simplistic stepper driver with precomputed acceleration ramps, but it is under very active development.
 
 ## License ##
 This project is licensed under Apache v2.
