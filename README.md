@@ -39,6 +39,11 @@ Tools:
 ## Build Your Own: Instructions ##
 A build log/instructions for building a split-flap display of your own is posted in [the wiki](https://github.com/scottbez1/splitflap/wiki).
 
+<a href="https://github.com/scottbez1/splitflap/wiki">
+<img height="320" src="https://github.com/scottbez1/splitflap/wiki/images/assembly/laserPieces.jpg"/>
+<img height="320" src="https://github.com/scottbez1/splitflap/wiki/images/flaps/punchedCard.jpg"/>
+</a>
+
 ## Design & Modification Guide ##
 
 ### 3D Design ###
