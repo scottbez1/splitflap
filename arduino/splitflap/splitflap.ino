@@ -17,10 +17,6 @@
 #include <math.h>
 #include "splitflap_module.h"
 
-bool initializing = false;
-long initStartMicros;
-
-
 const int flaps[] = {
   ' ',
   'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
@@ -38,62 +34,30 @@ const uint8_t step_pattern[] = {
   B00000011,
 };
 
-SplitflapModule moduleA(flaps, step_pattern, DDRD, PORTD, 0x0F);
-SplitflapModule moduleB(flaps, step_pattern, DDRB, PORTB, 0x0F);
+SplitflapModule moduleA(flaps, step_pattern, DDRB, PORTB, 0x0F, DDRF, PORTF, PINF, B00010000);
 
 void setup() {
   // put your setup code here, to run once:
   pinMode(13, OUTPUT);
   Serial.begin(115200);
-
-//  while(!Serial) {}
   
   digitalWrite(13, HIGH);
   moduleA.init();
-  moduleA.testing();
-  moduleB.init();
-  moduleB.testing();
+  moduleA.goHome();
   digitalWrite(13, LOW);
-
-  initializing = true;
-  initStartMicros = micros();
 }
 
-boolean a = true;
 void loop() {
   if (Serial.available() > 0) {
     int b = Serial.read();
     switch (b) {
-//      case '{':
-//        desired += STEPS_PER_FLAP / 4;
-//        break;
-//      case '[':
-//        desired += STEPS_PER_FLAP;
-//        break;
-//      case ']':
-//        desired -= STEPS_PER_FLAP;
-//        break;
-//      case '}':
-//        desired -= STEPS_PER_FLAP / 4;
-//        break;
-//      case '!':
-//        if (port == 0) {
-//          desiredFlapIndex = 0;
-//        }
-//        break;
       case '@':
         moduleA.goHome();
         break;
       default:
-        if (a) {
-          moduleA.goToFlap(b);
-        } else {
-          moduleB.goToFlap(b);
-        }
-        a = !a;
+        moduleA.goToFlap(b);
         break;
     }
   }
   moduleA.update();
-  moduleB.update();
 }

@@ -19,14 +19,22 @@
 SplitflapModule::SplitflapModule(
   const int (&flaps)[NUM_FLAPS],
   const uint8_t (&stepPattern)[4],
-  volatile uint8_t &ddr,
-  volatile uint8_t &port,
-  const uint8_t mask) : 
+  volatile uint8_t &motor_ddr,
+  volatile uint8_t &motor_port,
+  const uint8_t motor_mask,
+  volatile uint8_t &sensor_ddr,
+  volatile uint8_t &sensor_port,
+  volatile uint8_t &sensor_pin,
+  const uint8_t sensor_mask) : 
     flaps(flaps),
     stepPattern(stepPattern),
-    ddr(ddr),
-    port(port),
-    mask(mask)
+    motor_ddr(motor_ddr),
+    motor_port(motor_port),
+    motor_mask(motor_mask),
+    sensor_ddr(sensor_ddr),
+    sensor_port(sensor_port),
+    sensor_pin(sensor_pin),
+    sensor_mask(sensor_mask)
 {
 }
 
@@ -39,13 +47,18 @@ int SplitflapModule::findFlapIndex(int character) {
   return -1;
 }
 
+bool SplitflapModule::readSensor() {
+  return (sensor_pin & sensor_mask) != 0;
+}
+
 void SplitflapModule::init() {
-  ddr |= mask;
-  
-  pinMode(31, INPUT);
-  digitalWrite(31, HIGH);
+  motor_ddr |= motor_mask;
+
+  // Set up sensor as input and enable internal pull-up
+  sensor_ddr &= ~sensor_mask;
+  sensor_port |= sensor_mask;
   delay(5);
-  lastHome = digitalRead(31);
+  lastHome = readSensor();
   
   computeAccelerationRamp();
 }
@@ -82,7 +95,7 @@ void SplitflapModule::computeAccelerationRamp() {
 }
 
 void SplitflapModule::panic() {
-  port &= ~(mask);
+  motor_port &= ~(motor_mask);
   pinMode(13, OUTPUT);
   while (1) {
     digitalWrite(13, HIGH);
@@ -92,30 +105,38 @@ void SplitflapModule::panic() {
   }
 }
 
+inline bool SplitflapModule::sensorTriggered() {
+    int curHome = readSensor();
+    bool shift = curHome == HIGH && lastHome == LOW;
+    lastHome = curHome;
+
+    return shift;
+}
+
 void SplitflapModule::goHome() {
-//  boolean foundHome = false;
-//
-//  for (int i = 0; i < STEPS_PER_REVOLUTION + STEPS_PER_FLAP * 5; i++) {
-//    int curHome = digitalRead(31);
-//    bool shift = curHome == HIGH && lastHome == LOW;
-//    lastHome = curHome;
-//
-//    if (shift) {
-//      foundHome = true;
-//      break;
-//    }
-//
-//    port = stepPattern[i & B11];
-//    delayMicroseconds(RAMP_PERIODS[computedMaxRampLevel/6]);
-//  }
-//  port = 0;
-//
-//  if (!foundHome) {
-//    panic();
-//  }
-//  
-//  desiredFlapIndex = 0;
-//  current = (int)desired;
+  boolean foundHome = false;
+
+  for (int i = 0; i < STEPS_PER_REVOLUTION + STEPS_PER_FLAP * 5; i++) {
+
+    if (sensorTriggered()) {
+      foundHome = true;
+      break;
+    }
+
+    motor_port = stepPattern[i & B11];
+    delayMicroseconds(RAMP_PERIODS[computedMaxRampLevel/6]);
+  }
+  motor_port = 0;
+
+  if (!foundHome) {
+    panic();
+  }
+  
+  desiredFlapIndex = 0;
+  currentFlapIndex = 0;
+  current = (int)desired;
+  curRampLevel = 0;
+  lookForHome = false;
 }
 
 void SplitflapModule::testing() {
@@ -141,20 +162,51 @@ bool SplitflapModule::goToFlap(int character) {
 }
 
 void SplitflapModule::update() {
+  if (sensorTriggered() && lookForHome) {
+    lookForHome = false;
+
+    Serial.print("Hit home. current flap=");
+    Serial.print(currentFlapIndex);
+    if (currentFlapIndex > 0.5 && currentFlapIndex < NUM_FLAPS - 0.5) {
+      Serial.write("    *** CORRECTING ***");
+      // TODO: adjust `desired` accordingly to rotate the frame of reference, rather than giving up and going home...
+      goHome();
+    }
+    Serial.write('\n');
+  }
+
+  if (currentFlapIndex > 1.5 && currentFlapIndex < (NUM_FLAPS / 4) && lookForHome) {
+    Serial.print("Missed expected home *** CORRECTING ***\n");
+    goHome();
+  }
+  
   unsigned long now = micros();
   if (now - lastUpdateMicros >= stepPeriod) {
     if (curRampLevel > 0) {
       current++;
+      currentFlapIndex += FLAPS_PER_STEP;
     } else if (curRampLevel < 0) {
       current--;
+      currentFlapIndex -= FLAPS_PER_STEP;
     }
     lastUpdateMicros = now;
-      
+    
+    while (currentFlapIndex > NUM_FLAPS - 0.001) {
+      currentFlapIndex -= NUM_FLAPS;
+    }
+    while (currentFlapIndex < -NUM_FLAPS + 0.001) {
+      currentFlapIndex += NUM_FLAPS;
+    }
+
+    if (currentFlapIndex > NUM_FLAPS / 2 && currentFlapIndex < NUM_FLAPS * 3 / 4) {
+      lookForHome = true;
+    }
+    
     float delta = desired - current;
     if (delta > -1 && delta < 1) {
       curRampLevel = 0;
       stepPeriod = 0;
-      port &= ~(mask);
+      motor_port &= ~(motor_mask);
 
       while (current > 64) {
         current -= 64;
@@ -163,6 +215,12 @@ void SplitflapModule::update() {
       while (current < -64) {
         current += 64;
         desired += 64;
+      }
+      while (currentFlapIndex > NUM_FLAPS - 1.001) {
+        currentFlapIndex -= NUM_FLAPS;
+      }
+      while (currentFlapIndex < -NUM_FLAPS + 1.001) {
+        currentFlapIndex += NUM_FLAPS;
       }
       return;
     }
@@ -184,7 +242,7 @@ void SplitflapModule::update() {
 //      delay(10);
 //    }
 
-    port = (port & ~(mask)) | stepPattern[current & B11];
+    motor_port = (motor_port & ~(motor_mask)) | stepPattern[current & B11];
 
     int desiredRampLevel = 0;
     if (delta > computedMaxRampLevel) {
