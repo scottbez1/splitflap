@@ -6,4 +6,5 @@
   (lib (name USB)(type KiCad)(uri "$(KIPRJMOD)/lib/USB.pretty")(options "")(descr ""))
   (lib (name Switch)(type KiCad)(uri "$(KIPRJMOD)/lib/Switch.pretty")(options "")(descr ""))
   (lib (name PinHeaders)(type KiCad)(uri "$(KIPRJMOD)/lib/PinHeaders.pretty")(options "")(descr ""))
+  (lib (name SolderJumpers)(type KiCad)(uri "$(KIPRJMOD)/lib/SolderJumpers.pretty")(options "")(descr ""))
 )

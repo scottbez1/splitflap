@@ -369,7 +369,6 @@ F 3 "" H 2000 4900 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 NoConn ~ 3000 3900
-NoConn ~ 5250 3600
 NoConn ~ 5250 3700
 NoConn ~ 5250 3900
 NoConn ~ 5250 4000
@@ -997,4 +996,32 @@ Wire Wire Line
 	9350 5450 8750 5450
 Wire Wire Line
 	8600 5550 9350 5550
+$Comp
+L Jumper_NC_Small JP1
+U 1 1 56AE727A
+P 5450 3600
+F 0 "JP1" H 5450 3680 50  0000 C CNN
+F 1 "Jumper_NC_Small" H 5460 3540 50  0001 C CNN
+F 2 "SolderJumpers:SolderJumperNormallyClosed" H 5450 3600 50  0001 C CNN
+F 3 "" H 5450 3600 50  0000 C CNN
+	1    5450 3600
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR019
+U 1 1 56AE72EB
+P 5700 3700
+F 0 "#PWR019" H 5700 3450 50  0001 C CNN
+F 1 "GND" H 5700 3550 50  0000 C CNN
+F 2 "" H 5700 3700 50  0000 C CNN
+F 3 "" H 5700 3700 50  0000 C CNN
+	1    5700 3700
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5250 3600 5350 3600
+Wire Wire Line
+	5550 3600 5700 3600
+Wire Wire Line
+	5700 3600 5700 3700
 $EndSCHEMATC
