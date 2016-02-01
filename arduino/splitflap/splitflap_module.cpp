@@ -85,7 +85,8 @@ void SplitflapModule::computeAccelerationRamp() {
     i++;
 
     if (i >= MAX_RAMP_LEVELS + 1) {
-      panic();
+      panic("failed to compute acceleration ramp");
+      break;
     }
   }
   computedMaxRampLevel = i - 1;
@@ -94,15 +95,11 @@ void SplitflapModule::computeAccelerationRamp() {
   Serial.print("\n\n");
 }
 
-void SplitflapModule::panic() {
+void SplitflapModule::panic(char* message) {
+  Serial.print("#### PANIC! ####\n");
+  Serial.print(message);
   motor_port &= ~(motor_mask);
-  pinMode(13, OUTPUT);
-  while (1) {
-    digitalWrite(13, HIGH);
-    delay(100);
-    digitalWrite(13, LOW);
-    delay(100);
-  }
+  state = PANIC;
 }
 
 inline bool SplitflapModule::sensorTriggered() {
@@ -114,35 +111,17 @@ inline bool SplitflapModule::sensorTriggered() {
 }
 
 void SplitflapModule::goHome() {
-  boolean foundHome = false;
-
-  for (int i = 0; i < STEPS_PER_REVOLUTION + STEPS_PER_FLAP * 5; i++) {
-
-    if (sensorTriggered()) {
-      foundHome = true;
-      break;
-    }
-
-    motor_port = stepPattern[i & B11];
-    delayMicroseconds(RAMP_PERIODS[computedMaxRampLevel/6]);
+  if (state == PANIC) {
+    return;
   }
-  motor_port = 0;
-
-  if (!foundHome) {
-    panic();
-  }
-  
-  currentFlapIndex = 0;
-  desired = current;
-  curRampLevel = 0;
-  lookForHome = false;
-}
-
-void SplitflapModule::testing() {
-  desired += STEPS_PER_REVOLUTION;
+  stepsLookingForHome = 0;
+  state = RESET_TO_HOME;
 }
 
 bool SplitflapModule::goToFlap(int character) {
+  if (state == PANIC || state == SENSOR_ERROR) {
+    return false;
+  }
   int flapIndex = findFlapIndex(character);
   if (flapIndex != -1) {
     goToFlapIndex(flapIndex);
@@ -153,120 +132,108 @@ bool SplitflapModule::goToFlap(int character) {
 }
 
 void SplitflapModule::goToFlapIndex(int flapIndex) {
-    int deltaFlaps = flapIndex - desiredFlapIndex;
-
-    // Always only travel in the forward direction
-    if (deltaFlaps <= 0) {
-      deltaFlaps += NUM_FLAPS;
-    }
-    desiredFlapIndex = (desiredFlapIndex + deltaFlaps) % NUM_FLAPS;
-    desired += STEPS_PER_FLAP * deltaFlaps;
+  desiredFlapIndex = flapIndex;
 }
 
 void SplitflapModule::update() {
-  if (sensorTriggered() && lookForHome) {
-    lookForHome = false;
-
-    Serial.print("Hit home. current flap=");
-    Serial.print(currentFlapIndex);
-    if (currentFlapIndex > 0.5 && currentFlapIndex < NUM_FLAPS - 0.5) {
-      Serial.write("    *** CORRECTING ***");
-      // TODO: adjust `desired` accordingly to rotate the frame of reference, rather than giving up and going home...
-      goHome();
-      int goTo = desiredFlapIndex;
-      desiredFlapIndex = 0;
-      goToFlapIndex(goTo);
-    }
-    Serial.write('\n');
+  if (state == PANIC) {
+    return;
   }
-
-  if (currentFlapIndex > 1.5 && currentFlapIndex < (NUM_FLAPS / 4) && lookForHome) {
-    Serial.print("Missed expected home *** CORRECTING ***\n");
-    goHome();
-    int goTo = desiredFlapIndex;
-    desiredFlapIndex = 0;
-    goToFlapIndex(goTo);
-  }
-  
   unsigned long now = micros();
   if (now - lastUpdateMicros >= stepPeriod) {
     if (curRampLevel > 0) {
       current++;
       currentFlapIndex += FLAPS_PER_STEP;
     } else if (curRampLevel < 0) {
-      current--;
-      currentFlapIndex -= FLAPS_PER_STEP;
+      panic("negative velocity");
+      return;
     }
-    lastUpdateMicros = now;
     
     while (currentFlapIndex > NUM_FLAPS - 0.001) {
       currentFlapIndex -= NUM_FLAPS;
     }
-    while (currentFlapIndex < -NUM_FLAPS + 0.001) {
-      currentFlapIndex += NUM_FLAPS;
-    }
 
-    if (currentFlapIndex > NUM_FLAPS / 2 && currentFlapIndex < NUM_FLAPS * 3 / 4) {
-      lookForHome = true;
-    }
-    
-    float delta = desired - current;
-    if (delta > -1 && delta < 1) {
-      curRampLevel = 0;
-      stepPeriod = 0;
-      motor_port &= ~(motor_mask);
-
-      while (current > 64) {
-        current -= 64;
-        desired -= 64;
-      }
-      while (current < -64) {
-        current += 64;
-        desired += 64;
-      }
-      while (currentFlapIndex > NUM_FLAPS - 1.001) {
-        currentFlapIndex -= NUM_FLAPS;
-      }
-      while (currentFlapIndex < -NUM_FLAPS + 1.001) {
-        currentFlapIndex += NUM_FLAPS;
-      }
-      return;
-    }
-
-//    if (port == 0) {
-//      port = stepPattern[current & B11];
-//      delay(10);
-//      port = stepPattern[(current-1) & B11];
-//      delay(10);
-//      port = stepPattern[(current-2) & B11];
-//      delay(10);
-//      port = stepPattern[(current-3) & B11];
-//      delay(10);
-//      port = stepPattern[(current-2) & B11];
-//      delay(10);
-//      port = stepPattern[(current-1) & B11];
-//      delay(10);
-//      port = stepPattern[current & B11];
-//      delay(10);
-//    }
-
-    motor_port = (motor_port & ~(motor_mask)) | stepPattern[current & B11];
-
+    bool foundHome = sensorTriggered();
     int desiredRampLevel = 0;
-    if (delta > computedMaxRampLevel) {
-      desiredRampLevel = computedMaxRampLevel;
-    } else if (delta < -computedMaxRampLevel) {
-      desiredRampLevel = -computedMaxRampLevel;
-    } else {
-      desiredRampLevel = (int)delta;
+    if (state == NORMAL) {
+      if (lookForHome) {
+        if (foundHome) {
+          lookForHome = false;
+      
+          Serial.print("Hit home. current flap=");
+          Serial.print(currentFlapIndex);
+          Serial.write('\n');
+          if (currentFlapIndex > 0.5 && currentFlapIndex < NUM_FLAPS - 0.5) {
+            Serial.write("    *** CORRECTING ***\n");
+            // TODO: adjust `desired` accordingly to rotate the frame of reference, rather than giving up and going home...
+            goHome();
+          }
+        } else if (currentFlapIndex > 0.5 && currentFlapIndex < 5) {
+          Serial.print("Missed expected home *** CORRECTING ***\n");
+          goHome();
+        }
+      }
+      if (currentFlapIndex > 5 && currentFlapIndex < NUM_FLAPS - 5) {
+        lookForHome = true;
+      }
+
+      float deltaFlaps = desiredFlapIndex - currentFlapIndex;
+      if (deltaFlaps < 0) {
+        deltaFlaps += NUM_FLAPS;
+      }
+      
+      float delta = deltaFlaps * STEPS_PER_FLAP;
+      if (delta < 0) {
+        panic("negative delta");
+        return;
+      } else if (delta < 1) {
+        desiredRampLevel = 0;
+  
+        while (current > 64) {
+          current -= 64;
+        }
+        while (currentFlapIndex > NUM_FLAPS - 1.001) {
+          currentFlapIndex -= NUM_FLAPS;
+        }
+      } else if (delta > computedMaxRampLevel) {
+        desiredRampLevel = computedMaxRampLevel;
+      } else {
+        desiredRampLevel = (int)delta;
+      }
+    } else if (state == RESET_TO_HOME) {
+      if (foundHome) {
+        state = NORMAL;
+        currentFlapIndex = 0;
+        lookForHome = false;
+        
+        desiredRampLevel = 0;
+      } else {
+        if (++stepsLookingForHome > (NUM_FLAPS + 5) * STEPS_PER_FLAP) {
+          Serial.print("Never found home position. Entering disabled state.\n");
+          state = SENSOR_ERROR;
+        } else  {
+          desiredRampLevel = computedMaxRampLevel / 6;
+        }
+      }
     }
+
+    // Update current velocity based on desired velocity
     if (curRampLevel > desiredRampLevel) {
       curRampLevel--;
     } else if (curRampLevel < desiredRampLevel) {
       curRampLevel++;
     }
 
-    stepPeriod = curRampLevel > 0 ? RAMP_PERIODS[curRampLevel] : RAMP_PERIODS[-curRampLevel];
+    // Set motor step outputs based on current step
+    if (curRampLevel == 0) {
+      stepPeriod = 0;
+      motor_port &= ~(motor_mask);
+    } else {
+      stepPeriod = curRampLevel > 0 ? RAMP_PERIODS[curRampLevel] : RAMP_PERIODS[-curRampLevel];
+      motor_port = (motor_port & ~(motor_mask)) | stepPattern[current & B11];
+    }
+
+    lastUpdateMicros = now;
   }
 }
 

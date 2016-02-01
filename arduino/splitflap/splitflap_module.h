@@ -34,6 +34,14 @@
 class SplitflapModule {
 
 private:
+
+  enum State {
+    NORMAL,
+    RESET_TO_HOME,
+    SENSOR_ERROR,
+    PANIC,
+  };
+  
   const int (&flaps)[NUM_FLAPS];
   const uint8_t (&stepPattern)[4];
   
@@ -48,12 +56,15 @@ private:
   
   int RAMP_PERIODS[MAX_RAMP_LEVELS+2];
   long current = 0;
-  float desired = 0;
+  
   int desiredFlapIndex = 0;
   float currentFlapIndex = 0;
   
   int lastHome;
   bool lookForHome = false;
+
+  State state = NORMAL;
+  long stepsLookingForHome = 0;
   
   unsigned long lastUpdateMicros = 0;
   int computedMaxRampLevel;
@@ -61,7 +72,7 @@ private:
   long stepPeriod = 0;
 
   int findFlapIndex(int character);
-  void panic();
+  void panic(char* message);
   void computeAccelerationRamp();
   bool readSensor();
   bool sensorTriggered();
@@ -83,7 +94,6 @@ public:
   void goHome();
   bool goToFlap(int character);
   void init();
-  void testing();
 };
 
 #endif
