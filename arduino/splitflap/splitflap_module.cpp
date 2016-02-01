@@ -132,9 +132,8 @@ void SplitflapModule::goHome() {
     panic();
   }
   
-  desiredFlapIndex = 0;
   currentFlapIndex = 0;
-  current = (int)desired;
+  desired = current;
   curRampLevel = 0;
   lookForHome = false;
 }
@@ -146,6 +145,14 @@ void SplitflapModule::testing() {
 bool SplitflapModule::goToFlap(int character) {
   int flapIndex = findFlapIndex(character);
   if (flapIndex != -1) {
+    goToFlapIndex(flapIndex);
+    return true;
+  } else {
+    return false;
+  }
+}
+
+void SplitflapModule::goToFlapIndex(int flapIndex) {
     int deltaFlaps = flapIndex - desiredFlapIndex;
 
     // Always only travel in the forward direction
@@ -154,11 +161,6 @@ bool SplitflapModule::goToFlap(int character) {
     }
     desiredFlapIndex = (desiredFlapIndex + deltaFlaps) % NUM_FLAPS;
     desired += STEPS_PER_FLAP * deltaFlaps;
-    
-    return true;
-  } else {
-    return false;
-  }
 }
 
 void SplitflapModule::update() {
@@ -171,6 +173,9 @@ void SplitflapModule::update() {
       Serial.write("    *** CORRECTING ***");
       // TODO: adjust `desired` accordingly to rotate the frame of reference, rather than giving up and going home...
       goHome();
+      int goTo = desiredFlapIndex;
+      desiredFlapIndex = 0;
+      goToFlapIndex(goTo);
     }
     Serial.write('\n');
   }
@@ -178,6 +183,9 @@ void SplitflapModule::update() {
   if (currentFlapIndex > 1.5 && currentFlapIndex < (NUM_FLAPS / 4) && lookForHome) {
     Serial.print("Missed expected home *** CORRECTING ***\n");
     goHome();
+    int goTo = desiredFlapIndex;
+    desiredFlapIndex = 0;
+    goToFlapIndex(goTo);
   }
   
   unsigned long now = micros();

@@ -65,6 +65,7 @@ private:
   void computeAccelerationRamp();
   bool readSensor();
   bool sensorTriggered();
+  void goToFlapIndex(int flapIndex);
   
 public:
   SplitflapModule(
