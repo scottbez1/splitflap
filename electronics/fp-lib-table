@@ -7,4 +7,5 @@
   (lib (name Switch)(type KiCad)(uri "$(KIPRJMOD)/lib/Switch.pretty")(options "")(descr ""))
   (lib (name PinHeaders)(type KiCad)(uri "$(KIPRJMOD)/lib/PinHeaders.pretty")(options "")(descr ""))
   (lib (name SolderJumpers)(type KiCad)(uri "$(KIPRJMOD)/lib/SolderJumpers.pretty")(options "")(descr ""))
+  (lib (name ABLS7M2_16MHz_Crystal)(type KiCad)(uri "$(KIPRJMOD)/lib/ABLS7M2_16MHz_Crystal.pretty")(options "")(descr ""))
 )
