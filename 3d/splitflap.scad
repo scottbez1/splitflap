@@ -307,6 +307,11 @@ module spool_gear() {
         difference() {
             gear(drive_pitch, spool_teeth, 0, assembly_inner_radius * 2);
             spool_strut_tab_holes();
+
+            // Hole for IR reflectance sensor to detect
+            translate([0, -14]) {
+                circle(r=2.5, $fn=15);
+            }
         }
     }
 }

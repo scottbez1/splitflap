@@ -178,8 +178,12 @@ void SplitflapModule::update() {
       }
 
       float deltaFlaps = desiredFlapIndex - currentFlapIndex;
-      if (deltaFlaps < 0) {
+      if (deltaFlaps < -0.25) {
         deltaFlaps += NUM_FLAPS;
+      } else if (deltaFlaps < 0) {
+        // If we're less than a quarter-flap past where we want to be, don't bother
+        // doing a full rotation; just stop here.
+        deltaFlaps = 0;
       }
       
       float delta = deltaFlaps * STEPS_PER_FLAP;
