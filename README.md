@@ -72,7 +72,7 @@ The design can be rendered to a rotating 3d animated gif (seen above) by running
 The `generate_gif.py` script runs multiple OpenSCAD instances in parallel to render the design from 360 degrees to individual png frames, which are then combined into the final gif animation. As part of building the animation, `generate_gif.py` renders the design with multiple configurations (opaque enclosure, see-through enclosure, no-enclosure and no flaps) by setting the `render_enclosure` and `render_flaps` variables.
 
 ### Driver Electronics ###
-There is a work-in-progress (untested) driver circuit based on an ATmega32U4 AVR under `electronics/splitflap.pro` (KiCad project). The driver supports 4 stepper motors using ULN2003 darlington arrays (which you easily remove from the 28byj-48 driver boards that often come with the motors) and 4 optical home position inputs (for GP2S60 IR reflectance sensors), with a micro-USB connector for computer control.
+There is a work-in-progress (untested) driver circuit based on an ATmega32U4 AVR under `electronics/splitflap.pro` (KiCad project) which is under very active development and not yet recommended to be fabricated. The driver supports 4 stepper motors using ULN2003 darlington arrays (which you easily remove from the 28byj-48 driver boards that often come with the motors) and 4 optical home position inputs (for GP2S60 IR reflectance sensors), with a micro-USB connector for computer control.
 
 ![pcb rendering](renders/splitflap-brd.png)
 
@@ -88,7 +88,7 @@ This way, with an order of 5 identical PCBs you can populate a single 4-channel 
 ### Driver Firmware ###
 The driver firmware is written using Arduino (targeting the Arduino Micro board which is based on the ATmega32U4) and is available at `arduino/splitflap/splitflap.ino`. To avoid the need for an ICSP programmer to flash the Arduino bootloader, the plan is to compile using Arduino (Sketch -> Export compiled binary) but install the .hex file using `dfu-programmer` via the stock bootloader.
 
-So far there is some initial progress on an open-loop controller that accepts letters over USB serial and uses a simplistic stepper driver with precomputed acceleration ramps, but it is under very active development.
+So far there is some initial progress on a basic closed-loop controller that accepts letters over USB serial and uses a simplistic stepper driver with precomputed acceleration ramps, but it is under very active development. Currently the firmware supports simple auto-recalibration to the home position using the IR reflectance sensor, both at startup and at runtime. If a commanded rotation is expected to bring the spool past the home position, it will confirm that the home position sensor is triggered neither too early nor too late, otherwise it will attempt to automatically recalibrate before continuing to the desired location.
 
 ## License ##
 This project is licensed under Apache v2.
