@@ -37,7 +37,7 @@ Tools:
 * $9.17 -- badge slot punch (for cutting notches out of cards to make flaps) [on Amazon](http://www.amazon.com/gp/product/B009YDRRB4)
 
 ## Build Your Own: Instructions ##
-A build log/instructions for building a split-flap display of your own is posted in [the wiki](https://github.com/scottbez1/splitflap/wiki).
+This design is still a work in progress; a build log/instructions for building a prototype split-flap display of your own is posted in [the wiki](https://github.com/scottbez1/splitflap/wiki).
 
 <a href="https://github.com/scottbez1/splitflap/wiki">
 <img height="320" src="https://github.com/scottbez1/splitflap/wiki/images/assembly/laserPieces.jpg"/>
