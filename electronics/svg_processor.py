@@ -14,6 +14,7 @@
 
 import logging
 import re
+import xml
 from xml.dom import minidom
 
 """
@@ -28,21 +29,19 @@ class SvgProcessor(object):
         self.dom = minidom.parse(input_file)
         self.svg_node = self.dom.documentElement
 
-    def apply_color(self, fill, fill_opacity):
+    def apply_color_transform(self, transform_function):
         # Set fill and stroke on all groups
         for group in self.svg_node.getElementsByTagName('g'):
-            SvgProcessor._apply_style(group, {
-                'fill': fill,
-                'stroke': fill,
-                'opacity': '0.5',
+            SvgProcessor._apply_transform(group, {
+                'fill': transform_function,
+                'stroke': transform_function,
             })
-            #SvgProcessor._multiply_style(group, {
-            #    'fill-opacity': fill_opacity,
-            #    'stroke-opacity': fill_opacity,
-            #})
 
     def import_groups(self, from_svg_processor):
-        for group in from_svg_processor.svg_node.getElementsByTagName('g'):
+        for child in from_svg_processor.svg_node.childNodes:
+            if child.nodeType != child.ELEMENT_NODE or child.tagName != 'g':
+                continue
+            group = child
             output_node = self.dom.importNode(group, True)
             self.svg_node.appendChild(output_node)
 
@@ -50,42 +49,29 @@ class SvgProcessor(object):
         with open(filename, 'wb') as output_file:
             self.svg_node.writexml(output_file)
 
+    def wrap_with_group(self, attrs):
+        parent = self.svg_node
+        wrapper = self.dom.createElement("g")
+        for k,v in attrs.items():
+            wrapper.setAttribute(k,v)
+
+        for child in parent.getElementsByTagName('g'):
+            parent.removeChild(child)
+            wrapper.appendChild(child)
+
+        parent.appendChild(wrapper)
+
     @staticmethod
-    def _apply_style(node, values):
+    def _apply_transform(node, values):
         original_style = node.attributes['style'].value
         for (k,v) in values.items():
-            new_value = v
             escaped_key = re.escape(k)
             m = re.search(r'\b' + escaped_key + r':(?P<value>[^;]*);', original_style)
             if m:
+                transformed_value = v(m.group('value'))
                 original_style = re.sub(
                     r'\b' + escaped_key + r':[^;]*;',
-                    k + ':' + v + ';',
+                    k + ':' + transformed_value + ';',
                     original_style)
-            else:
-                original_style += k + ':' + v + ';'
-            node.attributes['style'] = original_style
-        #    original_style = re.sub(
-        #        r'\b' + escaped_key + r':[^;]*;',
-        #        k + r':' + v + r';',
-        #        original_style)
-        #node.attributes['style'] = original_style
-
-    @staticmethod
-    def _multiply_style(node, values):
-        original_style = node.attributes['style'].value
-        for (k,v) in values.items():
-            new_value = v
-            escaped_key = re.escape(k)
-            m = re.search(r'\b' + escaped_key + r':(?P<value>[^;]*);', original_style)
-            if m:
-                original_value = float(m.group('value'))
-                new_value = v * original_value
-                original_style = re.sub(
-                    r'\b' + escaped_key + r':[^;]*;',
-                    k + ':' + str(new_value) + ';',
-                    original_style)
-                node.attributes['style'] = original_style
-
-
+        node.attributes['style'] = original_style
 

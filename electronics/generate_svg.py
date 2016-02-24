@@ -18,6 +18,7 @@ import logging
 import os
 import pcbnew
 import re
+import shutil
 import subprocess
 import tempfile
 
@@ -83,25 +84,26 @@ with tempfile.NamedTemporaryFile(suffix='.kicad_pcb') as temp_pcb:
         {
             'layer': pcbnew.B_SilkS,
             'color': '#CC00CC',
-            'alpha': 0.5, 
+            'alpha': 0.8,
         },
         {
             'layer': pcbnew.B_Cu,
             'color': '#33EE33',
-            'alpha': 0.5, 
+            'alpha': 0.5,
         },
         {
             'layer': pcbnew.F_Cu,
             'color': '#CC0000',
-            'alpha': 0.5, 
+            'alpha': 0.5,
         },
         {
             'layer': pcbnew.F_SilkS,
             'color': '#00CCCC',
-            'alpha': 0.5, 
+            'alpha': 0.8,
         },
     ]
 
+    processed_svg_files = []
     for i, layer in enumerate(layers):
         layer_name = 'layer-%02d' % i
         plot_controller.SetLayer(layer['layer'])
@@ -117,8 +119,36 @@ with tempfile.NamedTemporaryFile(suffix='.kicad_pcb') as temp_pcb:
 
         output_filename = os.path.join(build_directory, output_name)
         output_filename2 = os.path.join(build_directory, 'processed-' + output_name)
+
         logger.info('Post-processing %s...', output_filename)
         processor = SvgProcessor(output_filename)
-        processor.apply_color(layer['color'], layer['alpha'])
+        def colorize(original):
+            if original.lower() == '#000000':
+                return layer['color']
+            return original
+        processor.apply_color_transform(colorize)
+        processor.wrap_with_group({
+            'opacity': str(layer['alpha']),
+        })
         processor.write(output_filename2)
+        processed_svg_files.append((output_filename2, processor))
+
+    logger.info('Merging layers...')
+    final_svg = os.path.join(build_directory, 'merged.svg')
+    shutil.copyfile(processed_svg_files[0][0], final_svg)
+    output_processor = SvgProcessor(final_svg)
+    for _, processor in processed_svg_files:
+        output_processor.import_groups(processor)
+    output_processor.write(final_svg)
+
+    logger.info('Rasterizing...')
+    final_png = os.path.join(build_directory, 'merged.png')
+    subprocess.check_call([
+        'inkscape',
+        '--export-area-drawing',
+        '--export-width=320',
+        '--export-png', final_png,
+        '--export-background', '#FFFFFF',
+        final_svg,
+    ])
 
