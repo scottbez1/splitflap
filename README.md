@@ -87,6 +87,11 @@ This way, with an order of 5 identical PCBs you can populate a single 4-channel 
 
 ![pcb 3d rendering](renders/splitflap-brd-3d.png)
 
+#### Rendering ####
+The PCB layout can be rendered to an svg or png (seen above) by running `electronics/generate_svg.py`. This uses KiCad's [python scripting API](https://github.com/blairbonnett-mirrors/kicad/blob/master/demos/python_scripts_examples/plot_board.py) to render several layers to individual svg files, manipulates them to apply color and opacity settings, and then merges them to a single svg.
+
+Eventually the plan is for gerber file generation to be scripted as well, to remove manual steps or mistakes during export.
+
 ### Driver Firmware ###
 The driver firmware is written using Arduino (targeting the Arduino Micro board which is based on the ATmega32U4) and is available at `arduino/splitflap/splitflap.ino`. To avoid the need for an ICSP programmer to flash the Arduino bootloader, the plan is to compile using Arduino (Sketch -> Export compiled binary) but install the .hex file using `dfu-programmer` via the stock bootloader.
 
