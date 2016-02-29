@@ -85,8 +85,6 @@ The PCB layout is designed to fit within the 5cm x 5cm bounds for a number of lo
 
 This way, with an order of 5 identical PCBs you can populate a single 4-channel driver board and four home sensor boards for a complete electronics set for 4 split-flap units.
 
-![pcb 3d rendering](renders/splitflap-brd-3d.png)
-
 #### Rendering ####
 The PCB layout can be rendered to an svg or png (seen above) by running `electronics/generate_svg.py`. This uses KiCad's [python scripting API](https://github.com/blairbonnett-mirrors/kicad/blob/master/demos/python_scripts_examples/plot_board.py) to render several layers to individual svg files, manipulates them to apply color and opacity settings, and then merges them to a single svg.
 
