@@ -21,6 +21,7 @@ import re
 import shutil
 import subprocess
 import tempfile
+import traceback
 
 from svg_processor import SvgProcessor
 
@@ -103,52 +104,80 @@ with tempfile.NamedTemporaryFile(suffix='.kicad_pcb') as temp_pcb:
         },
     ]
 
-    processed_svg_files = []
-    for i, layer in enumerate(layers):
-        layer_name = 'layer-%02d' % i
-        plot_controller.SetLayer(layer['layer'])
-        logger.info('Plotting layer %d (kicad layer=%r)', i, layer['layer'])
-        plot_controller.OpenPlotfile(layer_name, pcbnew.PLOT_FORMAT_SVG, 'Preview vector rendering')
-        plot_controller.PlotLayer()
-        plot_controller.ClosePlot()
+    files_to_cleanup = set()
 
-        output_name = '%s-%s.svg' % (
-            os.path.splitext(os.path.basename(temp_pcb.name))[0],
-            layer_name,
-        )
+    try:
+        processed_svg_files = []
+        for i, layer in enumerate(layers):
+            layer_name = 'layer-%02d' % i
+            plot_controller.SetLayer(layer['layer'])
+            logger.info('Plotting layer %d (kicad layer=%r)', i, layer['layer'])
 
-        output_filename = os.path.join(build_directory, output_name)
-        output_filename2 = os.path.join(build_directory, 'processed-' + output_name)
+            output_name = '%s-%s.svg' % (
+                os.path.splitext(os.path.basename(temp_pcb.name))[0],
+                layer_name,
+            )
 
-        logger.info('Post-processing %s...', output_filename)
-        processor = SvgProcessor(output_filename)
-        def colorize(original):
-            if original.lower() == '#000000':
-                return layer['color']
-            return original
-        processor.apply_color_transform(colorize)
-        processor.wrap_with_group({
-            'opacity': str(layer['alpha']),
-        })
-        processor.write(output_filename2)
-        processed_svg_files.append((output_filename2, processor))
+            output_filename = os.path.join(build_directory, output_name)
+            output_filename2 = os.path.join(build_directory, 'processed-' + output_name)
 
-    logger.info('Merging layers...')
-    final_svg = os.path.join(build_directory, 'merged.svg')
-    shutil.copyfile(processed_svg_files[0][0], final_svg)
-    output_processor = SvgProcessor(final_svg)
-    for _, processor in processed_svg_files:
-        output_processor.import_groups(processor)
-    output_processor.write(final_svg)
+            files_to_cleanup.add(output_filename)
+            plot_controller.OpenPlotfile(layer_name, pcbnew.PLOT_FORMAT_SVG, 'Preview vector rendering')
+            plot_controller.PlotLayer()
+            plot_controller.ClosePlot()
 
-    logger.info('Rasterizing...')
-    final_png = os.path.join(build_directory, 'merged.png')
-    subprocess.check_call([
-        'inkscape',
-        '--export-area-drawing',
-        '--export-width=320',
-        '--export-png', final_png,
-        '--export-background', '#FFFFFF',
-        final_svg,
-    ])
+            logger.info('Post-processing %s...', output_filename)
+            processor = SvgProcessor(output_filename)
+            def colorize(original):
+                if original.lower() == '#000000':
+                    return layer['color']
+                return original
+            processor.apply_color_transform(colorize)
+            processor.wrap_with_group({
+                'opacity': str(layer['alpha']),
+            })
+            files_to_cleanup.add(output_filename2)
+            processor.write(output_filename2)
+            processed_svg_files.append((output_filename2, processor))
+
+        logger.info('Merging layers...')
+        final_svg = os.path.join(build_directory, 'merged.svg')
+
+        files_to_cleanup.add(final_svg)
+        shutil.copyfile(processed_svg_files[0][0], final_svg)
+        output_processor = SvgProcessor(final_svg)
+        for _, processor in processed_svg_files:
+            output_processor.import_groups(processor)
+        output_processor.write(final_svg)
+
+        logger.info('Rasterizing...')
+        final_png = os.path.join(build_directory, 'merged.png')
+
+        files_to_cleanup.add(final_png)
+        subprocess.check_call([
+            'inkscape',
+            '--export-area-drawing',
+            '--export-width=320',
+            '--export-png', final_png,
+            '--export-background', '#FFFFFF',
+            final_svg,
+        ])
+
+        # Completed successfully, so don't clean up the final artifacts
+        files_to_cleanup.remove(final_svg)
+        files_to_cleanup.remove(final_png)
+    except:
+        logger.critical(traceback.format_exc())
+        leave_intermediates = raw_input('Build failed. Leave intermediate files around? [Yn]')
+        leave_intermediates = leave_intermediates == '' or leave_intermediates.lower()[0] != 'n'
+        if leave_intermediates:
+            files_to_cleanup.clear()
+        raise
+    finally:
+        for f in files_to_cleanup:
+            logger.debug('Deleting intermediate file %r', f)
+            try:
+                os.remove(f)
+            except:
+                logger.warn('Failed to delete intermediate file %r', f)
 
