@@ -1,4 +1,4 @@
-(module PJ-202A (layer F.Cu) (tedit 56C6E634)
+(module PJ-202A (layer F.Cu) (tedit 56E4A9C6)
   (descr "CONN POWER JACK 2.1MM PCB")
   (tags "CONN POWER JACK 2.1MM PCB BARREL JACK")
   (fp_text reference CON1 (at 0 -2.54) (layer F.SilkS) hide
@@ -15,6 +15,6 @@
   (fp_line (start 10.7 4.5) (end -3.7 4.5) (layer F.Fab) (width 0.15))
   (fp_line (start -3.7 4.5) (end -3.7 2.3) (layer F.Fab) (width 0.15))
   (pad 1 thru_hole oval (at -3 0) (size 2 4.5) (drill oval 1 3.5) (layers *.Cu *.Mask F.SilkS))
-  (pad 2 thru_hole oval (at 3 0) (size 2 4.5) (drill oval 1 3.5) (layers *.Cu *.Mask F.SilkS))
+  (pad 2 thru_hole oval (at 3 0) (size 2 4) (drill oval 1 3) (layers *.Cu *.Mask F.SilkS))
   (pad 3 thru_hole oval (at 0 -4.7) (size 4 2) (drill oval 3 1) (layers *.Cu *.Mask F.SilkS))
 )
