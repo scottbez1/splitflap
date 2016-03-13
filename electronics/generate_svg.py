@@ -23,6 +23,8 @@ import subprocess
 import tempfile
 import traceback
 
+import pcb_util
+
 from svg_processor import SvgProcessor
 
 logging.basicConfig(level=logging.DEBUG)
@@ -33,41 +35,10 @@ pcb_filename = 'splitflap.kicad_pcb'
 # Have to use absolute path for build_directory otherwise pcbnew will output relative to the temp file
 build_directory = os.path.abspath('build')
 
-output_suffix = 'preview-vector'
-
 def color_with_alpha(base_color, alpha):
     return (base_color & ~(0xFF << 24)) | ((alpha & 0xFF) << 24)
 
-def get_label_attributes():
-    git_rev = subprocess.check_output([
-        'git',
-        'rev-parse',
-        '--short',
-        'HEAD',
-    ]).strip()
-
-    return {
-        'revision': git_rev,
-        'date': datetime.date.today().strftime('%Y-%m-%d'),
-    }
-
-
-with open(pcb_filename, 'rb') as pcb:
-    original_contents = pcb.read()
-
-    label_attributes = get_label_attributes()
-    new_contents = original_contents\
-        .replace('COMMIT: deadbeef', 'COMMIT: ' + label_attributes['revision'])\
-        .replace('DATE: YYYY-MM-DD', 'DATE: ' + label_attributes['date'])
-
-with tempfile.NamedTemporaryFile(suffix='.kicad_pcb') as temp_pcb:
-    logger.debug('Writing to %s', temp_pcb.name)
-    temp_pcb.write(new_contents)
-    temp_pcb.flush()
-
-    logger.debug('Load board')
-    board = pcbnew.LoadBoard(temp_pcb.name)
-
+with pcb_util.versioned_board(pcb_filename) as board:
     plot_controller = pcbnew.PLOT_CONTROLLER(board)
     plot_options = plot_controller.GetPlotOptions()
 
@@ -114,7 +85,7 @@ with tempfile.NamedTemporaryFile(suffix='.kicad_pcb') as temp_pcb:
             logger.info('Plotting layer %d (kicad layer=%r)', i, layer['layer'])
 
             output_name = '%s-%s.svg' % (
-                os.path.splitext(os.path.basename(temp_pcb.name))[0],
+                os.path.splitext(os.path.basename(board.GetFileName()))[0],
                 layer_name,
             )
 
