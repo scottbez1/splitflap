@@ -66,6 +66,7 @@ def plot_to_directory(output_directory, temp_dir):
         },
     ]
     with pcb_util.get_plotter(PCB_FILENAME, temp_dir) as plotter:
+        plotter.plot_options.SetExcludeEdgeLayer(False)
         processed_svg_files = []
         for i, layer in enumerate(layers):
             output_filename = plotter.plot(layer['layer'], pcbnew.PLOT_FORMAT_SVG)
