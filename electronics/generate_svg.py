@@ -41,7 +41,6 @@ def color_with_alpha(base_color, alpha):
 def run():
     temp_dir = os.path.join(BUILD_DIRECTORY, 'temp_layers')
     shutil.rmtree(temp_dir, ignore_errors=True)
-
     try:
         plot_to_directory(BUILD_DIRECTORY, temp_dir)
     finally:

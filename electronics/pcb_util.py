@@ -16,6 +16,7 @@
 import argparse
 import datetime
 import logging
+import os
 import pcbnew
 import subprocess
 import tempfile
@@ -87,6 +88,36 @@ class GerberPlotter(object):
         self.plot_controller.PlotLayer()
         self.plot_controller.ClosePlot()
         return output_filename
+
+    def plot_drill(self):
+        board_name = os.path.splitext(os.path.basename(self.board.GetFileName()))[0]
+        logger.info('Plotting drill file')
+        drill_writer = pcbnew.EXCELLON_WRITER(self.board)
+        drill_writer.SetMapFileFormat(pcbnew.PLOT_FORMAT_PDF)
+
+        mirror = False
+        minimalHeader = False
+        offset = pcbnew.wxPoint(0, 0)
+        merge_npth = True
+        drill_writer.SetOptions(mirror, minimalHeader, offset, merge_npth)
+
+        metric_format = True
+        drill_writer.SetFormat(metric_format)
+
+        generate_drill = True
+        generate_map = True
+        drill_writer.CreateDrillandMapFilesSet(self.build_directory, generate_drill, generate_map)
+
+        drill_file_name = os.path.join(
+            self.build_directory,
+            '%s.drl' % (board_name,)
+        )
+
+        map_file_name = os.path.join(
+            self.build_directory,
+            '%s-drl_map.pdf' % (board_name,)
+        )
+        return drill_file_name, map_file_name
 
 def _get_versioned_contents(filename):
     with open(filename, 'rb') as pcb:

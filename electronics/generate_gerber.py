@@ -39,8 +39,18 @@ PCB_FILENAME = 'splitflap.kicad_pcb'
 BUILD_DIRECTORY = os.path.abspath('build')
 
 def run():
+    temp_dir = os.path.join(BUILD_DIRECTORY, 'temp_gerbers')
+    shutil.rmtree(temp_dir, ignore_errors=True)
+    try:
+        plot_to_directory(BUILD_DIRECTORY, temp_dir)
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)
+
+def plot_to_directory(output_directory, temp_dir):
+    board_name = os.path.splitext(os.path.basename(PCB_FILENAME))[0]
+
     LayerDef = namedtuple('PlotDef', ['layer', 'extension'])
-    with pcb_util.get_plotter(PCB_FILENAME, BUILD_DIRECTORY) as plotter:
+    with pcb_util.get_plotter(PCB_FILENAME, temp_dir) as plotter:
         plotter.plot_options.SetDrillMarksType(pcbnew.PCB_PLOT_PARAMS.NO_DRILL_SHAPE)
 
         layers = [
@@ -57,12 +67,17 @@ def run():
         for layer in layers:
             output_filename = plotter.plot(layer.layer, pcbnew.PLOT_FORMAT_GERBER)
             desired_name = '%s.%s' % (
-                os.path.splitext(os.path.basename(PCB_FILENAME))[0],
+                board_name,
                 layer.extension,
             )
-            desired_output_filename = os.path.join(BUILD_DIRECTORY, desired_name)
+            desired_output_filename = os.path.join(output_directory, desired_name)
             os.rename(output_filename, desired_output_filename)
 
+        drill_file, map_file = plotter.plot_drill()
+        desired_drill_file = os.path.join(output_directory, '%s.txt' % (board_name,))
+        desired_map_file = os.path.join(output_directory, '%s.drill.pdf' % (board_name,))
+        os.rename(drill_file, desired_drill_file)
+        os.rename(map_file, desired_map_file)
 
 if __name__ == '__main__':
     run()
