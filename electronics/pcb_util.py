@@ -122,12 +122,12 @@ class GerberPlotter(object):
 def _get_versioned_contents(filename):
     with open(filename, 'rb') as pcb:
         original_contents = pcb.read()
-        version_info = _get_version_info()
+        version_info = get_version_info()
         return original_contents \
             .replace('COMMIT: deadbeef', 'COMMIT: ' + version_info['revision']) \
             .replace('DATE: YYYY-MM-DD', 'DATE: ' + version_info['date'])
 
-def _get_version_info():
+def get_version_info():
     git_rev = subprocess.check_output([
         'git',
         'rev-parse',
