@@ -58,6 +58,36 @@ def get_layer_name(kicad_layer_id):
     else:
         return 'Unknown(%r)' % (kicad_layer_id,)
 
+@contextmanager
+def get_plotter(pcb_filename, build_directory):
+    with versioned_board(pcb_filename) as board:
+        yield GerberPlotter(board, build_directory)
+
+class GerberPlotter(object):
+    def __init__(self, board, build_directory):
+        self.board = board
+        self.build_directory = build_directory
+        self.plot_controller = pcbnew.PLOT_CONTROLLER(board)
+        self.plot_options = self.plot_controller.GetPlotOptions()
+        self.plot_options.SetOutputDirectory(build_directory)
+
+        self.plot_options.SetPlotFrameRef(False)
+        self.plot_options.SetLineWidth(pcbnew.FromMM(0.35))
+        self.plot_options.SetScale(1)
+        self.plot_options.SetUseAuxOrigin(True)
+        self.plot_options.SetMirror(False)
+        self.plot_options.SetExcludeEdgeLayer(True)
+
+    def plot(self, layer, plot_format):
+        logger.info('Plotting layer %s (kicad layer=%r)', get_layer_name(layer), layer)
+        layer_name = get_layer_name(layer)
+        self.plot_controller.SetLayer(layer)
+        self.plot_controller.OpenPlotfile(layer_name, plot_format , 'Plot')
+        output_filename = self.plot_controller.GetPlotFileName()
+        self.plot_controller.PlotLayer()
+        self.plot_controller.ClosePlot()
+        return output_filename
+
 def _get_versioned_contents(filename):
     with open(filename, 'rb') as pcb:
         original_contents = pcb.read()

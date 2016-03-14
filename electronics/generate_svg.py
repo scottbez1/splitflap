@@ -30,28 +30,24 @@ from svg_processor import SvgProcessor
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-pcb_filename = 'splitflap.kicad_pcb'
+PCB_FILENAME = 'splitflap.kicad_pcb'
 
 # Have to use absolute path for build_directory otherwise pcbnew will output relative to the temp file
-build_directory = os.path.abspath('build')
+BUILD_DIRECTORY = os.path.abspath('build')
 
 def color_with_alpha(base_color, alpha):
     return (base_color & ~(0xFF << 24)) | ((alpha & 0xFF) << 24)
 
-with pcb_util.versioned_board(pcb_filename) as board:
-    plot_controller = pcbnew.PLOT_CONTROLLER(board)
-    plot_options = plot_controller.GetPlotOptions()
+def run():
+    temp_dir = os.path.join(BUILD_DIRECTORY, 'temp_layers')
+    shutil.rmtree(temp_dir, ignore_errors=True)
 
-    plot_options.SetOutputDirectory(build_directory)
+    try:
+        plot_to_directory(BUILD_DIRECTORY, temp_dir)
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)
 
-    plot_options.SetPlotFrameRef(False)
-    plot_options.SetLineWidth(pcbnew.FromMM(0.35))
-
-    plot_options.SetScale(1)
-    plot_options.SetUseAuxOrigin(True)
-    plot_options.SetMirror(False)
-    plot_options.SetExcludeEdgeLayer(False)
-
+def plot_to_directory(output_directory, temp_dir):
     layers = [
         {
             'layer': pcbnew.B_SilkS,
@@ -74,29 +70,10 @@ with pcb_util.versioned_board(pcb_filename) as board:
             'alpha': 0.8,
         },
     ]
-
-    files_to_cleanup = set()
-
-    try:
+    with pcb_util.get_plotter(PCB_FILENAME, temp_dir) as plotter:
         processed_svg_files = []
         for i, layer in enumerate(layers):
-            layer_name = 'layer-%02d' % i
-            plot_controller.SetLayer(layer['layer'])
-            logger.info('Plotting layer %d (kicad layer=%r)', i, layer['layer'])
-
-            output_name = '%s-%s.svg' % (
-                os.path.splitext(os.path.basename(board.GetFileName()))[0],
-                layer_name,
-            )
-
-            output_filename = os.path.join(build_directory, output_name)
-            output_filename2 = os.path.join(build_directory, 'processed-' + output_name)
-
-            files_to_cleanup.add(output_filename)
-            plot_controller.OpenPlotfile(layer_name, pcbnew.PLOT_FORMAT_SVG, 'Preview vector rendering')
-            plot_controller.PlotLayer()
-            plot_controller.ClosePlot()
-
+            output_filename = plotter.plot(layer['layer'], pcbnew.PLOT_FORMAT_SVG)
             logger.info('Post-processing %s...', output_filename)
             processor = SvgProcessor(output_filename)
             def colorize(original):
@@ -107,14 +84,14 @@ with pcb_util.versioned_board(pcb_filename) as board:
             processor.wrap_with_group({
                 'opacity': str(layer['alpha']),
             })
-            files_to_cleanup.add(output_filename2)
+
+            output_filename2 = os.path.join(temp_dir, 'processed-' + os.path.basename(output_filename))
             processor.write(output_filename2)
             processed_svg_files.append((output_filename2, processor))
 
         logger.info('Merging layers...')
-        final_svg = os.path.join(build_directory, 'merged.svg')
+        final_svg = os.path.join(output_directory, 'merged.svg')
 
-        files_to_cleanup.add(final_svg)
         shutil.copyfile(processed_svg_files[0][0], final_svg)
         output_processor = SvgProcessor(final_svg)
         for _, processor in processed_svg_files:
@@ -122,9 +99,8 @@ with pcb_util.versioned_board(pcb_filename) as board:
         output_processor.write(final_svg)
 
         logger.info('Rasterizing...')
-        final_png = os.path.join(build_directory, 'merged.png')
+        final_png = os.path.join(output_directory, 'merged.png')
 
-        files_to_cleanup.add(final_png)
         subprocess.check_call([
             'inkscape',
             '--export-area-drawing',
@@ -134,21 +110,5 @@ with pcb_util.versioned_board(pcb_filename) as board:
             final_svg,
         ])
 
-        # Completed successfully, so don't clean up the final artifacts
-        files_to_cleanup.remove(final_svg)
-        files_to_cleanup.remove(final_png)
-    except:
-        logger.critical(traceback.format_exc())
-        leave_intermediates = raw_input('Build failed. Leave intermediate files around? [Yn]')
-        leave_intermediates = leave_intermediates == '' or leave_intermediates.lower()[0] != 'n'
-        if leave_intermediates:
-            files_to_cleanup.clear()
-        raise
-    finally:
-        for f in files_to_cleanup:
-            logger.debug('Deleting intermediate file %r', f)
-            try:
-                os.remove(f)
-            except:
-                logger.warn('Failed to delete intermediate file %r', f)
-
+if __name__ == '__main__':
+    run()

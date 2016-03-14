@@ -24,6 +24,7 @@ import tempfile
 import traceback
 
 from collections import namedtuple
+from contextlib import contextmanager
 
 import pcb_util
 
@@ -32,63 +33,37 @@ from svg_processor import SvgProcessor
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-pcb_filename = 'splitflap.kicad_pcb'
+PCB_FILENAME = 'splitflap.kicad_pcb'
 
 # Have to use absolute path for build_directory otherwise pcbnew will output relative to the temp file
-build_directory = os.path.abspath('build')
+BUILD_DIRECTORY = os.path.abspath('build')
 
-LayerDef = namedtuple('PlotDef', ['layer', 'extension'])
+def run():
+    LayerDef = namedtuple('PlotDef', ['layer', 'extension'])
+    with pcb_util.get_plotter(PCB_FILENAME, BUILD_DIRECTORY) as plotter:
+        plotter.plot_options.SetDrillMarksType(pcbnew.PCB_PLOT_PARAMS.NO_DRILL_SHAPE)
 
-with pcb_util.versioned_board(pcb_filename) as board:
-    plot_controller = pcbnew.PLOT_CONTROLLER(board)
-    plot_options = plot_controller.GetPlotOptions()
+        layers = [
+            LayerDef(pcbnew.F_Cu,       'GTL'),
+            LayerDef(pcbnew.F_Mask,     'GTS'),
+            LayerDef(pcbnew.F_SilkS,    'GTO'),
+            LayerDef(pcbnew.B_Cu,       'GBL'),
+            LayerDef(pcbnew.B_Mask,     'GBS'),
+            LayerDef(pcbnew.B_SilkS,    'GBO'),
+            LayerDef(pcbnew.Edge_Cuts,  'GML'),
+        ]
 
-    plot_options.SetOutputDirectory(build_directory)
-
-    plot_options.SetPlotFrameRef(False)
-    plot_options.SetLineWidth(pcbnew.FromMM(0.35))
-
-    plot_options.SetScale(1)
-    plot_options.SetUseAuxOrigin(True)
-    plot_options.SetMirror(False)
-    plot_options.SetExcludeEdgeLayer(True)
-    plot_options.SetDrillMarksType(pcbnew.PCB_PLOT_PARAMS.NO_DRILL_SHAPE)
-
-    layers = [
-        LayerDef(pcbnew.F_Cu,       'GTL'),
-        LayerDef(pcbnew.F_Mask,     'GTS'),
-        LayerDef(pcbnew.F_SilkS,    'GTO'),
-        LayerDef(pcbnew.B_Cu,       'GBL'),
-        LayerDef(pcbnew.B_Mask,     'GBS'),
-        LayerDef(pcbnew.B_SilkS,    'GBO'),
-        LayerDef(pcbnew.Edge_Cuts,  'GML'),
-    ]
-
-    processed_svg_files = []
-    for layer in layers:
-        plot_controller.SetLayer(layer.layer)
-        logger.info('Plotting layer %s (kicad layer=%r)', pcb_util.get_layer_name(layer.layer), layer.layer)
-
-        layer_name = pcb_util.get_layer_name(layer.layer)
-
-        plot_controller.OpenPlotfile(layer_name, pcbnew.PLOT_FORMAT_GERBER, 'Plot')
-        plot_controller.PlotLayer()
-        plot_controller.ClosePlot()
-
-        output_name = '%s-%s.gbr' % (
-            os.path.splitext(os.path.basename(board.GetFileName()))[0],
-            layer_name,
-        )
-
-        output_filename = os.path.join(build_directory, output_name)
-
-        desired_name = '%s.%s' % (
-            os.path.splitext(os.path.basename(pcb_filename))[0],
-            layer.extension,
-        )
-        desired_output_filename = os.path.join(build_directory, desired_name)
-
-        os.rename(output_filename, desired_output_filename)
+        processed_svg_files = []
+        for layer in layers:
+            output_filename = plotter.plot(layer.layer, pcbnew.PLOT_FORMAT_GERBER)
+            desired_name = '%s.%s' % (
+                os.path.splitext(os.path.basename(PCB_FILENAME))[0],
+                layer.extension,
+            )
+            desired_output_filename = os.path.join(BUILD_DIRECTORY, desired_name)
+            os.rename(output_filename, desired_output_filename)
 
 
+if __name__ == '__main__':
+    run()
 
