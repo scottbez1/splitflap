@@ -5,7 +5,7 @@ Initial prototype: [video](https://www.youtube.com/watch?v=wuriphgWN40).
 Two character display: [video](https://www.youtube.com/watch?v=bslkflVv-Hw).
 
 ![animated rendering](renders/animation.gif)
-[![prototype video](https://img.youtube.com/vi/bslkflVv-Hw/mqdefault.jpg)](https://www.youtube.com/watch?v=bslkflVv-Hw)
+[![prototype video](renders/prototypeVideoThumbnail.jpg)](https://www.youtube.com/watch?v=bslkflVv-Hw)
 
 
 The goal is to make a low-cost display that's easy to fabricate at home in small/single quantities (e.g. custom materials can be ordered from Ponoko or similar, and other hardware is generally available).
