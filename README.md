@@ -88,7 +88,9 @@ This way, with an order of 5 identical PCBs you can populate a single 4-channel 
 #### Rendering ####
 The PCB layout can be rendered to an svg or png (seen above) by running `electronics/generate_svg.py`. This uses KiCad's [python scripting API](https://github.com/blairbonnett-mirrors/kicad/blob/master/demos/python_scripts_examples/plot_board.py) to render several layers to individual svg files, manipulates them to apply color and opacity settings, and then merges them to a single svg.
 
-Eventually the plan is for gerber file generation to be scripted as well, to remove manual steps or mistakes during export.
+For reviewing the design, a pdf packet with copper, silkscreen, and drill info can be produced by running `electronics/generate_pdf.py`.
+
+Gerber files for fabrication (not yet recommended) can be exported by running `electronics/generate_gerber.py`. This generates gerber files and an Excellon drill file with Seeed Studio's [naming conventions](http://support.seeedstudio.com/knowledgebase/articles/422482-fusion-pcb-order-submission-guidelines) and produces a `.zip` which can be sent for fabrication.
 
 ### Driver Firmware ###
 The driver firmware is written using Arduino (targeting the Arduino Micro board which is based on the ATmega32U4) and is available at `arduino/splitflap/splitflap.ino`. To avoid the need for an ICSP programmer to flash the Arduino bootloader, the plan is to compile using Arduino (Sketch -> Export compiled binary) but install the .hex file using `dfu-programmer` via the stock bootloader.
