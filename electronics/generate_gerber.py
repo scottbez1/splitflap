@@ -43,7 +43,7 @@ def run():
 def plot_to_directory(output_directory, temp_dir):
     board_name = os.path.splitext(os.path.basename(PCB_FILENAME))[0]
 
-    LayerDef = namedtuple('PlotDef', ['layer', 'extension'])
+    LayerDef = namedtuple('LayerDef', ['layer', 'extension'])
     output_files = []
     with pcb_util.get_plotter(PCB_FILENAME, temp_dir) as plotter:
         plotter.plot_options.SetDrillMarksType(pcbnew.PCB_PLOT_PARAMS.NO_DRILL_SHAPE)

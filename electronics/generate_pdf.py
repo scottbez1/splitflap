@@ -19,6 +19,8 @@ import pcbnew
 import shutil
 import subprocess
 
+from collections import namedtuple
+
 import pcb_util
 
 logging.basicConfig(level=logging.DEBUG)
@@ -44,16 +46,18 @@ def plot_to_directory(output_directory, temp_dir):
         plotter.plot_options.SetDrillMarksType(pcbnew.PCB_PLOT_PARAMS.NO_DRILL_SHAPE)
         plotter.plot_options.SetExcludeEdgeLayer(False)
 
+        LayerDef = namedtuple('LayerDef', ['layer', 'mirror'])
         layers = [
-            pcbnew.F_Cu,
-            pcbnew.B_Cu,
-            pcbnew.F_SilkS,
-            pcbnew.B_SilkS,
+            LayerDef(pcbnew.F_Cu, False),
+            LayerDef(pcbnew.B_Cu, True),
+            LayerDef(pcbnew.F_SilkS, False),
+            LayerDef(pcbnew.B_SilkS, True),
         ]
 
         pdfs = []
         for layer in layers:
-            output_filename = plotter.plot(layer, pcbnew.PLOT_FORMAT_PDF)
+            plotter.plot_options.SetMirror(layer.mirror)
+            output_filename = plotter.plot(layer.layer, pcbnew.PLOT_FORMAT_PDF)
             pdfs.append(output_filename)
 
         _, map_file = plotter.plot_drill()
