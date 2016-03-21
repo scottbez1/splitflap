@@ -4,9 +4,10 @@ This is a work in progress DIY [split-flap display](https://en.wikipedia.org/wik
 Initial prototype: [video](https://www.youtube.com/watch?v=wuriphgWN40).
 Two character display: [video](https://www.youtube.com/watch?v=bslkflVv-Hw).
 
-![animated rendering](renders/animation.gif)
+![animated rendering](https://s3.amazonaws.com/splitflap-travis/latest/3d_animation.gif)
 [![prototype video](renders/prototypeVideoThumbnail.jpg)](https://www.youtube.com/watch?v=bslkflVv-Hw)
 
+[![Build Status](https://travis-ci.org/scottbez1/splitflap.svg?branch=master)](https://travis-ci.org/scottbez1/splitflap)
 
 The goal is to make a low-cost display that's easy to fabricate at home in small/single quantities (e.g. custom materials can be ordered from Ponoko or similar, and other hardware is generally available).
 
@@ -18,7 +19,7 @@ The 3d model is built using OpenSCAD in `3d/splitflap.scad`, the driver board is
 * CR80 PVC cards for flaps, cheap in bulk
 * store-bought vinyl stickers for flap letters
 
-![2d laser cut rendering](renders/raster.png)
+![2d laser cut rendering](https://s3.amazonaws.com/splitflap-travis/latest/3d_laser_raster.png)
 
 ### Cost Breakdown ###
 * $5/2 units -- MDF 3.2mm P2 [on Ponoko](http://www.ponoko.com/make-and-sell/show-material/64-mdf-natural)
@@ -76,7 +77,7 @@ The `generate_gif.py` script runs multiple OpenSCAD instances in parallel to ren
 ### Driver Electronics ###
 There is a work-in-progress (untested) driver circuit based on an ATmega32U4 AVR under `electronics/splitflap.pro` (KiCad project) which is under very active development and not yet recommended to be fabricated. The driver supports 4 stepper motors using ULN2003 darlington arrays (which you easily remove from the 28byj-48 driver boards that often come with the motors) and 4 optical home position inputs (for GP2S60 IR reflectance sensors), with a micro-USB connector for computer control.
 
-![pcb rendering](renders/splitflap-brd.png)
+![pcb rendering](https://s3.amazonaws.com/splitflap-travis/latest/pcb_raster.png)
 
 The PCB layout is designed to fit within the 5cm x 5cm bounds for a number of low-cost PCB manufacturers (e.g. Seeed Studio), and can be populated in two separate configurations (since many low-cost PCB manufacturers have a minimum order of identical PCBs):
 
