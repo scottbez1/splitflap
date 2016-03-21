@@ -26,6 +26,7 @@ deploy:
   upload-dir: latest
   skip_cleanup: true
   acl: public_read
+  cache_control: no-cache
   on:
     repo: scottbez1/splitflap
     branch: master
