@@ -2,14 +2,7 @@ dist: trusty
 sudo: true
 language: generic
 addons:
-  artifacts:
-    paths:
-    - 3d/build/animation/animation.gif
-    - 3d/build/laser_parts/combined.svg
-    - 3d/build/laser_parts/raster.png
-    - electronics/build/merged.png
-    - electronics/build/merged.svg
-    - electronics/build/splitflap_packet.pdf
+  artifacts: true
 install:
 - ./3d/scripts/dependencies.sh
 - ./electronics/scripts/dependencies.sh
@@ -35,4 +28,4 @@ deploy:
   acl: public_read
   on:
     repo: scottbez1/splitflap
-    branch: travisTest
+    branch: master
