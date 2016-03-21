@@ -14,8 +14,8 @@ script:
 - (cd electronics && python -u generate_gerber.py)
 - mkdir build
 - cp 3d/build/animation/animation.gif build/3d_animation.gif
-- cp 3d/build/laser_parts/raster.png build/3d_laser_raster.png
-- cp electronics/build/merged.png build/pcb_raster.png
+- cp 3d/build/laser_parts/raster.png build/3d_laser_raster.png && ./scripts/annotate_image.sh build/3d_laser_raster.png
+- cp electronics/build/merged.png build/pcb_raster.png && ./scripts/annotate_image.sh build/pcb_raster.png
 deploy:
   provider: s3
   access_key_id: AKIAJY6VAINVQICEC47Q
