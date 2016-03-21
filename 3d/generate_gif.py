@@ -38,7 +38,7 @@ def generate_gif(output_folder):
         '-set', 'delay', '1x15',
         os.path.join(output_folder, 'animation.gif'),
     ]
-    print(command)
+    logging.debug(command)
     subprocess.check_call(command)
 
 def render_rotation(output_folder, num_frames, start_frame, variables):

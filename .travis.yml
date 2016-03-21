@@ -1,0 +1,38 @@
+dist: trusty
+sudo: true
+language: generic
+addons:
+  artifacts:
+    paths:
+    - 3d/build/animation/animation.gif
+    - 3d/build/laser_parts/combined.svg
+    - 3d/build/laser_parts/raster.png
+    - electronics/build/merged.png
+    - electronics/build/merged.svg
+    - electronics/build/splitflap_packet.pdf
+install:
+- ./3d/scripts/dependencies.sh
+- ./electronics/scripts/dependencies.sh
+script:
+- (cd 3d && xvfb-run --auto-servernum -s "-screen 0 1024x768x24" python -u generate_2d.py)
+- (cd 3d && xvfb-run --auto-servernum -s "-screen 0 1024x768x24" python -u generate_gif.py)
+- (cd electronics && python -u generate_svg.py)
+- (cd electronics && python -u generate_pdf.py)
+- (cd electronics && python -u generate_gerber.py)
+- mkdir build
+- cp 3d/build/animation/animation.gif build/3d_animation.gif
+- cp 3d/build/laser_parts/raster.png build/3d_laser_raster.png
+- cp electronics/build/merged.png build/pcb_raster.png
+deploy:
+  provider: s3
+  access_key_id: AKIAJY6VAINVQICEC47Q
+  secret_access_key:
+    secure: SYHsDA3WZfV6YlZiS5iSlbVSkULppZQ6Lqc+D6FuXcTy59mxlJykCRLZUXqI/iNIGoO+hUW/myasK31D0WbMAbJ2C4T93GIdbvpnzHsSvvfITmVZPdGwSoQAedagvNo2anIqX53iVFX0i13Y18Kjy6eyxc3jcYLfuZSmIpAuqlyGa7ywRmZmTc4x8SuPNAYTUAw8b6RhVrCd/tPvI4t1qaI9Q9/4oWPhFZdu5VUfWyTj3Y5d4yirzPJfZEccTbAZHyjoHsmKRpczH4J9HFywrjzr2BmJa6Mqw8JvASUWLumyUZDH2DuWS0F08Pu1GupRVjd//+V8kuGsEm6MPmpzfhjl87cv5E62v773lZGoRokhPI5bMcOP8ayFNZYyzdvMWDbIDE2itg+c/uwX6fl5EUufFLdwjHmnTcKFzR+vFIgPboZdSjZ60kYppzBEwp52mCdd7/aBETeEgJTJJwmt5plnn/D7tkg6sQZTdsS1NQLJoYZp96A18IT++YvHzZnPks9QsM+3oPngE1FVy3SKPm3MgRYy28kRLAyt5Igt9xlAum+MB9pYcklT7znIsC/puDsx1xKghZPXGSzD13L0PwLk1DURAde215uCbolhye2CjEpcoJ8Pbf/IMZrkJlgt8km4yGNAF1HBGxVqzCyqbNz1JiBr2mMlJ86zgf7NYVQ=
+  bucket: splitflap-travis
+  local-dir: build
+  upload-dir: latest
+  skip_cleanup: true
+  acl: public_read
+  on:
+    repo: scottbez1/splitflap
+    branch: travisTest

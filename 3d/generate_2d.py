@@ -53,6 +53,7 @@ if __name__ == '__main__':
     processor.apply_raster_render_style()
     processor.write(raster_svg)
 
+    logging.info('Resize SVG canvas')
     subprocess.check_call([
         'inkscape',
         '--verb=FitCanvasToDrawing',
@@ -60,6 +61,7 @@ if __name__ == '__main__':
         '--verb=FileClose',
         raster_svg,
     ])
+    logging.info('Export PNG')
     subprocess.check_call([
         'inkscape',
         '--export-width=320',

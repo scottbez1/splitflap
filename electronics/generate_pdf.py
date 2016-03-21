@@ -35,6 +35,7 @@ def run():
     temp_dir = os.path.join(BUILD_DIRECTORY, 'temp_pdfs')
     shutil.rmtree(temp_dir, ignore_errors=True)
     try:
+        os.makedirs(temp_dir)
         plot_to_directory(BUILD_DIRECTORY, temp_dir)
     finally:
         shutil.rmtree(temp_dir, ignore_errors=True)
