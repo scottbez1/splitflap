@@ -15,7 +15,10 @@ xdotool key "alt+f"
 xdotool key p
 xdotool key p
 
+sleep 1
+
 echo "Enter build output directory"
+xdotool search 'Plot' windowfocus
 xdotool type "build/"
 
 sleep 1
