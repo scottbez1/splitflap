@@ -75,7 +75,7 @@ def plot_to_directory(output_directory, temp_dir):
         output_files.append(desired_drill_file)
 
     version_info = pcb_util.get_version_info()
-    zip_file_name = os.path.join(output_directory, '%s_%s_%s.zip' % (board_name, version_info['date'], version_info['revision']))
+    zip_file_name = os.path.join(output_directory, '%s_gerber.zip' % (board_name, ))
     with zipfile.ZipFile(zip_file_name, 'w') as z:
         for f in output_files:
             z.write(f, os.path.relpath(f, output_directory))
