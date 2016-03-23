@@ -24,6 +24,7 @@ xdotool type "build/"
 sleep 1
 
 echo "Plot"
+xdotool key Tab Tab Tab Tab Tab Up Up Up space
 xdotool key Return
 echo "Done"
 
