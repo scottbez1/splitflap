@@ -7,13 +7,13 @@ install:
 - ./3d/scripts/dependencies.sh
 - ./electronics/scripts/dependencies.sh
 script:
-#- (cd 3d && xvfb-run --auto-servernum -s "-screen 0 1024x768x24" python -u generate_2d.py)
-#- (cd 3d && xvfb-run --auto-servernum -s "-screen 0 1024x768x24" python -u generate_gif.py)
-#- (cd electronics && python -u generate_svg.py)
-#- (cd electronics && python -u generate_pdf.py)
-#- (cd electronics && python -u generate_gerber.py)
+- (cd 3d && xvfb-run --auto-servernum -s "-screen 0 1024x768x24" python -u generate_2d.py)
+- (cd 3d && xvfb-run --auto-servernum -s "-screen 0 1024x768x24" python -u generate_gif.py)
+- (cd electronics && python -u generate_svg.py)
+- (cd electronics && python -u generate_pdf.py)
+- (cd electronics && python -u generate_gerber.py)
 - (cd electronics && xvfb-run --auto-servernum ./scripts/export_schematic.sh)
-#- ./scripts/collect_output.sh
+- ./scripts/collect_output.sh
 deploy:
   provider: s3
   access_key_id: AKIAJY6VAINVQICEC47Q
