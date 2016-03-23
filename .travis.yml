@@ -12,6 +12,7 @@ script:
 - (cd electronics && python -u generate_svg.py)
 - (cd electronics && python -u generate_pdf.py)
 - (cd electronics && python -u generate_gerber.py)
+- xvfb-run --auto-servernum ./electronics/scripts/export_schematic.sh electronics/splitflap.sch
 - ./scripts/collect_output.sh
 deploy:
   provider: s3
