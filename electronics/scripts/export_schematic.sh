@@ -26,6 +26,7 @@ sleep 1
 echo "Plot"
 xdotool key Tab Tab Tab Tab Tab Up Up Up space
 xdotool key Return
+sleep 4
 echo "Done"
 
 kill $EESCHEMA_PID
