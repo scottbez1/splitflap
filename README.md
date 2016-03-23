@@ -77,7 +77,9 @@ The `generate_gif.py` script runs multiple OpenSCAD instances in parallel to ren
 ### Driver Electronics ###
 There is a work-in-progress (untested) driver circuit based on an ATmega32U4 AVR under `electronics/splitflap.pro` (KiCad project) which is under very active development and not yet recommended to be fabricated. The driver supports 4 stepper motors using ULN2003 darlington arrays (which you easily remove from the 28byj-48 driver boards that often come with the motors) and 4 optical home position inputs (for GP2S60 IR reflectance sensors), with a micro-USB connector for computer control.
 
-![pcb rendering](https://s3.amazonaws.com/splitflap-travis/latest/pcb_raster.png)
+<a href="https://s3.amazonaws.com/splitflap-travis/latest/schematic.pdf">
+<img height="320" src="https://s3.amazonaws.com/splitflap-travis/latest/schematic.png"/>
+</a>
 
 The PCB layout is designed to fit within the 5cm x 5cm bounds for a number of low-cost PCB manufacturers (e.g. Seeed Studio), and can be populated in two separate configurations (since many low-cost PCB manufacturers have a minimum order of identical PCBs):
 
@@ -86,12 +88,20 @@ The PCB layout is designed to fit within the 5cm x 5cm bounds for a number of lo
 
 This way, with an order of 5 identical PCBs you can populate a single 4-channel driver board and four home sensor boards for a complete electronics set for 4 split-flap units.
 
+![pcb rendering](https://s3.amazonaws.com/splitflap-travis/latest/pcb_raster.png)
+
+Latest PCB Gerbers: [zip](https://s3.amazonaws.com/splitflap-travis/latest/pcb_gerber.zip)
+
+Latest PCB Packet: [pdf](https://s3.amazonaws.com/splitflap-travis/latest/pcb_packet.pdf)
+
 #### Rendering ####
 The PCB layout can be rendered to an svg or png (seen above) by running `electronics/generate_svg.py`. This uses KiCad's [python scripting API](https://github.com/blairbonnett-mirrors/kicad/blob/master/demos/python_scripts_examples/plot_board.py) to render several layers to individual svg files, manipulates them to apply color and opacity settings, and then merges them to a single svg.
 
 For reviewing the design, a pdf packet with copper, silkscreen, and drill info can be produced by running `electronics/generate_pdf.py`.
 
 Gerber files for fabrication (not yet recommended) can be exported by running `electronics/generate_gerber.py`. This generates gerber files and an Excellon drill file with Seeed Studio's [naming conventions](http://support.seeedstudio.com/knowledgebase/articles/422482-fusion-pcb-order-submission-guidelines) and produces a `.zip` which can be sent for fabrication.
+
+EESchema isn't easily scriptable, so to export the schematic `electronics/scripts/export_schematic.sh` starts an X Virtual Frame Buffer (xvfb) and opens `eeschema` within that virtual display, and then sends a series of hardcoded key presses via `xdotool` to interact with the GUI and click through the Plot dialog. This is very fragile but seems to work ok for now.
 
 ### Driver Firmware ###
 The driver firmware is written using Arduino (targeting the Arduino Micro board which is based on the ATmega32U4) and is available at `arduino/splitflap/splitflap.ino`. To avoid the need for an ICSP programmer to flash the Arduino bootloader, the plan is to compile using Arduino (Sketch -> Export compiled binary) but install the .hex file using `dfu-programmer` via the stock bootloader.
