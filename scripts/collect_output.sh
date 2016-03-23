@@ -14,4 +14,6 @@ cp electronics/build/merged.png deploy/pcb_raster.png
 
 cp electronics/build/splitflap_packet.pdf deploy/pcb_packet.pdf
 cp electronics/build/splitflap_gerber.zip deploy/pcb_gerber.zip
+cp electronics/build/splitflap.pdf deploy/schematic.pdf
+cp electronics/build/schematic.png deploy/schematic.png
 

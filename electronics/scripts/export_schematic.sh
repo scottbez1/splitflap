@@ -2,7 +2,7 @@
 
 set -e
 
-eeschema $1 &
+eeschema splitflap.sch &
 EESCHEMA_PID=$!
 
 sleep 4
@@ -27,7 +27,10 @@ echo "Plot"
 xdotool key Tab Tab Tab Tab Tab Up Up Up space
 xdotool key Return
 sleep 4
-echo "Done"
+
+echo "Rasterize..."
+convert -density 96 build/splitflap.pdf -background white -alpha remove build/schematic.png
+
 
 kill $EESCHEMA_PID
 
