@@ -1,3 +1,9 @@
+This project is made available under multiple licenses. Unless specifically
+excepted below, all files are licensed under Apache v2.
+
+Exceptions to the Apache v2 license:
+- electronics/bom/* (GPL v3, see electronics/bom/LICENSE.txt)
+--------------------
                                  Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/

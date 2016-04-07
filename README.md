@@ -109,7 +109,7 @@ The driver firmware is written using Arduino (targeting the Arduino Micro board 
 So far there is some initial progress on a basic closed-loop controller that accepts letters over USB serial and uses a simplistic stepper driver with precomputed acceleration ramps, but it is under very active development. Currently the firmware supports simple auto-recalibration to the home position using the IR reflectance sensor, both at startup and at runtime. If a commanded rotation is expected to bring the spool past the home position, it will confirm that the home position sensor is triggered neither too early nor too late, otherwise it will attempt to automatically recalibrate before continuing to the desired location.
 
 ## License ##
-This project is licensed under Apache v2.
+The vast majority of this project is licensed under Apache v2 (see [LICENSE.txt](LICENSE.txt) for full details).
 
     Copyright 2015 Scott Bezek
     
