@@ -34,29 +34,15 @@ import kicad_netlist_reader
 import csv
 import sys
 
-def myEqu(self, other):
-    """myEqu is a more advanced equivalence function for components which is
-    used by component grouping. Normal operation is to group components based
-    on their value and footprint.
+PART_NUMBER_FIELD = 'DK#'
 
-    In this example of a custom equivalency operator we compare the
-    value, the part name and the footprint.
-
-    """
-    result = True
-    if self.getValue() != other.getValue():
-        result = False
-    elif self.getPartName() != other.getPartName():
-        result = False
-    elif self.getFootprint() != other.getFootprint():
-        result = False
-
-    return result
+def part_number_eq(self, other):
+    return self.getField(PART_NUMBER_FIELD) and self.getField(PART_NUMBER_FIELD) == other.getField(PART_NUMBER_FIELD)
 
 # Override the component equivalence operator - it is important to do this
 # before loading the netlist, otherwise all components will have the original
 # equivalency operator.
-kicad_netlist_reader.comp.__eq__ = myEqu
+kicad_netlist_reader.comp.__eq__ = part_number_eq
 
 if len(sys.argv) != 3:
     print("Usage ", __file__, "<generic_netlist.xml> <output.csv>", file=sys.stderr)
@@ -89,7 +75,8 @@ partfields -= set( ['Reference', 'Value', 'Datasheet', 'Footprint'] )
 columnset = compfields | partfields     # union
 
 # prepend an initial 'hard coded' list and put the enchillada into list 'columns'
-columns = ['Item', 'Qty', 'Reference(s)', 'Value', 'LibPart', 'Footprint', 'Datasheet'] + sorted(list(columnset))
+custom_fields = sorted(list(columnset))
+columns = ['Item', 'Qty', 'Reference(s)', 'Value(s)', 'LibPart', 'Footprint'] + custom_fields
 
 # Create a new csv writer object to use as the output formatter
 out = csv.writer( f, lineterminator='\n', delimiter=',', quotechar='\"', quoting=csv.QUOTE_MINIMAL )
@@ -102,45 +89,12 @@ def writerow( acsvwriter, columns ):
     acsvwriter.writerow( utf8row )
 
 # Output a set of rows as a header providing general information
-writerow( out, ['Source:', net.getSource()] )
 writerow( out, ['Date:', net.getDate()] )
 writerow( out, ['Tool:', net.getTool()] )
 writerow( out, ['Generator:', sys.argv[0]] )
 writerow( out, ['Component Count:', len(components)] )
 writerow( out, [] )
-writerow( out, ['Individual Components:'] )
-writerow( out, [] )                        # blank line
 writerow( out, columns )
-
-# Output all the interesting components individually first:
-row = []
-for c in components:
-    del row[:]
-    row.append('')                                      # item is blank in individual table
-    row.append('')                                      # Qty is always 1, why print it
-    row.append( c.getRef() )                            # Reference
-    row.append( c.getValue() )                          # Value
-    row.append( c.getLibName() + ":" + c.getPartName() ) # LibPart
-    #row.append( c.getDescription() )
-    row.append( c.getFootprint() )
-    row.append( c.getDatasheet() )
-
-    # from column 7 upwards, use the fieldnames to grab the data
-    for field in columns[7:]:
-        row.append( c.getField( field ) );
-
-    writerow( out, row )
-
-
-writerow( out, [] )                        # blank line
-writerow( out, [] )                        # blank line
-writerow( out, [] )                        # blank line
-
-writerow( out, ['Collated Components:'] )
-writerow( out, [] )                        # blank line
-writerow( out, columns )                   # reuse same columns
-
-
 
 # Get all of the components in groups of matching parts + values
 # (see kicad_netlist_reader.py)
@@ -150,31 +104,29 @@ grouped = net.groupComponents(components)
 # Output component information organized by group, aka as collated:
 item = 0
 for group in grouped:
-    del row[:]
-    refs = ""
+    row = []
+    refs = []
+    values = set()
 
     # Add the reference of every component in the group and keep a reference
     # to the component so that the other data can be filled in once per group
     for component in group:
-        if len(refs) > 0:
-            refs += ", "
-        refs += component.getRef()
+        refs.append(component.getRef())
+        values.add(component.getValue())
         c = component
 
     # Fill in the component groups common data
     # columns = ['Item', 'Qty', 'Reference(s)', 'Value', 'LibPart', 'Footprint', 'Datasheet'] + sorted(list(columnset))
     item += 1
-    row.append( item )
-    row.append( len(group) )
-    row.append( refs );
-    row.append( c.getValue() )
-    row.append( c.getLibName() + ":" + c.getPartName() )
-    row.append( net.getGroupFootprint(group) )
-    row.append( net.getGroupDatasheet(group) )
+    row.append(item)
+    row.append(len(group))
+    row.append(', '.join(refs));
+    row.append(', '.join(sorted(list(values))))
+    row.append(c.getLibName() + ":" + c.getPartName())
+    row.append(net.getGroupFootprint(group))
 
-    # from column 7 upwards, use the fieldnames to grab the data
-    for field in columns[7:]:
-        row.append( net.getGroupField(group, field) );
+    for field in custom_fields:
+        row.append(net.getGroupField(group, field));
 
     writerow( out, row  )
 
