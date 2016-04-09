@@ -2,10 +2,19 @@
 
 set -e
 
-eeschema splitflap.sch &
-EESCHEMA_PID=$!
+# Kill background jobs when the script terminates
+trap 'jobs -pr | xargs --no-run-if-empty kill' SIGINT SIGTERM EXIT
 
-sleep 4
+SOURCE_PATH="$(cd "$(dirname "$(dirname "${BASH_SOURCE[0]}")")" && pwd)"
+
+set -x
+
+mkdir -p "$SOURCE_PATH/build"
+recordmydesktop --no-sound --no-frame --on-the-fly-encoding -o "$SOURCE_PATH/build/export_schematic_screencast.ogv"&
+
+eeschema "$SOURCE_PATH/splitflap.sch" &
+
+sleep 5
 
 echo "Focus main eeschema window"
 xdotool search '\[' windowfocus
@@ -29,8 +38,5 @@ xdotool key Return
 sleep 4
 
 echo "Rasterize..."
-convert -density 96 build/splitflap.pdf -background white -alpha remove build/schematic.png
-
-
-kill $EESCHEMA_PID
+convert -density 96 "$SOURCE_PATH/build/splitflap.pdf" -background white -alpha remove "$SOURCE_PATH/build/schematic.png"
 

@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # NOTE: This file is based on one from the KiCad source:
 # scripts/bom-in-python/bom_csv_grouped_by_value.py
 #

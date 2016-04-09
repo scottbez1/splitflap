@@ -9,3 +9,6 @@ build/
 *.kicad_pcb-bak
 *.net
 *.dsn
+
+# KiCAD bom
+splitflap.xml
