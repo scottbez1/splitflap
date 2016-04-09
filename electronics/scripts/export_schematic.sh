@@ -45,6 +45,6 @@ kill $EESCHEMA_PID
 echo "Rasterize..."
 convert -density 96 "$SOURCE_PATH/build/splitflap.pdf" -background white -alpha remove "$SOURCE_PATH/build/schematic.png"
 
-wait $RECORDING_PID
-wait $EESCHEMA_PID
+wait $RECORDING_PID || true
+wait $EESCHEMA_PID || true
 

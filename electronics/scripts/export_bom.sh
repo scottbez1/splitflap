@@ -37,6 +37,6 @@ sleep 4
 
 kill $RECORDING_PID
 kill $EESCHEMA_PID
-wait $RECORDING_PID
-wait $EESCHEMA_PID
+wait $RECORDING_PID || true
+wait $EESCHEMA_PID || true
 
