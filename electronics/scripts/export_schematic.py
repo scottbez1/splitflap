@@ -140,7 +140,7 @@ def export_schematic():
 
     screencast_output_file = os.path.join(output_dir, 'export_schematic_screencast.ogv')
     schematic_output_pdf_file = os.path.join(output_dir, 'splitflap.pdf')
-    schematic_output_png_file = os.path.join(output_dir, 'splitflap.png')
+    schematic_output_png_file = os.path.join(output_dir, 'schematic.png')
 
     with versioned_schematic(schematic_file):
         with recorded_xvfb(screencast_output_file, width=800, height=600, colordepth=24):
