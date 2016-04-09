@@ -16,4 +16,5 @@ cp electronics/build/splitflap_packet.pdf deploy/pcb_packet.pdf
 cp electronics/build/splitflap_gerber.zip deploy/pcb_gerber.zip
 cp electronics/build/splitflap.pdf deploy/schematic.pdf
 cp electronics/build/schematic.png deploy/schematic.png
+cp electronics/build/bom.csv deploy/bom.csv
 
