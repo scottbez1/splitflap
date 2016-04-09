@@ -11,8 +11,10 @@ set -x
 
 mkdir -p "$SOURCE_PATH/build"
 recordmydesktop --no-sound --no-frame --on-the-fly-encoding -o "$SOURCE_PATH/build/export_schematic_screencast.ogv"&
+RECORDING_PID=$!
 
 eeschema "$SOURCE_PATH/splitflap.sch" &
+EESCHEMA_PID=$!
 
 sleep 5
 
@@ -37,6 +39,12 @@ xdotool key Tab Tab Tab Tab Tab Up Up Up space
 xdotool key Return
 sleep 4
 
+kill $RECORDING_PID
+kill $EESCHEMA_PID
+
 echo "Rasterize..."
 convert -density 96 "$SOURCE_PATH/build/splitflap.pdf" -background white -alpha remove "$SOURCE_PATH/build/schematic.png"
+
+wait $RECORDING_PID
+wait $EESCHEMA_PID
 
