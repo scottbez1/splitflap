@@ -69,6 +69,16 @@ def export_bom():
                 eeschema_export_bom(output_dir)
                 eeschema_proc.terminate()
 
+    logger.info('Convert component XML to useful BOM CSV file...')
+    subprocess.check_call([
+        'python',
+        '-u',
+        os.path.join(electronics_root, 'bom', 'generate_bom_csv.py'),
+        os.path.join(electronics_root, 'splitflap.xml'),
+        os.path.join(output_dir, 'bom.csv'),
+    ])
+
+
 if __name__ == '__main__':
     export_bom()
 

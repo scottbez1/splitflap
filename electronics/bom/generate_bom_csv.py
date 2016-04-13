@@ -39,7 +39,13 @@ import sys
 PART_NUMBER_FIELD = 'DK#'
 
 def part_number_eq(self, other):
-    return self.getField(PART_NUMBER_FIELD) and self.getField(PART_NUMBER_FIELD) == other.getField(PART_NUMBER_FIELD)
+    if self.getField(PART_NUMBER_FIELD):
+        return self.getField(PART_NUMBER_FIELD) == other.getField(PART_NUMBER_FIELD)
+    return (
+        self.getValue() == other.getValue() and
+        self.getPartName() == other.getPartName() and
+        self.getFootprint() == other.getFootprint()
+    )
 
 # Override the component equivalence operator - it is important to do this
 # before loading the netlist, otherwise all components will have the original

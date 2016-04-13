@@ -13,7 +13,7 @@ script:
 - (cd electronics && python -u generate_pdf.py)
 - (cd electronics && python -u generate_gerber.py)
 - python -u electronics/scripts/export_schematic.py
-- python -u electronics/scripts/export_bom.py && python -u electronics/bom/generate_bom_csv.py electronics/splitflap.xml electronics/build/bom.csv
+- python -u electronics/scripts/export_bom.py
 - ./scripts/collect_output.sh
 deploy:
   provider: s3
