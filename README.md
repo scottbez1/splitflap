@@ -11,7 +11,7 @@ Two character display: [video](https://www.youtube.com/watch?v=bslkflVv-Hw).
 
 The goal is to make a low-cost display that's easy to fabricate at home in small/single quantities (e.g. custom materials can be ordered from Ponoko or similar, and other hardware is generally available).
 
-The 3d model is built using OpenSCAD in `3d/splitflap.scad`, the driver board is designed in KiCAD in `electronics/splitflap.pro`, and the driver firmware is written using Arduino in `arduino/splitflap/splitflap.ino`.
+The 3d model is built using OpenSCAD in `3d/splitflap.scad`, the driver board is designed in KiCad in `electronics/splitflap.pro`, and the driver firmware is written using Arduino in `arduino/splitflap/splitflap.ino`.
 
 ### Design Highlights ###
 * laser cut enclosure and mechanisms from a single material
