@@ -90,11 +90,11 @@ This way, with an order of 5 identical PCBs you can populate a single 4-channel 
 
 ![pcb rendering](https://s3.amazonaws.com/splitflap-travis/latest/pcb_raster.png)
 
-#### Latest PCB Renderings (auto-generated from the master branch):
-Latest PCB Gerbers: [zip](https://s3.amazonaws.com/splitflap-travis/latest/pcb_gerber.zip)
+##### Latest PCB Renderings #####
+These are automatically updated on every commit with the latest rendering from the `master` branch. See this blog post for more details on how that works: [Automated KiCad, OpenSCAD rendering using Travis CI](http://scottbezek.blogspot.com/2016/04/automated-kicad-openscad-rendering.html).
 
-Latest PCB Packet: [pdf](https://s3.amazonaws.com/splitflap-travis/latest/pcb_packet.pdf)
-
+Latest PCB Gerbers: [zip](https://s3.amazonaws.com/splitflap-travis/latest/pcb_gerber.zip)  
+Latest PCB Packet: [pdf](https://s3.amazonaws.com/splitflap-travis/latest/pcb_packet.pdf)  
 Latest (rough) Bill of Materials: [csv](https://s3.amazonaws.com/splitflap-travis/latest/bom.csv)
 
 #### Rendering ####
