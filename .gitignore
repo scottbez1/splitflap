@@ -12,3 +12,6 @@ build/
 
 # KiCAD bom
 splitflap.xml
+
+# Arduino compiled output
+*.hex

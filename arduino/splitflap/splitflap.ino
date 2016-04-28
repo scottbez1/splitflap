@@ -14,8 +14,16 @@
    limitations under the License.
 */
 
+#include <avr/power.h>
 #include <math.h>
 #include "splitflap_module.h"
+
+// Prevent serial comms from attempting to toggle rx/tx led pins
+#define TX_RX_LED_INIT
+#define TXLED1
+#define TXLED0
+#define RXLED1
+#define RXLED0
 
 const int flaps[] = {
   ' ',
@@ -27,24 +35,65 @@ const int flaps[] = {
   '\'',
 };
 
-const uint8_t step_pattern[] = {
-  B00001001,
-  B00001100,
-  B00000110,
-  B00000011,
+#define DEBUG_LED_0_PIN 13
+#define DEBUG_LED_1_PIN 5
+
+#define MOT_C_PHASE_A B10000000
+#define MOT_C_PHASE_B B01000000
+#define MOT_C_PHASE_C B00010000
+#define MOT_C_PHASE_D B00100000
+
+#define MOT_D_PHASE_A B01000000
+#define MOT_D_PHASE_B B00100000
+#define MOT_D_PHASE_C B00010000
+#define MOT_D_PHASE_D B10000000
+
+const uint8_t step_pattern_C[] = {
+  MOT_C_PHASE_D | MOT_C_PHASE_A,
+  MOT_C_PHASE_C | MOT_C_PHASE_D,
+  MOT_C_PHASE_B | MOT_C_PHASE_C,
+  MOT_C_PHASE_A | MOT_C_PHASE_B,
 };
 
-SplitflapModule moduleA(flaps, step_pattern, DDRB, PORTB, 0x0F, DDRF, PORTF, PINF, B00010000);
+const uint8_t step_pattern_D[] = {
+  MOT_D_PHASE_D | MOT_D_PHASE_A,
+  MOT_D_PHASE_C | MOT_D_PHASE_D,
+  MOT_D_PHASE_B | MOT_D_PHASE_C,
+  MOT_D_PHASE_A | MOT_D_PHASE_B,
+};
+
+SplitflapModule moduleC(flaps, step_pattern_C, DDRD, PORTD, 0xF0, DDRF, PORTF, PINF, B00100000);
+SplitflapModule moduleD(flaps, step_pattern_D, DDRB, PORTB, 0xF0, DDRF, PORTF, PINF, B00010000);
+
 
 void setup() {
-  // put your setup code here, to run once:
-  pinMode(13, OUTPUT);
+  clock_prescale_set(clock_div_1);
+
+  // Disable JTAG (shares port F). Have to write JTD bit twice in four cycles.
+  MCUCR |= (1<<JTD);
+  MCUCR |= (1<<JTD);
+
   Serial.begin(115200);
   
-  digitalWrite(13, HIGH);
-  moduleA.init();
-  moduleA.goHome();
-  digitalWrite(13, LOW);
+  pinMode(DEBUG_LED_0_PIN, OUTPUT);
+  pinMode(DEBUG_LED_1_PIN, OUTPUT);
+
+  // Pulse DEBUG_LED_1_PIN for fun
+  for (int i = 0; i < 255; i++) {
+    analogWrite(DEBUG_LED_1_PIN, i);
+    delay(3);
+  }
+  for (int i = 255; i >= 0; i--) {
+    analogWrite(DEBUG_LED_1_PIN, i);
+    delay(3);
+  }
+
+  digitalWrite(DEBUG_LED_0_PIN, HIGH);
+  moduleC.init();
+  moduleD.init();
+  moduleC.goHome();
+  moduleD.goHome();
+  digitalWrite(DEBUG_LED_0_PIN, LOW);
 }
 
 void loop() {
@@ -52,12 +101,15 @@ void loop() {
     int b = Serial.read();
     switch (b) {
       case '@':
-        moduleA.goHome();
+        moduleC.goHome();
+        moduleD.goHome();
         break;
       default:
-        moduleA.goToFlap(b);
+        moduleC.goToFlap(b);
+        moduleD.goToFlap(b);
         break;
     }
   }
-  moduleA.update();
+  moduleC.update();
+  moduleD.update();
 }
