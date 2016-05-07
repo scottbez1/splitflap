@@ -53,8 +53,10 @@ def render_rotation(output_folder, num_frames, start_frame, variables):
             camera_distance = 600,
             variables = variables,
         )
-    pool = Pool(4)
-    pool.map(render_frame, range(num_frames))
+    pool = Pool()
+    for _ in pool.imap_unordered(render_frame, range(num_frames)):
+        # Consume results as they occur so any exception is rethrown
+        pass
     pool.close()
     pool.join()
 
@@ -76,6 +78,5 @@ render_rotation(output_folder, num_frames, num_frames*2, {
     'render_enclosure': 0,
     'render_flaps': False,
 })
-
 
 generate_gif(output_folder)

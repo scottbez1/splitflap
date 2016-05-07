@@ -96,6 +96,9 @@ void setup() {
   digitalWrite(DEBUG_LED_0_PIN, LOW);
 }
 
+#define NUM_MODULES 2
+int recv_buffer[] = {0, 0};
+int recv_count = 0;
 void loop() {
   if (Serial.available() > 0) {
     int b = Serial.read();
@@ -104,9 +107,19 @@ void loop() {
         moduleC.goHome();
         moduleD.goHome();
         break;
+      case '=':
+        recv_count = 0;
+        break;
       default:
-        moduleC.goToFlap(b);
-        moduleD.goToFlap(b);
+        if (recv_count > NUM_MODULES - 1) {
+          break;
+        }
+        recv_buffer[recv_count] = b;
+        recv_count++;
+        if (recv_count == NUM_MODULES) {
+          moduleC.goToFlap(recv_buffer[0]);
+          moduleD.goToFlap(recv_buffer[1]);
+        }
         break;
     }
   }
