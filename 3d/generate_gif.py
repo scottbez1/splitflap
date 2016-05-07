@@ -52,6 +52,7 @@ def render_rotation(output_folder, num_frames, start_frame, variables):
             camera_rotation = [60, 0, angle],
             camera_distance = 600,
             variables = variables,
+            colorscheme = 'Nature',
         )
     pool = Pool()
     for _ in pool.imap_unordered(render_frame, range(num_frames)):

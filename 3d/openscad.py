@@ -31,6 +31,7 @@ def run(
         camera_distance=None,
         variables=None,
         capture_output=False,
+        colorscheme=None,
         ):
 
     command = [
@@ -49,6 +50,8 @@ def run(
         if camera_distance is None:
             camera_distance = 600
         command += ['--camera=%f,%f,%f,%f,%f,%f,%f' % tuple(camera_translation + camera_rotation + [camera_distance])]
+    if colorscheme is not None:
+        command += ['--colorscheme=%s' % colorscheme]
 
     if variables is not None:
         for k, v in variables.items():
