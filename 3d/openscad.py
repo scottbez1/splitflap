@@ -22,6 +22,13 @@ import subprocess
 
 logger = logging.getLogger(__name__)
 
+class OpenSCADException(Exception):
+    def __init__(self, message, returncode, stdout=None, stderr=None):
+        super(OpenSCADException, self).__init__(message)
+        self.returncode = returncode
+        self.stdout = stdout
+        self.stderr = stderr
+
 def run(
         input_file,
         output_file,
@@ -82,7 +89,7 @@ def run(
     logger.debug('returncode:%d', returncode)
     logger.debug(stderr)
     if returncode != 0:
-        raise ValueError('openscad returned non-zero!', returncode)
+        raise OpenSCADException('openscad returned non-zero!', returncode, stdout=stdout, stderr=stderr)
     return stdout, stderr
 
 def extract_values(stderr):

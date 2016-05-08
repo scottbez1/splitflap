@@ -59,26 +59,32 @@ class Renderer(object):
         output_file = self._get_component_file(i)
         for style in ('cut', 'etch'):
             logging.debug('Rendering component %d, %s', i, style)
-            stdout, stderr = openscad.run(
-                    self.input_file,
-                    output_file,
-                    variables = self._get_variables({
-                        'render_3d': False,
-                        'render_index': i,
-                        'render_etch': style == 'etch',
-                    }),
-                    capture_output=True,
-                )
+            try:
+                stdout, stderr = openscad.run(
+                        self.input_file,
+                        output_file,
+                        variables = self._get_variables({
+                            'render_3d': False,
+                            'render_index': i,
+                            'render_etch': style == 'etch',
+                        }),
+                        capture_output=True,
+                    )
+            except openscad.OpenSCADException as e:
+                if 'Current top level object is not a 2D object.' in e.stderr:
+                    # This is expected if we try rendering an etch layer as a
+                    # cut, since there will be nothing to export
+                    continue
+                else:
+                    raise
+
             processor = SvgProcessor(output_file)
             processor.fix_dimens()
-            if processor.delete_registration_mark():
-                if style == 'cut':
-                    processor.apply_laser_cut_style()
-                elif style == 'etch':
-                    processor.apply_laser_etch_style()
-                break
-            else:
-                logging.info("Nothing rendered for %d, %s", i, style)
+            if style == 'cut':
+                processor.apply_laser_cut_style()
+            elif style == 'etch':
+                processor.apply_laser_etch_style()
+            break
         else:
             raise ValueError("Invalid component!", i)
         return processor
