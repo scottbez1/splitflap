@@ -25,7 +25,8 @@ SplitflapModule::SplitflapModule(
   volatile uint8_t &sensor_ddr,
   volatile uint8_t &sensor_port,
   volatile uint8_t &sensor_pin,
-  const uint8_t sensor_mask) : 
+  const uint8_t sensor_mask,
+  int *ramp_periods) :
     flaps(flaps),
     stepPattern(stepPattern),
     motor_ddr(motor_ddr),
@@ -34,7 +35,8 @@ SplitflapModule::SplitflapModule(
     sensor_ddr(sensor_ddr),
     sensor_port(sensor_port),
     sensor_pin(sensor_pin),
-    sensor_mask(sensor_mask)
+    sensor_mask(sensor_mask),
+    ramp_periods(ramp_periods)
 {
 }
 
@@ -51,7 +53,8 @@ bool SplitflapModule::readSensor() {
   return (sensor_pin & sensor_mask) != 0;
 }
 
-void SplitflapModule::init() {
+void SplitflapModule::init(int maxRampLevel) {
+  max_ramp_level = maxRampLevel;
   motor_ddr |= motor_mask;
 
   // Set up sensor as input and enable internal pull-up
@@ -59,40 +62,6 @@ void SplitflapModule::init() {
   sensor_port |= sensor_mask;
   delay(5);
   lastHome = readSensor();
-  
-  computeAccelerationRamp();
-}
-
-void SplitflapModule::computeAccelerationRamp() {
-  float minVel = 1000000. / MAX_PERIOD_MICROS;
-  float maxVel = 1000000. / MIN_PERIOD_MICROS;
-  long t = 0;
-  int i = 1;
-  RAMP_PERIODS[0] = 0;
-  Serial.print("Computing acceleration table: \n[\n");
-  while (t < ACCEL_TIME_MICROS) {
-    float vel = minVel + (maxVel - minVel) * ((float)t/ACCEL_TIME_MICROS);
-    if (vel > maxVel) {
-      vel = maxVel;
-    }
-    int period = (int)(1000000. / vel);
-
-    Serial.print(period);
-    Serial.print(",\n");
-
-    RAMP_PERIODS[i] = period;
-    t += period;
-    i++;
-
-    if (i >= MAX_RAMP_LEVELS + 1) {
-      panic("failed to compute acceleration ramp");
-      break;
-    }
-  }
-  computedMaxRampLevel = i - 1;
-  Serial.print("]\n\nVelocity steps: ");
-  Serial.print(computedMaxRampLevel);
-  Serial.print("\n\n");
 }
 
 void SplitflapModule::panic(char* message) {
@@ -199,8 +168,8 @@ void SplitflapModule::update() {
         while (currentFlapIndex > NUM_FLAPS - 1.001) {
           currentFlapIndex -= NUM_FLAPS;
         }
-      } else if (delta > computedMaxRampLevel) {
-        desiredRampLevel = computedMaxRampLevel;
+      } else if (delta > max_ramp_level) {
+        desiredRampLevel = max_ramp_level;
       } else {
         desiredRampLevel = (int)delta;
       }
@@ -216,7 +185,7 @@ void SplitflapModule::update() {
           Serial.print("Never found home position. Entering disabled state.\n");
           state = SENSOR_ERROR;
         } else  {
-          desiredRampLevel = computedMaxRampLevel / 6;
+          desiredRampLevel = max_ramp_level / 6;
         }
       }
     }
@@ -233,7 +202,7 @@ void SplitflapModule::update() {
       stepPeriod = 0;
       motor_port &= ~(motor_mask);
     } else {
-      stepPeriod = curRampLevel > 0 ? RAMP_PERIODS[curRampLevel] : RAMP_PERIODS[-curRampLevel];
+      stepPeriod = curRampLevel > 0 ? ramp_periods[curRampLevel] : ramp_periods[-curRampLevel];
       motor_port = (motor_port & ~(motor_mask)) | stepPattern[current & B11];
     }
 

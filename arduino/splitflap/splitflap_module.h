@@ -25,11 +25,6 @@
 #define STEPS_PER_FLAP (STEPS_PER_REVOLUTION / NUM_FLAPS)
 #define FLAPS_PER_STEP ((float)NUM_FLAPS / STEPS_PER_REVOLUTION)
 
-#define MAX_PERIOD_MICROS (20000)
-#define MIN_PERIOD_MICROS (1200)
-
-#define ACCEL_TIME_MICROS (200000)
-#define MAX_RAMP_LEVELS (ACCEL_TIME_MICROS/MIN_PERIOD_MICROS)
 
 class SplitflapModule {
 
@@ -54,7 +49,9 @@ private:
   volatile uint8_t &sensor_pin;
   const uint8_t sensor_mask;
   
-  int RAMP_PERIODS[MAX_RAMP_LEVELS+2];
+  int *ramp_periods;
+  int max_ramp_level;
+
   long current = 0;
   
   int desiredFlapIndex = 0;
@@ -67,13 +64,12 @@ private:
   long stepsLookingForHome = 0;
   
   unsigned long lastUpdateMicros = 0;
-  int computedMaxRampLevel;
+
   int curRampLevel = 0;
   long stepPeriod = 0;
 
   int findFlapIndex(int character);
   void panic(char* message);
-  void computeAccelerationRamp();
   bool readSensor();
   bool sensorTriggered();
   void goToFlapIndex(int flapIndex);
@@ -88,12 +84,13 @@ public:
     volatile uint8_t &sensor_ddr,
     volatile uint8_t &sensor_port,
     volatile uint8_t &sensor_pin,
-    const uint8_t sensor_mask
+    const uint8_t sensor_mask,
+    int *ramp_periods
   );
   void update();
   void goHome();
   bool goToFlap(int character);
-  void init();
+  void init(int maxRampLevel);
 };
 
 #endif
