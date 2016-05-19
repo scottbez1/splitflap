@@ -27,7 +27,7 @@ render_3d = true;
 
 // 3d parameters:
 render_enclosure = 1; // 2=opaque color; 1=translucent; 0=invisible
-render_flaps = true;
+render_flaps = false;
 render_flap_area = 0; // 0=invisible; 1=collapsed flap exclusion; 2=collapsed+extended flap exclusion
 render_units = 2;
 render_unit_separation = 10;
@@ -169,7 +169,7 @@ num_side_tabs = 5;
 side_tab_width = (enclosure_length - 2*thickness) / (num_side_tabs*2 - 1);
 side_tab_width_fraction = 0.5;
 
-enclosure_length_right = side_tab_width*5 + thickness - side_tab_width * (1-side_tab_width_fraction)/2;
+enclosure_length_right = front_forward_offset + motor_clearance;//side_tab_width*5 + thickness - side_tab_width * (1-side_tab_width_fraction)/2;
 
 backstop_bolt_vertical_offset = - (exclusion_radius + outer_exclusion_radius)/2;
 backstop_bolt_forward_range = 14;
@@ -260,7 +260,7 @@ module flap_spool_complete(foobar) {
 
             spool_strut_tab_holes();
             if (foobar) {
-                circle(r=motor_clearance, $fn=30);
+                circle(r=motor_clearance, $fn=60);
             }
         }
     }
@@ -461,16 +461,37 @@ module shaft_centered_motor_hole() {
         square([width, length]);
 }
 
+module spool_rest_bolt_holes() {
+    spool_rest_slot_margin = m4_nut_width_corners - m4_nut_width_flats + 1;
+    module bolt_slot() {
+        hull() {
+            translate([motor_clearance - m4_nut_width_corners + spool_rest_slot_margin, 0]) {
+                circle(r=m4_hole_diameter/2, $fn=15);
+            }
+            translate([motor_clearance - m4_nut_width_corners - spool_rest_slot_margin, 0]) {
+                circle(r=m4_hole_diameter/2, $fn=15);
+            }
+        }
+    }
+    union() {
+        rotate([0, 0, 90]){
+            bolt_slot();
+        }
+        rotate([0, 0, 210]){
+            bolt_slot();
+        }
+        rotate([0, 0, -30]){
+            bolt_slot();
+        }
+    }
+}
+
 module enclosure_right() {
     linear_extrude(height=thickness) {
         difference() {
             square([enclosure_height, enclosure_length_right]);
             translate([enclosure_height_upper, enclosure_length_right - front_forward_offset, 0])
                 rod_mount_negative();
-
-            // adjacent idler bolt hole
-            translate([enclosure_height_upper - idler_center_z_offset, enclosure_length_right - front_forward_offset + idler_center_y_offset])
-                circle(r=m4_nut_width_corners/2, center=true, $fn=30);
 
             // backstop bolt slot
             translate([enclosure_height_upper - backstop_bolt_vertical_offset, enclosure_length_right - front_forward_offset, 0]) {
@@ -493,6 +514,11 @@ module enclosure_right() {
             }
             translate([enclosure_height_upper + connector_bolt_offset, enclosure_length_right - front_forward_offset]) {
                 circle(r=m4_hole_diameter/2, $fn=15);
+            }
+
+            // Spool rest bolts
+            translate([enclosure_height_upper, enclosure_length_right - front_forward_offset]) {
+                spool_rest_bolt_holes();
             }
         }
     }
