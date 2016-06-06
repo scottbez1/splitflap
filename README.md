@@ -1,8 +1,7 @@
 # DIY Split-Flap Display
 
 This is a work in progress DIY [split-flap display](https://en.wikipedia.org/wiki/Split-flap_display).
-Initial prototype: [video](https://www.youtube.com/watch?v=wuriphgWN40).
-Two character display: [video](https://www.youtube.com/watch?v=bslkflVv-Hw).
+Prototype two-character display: [video](https://www.youtube.com/watch?v=bslkflVv-Hw).
 
 ![animated rendering](https://s3.amazonaws.com/splitflap-travis/latest/3d_animation.gif)
 [![prototype video](renders/prototypeVideoThumbnail.jpg)](https://www.youtube.com/watch?v=bslkflVv-Hw)
@@ -12,6 +11,18 @@ Two character display: [video](https://www.youtube.com/watch?v=bslkflVv-Hw).
 The goal is to make a low-cost display that's easy to fabricate at home in small/single quantities (e.g. custom materials can be ordered from Ponoko or similar, and other hardware is generally available).
 
 The 3d model is built using OpenSCAD in `3d/splitflap.scad`, the driver board is designed in KiCad in `electronics/splitflap.pro`, and the driver firmware is written using Arduino in `arduino/splitflap/splitflap.ino`.
+
+### Current Status ###
+This design is currently at a *prototype* stage. The source files provided here were able to produce a working prototype (with some manual modifications to correct for slight errors/omissions), but aren't necessarily recommended yet unless you enjoy incomplete documentation, frustration, and adventure!
+
+| Component | Status | Notes |
+| --- | --- | --- |
+| Enclosure/Mechanics | *Release Candidate* | Blocking issue: [#9](https://github.com/scottbez1/splitflap/issues/9). Need documentation on ordering. |
+| Electronics | *Beta* | Works but requires SMD soldering experience. Considering creating simpler variant: [#12](https://github.com/scottbez1/splitflap/issues/12) |
+| Firmware | *Alpha* | Works, but needs cleanup, testing, and stable serial protocol |
+| Control Software | *none* | No work started; currently manual control using Arduino Serial Monitor |
+
+I'd love to hear your thoughts and questions about this project, and happy to incorporate any feedback you might have into these designs! Please feel free (and encouraged) to [open GitHub issues](https://github.com/scottbez1/splitflap/issues/new), email me directly, reach out [on Twitter](https://twitter.com/scottbez1), and [get involved](https://github.com/scottbez1/splitflap/pulls) in the open source development and let's keep chatting and building together!
 
 ### Design Highlights ###
 * laser cut enclosure and mechanisms from a single material
@@ -23,7 +34,7 @@ The 3d model is built using OpenSCAD in `3d/splitflap.scad`, the driver board is
 
 ### Cost Breakdown ###
 * $5/2 units -- MDF 3.2mm P2 [on Ponoko](http://www.ponoko.com/make-and-sell/show-material/64-mdf-natural)
-* $20 -- laser cutting on Ponoko (can save ~$0.70 by skipping etched label)
+* $20 -- laser cutting on Ponoko (can save ~$0.70 by skipping engraved label)
 * $7 -- shipping from Ponoko
 * ~$2 -- 28byj-48 motor (12V preferred!) and ULN2003 driver (see [motor notes](https://github.com/scottbez1/splitflap/wiki/Motor-info) for specific details)
 * ~$5/5 units -- 5mmx100mm rod
@@ -35,6 +46,7 @@ The 3d model is built using OpenSCAD in `3d/splitflap.scad`, the driver board is
 TBD:
 * $0.76 -- GP2S60 reflectance sensor [on digikey](http://www.digikey.com/product-detail/en/GP2S60B/425-2670-1-ND/1642454)
 * $14/10 units -- PCB for reflectance sensor [on seeedstudio](http://www.seeedstudio.com/service/index.php?r=pcb)
+* ? -- Other electronics components for driver/sensor boards
 
 Tools:
 * $9.17 -- badge slot punch (for cutting notches out of cards to make flaps) [on Amazon](http://www.amazon.com/gp/product/B009YDRRB4)
@@ -75,7 +87,7 @@ The design can be rendered to a rotating 3d animated gif (seen above) by running
 The `generate_gif.py` script runs multiple OpenSCAD instances in parallel to render the design from 360 degrees to individual png frames, which are then combined into the final gif animation. As part of building the animation, `generate_gif.py` renders the design with multiple configurations (opaque enclosure, see-through enclosure, no-enclosure and no flaps) by setting the `render_enclosure` and `render_flaps` variables.
 
 ### Driver Electronics ###
-There is a work-in-progress (untested) driver circuit based on an ATmega32U4 AVR under `electronics/splitflap.pro` (KiCad project) which is under very active development and not yet recommended to be fabricated. The driver supports 4 stepper motors using ULN2003 darlington arrays (which you easily remove from the 28byj-48 driver boards that often come with the motors) and 4 optical home position inputs (for GP2S60 IR reflectance sensors), with a micro-USB connector for computer control.
+There is a work-in-progress driver circuit based on an ATmega32U4 AVR under `electronics/splitflap.pro` (KiCad project) which is under very active development. The driver supports 4 stepper motors using ULN2003 darlington arrays (which you easily remove from the 28byj-48 driver boards that often come with the motors) and 4 optical home position inputs (for GP2S60 IR reflectance sensors), with a micro-USB connector for computer control.
 
 <a href="https://s3.amazonaws.com/splitflap-travis/latest/schematic.pdf">
 <img height="320" src="https://s3.amazonaws.com/splitflap-travis/latest/schematic.png"/>
@@ -102,16 +114,21 @@ The PCB layout can be rendered to an svg or png (seen above) by running `electro
 
 For reviewing the design, a pdf packet with copper, silkscreen, and drill info can be produced by running `electronics/generate_pdf.py`.
 
-Gerber files for fabrication (not yet recommended) can be exported by running `electronics/generate_gerber.py`. This generates gerber files and an Excellon drill file with Seeed Studio's [naming conventions](http://support.seeedstudio.com/knowledgebase/articles/422482-fusion-pcb-order-submission-guidelines) and produces a `.zip` which can be sent for fabrication.
+Gerber files for fabrication can be exported by running `electronics/generate_gerber.py`. This generates gerber files and an Excellon drill file with Seeed Studio's [naming conventions](http://support.seeedstudio.com/knowledgebase/articles/422482-fusion-pcb-order-submission-guidelines) and produces a `.zip` which can be sent for fabrication.
 
 EESchema isn't easily scriptable, so to export the schematic and bill of materials `electronics/scripts/export_schematic.py` and `export_bom.py` start an X Virtual Frame Buffer (Xvfb) and open the `eeschema` GUI within that virtual display, and then send a series of hardcoded key presses via `xdotool` to interact with the GUI and click through the dialogs. This is very fragile but seems to work ok for now. For additional details, see this blog post: [Using UI automation to export KiCad schematics](http://scottbezek.blogspot.com/2016/04/automated-kicad-schematic-export.html).
 
 ### Driver Firmware ###
-The driver firmware is written using Arduino (targeting the Arduino Micro board which is based on the ATmega32U4) and is available at `arduino/splitflap/splitflap.ino`. To avoid the need for an ICSP programmer to flash the Arduino bootloader, the plan is to compile using Arduino (Sketch -> Export compiled binary) but install the .hex file using `dfu-programmer` via the stock bootloader.
+The driver firmware is written using Arduino (superficially targeting the Arduino Micro board, since it's based on the same ATmega32U4 chip used in this design) and is available at `arduino/splitflap/splitflap.ino`. To avoid the need for an ICSP programmer (since Arduino doesn't support the stock DFU bootloader on the ATMega32U4), you can use Arduino only to compile the program (Sketch -> Export compiled binary) and then install the .hex binary onto the AVR separately using the `dfu-programmer` tool.
 
-So far there is some initial progress on a basic closed-loop controller that accepts letters over USB serial and uses a simplistic stepper driver with precomputed acceleration ramps, but it is under very active development. Currently the firmware supports simple auto-recalibration to the home position using the IR reflectance sensor, both at startup and at runtime. If a commanded rotation is expected to bring the spool past the home position, it will confirm that the home position sensor is triggered neither too early nor too late, otherwise it will attempt to automatically recalibrate before continuing to the desired location.
+The firmware currently runs a basic closed-loop controller that accepts letters over USB serial and drives the stepper motors using a runtime-computed acceleration ramp for smooth control. The firmware automatically calibrates the spool position at startup, using the IR reflectance sensor, and will automatically recalibrate itself if it ever detects that the spool position has gotten out of sync. If a commanded rotation is expected to bring the spool past the "home" position, it will confirm that the sensor is triggered neither too early nor too late; otherwise it will search for the "home" position to get in sync before continuing to the desired letter.
+
+### Computer Control Software ###
+There is currently no example computer software demonstrating how to communicate with the driver firmware over USB. This is planned for the future, but the protocol is currently undocumented and likely to change as the firmware continues to be developed. In the meantime, the best "documentation" of the protocol is the [firmware source code](https://github.com/scottbez1/splitflap/blob/master/arduino/splitflap/splitflap.ino) itself.
 
 ## License ##
+I'd love to hear your thoughts and questions about this project, and happy to incorporate any feedback you might have into these designs! Please feel free (and encouraged) to [open GitHub issues](https://github.com/scottbez1/splitflap/issues/new), email me directly, reach out [on Twitter](https://twitter.com/scottbez1), and [get involved](https://github.com/scottbez1/splitflap/pulls) in the open source development and let's keep chatting and building together!
+
 The vast majority of this project is licensed under Apache v2 (see [LICENSE.txt](LICENSE.txt) for full details).
 
     Copyright 2015 Scott Bezek
@@ -127,4 +144,3 @@ The vast majority of this project is licensed under Apache v2 (see [LICENSE.txt]
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
