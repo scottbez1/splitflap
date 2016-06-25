@@ -6,6 +6,7 @@ mkdir -p deploy
 
 cp 3d/build/animation/animation.gif deploy/3d_animation.gif
 
+cp 3d/build/laser_parts/combined.svg deploy/3d_laser_vector.svg
 cp 3d/build/laser_parts/raster.png deploy/3d_laser_raster.png
 ./scripts/annotate_image.sh deploy/3d_laser_raster.png
 
