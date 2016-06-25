@@ -81,6 +81,9 @@ The `generate_2d.py` script interacts with the `projection_renderer` module by f
 
 Once the `combined.svg` file is generated, you'll want to manually remove a couple redundant cut lines that are shared by multiple adjacent pieces, to save time/cost when cutting. In Inkscape, select the "Edit paths by nodes" tool and select an edge to delete - the endpoints should turn blue. Then click "Delete segment between two non-endpoint nodes", and repeat this for all other redundant cut lines.
 
+Latest Laser Cut Vector File: [svg](https://s3.amazonaws.com/splitflap-travis/latest/3d_laser_vector.svg)
+(In order to get the design laser-cut from Ponoko, you'll need to copy all of the shapes from that file into one of [Ponoko's templates](http://www.ponoko.com/starter-kits/inkscape))
+
 ##### Animated gif #####
 The design can be rendered to a rotating 3d animated gif (seen above) by running `3d/generate_gif.py`, which outputs to `3d/build/animation/animation.gif`
 
