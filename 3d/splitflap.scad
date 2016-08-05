@@ -31,6 +31,7 @@ render_flaps = true;
 render_flap_area = 0; // 0=invisible; 1=collapsed flap exclusion; 2=collapsed+extended flap exclusion
 render_units = 2;
 render_unit_separation = 0;
+render_pcb = true;
 
 // 2d parameters:
 render_index = 0;
@@ -771,10 +772,11 @@ module split_flap_3d() {
     }
 
     positioned_enclosure();
-
-    translate([enclosure_width - thickness, pcb_reference_horizontal, pcb_reference_vertical])
-        rotate([0, -90, 0])
-            pcb();
+    if (render_pcb) {
+        translate([enclosure_width - thickness, pcb_reference_horizontal, pcb_reference_vertical])
+            rotate([0, -90, 0])
+                pcb();
+    }
 
     translate([spool_width_slop/2 + thickness*2, 0, 0]) {
         // Flap area
@@ -795,11 +797,11 @@ module split_flap_3d() {
 
             translate([flap_width_slop/2, 0, 0]) {
                 // Collapsed flaps on the top
-                for (i=[0:19]) {
+                for (i=[0:num_flaps/2 - 1]) {
                     rotate([360/num_flaps * i, 0, 0]) translated_flap();
                 }
 
-                for (i=[1:20]) {
+                for (i=[1:num_flaps/2]) {
                     angle = -360/num_flaps*i;
                     translate([0, flap_pitch_radius*cos(angle), flap_pitch_radius * sin(angle)])
                         rotate([-90, 0, 0])
