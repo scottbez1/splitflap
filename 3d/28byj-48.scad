@@ -41,8 +41,8 @@ module Stepper28BYJ48() {
     backpack_height = 16;
 
     gray = [0.7, 0.7, 0.7];
-    gold = "gold";
-    blue = "blue";
+    gold = [1, 0.843, 0];
+    blue = [0, 0, 1];
 
     module mounting_holes() {
         linear_extrude(height=mount_bracket_height) {

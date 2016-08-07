@@ -328,7 +328,7 @@ module spool_with_pulleys_assembly() {
 }
 
 module flap() {
-    color("white")
+    color([1, 1, 1])
     translate([0, -flap_pin_width/2, -flap_thickness/2])
     linear_extrude(height=flap_thickness) {
         difference() {
@@ -652,7 +652,7 @@ module enclosure_bottom() {
 }
 
 module enclosure_bottom_etch() {
-    color("black")
+    color([0, 0, 0])
     linear_extrude(height=2, center=true) {
         translate([5, 12, thickness]) {
             text_label(["github.com/scottbez1/splitflap", str("rev. ", render_revision), render_date]);
@@ -706,7 +706,7 @@ module pcb_mounting_holes(slots=false) {
 }
 
 module pcb() {
-    color("green") {
+    color([0, 0.5, 0]) {
         linear_extrude(height=pcb_thickness) {
             difference() {
                 square([pcb_height, pcb_length]);
@@ -744,6 +744,11 @@ module split_flap_3d() {
     module positioned_bottom() {
         translate([thickness, front_forward_offset - enclosure_length, -enclosure_height_lower + enclosure_vertical_inset]) {
             enclosure_bottom();
+        }
+    }
+
+    module positioned_bottom_etch() {
+        translate([thickness, front_forward_offset - enclosure_length, -enclosure_height_lower + enclosure_vertical_inset]) {
             translate([0, 0, thickness]) {
                 enclosure_bottom_etch();
             }
@@ -762,12 +767,14 @@ module split_flap_3d() {
                 positioned_top();
             color(assembly_color3)
                 positioned_bottom();
+            positioned_bottom_etch();
         } else if (render_enclosure == 1) {
             %positioned_front();
             %positioned_left();
             %positioned_right();
             %positioned_top();
             %positioned_bottom();
+            %positioned_bottom_etch();
         }
     }
 

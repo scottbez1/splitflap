@@ -87,7 +87,6 @@ def run(
     returncode = proc.returncode
 
     logger.debug('returncode:%d', returncode)
-    logger.debug(stderr)
     if returncode != 0:
         raise OpenSCADException('openscad returned non-zero!', returncode, stdout=stdout, stderr=stderr)
     return stdout, stderr
