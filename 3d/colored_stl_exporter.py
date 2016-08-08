@@ -162,26 +162,25 @@ def walk_scad_files(input_file, mutate_function, intermediate_folder):
 
         with open(current_file, 'rb') as f:
             contents = f.read()
+
+        # Only process .scad files; copy any other file types (e.g. fonts) over as-is
+        if current_file.lower().endswith('.scad'):
             for include in USE_INCLUDE_REGEX.finditer(contents):
                 next_filename = os.path.realpath(include.group('filename'))
-                if next_filename.lower().endswith('.scad') and next_filename not in visited:
+                if next_filename not in visited:
                     to_process.append(next_filename)
                     visited.add(next_filename)
-
-        def replace(match):
-            if match.group('filename').lower().endswith('.scad'):
+            def replace(match):
                 return '{} <{}>;'.format(match.group('statement'), get_transformed_file_path(match.group('filename')))
-            else:
-                return
-
-        contents = mutate_function(USE_INCLUDE_REGEX.sub(replace, contents))
+            contents = mutate_function(USE_INCLUDE_REGEX.sub(replace, contents))
 
         with open(os.path.join(intermediate_folder, get_transformed_file_path(current_file)), 'wb') as out_file:
             out_file.write(contents)
 
 
 def get_transformed_file_path(original_path):
-    return hashlib.sha256(os.path.realpath(original_path)).hexdigest() + '.scad'
+    extension = os.path.splitext(original_path)[1]
+    return hashlib.sha256(os.path.realpath(original_path)).hexdigest() + extension
 
 
 if __name__ == '__main__':

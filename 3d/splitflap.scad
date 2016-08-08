@@ -202,6 +202,8 @@ pcb_reference_vertical = -4;
 connector_bolt_offset = 40;
 
 echo(enclosure_height=enclosure_height);
+echo(enclosure_height_upper=enclosure_height_upper);
+echo(enclosure_height_lower=enclosure_height_lower);
 echo(enclosure_width=enclosure_width);
 echo(enclosure_length=enclosure_length);
 echo(enclosure_length_right=enclosure_length_right);
