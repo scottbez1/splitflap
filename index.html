@@ -219,6 +219,8 @@ limitations under the License.
             controls = new THREE.OrbitControls( camera, renderer.domElement );
             controls.addEventListener( 'change', render );
             controls.enableZoom = true;
+            controls.minDistance = 50;
+            controls.maxDistance = 1500;
 
             var cameraTarget = new THREE.Vector3(0, enclosure_height_lower, 0);
             controls.target = cameraTarget;
