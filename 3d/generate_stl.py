@@ -19,14 +19,32 @@ from __future__ import print_function
 
 import logging
 import os
+import sys
 
 from colored_stl_exporter import ColoredStlExporter
+
+repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(repo_root)
+
+from util import rev_info
 
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
     folder = os.path.dirname(__file__)
+
+    openscad_variables = {
+        'render_3d': True,
+        'render_enclosure': 2,
+        'render_flaps': True,
+        'render_units': 1,
+        'render_pcb': True,
+        'render_revision': rev_info.git_short_rev(),
+        'render_date': rev_info.current_date(),
+    }
+
     exporter = ColoredStlExporter(
         os.path.join(folder, 'splitflap.scad'),
-        os.path.join(folder, 'build'))
+        os.path.join(folder, 'build'),
+        openscad_variables)
     exporter.run()

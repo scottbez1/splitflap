@@ -38,14 +38,6 @@ from multiprocessing.dummy import Pool
 
 import openscad
 
-STANDARD_RENDER_VARIABLES = {
-    'render_3d': True,
-    'render_enclosure': 2,
-    'render_flaps': True,
-    'render_units': 1,
-    'render_pcb': True,
-}
-
 USE_INCLUDE_REGEX = re.compile(r'\b(?P<statement>use|include)\s*<\s*(?P<filename>.*?)\s*>\s*;')
 COLOR_REGEX = re.compile(r'\bcolor\s*\(')
 EXTRACTED_COLOR_REGEX = re.compile(r'ECHO: extracted_color = (?P<color>.*)')
@@ -55,11 +47,14 @@ RGB_COLOR_REGEX = re.compile(r'\[(?P<r>.*?),(?P<g>.*?),(?P<b>.*?)\]')
 
 class ColoredStlExporter(object):
 
-    def __init__(self, input_file, build_folder):
+    def __init__(self, input_file, build_folder, openscad_variables = None):
         self.logger = logging.getLogger(__name__)
         self.input_file = input_file
         self.intermediate_folder = os.path.join(build_folder, 'intermediate')
         self.output_folder = os.path.join(build_folder, 'colored_stl')
+        if openscad_variables is None:
+            openscad_variables = {}
+        self.openscad_variables = openscad_variables
 
     def run(self):
         mkdir_p(self.intermediate_folder)
@@ -106,7 +101,7 @@ module color_extractor(c) {
         openscad.run(
             os.path.join(intermediate_subfolder, ColoredStlExporter.get_transformed_file_path(self.input_file)),
             echo_file,
-            variables=STANDARD_RENDER_VARIABLES,
+            variables=self.openscad_variables,
             capture_output=True
         )
 
@@ -146,7 +141,7 @@ module color_extractor(c) {
         openscad.run(
             os.path.join(intermediate_subfolder, ColoredStlExporter.get_transformed_file_path(self.input_file)),
             os.path.join(self.output_folder, file_name),
-            variables=STANDARD_RENDER_VARIABLES,
+            variables=self.openscad_variables,
             capture_output=True
         )
 
