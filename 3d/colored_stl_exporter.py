@@ -1,6 +1,4 @@
-#!/usr/bin/env python
-
-#   Copyright 2015 Scott Bezek
+#   Copyright 2016 Scott Bezek
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -36,6 +34,8 @@ import logging
 import os
 import re
 
+from multiprocessing.dummy import Pool
+
 import openscad
 
 STANDARD_RENDER_VARIABLES = {
@@ -52,39 +52,150 @@ EXTRACTED_COLOR_REGEX = re.compile(r'ECHO: extracted_color = (?P<color>.*)')
 
 RGB_COLOR_REGEX = re.compile(r'\[(?P<r>.*?),(?P<g>.*?),(?P<b>.*?)\]')
 
-DIR = os.path.dirname(__file__)
 
-logger = logging.getLogger(__name__)
+class ColoredStlExporter(object):
 
+    def __init__(self, input_file, build_folder):
+        self.logger = logging.getLogger(__name__)
+        self.input_file = input_file
+        self.intermediate_folder = os.path.join(build_folder, 'intermediate')
+        self.output_folder = os.path.join(build_folder, 'colored_stl')
 
-def run(input_file):
-    build_folder = os.path.join(DIR, 'build')
-    intermediate_folder = os.path.join(build_folder, 'modified_project')
-    mkdir_p(intermediate_folder)
-    output_folder = os.path.join(build_folder, 'colored_stl')
-    mkdir_p(output_folder)
+    def run(self):
+        mkdir_p(self.intermediate_folder)
+        mkdir_p(self.output_folder)
 
-    color_values = extract_colors(input_file, intermediate_folder)
-    logger.debug('Found {} unique colors: {}'.format(len(color_values), color_values))
+        color_values = self._extract_colors()
+        self.logger.debug('Found {} unique colors: {}'.format(len(color_values), color_values))
 
-    manifest = {}
-    for color in color_values:
-        file_name = export_stl(input_file, intermediate_folder, output_folder, color)
-        manifest[file_name] = parse_openscad_color(color)
+        manifest = {}
 
-    with open(os.path.join(output_folder, 'manifest.json'), 'wb') as f:
-        f.write(json.dumps(manifest, indent=4))
+        def render_color(color):
+            file_name = self._export_stl(color)
+            manifest[file_name] = ColoredStlExporter.parse_openscad_color(color)
 
+        pool = Pool()
+        for _ in pool.imap_unordered(render_color, color_values):
+            # Consume results as they occur so any exception is rethrown
+            pass
+        pool.close()
+        pool.join()
 
-def parse_openscad_color(color):
-    match = RGB_COLOR_REGEX.search(color)
-    if not match:
-        raise ValueError('Failed to parse color. Must be in [<r>, <g>, <b>] format. {}'.format(color))
-    return [
-        float(match.group('r')),
-        float(match.group('g')),
-        float(match.group('b')),
-    ]
+        with open(os.path.join(self.output_folder, 'manifest.json'), 'wb') as f:
+            f.write(json.dumps(manifest, indent=4))
+
+    def _extract_colors(self):
+        """Returns a list of color expressions used within the input_file or any dependencies thereof"""
+        self.logger.info("Extracting color information...")
+
+        # Create a mutator that defines a color_extractor() module that prints the passed color argument and replaces
+        # all color(xyz) declarations with color_extractor(xyz) modules instances.
+        def replace_with_color_collector(contents):
+            contents = COLOR_REGEX.sub(' color_extractor(', contents)
+            return contents + '''
+module color_extractor(c) {
+    echo(extracted_color=c);
+    children();
+}'''
+
+        intermediate_subfolder = os.path.join(self.intermediate_folder, 'color_extraction')
+        self.walk_and_mutate_scad_files(replace_with_color_collector, intermediate_subfolder)
+
+        # Compile the mutated scad model and collect the echo output for processing
+        echo_file = os.path.join(self.intermediate_folder, 'color_extractor.echo')
+        openscad.run(
+            os.path.join(intermediate_subfolder, ColoredStlExporter.get_transformed_file_path(self.input_file)),
+            echo_file,
+            variables=STANDARD_RENDER_VARIABLES,
+            capture_output=True
+        )
+
+        # Parse the color values from the output
+        color_values = set()
+        with open(echo_file, 'rb') as f:
+            for line in f:
+                match = EXTRACTED_COLOR_REGEX.search(line)
+                if match:
+                    color_values.add(match.group('color'))
+        return color_values
+
+    def _export_stl(self, color):
+        """Exports an .stl file containing only objects of the specified color from the input model"""
+
+        # Create a mutator that defines a color_selector() module that conditionally includes its children only if the
+        # passed color argument is the color we're currently trying to export.
+        def replace_with_color_selector(contents):
+            contents = COLOR_REGEX.sub(' color_selector(', contents)
+            return contents + '''
+        module color_selector(c) {{
+            if (c == {})
+                children();
+        }}
+                    '''.format(color)
+
+        color_hash = hashlib.sha256(color).hexdigest()
+
+        intermediate_subfolder = os.path.join(self.intermediate_folder, 'color_' + color_hash)
+        self.walk_and_mutate_scad_files(replace_with_color_selector, intermediate_subfolder)
+
+        # Name the stl model after its color (but use a hash function to make sure it's a valid filename)
+        file_name = color_hash + '.stl'
+
+        self.logger.info('Exporting STL for color {} as {}...'.format(color, file_name))
+
+        openscad.run(
+            os.path.join(intermediate_subfolder, ColoredStlExporter.get_transformed_file_path(self.input_file)),
+            os.path.join(self.output_folder, file_name),
+            variables=STANDARD_RENDER_VARIABLES,
+            capture_output=True
+        )
+
+        return file_name
+
+    def walk_and_mutate_scad_files(self, mutate_function, intermediate_subfolder):
+        mkdir_p(intermediate_subfolder)
+        visited = set()
+        to_process = [self.input_file]
+        while len(to_process):
+            current_file = to_process.pop(0)
+            self.logger.debug('Processing {}'.format(current_file))
+
+            with open(current_file, 'rb') as f:
+                contents = f.read()
+
+            # Only process .scad files; copy any other file types (e.g. fonts) over as-is
+            if current_file.lower().endswith('.scad'):
+                for include in USE_INCLUDE_REGEX.finditer(contents):
+                    next_filename = os.path.realpath(include.group('filename'))
+                    if next_filename not in visited:
+                        to_process.append(next_filename)
+                        visited.add(next_filename)
+
+                def replace(match):
+                    return '{} <{}>;'.format(match.group('statement'),
+                                             ColoredStlExporter.get_transformed_file_path(match.group('filename')))
+                contents = mutate_function(USE_INCLUDE_REGEX.sub(replace, contents))
+
+            with open(os.path.join(intermediate_subfolder,
+                                   ColoredStlExporter.get_transformed_file_path(current_file)), 'wb') as out_file:
+                out_file.write(contents)
+
+    @staticmethod
+    def get_transformed_file_path(original_path):
+        extension = os.path.splitext(original_path)[1]
+        return hashlib.sha256(os.path.realpath(original_path)).hexdigest() + extension
+
+    @staticmethod
+    def parse_openscad_color(color):
+        match = RGB_COLOR_REGEX.search(color)
+        if not match:
+            raise ValueError('Failed to parse color. Must be in [<r>, <g>, <b>] format. {}'.format(color))
+        return [
+            float(match.group('r')),
+            float(match.group('g')),
+            float(match.group('b')),
+        ]
+
 
 def mkdir_p(path):
     try:
@@ -94,95 +205,3 @@ def mkdir_p(path):
             pass
         else:
             raise
-
-
-def extract_colors(input_file, intermediate_folder):
-    logger.info("Extracting color information...")
-
-    def replace_with_color_collector(contents):
-        contents = COLOR_REGEX.sub(' color_extractor(', contents)
-        return contents + '''
-module color_extractor(c) {
-    echo(extracted_color=c);
-    children();
-}
-            '''
-
-    walk_scad_files(input_file, replace_with_color_collector, intermediate_folder)
-
-    echo_file = os.path.join(intermediate_folder, 'color_extractor.echo')
-    openscad.run(
-        os.path.join(intermediate_folder, get_transformed_file_path(input_file)),
-        echo_file,
-        variables=STANDARD_RENDER_VARIABLES,
-        capture_output=True
-    )
-
-    color_values = set()
-    with open(echo_file, 'rb') as f:
-        for line in f:
-            match = EXTRACTED_COLOR_REGEX.search(line)
-            if match:
-                color_values.add(match.group('color'))
-    return color_values
-
-
-def export_stl(input_file, intermediate_folder, output_folder, color):
-    def replace_with_color_selector(contents):
-        contents = COLOR_REGEX.sub(' color_selector(', contents)
-        return contents + '''
-module color_selector(c) {{
-    if (c == {})
-        children();
-}}
-            '''.format(color)
-
-    walk_scad_files(input_file, replace_with_color_selector, intermediate_folder)
-
-    file_name = hashlib.sha256(color).hexdigest() + '.stl'
-
-    logger.info('Exporting STL for color {} as {}...'.format(color, file_name))
-
-    openscad.run(
-        os.path.join(intermediate_folder, get_transformed_file_path(input_file)),
-        os.path.join(output_folder, file_name),
-        variables=STANDARD_RENDER_VARIABLES,
-        capture_output=True
-    )
-
-    return file_name
-
-
-def walk_scad_files(input_file, mutate_function, intermediate_folder):
-    visited = set()
-    to_process = [input_file]
-    while len(to_process):
-        current_file = to_process.pop(0)
-        logger.debug('Processing {}'.format(current_file))
-
-        with open(current_file, 'rb') as f:
-            contents = f.read()
-
-        # Only process .scad files; copy any other file types (e.g. fonts) over as-is
-        if current_file.lower().endswith('.scad'):
-            for include in USE_INCLUDE_REGEX.finditer(contents):
-                next_filename = os.path.realpath(include.group('filename'))
-                if next_filename not in visited:
-                    to_process.append(next_filename)
-                    visited.add(next_filename)
-            def replace(match):
-                return '{} <{}>;'.format(match.group('statement'), get_transformed_file_path(match.group('filename')))
-            contents = mutate_function(USE_INCLUDE_REGEX.sub(replace, contents))
-
-        with open(os.path.join(intermediate_folder, get_transformed_file_path(current_file)), 'wb') as out_file:
-            out_file.write(contents)
-
-
-def get_transformed_file_path(original_path):
-    extension = os.path.splitext(original_path)[1]
-    return hashlib.sha256(os.path.realpath(original_path)).hexdigest() + extension
-
-
-if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG)
-    run(os.path.join(DIR, 'splitflap.scad'))
