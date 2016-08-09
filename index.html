@@ -144,9 +144,9 @@ limitations under the License.
             var render_width = canvas.clientWidth;
             var render_height = canvas.clientHeight;
 
-            scene.fog = new THREE.Fog(0x985F6F, 800, 2000);
+            scene.fog = new THREE.Fog(0x985F6F, 1200, 4000);
             var camera = new THREE.PerspectiveCamera( 35, render_width/render_height, 1, 4000 );
-            camera.position.set(-500, 500, -500);
+            camera.position.set(-500, 300, -500);
 
             var renderer = new THREE.WebGLRenderer({canvas: canvas});
 
@@ -173,7 +173,7 @@ limitations under the License.
 
             // Ground
             var plane = new THREE.Mesh(
-                new THREE.PlaneBufferGeometry(5000, 5000),
+                new THREE.PlaneBufferGeometry(7000, 7000),
                 new THREE.MeshPhongMaterial({color: 0x231A22, specular:0x101010})
             );
             plane.rotation.x = -Math.PI/2;
@@ -183,8 +183,8 @@ limitations under the License.
 
             // Lights
             scene.add( new THREE.HemisphereLight( 0x443333, 0x111122 ) );
-            addShadowedLight( 300, 1000, -1000, 0xE8E5C9, 0.9 );
-            addShadowedLight( -150, 1500, -100, 0xF6F1C0, 0.4);
+            addShadowedLight( 300, 1000, -1000, 0xE6CBE9, 0.9 );
+            addShadowedLight( -300, 1500, -100, 0xF6F1C0, 0.6);
 
             // renderer
             renderer.setSize( render_width, render_height);
@@ -219,8 +219,12 @@ limitations under the License.
             controls = new THREE.OrbitControls( camera, renderer.domElement );
             controls.addEventListener( 'change', render );
             controls.enableZoom = true;
-            controls.minDistance = 50;
-            controls.maxDistance = 1500;
+            controls.minDistance = 80;
+            controls.maxDistance = 1300;
+            controls.validUpdate = function(position, quaternion, target) {
+                // Don't allow camera to go below ground
+                return position.y > 0 && target.y > 0;
+            };
 
             var cameraTarget = new THREE.Vector3(0, enclosure_height_lower, 0);
             controls.target = cameraTarget;
@@ -250,12 +254,12 @@ limitations under the License.
                 });
             };
             var loader = new THREE.XHRLoader(THREE.DefaultLoadingManager);
-            loader.load('models/manifest.json', function(text) {
+            loader.load('https://s3.amazonaws.com/splitflap-travis/latest/3d_colored_stl/manifest.json', function(text) {
                 var json = JSON.parse(text);
                 for (var key in json) {
                     if (json.hasOwnProperty(key)) {
                         var color = json[key];
-                        loadStl('models/' + key, new THREE.Color( color[0], color[1], color[2] ).getHex());
+                        loadStl('https://s3.amazonaws.com/splitflap-travis/latest/3d_colored_stl/' + key, new THREE.Color( color[0], color[1], color[2] ).getHex());
                     }
                 }
             });

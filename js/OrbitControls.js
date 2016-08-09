@@ -75,6 +75,10 @@ THREE.OrbitControls = function ( object, domElement ) {
 	// Mouse buttons
 	this.mouseButtons = { ORBIT: THREE.MOUSE.LEFT, ZOOM: THREE.MOUSE.MIDDLE, PAN: THREE.MOUSE.RIGHT };
 
+	this.validUpdate = function ( position, quaternion, target ) {
+	    return true;
+	};
+
 	// for reset
 	this.target0 = this.target.clone();
 	this.position0 = this.object.position.clone();
@@ -122,6 +126,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		var lastPosition = new THREE.Vector3();
 		var lastQuaternion = new THREE.Quaternion();
+		var lastTarget = new THREE.Vector3();
 
 		return function () {
 
@@ -184,6 +189,13 @@ THREE.OrbitControls = function ( object, domElement ) {
 			scale = 1;
 			panOffset.set( 0, 0, 0 );
 
+			if ( !scope.validUpdate( scope.object.position, scope.object.quaternion, scope.target ) ) {
+			    scope.object.position.copy( lastPosition );
+			    scope.object.quaternion.copy( lastQuaternion );
+			    scope.target.copy( lastTarget );
+			    scope.object.lookAt( lastTarget );
+			}
+
 			// update condition is:
 			// min(camera displacement, camera rotation in radians)^2 > EPS
 			// using small-angle approximation cos(x/2) = 1 - x^2 / 8
@@ -196,6 +208,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 				lastPosition.copy( scope.object.position );
 				lastQuaternion.copy( scope.object.quaternion );
+				lastTarget.copy( scope.target );
 				zoomChanged = false;
 
 				return true;
