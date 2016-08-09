@@ -165,15 +165,19 @@ module color_extractor(c) {
 
             # Only process .scad files; copy any other file types (e.g. fonts) over as-is
             if current_file.lower().endswith('.scad'):
+                current_folder = os.path.dirname(current_file)
                 for include in USE_INCLUDE_REGEX.finditer(contents):
-                    next_filename = os.path.realpath(include.group('filename'))
+                    next_filename = os.path.realpath(
+                        os.path.join(current_folder, include.group('filename')))
                     if next_filename not in visited:
                         to_process.append(next_filename)
                         visited.add(next_filename)
 
                 def replace(match):
                     return '{} <{}>;'.format(match.group('statement'),
-                                             ColoredStlExporter.get_transformed_file_path(match.group('filename')))
+                                             ColoredStlExporter.get_transformed_file_path(
+                                                 os.path.join(current_folder, match.group('filename'))))
+
                 contents = mutate_function(USE_INCLUDE_REGEX.sub(replace, contents))
 
             with open(os.path.join(intermediate_subfolder,

@@ -10,6 +10,8 @@ cp 3d/build/laser_parts/combined.svg deploy/3d_laser_vector.svg
 cp 3d/build/laser_parts/raster.png deploy/3d_laser_raster.png
 ./scripts/annotate_image.sh deploy/3d_laser_raster.png
 
+cp -r 3d/build/colored_stl deploy/3d_colored_stl
+
 cp electronics/build/merged.png deploy/pcb_raster.png
 ./scripts/annotate_image.sh deploy/pcb_raster.png
 

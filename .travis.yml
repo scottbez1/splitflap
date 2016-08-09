@@ -9,6 +9,7 @@ install:
 script:
 - (cd 3d && xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python -u generate_2d.py)
 - (cd 3d && xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python -u generate_gif.py)
+- python -u 3d/generate_stl.py
 - (cd electronics && python -u generate_svg.py)
 - (cd electronics && python -u generate_pdf.py)
 - (cd electronics && python -u generate_gerber.py)
