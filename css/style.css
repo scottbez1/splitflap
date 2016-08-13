@@ -114,5 +114,6 @@ h3 {
     align-self: center;
 }
 .github_link {
+    width: 32px;
     padding: 16px;
 }
