@@ -1,98 +1,74 @@
 <html>
-    <head>
+    <link>
         <title>splitflap</title>
         <link href='https://fonts.googleapis.com/css?family=Roboto:100,300,400' rel='stylesheet' type='text/css'>
-        <style>
-            body {
-                margin: 0;
-                padding: 0;
-                background-color: #ededed;
-                font-family: 'Roboto', sans-serif;
-            }
-            .header {
-                background-color: #4E4C67;
-                width: 100%;
-                color: white;
-                padding: 10px 0;
-                z-index: 1000;
-            }
-            .header.fixed {
-                position: fixed;
-                padding-bottom: 0;
-            }
-            .header.placeholder {
-            }
-            .content {
-                width: 800px;
-                margin: 0 auto;
-            }
-            .title {
-                font-size: 32pt;
-                line-height: 40pt;
-                font-weight: 100;
-                padding-bottom: 6px;
-            }
-            .subtitle {
-                font-size: 12pt;
-                color: rgba(255, 255, 255, 0.6);
-                font-weight: 300;
-            }
-            #viewer {
-                height: 460px;
-            }
-            #viewer canvas {
-                width: 100%;
-                height: 100%;
-            }
-            #main_body {
-                padding-top: 1em;
-                color: rgba(0, 0, 0, 0.8);
-            }
-            #footer {
-                color: rgba(0, 0, 0, 0.5);
-                font-weight: 300;
-            }
-
-            a:link {
-                color: #54527A;
-                text-decoration: none;
-            }
-            a:visited, a:active {
-                color: #985F6F;
-                text-decoration: none;
-            }
-            a:hover {
-                text-decoration: underline;
-            }
-        </style>
+        <link href="css/style.css" rel="stylesheet" type="text/css"></link>
+        <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
+        <script src="js/three.js"></script>
+        <script src="js/stats.min.js"></script>
+        <script src="js/STLLoader.js"></script>
+        <script src="js/OrbitControls.js"></script>
     </head>
     <body>
-        <div class="header fixed">
+        <div class="header">
             <div class="content">
-                <div class="title">splitflap</div>
-            </div>
-        </div>
-        <div class="header placeholder">
-            <div class="content">
-                <div class="title">splitflap</div>
-                <div class="subtitle">DIY split-flap display by Scott Bezek</div>
+                <div class="title_container">
+                    <div class="title_left">
+                        <div class="title">splitflap</div>
+                        <div class="subtitle">DIY split-flap display by Scott Bezek</div>
+                    </div>
+                    <div class="title_right">
+                        <a href="https://github.com/scottbez1/splitflap/">
+                            <img src="img/GitHub-Mark-Light-32px.png" alt="View on GitHub" title="View on GitHub" class="github_link"/>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="content">
             <div id="viewer">
                 <canvas id="viewer_canvas"></canvas>
+                <div id="banner">Click to rotate. Scroll to zoom.</div>
             </div>
             <div id="main_body">
+                <h1>Welcome</h1>
                 <p>
-                    This is a work in progress custom-designed split-flap display. The goal is to design a low cost
-                    display unit that's easy to fabricate at home in small or single quantities and can be customized
-                    and built by an intermediate hobbyist.
+                    This is a work in progress split-flap display that you can build yourself. Each module can flip
+                    between 40 unique characters: letters, numbers, and a few symbols.
                 </p>
                 <p>
-                    The 3d model is built using OpenSCAD, the driver electronics board is designed in KiCad, and the
-                    driver firmware is written using Arduino.
+                    The primary design goal was to make something that's possible to fabricate at home in small or
+                    single quantities and can be customized and built by an intermediate hobbyist at a reasonable price.
+                    This meant using widely available materials and avoiding any tooling with a high upfront cost.
+                </p>
+                </p>
+                    Following that philosophy, the design uses PVC ID badge cards for the flaps (rather than
+                    custom die-cut plastic), store-bought vinyl stickers for the letters, and is driven by the
+                    ubiquitous and cheap 28BYJ-48 stepper motor. Even the enclosure, spool, and gears, which are all
+                    made from laser-cut MDF, can be easily ordered online.
+                </p>
+                <h1>Open source, up to date</h1>
+                <a href="https://s3.amazonaws.com/splitflap-travis/latest/schematic.pdf">
+                    <img class="floater right_float" src="https://s3.amazonaws.com/splitflap-travis/latest/schematic.png" title="Driver schematic"/>
+                </a>
+                <p>
+                    All of the designs are <a href="https://github.com/scottbez1/splitflap/">open source</a>. The 3d
+                    model is built using OpenSCAD, the driver electronics board is designed in KiCad, and the driver
+                    firmware is written using Arduino.
                 </p>
                 <p>
+                    Most of the supporting materials, like the
+                    <a href="https://s3.amazonaws.com/splitflap-travis/latest/schematic.pdf">schematic</a>,
+                    <a href="https://s3.amazonaws.com/splitflap-travis/latest/bom.csv">bill of materials</a>,
+                    <a href="https://s3.amazonaws.com/splitflap-travis/latest/pcb_gerber.zip">PCB gerbers</a>, and
+                    even the interactive 3D rendering seen above are
+                    <a href="https://scottbezek.blogspot.com/2016/04/automated-kicad-openscad-rendering.html">generated
+                    automatically</a> as the design changes, using Travis CI.
+                </p>
+                <a href="https://s3.amazonaws.com/splitflap-travis/latest/pcb_raster.png">
+                    <img class="floater left_float" src="https://s3.amazonaws.com/splitflap-travis/latest/pcb_raster.png" title="Driver PCB design"/>
+                </a>
+                <p style="clear: right;">
                     I'd love to hear your thoughts and questions about this project, and happy to incorporate any
                     feedback you might have into these designs! Please feel free (and encouraged) to
                     <a href="https://github.com/scottbez1/splitflap/issues/new">open GitHub issues</a>, email me
@@ -123,147 +99,10 @@ limitations under the License.
                 </pre>
                 <br><br>
                 <p id="footer">
-                    Designed by Scott Bezek, 2016.
+                    Designed by <a href="https://scottbezek.blogspot.com/">Scott Bezek</a>, 2016.
                 </p>
             </div>
         </div>
-        <script src="js/three.js"></script>
-        <script src="js/stats.min.js"></script>
-        <script src="js/STLLoader.js"></script>
-        <script src="js/OrbitControls.js"></script>
-        <script>
-            // https://coolors.co/dcd6f7-a6b1e1-b4869f-985f6f-4e4c67
-            var enclosure_height = 148.786;
-            var enclosure_height_lower = 82.6451;
-
-            var debug = false;
-
-            var canvas = document.getElementById("viewer_canvas");
-
-            var scene = new THREE.Scene();
-            var render_width = canvas.clientWidth;
-            var render_height = canvas.clientHeight;
-
-            scene.fog = new THREE.Fog(0x985F6F, 1200, 4000);
-            var camera = new THREE.PerspectiveCamera( 35, render_width/render_height, 1, 4000 );
-            camera.position.set(-500, 300, -500);
-
-            var renderer = new THREE.WebGLRenderer({canvas: canvas});
-
-            function addShadowedLight(x, y, z, color, intensity) {
-                var directionalLight = new THREE.DirectionalLight( color, intensity );
-                directionalLight.position.set( x, y, z );
-                directionalLight.target.position.set(0, 0, 0);
-                scene.add( directionalLight );
-                directionalLight.castShadow = true;
-                var d = 150;
-                directionalLight.shadow.camera.left = -d;
-                directionalLight.shadow.camera.right = d;
-                directionalLight.shadow.camera.top = d;
-                directionalLight.shadow.camera.bottom = -d;
-                directionalLight.shadow.camera.near = 1200;
-                directionalLight.shadow.camera.far = 1700;
-                directionalLight.shadow.mapSize.width = 1024;
-                directionalLight.shadow.mapSize.height = 1024;
-
-                if (debug) {
-                    scene.add( new THREE.CameraHelper( directionalLight.shadow.camera ));
-                }
-            }
-
-            // Ground
-            var plane = new THREE.Mesh(
-                new THREE.PlaneBufferGeometry(7000, 7000),
-                new THREE.MeshPhongMaterial({color: 0x231A22, specular:0x101010})
-            );
-            plane.rotation.x = -Math.PI/2;
-            plane.position.y = -0.1;
-            plane.receiveShadow = true;
-            scene.add(plane);
-
-            // Lights
-            scene.add( new THREE.HemisphereLight( 0x443333, 0x111122 ) );
-            addShadowedLight( 300, 1000, -1000, 0xE6CBE9, 0.9 );
-            addShadowedLight( -300, 1500, -100, 0xF6F1C0, 0.6);
-
-            // renderer
-            renderer.setSize( render_width, render_height);
-            renderer.setClearColor( scene.fog.color );
-            renderer.setPixelRatio( window.devicePixelRatio );
-            renderer.gammaInput = true;
-            renderer.gammaOutput = true;
-            renderer.shadowMap.enabled = true;
-            //renderer.shadowMap.renderReverseSided = false;
-
-            //document.body.appendChild( renderer.domElement );
-
-            if (debug) {
-                var stats = new Stats();
-                stats.showPanel( 0 );
-                document.body.appendChild( stats.dom );
-            }
-
-            var render = function () {
-                if (debug) {
-                    stats.begin();
-                }
-
-                renderer.render(scene, camera);
-
-                if (debug) {
-                    stats.end();
-                }
-            };
-
-            // Camera Controls
-            controls = new THREE.OrbitControls( camera, renderer.domElement );
-            controls.addEventListener( 'change', render );
-            controls.enableZoom = true;
-            controls.minDistance = 80;
-            controls.maxDistance = 1300;
-            controls.validUpdate = function(position, quaternion, target) {
-                // Don't allow camera to go below ground
-                return position.y > 0 && target.y > 0;
-            };
-
-            var cameraTarget = new THREE.Vector3(0, enclosure_height_lower, 0);
-            controls.target = cameraTarget;
-            controls.update();
-
-            render();
-
-
-
-            var loadStl = function(url, color) {
-                var loader = new THREE.STLLoader();
-                loader.load(url, function(geometry) {
-                    var material = new THREE.MeshPhongMaterial({
-                        color: color,
-                        specular: 0x111111,
-                        shininess: 10
-                    });
-                    var mesh = new THREE.Mesh(geometry, material);
-
-                    mesh.position.set(0, enclosure_height_lower, 0);
-                    mesh.rotation.set(-Math.PI/2, 0, 0);
-
-                    mesh.castShadow = true;
-                    mesh.receiveShadow = true;
-                    scene.add(mesh);
-                    render();
-                });
-            };
-            var loader = new THREE.XHRLoader(THREE.DefaultLoadingManager);
-            loader.load('https://s3.amazonaws.com/splitflap-travis/latest/3d_colored_stl/manifest.json', function(text) {
-                var json = JSON.parse(text);
-                for (var key in json) {
-                    if (json.hasOwnProperty(key)) {
-                        var color = json[key];
-                        loadStl('https://s3.amazonaws.com/splitflap-travis/latest/3d_colored_stl/' + key, new THREE.Color( color[0], color[1], color[2] ).getHex());
-                    }
-                }
-            });
-
-        </script>
+        <script src="js/viewer.js"></script>
     </body>
 </html>

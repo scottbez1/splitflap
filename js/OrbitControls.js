@@ -75,6 +75,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 	// Mouse buttons
 	this.mouseButtons = { ORBIT: THREE.MOUSE.LEFT, ZOOM: THREE.MOUSE.MIDDLE, PAN: THREE.MOUSE.RIGHT };
 
+    // NB(sbezek): custom camera location validation
 	this.validUpdate = function ( position, quaternion, target ) {
 	    return true;
 	};
@@ -126,6 +127,8 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		var lastPosition = new THREE.Vector3();
 		var lastQuaternion = new THREE.Quaternion();
+
+		// NB(sbezek): track last target so we can revert if new position is invalid
 		var lastTarget = new THREE.Vector3();
 
 		return function () {
@@ -189,6 +192,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 			scale = 1;
 			panOffset.set( 0, 0, 0 );
 
+            // NB(sbezek): custom camera location validation
 			if ( !scope.validUpdate( scope.object.position, scope.object.quaternion, scope.target ) ) {
 			    scope.object.position.copy( lastPosition );
 			    scope.object.quaternion.copy( lastQuaternion );
@@ -208,6 +212,8 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 				lastPosition.copy( scope.object.position );
 				lastQuaternion.copy( scope.object.quaternion );
+
+        		// NB(sbezek): track last target so we can revert if new position is invalid
 				lastTarget.copy( scope.target );
 				zoomChanged = false;
 
@@ -234,7 +240,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		document.removeEventListener( 'mousemove', onMouseMove, false );
 		document.removeEventListener( 'mouseup', onMouseUp, false );
-		document.removeEventListener( 'mouseout', onMouseUp, false );
+		//document.removeEventListener( 'mouseout', onMouseUp, false );
 
 		window.removeEventListener( 'keydown', onKeyDown, false );
 
@@ -715,7 +721,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 			document.addEventListener( 'mousemove', onMouseMove, false );
 			document.addEventListener( 'mouseup', onMouseUp, false );
-			document.addEventListener( 'mouseout', onMouseUp, false );
+			//document.addEventListener( 'mouseout', onMouseUp, false );
 
 			scope.dispatchEvent( startEvent );
 
@@ -759,7 +765,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		document.removeEventListener( 'mousemove', onMouseMove, false );
 		document.removeEventListener( 'mouseup', onMouseUp, false );
-		document.removeEventListener( 'mouseout', onMouseUp, false );
+		//document.removeEventListener( 'mouseout', onMouseUp, false );
 
 		scope.dispatchEvent( endEvent );
 
