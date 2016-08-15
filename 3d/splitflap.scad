@@ -20,6 +20,7 @@ use<28byj-48.scad>;
 use<projection_renderer.scad>;
 use<label.scad>;
 use<assert.scad>;
+use<roboto/RobotoCondensed-Regular.ttf>;
 
 // ##### RENDERING OPTIONS #####
 
@@ -41,6 +42,8 @@ render_etch = false;
 render_revision = "deadbeef";
 render_date = "YYYY-MM-DD";
 
+render_letter = "4";
+
 
 // Kerf based off http://blog.ponoko.com/2011/07/12/figuring-out-kerf-for-precision-parts/
 // It's better to underestimate (looser fit) than overestimate (no fit)
@@ -51,7 +54,7 @@ kerf_width = render_etch ? -kerf_value : kerf_value;
 // http://www.ponoko.com/make-and-sell/show-material/64-mdf-natural
 thickness = 3.2;
 
-eps=.1;
+eps=.01;
 
 // M4 bolts
 m4_hole_diameter = 4.5;
@@ -83,6 +86,8 @@ flap_height = 43;
 flap_thickness = 30 / 1000 * 25.4; // 30 mil
 flap_corner_radius = 3.1; // 2.88-3.48mm (used just for display)
 flap_rendered_angle = 90;
+
+letter_height = flap_height * 0.75 * 2;
 
 // Amount of slop of the flap side to side between the 2 spools
 flap_width_slop = 1.5;
@@ -354,9 +359,11 @@ module flap() {
 }
 
 module translated_flap() {
-    translate([0, flap_pitch_radius, 0])
-    rotate([flap_rendered_angle, 0, 0])
-    flap();
+    translate([0, flap_pitch_radius, 0]) {
+        rotate([flap_rendered_angle, 0, 0]) {
+            flap();
+        }
+    }
 }
 
 
@@ -787,6 +794,40 @@ module split_flap_3d() {
                 pcb();
     }
 
+    module letter_top_half() {
+        rotate([-90, 0, 0]) {
+            rotate([0, 0, 180]) {
+                linear_extrude(height=0.1, center=true) {
+                    translate([-flap_width / 2, -flap_pin_width/2]) {
+                        difference() {
+                            text(text=render_letter, size=letter_height, font="RobotoCondensed", halign="center", valign="center");
+                            translate([-flap_width, -flap_height - eps]) {
+                                square([2 * flap_width, flap_height]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    module letter_bottom_half() {
+        rotate([-90, 0, 0]) {
+            rotate([0, 0, 180]) {
+                linear_extrude(height=0.1, center=true) {
+                    translate([-flap_width / 2, flap_pin_width/2]) {
+                        difference() {
+                            text(text=render_letter, size=letter_height, font="RobotoCondensed", halign="center", valign="center");
+                            translate([-flap_width, eps]) {
+                                square([2 * flap_width, flap_height]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     translate([spool_width_slop/2 + thickness*2, 0, 0]) {
         // Flap area
         if (render_flaps) {
@@ -808,13 +849,29 @@ module split_flap_3d() {
                 // Collapsed flaps on the top
                 for (i=[0:num_flaps/2 - 1]) {
                     rotate([360/num_flaps * i, 0, 0]) translated_flap();
+                    if (i == 0) {
+                        color([0,0,0]) {
+                            translate([0, flap_pitch_radius + flap_thickness/2, 0]) {
+                                letter_top_half();
+                            }
+                        }
+                    }
                 }
 
                 for (i=[1:num_flaps/2]) {
                     angle = -360/num_flaps*i;
-                    translate([0, flap_pitch_radius*cos(angle), flap_pitch_radius * sin(angle)])
-                        rotate([-90, 0, 0])
+                    translate([0, flap_pitch_radius*cos(angle), flap_pitch_radius * sin(angle)]) {
+                        rotate([-90, 0, 0]) {
                             flap();
+                        }
+                        if (i == 1) {
+                            color([0,0,0]) {
+                                translate([0, flap_thickness/2, 0]) {
+                                    letter_bottom_half();
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
