@@ -33,20 +33,30 @@
             <div id="main_body">
                 <h1>Welcome</h1>
                 <p>
-                    This is a work in progress split-flap display that you can build yourself. Each module can flip
-                    between 40 unique characters: letters, numbers, and a few symbols.
+                    This is a work in progress
+                    <a href="https://en.wikipedia.org/wiki/Split-flap_display" target="_blank">split-flap display</a>.
+                    Each module can flip between 40 unique characters: letters, numbers, and a few symbols. Multiple
+                    modules fit perfectly alongside each other to build bigger displays.
                 </p>
                 <p>
                     The primary design goal was to make something that's possible to fabricate at home in small or
                     single quantities and can be customized and built by an intermediate hobbyist at a reasonable price.
                     This meant using widely available materials and avoiding any tooling with a high upfront cost.
                 </p>
-                </p>
+                <p>
                     Following that philosophy, the design uses PVC ID badge cards for the flaps (rather than
-                    custom die-cut plastic), store-bought vinyl stickers for the letters, and is driven by the
+                    custom die-cut plastic), store-bought vinyl stickers for the letters, and is driven by an
                     ubiquitous and cheap 28BYJ-48 stepper motor. Even the enclosure, spool, and gears, which are all
                     made from laser-cut MDF, can be easily ordered online.
                 </p>
+                <p>
+                    This design is currently at a <i>prototype</i> stage. The source code in the
+                    <a href="https://github.com/scottbez1/splitflap" target="_blank">git repo</a>
+                    was able to produce a working prototype (with some manual modifications to correct for slight
+                    errors/omissions), but I wouldn't necessarily recommend building your own quite yet, until there
+                    are fewer bugs, better documentation, and an improved instruction guide.
+                </p>
+                <iframe class="video" width="560" height="315" src="https://www.youtube.com/embed/bslkflVv-Hw" frameborder="0" allowfullscreen></iframe>
                 <h1>Open source, up to date</h1>
                 <a href="https://s3.amazonaws.com/splitflap-travis/latest/schematic.pdf">
                     <img class="floater right_float" src="https://s3.amazonaws.com/splitflap-travis/latest/schematic.png" title="Driver schematic"/>
@@ -63,7 +73,8 @@
                     <a href="https://s3.amazonaws.com/splitflap-travis/latest/pcb_gerber.zip">PCB gerbers</a>, and
                     even the interactive 3D rendering seen above are
                     <a href="https://scottbezek.blogspot.com/2016/04/automated-kicad-openscad-rendering.html">generated
-                    automatically</a> as the design changes, using Travis CI.
+                    automatically</a> as the design changes, using Travis CI. This way you can always see the latest
+                    designs, even without having to check out the git repo or install any software yourself.
                 </p>
                 <a href="https://s3.amazonaws.com/splitflap-travis/latest/pcb_raster.png">
                     <img class="floater left_float" src="https://s3.amazonaws.com/splitflap-travis/latest/pcb_raster.png" title="Driver PCB design"/>

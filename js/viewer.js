@@ -135,7 +135,7 @@ var loadStl = function(url, color) {
         loaded_models++;
         if (loaded_models === expected_models) {
             controls.autoRotate = true;
-            $("#banner").fadeIn();
+            $("#banner").fadeIn(1200);
         }
     });
 };
