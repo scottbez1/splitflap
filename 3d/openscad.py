@@ -19,6 +19,7 @@ import logging
 import numbers
 import re
 import subprocess
+import commands
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +48,7 @@ def run(
         ):
 
     command = [
-        'openscad',
+        commands.openscad,
         '-o', output_file,
     ]
 

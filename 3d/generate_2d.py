@@ -25,6 +25,7 @@ import sys
 
 from svg_processor import SvgProcessor
 from projection_renderer import Renderer
+import commands
 
 repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(repo_root)
@@ -45,25 +46,29 @@ if __name__ == '__main__':
     svg_output = renderer.render_svgs()
 
     # Export to png
-    raster_svg = os.path.join(laser_parts_directory, 'raster.svg')
-    raster_png = os.path.join(laser_parts_directory, 'raster.png')
+    cwd = os.getcwd()
+    raster_svg = os.path.join(cwd, laser_parts_directory, 'raster.svg')
+    raster_png = os.path.join(cwd, laser_parts_directory, 'raster.png')
     processor = SvgProcessor(svg_output)
     processor.apply_raster_render_style()
     processor.write(raster_svg)
 
     logging.info('Resize SVG canvas')
+    logging.info('getcwd: ' + cwd)
+    logging.info('raster_svg: ' + raster_svg)
+    logging.info('raster_png: ' + raster_png)
     subprocess.check_call([
-        'inkscape',
+        commands.inkscape,
         '--verb=FitCanvasToDrawing',
         '--verb=FileSave',
         '--verb=FileClose',
+        '--verb=FileQuit',
         raster_svg,
     ])
     logging.info('Export PNG')
     subprocess.check_call([
-        'inkscape',
+        commands.inkscape,
         '--export-width=320',
         '--export-png', raster_png,
         raster_svg,
     ])
-
