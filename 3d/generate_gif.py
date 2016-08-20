@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-#   Copyright 2015 Scott Bezek
+#   Copyright 2015-2016 Scott Bezek and the splitflap contributors
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.

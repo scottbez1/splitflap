@@ -134,7 +134,7 @@ I'd love to hear your thoughts and questions about this project, and happy to in
 
 The vast majority of this project is licensed under Apache v2 (see [LICENSE.txt](LICENSE.txt) for full details).
 
-    Copyright 2015 Scott Bezek
+    Copyright 2015-2016 Scott Bezek and the splitflap contributors
     
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
