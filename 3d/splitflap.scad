@@ -193,6 +193,7 @@ enclosure_length_right = side_tab_width*5 + thickness - side_tab_width * (1-side
 backstop_bolt_vertical_offset = - (exclusion_radius + outer_exclusion_radius)/2;
 backstop_bolt_forward_range = 14;
 
+
 // PCB parameters
 pcb_offset_radius = spool_strut_exclusion_radius + 1;
 pcb_height = 48;
@@ -203,6 +204,10 @@ pcb_mount_inset_horizontal = 8;
 pcb_mount_slot_delta = 4;
 pcb_reference_horizontal = -pcb_length - pcb_offset_radius;
 pcb_reference_vertical = -4;
+pcb_sensor_horizontal_inset = 1.8; // how far in the sensor is from the edge of the PCB
+
+ir_reflectance_hole_offset = pcb_offset_radius + pcb_sensor_horizontal_inset;
+ir_reflectance_hole_radius = 2.5;
 
 connector_bolt_offset = 40;
 
@@ -315,6 +320,11 @@ module spool_gear() {
         difference() {
             gear(drive_pitch, spool_teeth, 0, assembly_inner_radius * 2);
             spool_strut_tab_holes();
+
+            // Hole for IR reflectance sensor to detect
+            translate([0, -ir_reflectance_hole_offset]) {
+                circle(r=ir_reflectance_hole_radius, $fn=15);
+            }
         }
     }
 }
