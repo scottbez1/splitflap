@@ -17,7 +17,7 @@ This design is currently at a *prototype* stage. The source files provided here 
 
 | Component | Status | Notes |
 | --- | --- | --- |
-| Enclosure/Mechanics | *Release Candidate* | Blocking issue: [#9](https://github.com/scottbez1/splitflap/issues/9). Need documentation on ordering. |
+| Enclosure/Mechanics | *Release Candidate* | Need documentation on ordering. |
 | Electronics | *Beta* | Works but requires SMD soldering experience. Considering creating simpler variant: [#12](https://github.com/scottbez1/splitflap/issues/12) |
 | Firmware | *Alpha* | Works, but needs cleanup, testing, and stable serial protocol |
 | Control Software | *none* | No work started; currently manual control using Arduino Serial Monitor |
@@ -46,6 +46,7 @@ I'd love to hear your thoughts and questions about this project, and happy to in
 TBD:
 * $0.76 -- GP2S60 reflectance sensor [on digikey](http://www.digikey.com/product-detail/en/GP2S60B/425-2670-1-ND/1642454)
 * $14/10 units -- PCB for reflectance sensor [on seeedstudio](http://www.seeedstudio.com/service/index.php?r=pcb)
+* $6.66/4 units -- ATmega32U4 microcontroller for driver board [on digikey](http://www.digikey.com/product-detail/en/atmel/ATMEGA32U4-AUR/ATMEGA32U4-AURCT-ND/3440960)
 * ? -- Other electronics components for driver/sensor boards
 
 Tools:
@@ -88,6 +89,10 @@ Latest Laser Cut Vector File: [svg](https://s3.amazonaws.com/splitflap-travis/la
 The design can be rendered to a rotating 3d animated gif (seen above) by running `3d/generate_gif.py`, which outputs to `3d/build/animation/animation.gif`
 
 The `generate_gif.py` script runs multiple OpenSCAD instances in parallel to render the design from 360 degrees to individual png frames, which are then combined into the final gif animation. As part of building the animation, `generate_gif.py` renders the design with multiple configurations (opaque enclosure, see-through enclosure, no-enclosure and no flaps) by setting the `render_enclosure` and `render_flaps` variables.
+
+##### STL models/web viewer #####
+The design can be rendered to a series of STL files (one per color used in the model) in order to be displayed in an [interactive web-based 3d viewer](https://scottbez1.github.io/splitflap/). Similar to the `projection_renderer` used to render individual components for laser-cutting, the [ColoredStlExporter](https://github.com/scottbez1/splitflap/blob/master/3d/colored_stl_exporter.py) detects all the colors used in the model and renders them one-by-one to separate STL files, along with a manifest that maps each STL file to its RGB color. The STL files and manifest are loaded using three.js to display an interactive model on a web site using WebGL. See this blog post for more details on how the export and three.js renderer work: [OpenSCAD Rendering Tricks, Part 3: Web viewer](http://scottbezek.blogspot.com/2016/08/openscad-rendering-tricks-part-3-web.html).
+
 
 ### Driver Electronics ###
 There is a work-in-progress driver circuit based on an ATmega32U4 AVR under `electronics/splitflap.pro` (KiCad project) which is under very active development. The driver supports 4 stepper motors using ULN2003 darlington arrays (which you easily remove from the 28byj-48 driver boards that often come with the motors) and 4 optical home position inputs (for GP2S60 IR reflectance sensors), with a micro-USB connector for computer control.
