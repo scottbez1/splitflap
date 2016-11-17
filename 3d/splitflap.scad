@@ -467,7 +467,7 @@ module enclosure_left() {
 
             // bottom side tabs
             translate([thickness * 0.5 + enclosure_vertical_inset, 0, 0])
-                side_tabs_negative(hole_sizes=[1, 0, 0, 1]);
+                side_tabs_negative(hole_sizes=[0,0,0,1]);
 
             // top side tabs
             translate([enclosure_height - thickness * 0.5 - enclosure_vertical_inset, enclosure_length, 0])
@@ -611,39 +611,39 @@ module enclosure_bottom() {
         translate([enclosure_horizontal_inset + thickness, 0, 0]) {
             difference() {
                 union() {
-                    square([enclosure_width - 2 * thickness - 2 * enclosure_horizontal_inset, enclosure_length]);
+                    square([enclosure_width - 2 * thickness - 2 * enclosure_horizontal_inset, enclosure_length_right]);
 
                     // front tabs
-                    translate([0, enclosure_length, 0])
+                    translate([0, enclosure_length_right, 0])
                         front_back_tabs();
 
                     // left tabs
-                    translate([enclosure_width - 2 * thickness - 2 * enclosure_horizontal_inset, enclosure_length - thickness, 0])
+                    translate([enclosure_width - 2 * thickness - 2 * enclosure_horizontal_inset, enclosure_length_right - thickness, 0])
                         mirror([0, 1, 0])
-                            side_tabs(5);
+                            side_tabs(2);
 
                     // right tabs
-                    translate([0, enclosure_length - thickness, 0])
+                    translate([0, enclosure_length_right - thickness, 0])
                         mirror([0, 1, 0])
                             mirror([1, 0, 0])
                                 side_tabs(2);
                 }
 
                 // front captive nuts
-                translate([0, enclosure_length, 0])
+                translate([0, enclosure_length_right, 0])
                     mirror([0,1,0])
                         front_back_captive_nuts();
 
                 // right captive nuts
-                translate([0, enclosure_length - thickness, 0])
+                translate([0, enclosure_length_right - thickness, 0])
                     mirror([0, 1, 0])
                         side_captive_nuts(hole_types = [1]);
 
                 // left captive nuts
-                translate([enclosure_width - 2 * thickness - 2 * enclosure_horizontal_inset, enclosure_length - thickness, 0])
+                translate([enclosure_width - 2 * thickness - 2 * enclosure_horizontal_inset, enclosure_length_right - thickness, 0])
                     mirror([0, 1, 0])
                         mirror([1, 0, 0])
-                            side_captive_nuts(hole_types = [1,0,0,1]);
+                            side_captive_nuts(hole_types = [1]);
 
             }
         }
@@ -653,8 +653,8 @@ module enclosure_bottom() {
 module enclosure_bottom_etch() {
     color([0, 0, 0])
     linear_extrude(height=2, center=true) {
-        translate([enclosure_horizontal_inset + thickness, 0, 0]) {
-            translate([5, 12, thickness]) {
+        translate([enclosure_horizontal_inset + m4_bolt_length, 0, 0]) {
+            translate([2, 2, thickness]) {
                 text_label(["github.com/scottbez1/splitflap", str("rev. ", render_revision), render_date]);
             }
         }
@@ -743,13 +743,13 @@ module split_flap_3d() {
     }
 
     module positioned_bottom() {
-        translate([0, front_forward_offset - enclosure_length, -enclosure_height_lower + enclosure_vertical_inset]) {
+        translate([0, front_forward_offset - enclosure_length_right, -enclosure_height_lower + enclosure_vertical_inset]) {
             enclosure_bottom();
         }
     }
 
     module positioned_bottom_etch() {
-        translate([0, front_forward_offset - enclosure_length, -enclosure_height_lower + enclosure_vertical_inset]) {
+        translate([0, front_forward_offset - enclosure_length_right, -enclosure_height_lower + enclosure_vertical_inset]) {
             translate([0, 0, thickness]) {
                 enclosure_bottom_etch();
             }
