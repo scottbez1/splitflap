@@ -60,6 +60,8 @@ This design is still a work in progress; a build log/instructions for building a
 <img height="320" src="https://github.com/scottbez1/splitflap/wiki/images/flaps/punchedCard.jpg"/>
 </a>
 
+Note: most of the diagrams and downloadable files on this README page are auto-generated from the latest *experimental* code, which may be untested or broken. If you are interested in building one without digging into the design details much, I recommend using a stable design, as described in [the wiki](https://github.com/scottbez1/splitflap/wiki).
+
 ## Design & Modification Guide ##
 
 ### 3D Design ###
@@ -82,7 +84,7 @@ The `generate_2d.py` script interacts with the `projection_renderer` module by f
 
 Once the `combined.svg` file is generated, you'll want to manually remove a couple redundant cut lines that are shared by multiple adjacent pieces, to save time/cost when cutting. In Inkscape, select the "Edit paths by nodes" tool and select an edge to delete - the endpoints should turn blue. Then click "Delete segment between two non-endpoint nodes", and repeat this for all other redundant cut lines.
 
-Latest Laser Cut Vector File: [svg](https://s3.amazonaws.com/splitflap-travis/latest/3d_laser_vector.svg)
+Latest (Experimental!) Laser Cut Vector File: [svg](https://s3.amazonaws.com/splitflap-travis/latest/3d_laser_vector.svg)
 (In order to get the design laser-cut from Ponoko, you'll need to copy all of the shapes from that file into one of [Ponoko's templates](http://www.ponoko.com/starter-kits/inkscape))
 
 ##### Animated gif #####
@@ -113,9 +115,9 @@ This way, with an order of 5 identical PCBs you can populate a single 4-channel 
 ##### Latest PCB Renderings #####
 These are automatically updated on every commit with the latest rendering from the `master` branch. See this blog post for more details on how that works: [Automated KiCad, OpenSCAD rendering using Travis CI](http://scottbezek.blogspot.com/2016/04/automated-kicad-openscad-rendering.html).
 
-Latest PCB Gerbers: [zip](https://s3.amazonaws.com/splitflap-travis/latest/pcb_gerber.zip)  
-Latest PCB Packet: [pdf](https://s3.amazonaws.com/splitflap-travis/latest/pcb_packet.pdf)  
-Latest (rough) Bill of Materials: [csv](https://s3.amazonaws.com/splitflap-travis/latest/bom.csv)
+Latest (experimental!) PCB Gerbers: [zip](https://s3.amazonaws.com/splitflap-travis/latest/pcb_gerber.zip)  
+Latest (experimental!) PCB Packet: [pdf](https://s3.amazonaws.com/splitflap-travis/latest/pcb_packet.pdf)  
+Latest (experimental!) rough bill of materials: [csv](https://s3.amazonaws.com/splitflap-travis/latest/bom.csv)
 
 #### Rendering ####
 The PCB layout can be rendered to an svg or png (seen above) by running `electronics/generate_svg.py`. This uses KiCad's [python scripting API](https://github.com/blairbonnett-mirrors/kicad/blob/master/demos/python_scripts_examples/plot_board.py) to render several layers to individual svg files, manipulates them to apply color and opacity settings, and then merges them to a single svg. For additional details, see this blog post: [Scripting KiCad Pcbnew exports](http://scottbezek.blogspot.com/2016/04/scripting-kicad-pcbnew-exports.html).
