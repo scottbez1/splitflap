@@ -1,0 +1,119 @@
+<html>
+    <link>
+        <title>splitflap</title>
+        <link href='https://fonts.googleapis.com/css?family=Roboto:100,300,400' rel='stylesheet' type='text/css'>
+        <link href="css/style.css" rel="stylesheet" type="text/css"></link>
+        <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
+        <script src="js/three.js"></script>
+        <script src="js/stats.min.js"></script>
+        <script src="js/STLLoader.js"></script>
+        <script src="js/OrbitControls.js"></script>
+    </head>
+    <body>
+        <div class="header">
+            <div class="content">
+                <div class="title_container">
+                    <div class="title_left">
+                        <div class="title">splitflap</div>
+                        <div class="subtitle">DIY split-flap display by Scott Bezek</div>
+                    </div>
+                    <div class="title_right">
+                        <a href="https://github.com/scottbez1/splitflap/">
+                            <img src="img/GitHub-Mark-Light-64px.png" alt="View on GitHub" title="View on GitHub" class="github_link"/>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <div id="viewer">
+                <canvas id="viewer_canvas"></canvas>
+                <div id="banner">Click to rotate. Scroll to zoom.</div>
+            </div>
+            <div id="main_body">
+                <h1>Welcome</h1>
+                <p>
+                    This is a work in progress
+                    <a href="https://en.wikipedia.org/wiki/Split-flap_display" target="_blank">split-flap display</a>.
+                    Each module can flip between 40 unique characters: letters, numbers, and a few symbols. Multiple
+                    modules fit perfectly alongside each other to build bigger displays.
+                </p>
+                <p>
+                    The primary design goal was to make something that's possible to fabricate at home in small or
+                    single quantities and can be customized and built by an intermediate hobbyist at a reasonable price.
+                    This meant using widely available materials and avoiding any tooling with a high upfront cost.
+                </p>
+                <p>
+                    Following that philosophy, the design uses PVC ID badge cards for the flaps (rather than
+                    custom die-cut plastic), store-bought vinyl stickers for the letters, and is driven by an
+                    ubiquitous and cheap 28BYJ-48 stepper motor. Even the enclosure, spool, and gears, which are all
+                    made from laser-cut MDF, can be easily ordered online.
+                </p>
+                <p>
+                    This design is currently at a <i>prototype</i> stage. The source code in the
+                    <a href="https://github.com/scottbez1/splitflap" target="_blank">git repo</a>
+                    was able to produce a working prototype (with some manual modifications to correct for slight
+                    errors/omissions), but I wouldn't necessarily recommend building your own quite yet, until there
+                    are fewer bugs, better documentation, and an improved instruction guide.
+                </p>
+                <iframe class="video" width="560" height="315" src="https://www.youtube.com/embed/bslkflVv-Hw" frameborder="0" allowfullscreen></iframe>
+                <h1>Open source, up to date</h1>
+                <a href="https://s3.amazonaws.com/splitflap-travis/latest/schematic.pdf">
+                    <img class="floater right_float" src="https://s3.amazonaws.com/splitflap-travis/latest/schematic.png" title="Driver schematic"/>
+                </a>
+                <p>
+                    All of the designs are <a href="https://github.com/scottbez1/splitflap/">open source</a>. The 3d
+                    model is built using OpenSCAD, the driver electronics board is designed in KiCad, and the driver
+                    firmware is written using Arduino.
+                </p>
+                <p>
+                    Most of the supporting materials, like the
+                    <a href="https://s3.amazonaws.com/splitflap-travis/latest/schematic.pdf">schematic</a>,
+                    <a href="https://s3.amazonaws.com/splitflap-travis/latest/bom.csv">bill of materials</a>,
+                    <a href="https://s3.amazonaws.com/splitflap-travis/latest/pcb_gerber.zip">PCB gerbers</a>, and
+                    even the interactive 3D rendering seen above are
+                    <a href="https://scottbezek.blogspot.com/2016/04/automated-kicad-openscad-rendering.html">generated
+                    automatically</a> as the design changes, using Travis CI. This way you can always see the latest
+                    designs, even without having to check out the git repo or install any software yourself.
+                </p>
+                <a href="https://s3.amazonaws.com/splitflap-travis/latest/pcb_raster.png">
+                    <img class="floater left_float" src="https://s3.amazonaws.com/splitflap-travis/latest/pcb_raster.png" title="Driver PCB design"/>
+                </a>
+                <p style="clear: right;">
+                    I'd love to hear your thoughts and questions about this project, and happy to incorporate any
+                    feedback you might have into these designs! Please feel free (and encouraged) to
+                    <a href="https://github.com/scottbez1/splitflap/issues/new">open GitHub issues</a>, email me
+                    directly, <a href="https://twitter.com/scottbez1">reach out on Twitter</a>, and
+                    <a href="https://github.com/scottbez1/splitflap/pulls">get involved in the open source development
+                    </a> and let's keep chatting and building together!
+                </p>
+                <h3>License</h3>
+                <p>
+                    The vast majority of this project is licensed under Apache v2 (see
+                    <a href="https://github.com/scottbez1/splitflap/blob/master/LICENSE.txt">LICENSE.txt</a> for full
+                    details).
+                </p>
+                <pre>
+Copyright 2015-2016 Scott Bezek and the splitflap contributors
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+                </pre>
+                <br><br>
+                <p id="footer">
+                    Designed by <a href="https://scottbezek.blogspot.com/">Scott Bezek</a>, 2016.
+                </p>
+            </div>
+        </div>
+        <script src="js/viewer.js"></script>
+    </body>
+</html>
