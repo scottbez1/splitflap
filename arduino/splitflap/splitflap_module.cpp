@@ -26,7 +26,8 @@ SplitflapModule::SplitflapModule(
   volatile uint8_t &sensor_port,
   volatile uint8_t &sensor_pin,
   const uint8_t sensor_mask,
-  int *ramp_periods) :
+  const int* const ramp_periods,
+  const int num_ramp_levels) :
     flaps(flaps),
     stepPattern(stepPattern),
     motor_ddr(motor_ddr),
@@ -36,7 +37,8 @@ SplitflapModule::SplitflapModule(
     sensor_port(sensor_port),
     sensor_pin(sensor_pin),
     sensor_mask(sensor_mask),
-    ramp_periods(ramp_periods)
+    ramp_periods(ramp_periods),
+    num_ramp_levels(num_ramp_levels)
 {
 }
 
@@ -53,8 +55,7 @@ bool SplitflapModule::readSensor() {
   return (sensor_pin & sensor_mask) != 0;
 }
 
-void SplitflapModule::init(int maxRampLevel) {
-  max_ramp_level = maxRampLevel;
+void SplitflapModule::init() {
   motor_ddr |= motor_mask;
 
   // Set up sensor as input and enable internal pull-up
@@ -64,7 +65,7 @@ void SplitflapModule::init(int maxRampLevel) {
   lastHome = readSensor();
 }
 
-void SplitflapModule::panic(char* message) {
+void SplitflapModule::panic(String message) {
   Serial.print("#### PANIC! ####\n");
   Serial.print(message);
   motor_port &= ~(motor_mask);
@@ -168,8 +169,8 @@ void SplitflapModule::update() {
         while (currentFlapIndex > NUM_FLAPS - 1.001) {
           currentFlapIndex -= NUM_FLAPS;
         }
-      } else if (delta > max_ramp_level) {
-        desiredRampLevel = max_ramp_level;
+      } else if (delta >= num_ramp_levels) {
+        desiredRampLevel = num_ramp_levels - 1;
       } else {
         desiredRampLevel = (int)delta;
       }
@@ -185,7 +186,7 @@ void SplitflapModule::update() {
           Serial.print("Never found home position. Entering disabled state.\n");
           state = SENSOR_ERROR;
         } else  {
-          desiredRampLevel = max_ramp_level / 6;
+          desiredRampLevel = num_ramp_levels / 6;
         }
       }
     }

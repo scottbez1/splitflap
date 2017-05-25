@@ -17,6 +17,7 @@
 #include <avr/power.h>
 #include <math.h>
 #include "splitflap_module.h"
+#include "acceleration.h"
 
 // Prevent serial comms from attempting to toggle rx/tx led pins
 #define TX_RX_LED_INIT
@@ -34,13 +35,6 @@ const int flaps[] = {
   ',',
   '\'',
 };
-
-// TODO: precompute all of this
-#define MAX_PERIOD_MICROS (20000)
-#define MIN_PERIOD_MICROS (1200)
-#define ACCEL_TIME_MICROS (200000)
-#define MAX_RAMP_LEVELS (ACCEL_TIME_MICROS/MIN_PERIOD_MICROS)
-int RAMP_PERIODS[MAX_RAMP_LEVELS+2];
 
 #define DEBUG_LED_0_PIN 13
 #define DEBUG_LED_1_PIN 5
@@ -94,10 +88,10 @@ const uint8_t step_pattern_D[] = {
   MOT_D_PHASE_A | MOT_D_PHASE_B,
 };
 
-SplitflapModule moduleA(flaps, step_pattern_A, DDRB, PORTB, 0x0F, DDRF, PORTF, PINF, B10000000, RAMP_PERIODS);
-SplitflapModule moduleB(flaps, step_pattern_B, DDRD, PORTD, 0x0F, DDRF, PORTF, PINF, B01000000, RAMP_PERIODS);
-SplitflapModule moduleC(flaps, step_pattern_C, DDRD, PORTD, 0xF0, DDRF, PORTF, PINF, B00100000, RAMP_PERIODS);
-SplitflapModule moduleD(flaps, step_pattern_D, DDRB, PORTB, 0xF0, DDRF, PORTF, PINF, B00010000, RAMP_PERIODS);
+SplitflapModule moduleA(flaps, step_pattern_A, DDRB, PORTB, 0x0F, DDRF, PORTF, PINF, B10000000, Acceleration::RAMP_PERIODS, Acceleration::NUM_RAMP_LEVELS);
+SplitflapModule moduleB(flaps, step_pattern_B, DDRD, PORTD, 0x0F, DDRF, PORTF, PINF, B01000000, Acceleration::RAMP_PERIODS, Acceleration::NUM_RAMP_LEVELS);
+SplitflapModule moduleC(flaps, step_pattern_C, DDRD, PORTD, 0xF0, DDRF, PORTF, PINF, B00100000, Acceleration::RAMP_PERIODS, Acceleration::NUM_RAMP_LEVELS);
+SplitflapModule moduleD(flaps, step_pattern_D, DDRB, PORTB, 0xF0, DDRF, PORTF, PINF, B00010000, Acceleration::RAMP_PERIODS, Acceleration::NUM_RAMP_LEVELS);
 
 
 void setup() {
@@ -123,11 +117,10 @@ void setup() {
   }
 
   digitalWrite(DEBUG_LED_0_PIN, HIGH);
-  int max_ramp_level = computeAccelerationRamp();
-  moduleA.init(max_ramp_level);
-  moduleB.init(max_ramp_level);
-  moduleC.init(max_ramp_level);
-  moduleD.init(max_ramp_level);
+  moduleA.init();
+  moduleB.init();
+  moduleC.init();
+  moduleD.init();
   moduleA.goHome();
   moduleB.goHome();
   moduleC.goHome();
@@ -170,42 +163,4 @@ void loop() {
   moduleB.update();
   moduleC.update();
   moduleD.update();
-}
-
-int computeAccelerationRamp() {
-  float minVel = 1000000. / MAX_PERIOD_MICROS;
-  float maxVel = 1000000. / MIN_PERIOD_MICROS;
-  long t = 0;
-  int i = 1;
-  RAMP_PERIODS[0] = 0;
-  Serial.print("Computing acceleration table: \n[\n");
-  while (t < ACCEL_TIME_MICROS) {
-    float vel = minVel + (maxVel - minVel) * ((float)t/ACCEL_TIME_MICROS);
-    if (vel > maxVel) {
-      vel = maxVel;
-    }
-    int period = (int)(1000000. / vel);
-
-    Serial.print(period);
-    Serial.print(",\n");
-
-    RAMP_PERIODS[i] = period;
-    t += period;
-    i++;
-
-    if (i >= MAX_RAMP_LEVELS + 1) {
-      Serial.print("failed to compute acceleration ramp");
-      while (true) {
-        digitalWrite(DEBUG_LED_0_PIN, HIGH);
-        delay(100);
-        digitalWrite(DEBUG_LED_0_PIN, LOW);
-        delay(100);
-      }
-    }
-  }
-  int computedMaxRampLevel = i - 1;
-  Serial.print("]\n\nVelocity steps: ");
-  Serial.print(computedMaxRampLevel);
-  Serial.print("\n\n");
-  return computedMaxRampLevel;
 }

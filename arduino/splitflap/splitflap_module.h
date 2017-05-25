@@ -49,8 +49,8 @@ private:
   volatile uint8_t &sensor_pin;
   const uint8_t sensor_mask;
   
-  int *ramp_periods;
-  int max_ramp_level;
+  const int* const ramp_periods;
+  const int num_ramp_levels;
 
   long current = 0;
   
@@ -69,7 +69,7 @@ private:
   long stepPeriod = 0;
 
   int findFlapIndex(int character);
-  void panic(char* message);
+  void panic(String message);
   bool readSensor();
   bool sensorTriggered();
   void goToFlapIndex(int flapIndex);
@@ -85,12 +85,13 @@ public:
     volatile uint8_t &sensor_port,
     volatile uint8_t &sensor_pin,
     const uint8_t sensor_mask,
-    int *ramp_periods
+    const int* const ramp_periods,
+    const int num_ramp_levels
   );
   void update();
   void goHome();
   bool goToFlap(int character);
-  void init(int maxRampLevel);
+  void init();
 };
 
 #endif
