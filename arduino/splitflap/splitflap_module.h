@@ -36,22 +36,21 @@ private:
     SENSOR_ERROR,
     PANIC,
   };
-  
+
+  // Configuration:
   const int (&flaps)[NUM_FLAPS];
   const uint8_t (&stepPattern)[4];
   
-  volatile uint8_t &motor_ddr;
-  volatile uint8_t &motor_port;
-  const uint8_t motor_mask;
-  
-  volatile uint8_t &sensor_ddr;
-  volatile uint8_t &sensor_port;
-  volatile uint8_t &sensor_pin;
-  const uint8_t sensor_mask;
+  uint8_t &motor_out;
+  const uint8_t motor_bitshift;
+
+  uint8_t &sensor_in;
+  const uint8_t sensor_bitmask;
   
   const int* const ramp_periods;
   const int num_ramp_levels;
 
+  // State:
   long current = 0;
   
   int desiredFlapIndex = 0;
@@ -70,21 +69,19 @@ private:
 
   int findFlapIndex(int character);
   void panic(String message);
-  bool readSensor();
-  bool sensorTriggered();
+  bool checkSensor();
+  int determineDesiredRampLevel();
+  void setMotor(uint8_t out);
   void goToFlapIndex(int flapIndex);
   
 public:
   SplitflapModule(
     const int (&flaps)[NUM_FLAPS],
     const uint8_t (&stepPattern)[4],
-    volatile uint8_t &motor_ddr,
-    volatile uint8_t &motor_port,
-    const uint8_t motor_mask,
-    volatile uint8_t &sensor_ddr,
-    volatile uint8_t &sensor_port,
-    volatile uint8_t &sensor_pin,
-    const uint8_t sensor_mask,
+    uint8_t &motor_out,
+    const uint8_t motor_bitshift,
+    uint8_t &sensor_in,
+    const uint8_t sensor_bitmask,
     const int* const ramp_periods,
     const int num_ramp_levels
   );

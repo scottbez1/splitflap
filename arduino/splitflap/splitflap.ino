@@ -16,15 +16,9 @@
 
 #include <avr/power.h>
 #include <math.h>
-#include "splitflap_module.h"
+#include <SPI.h>
 #include "acceleration.h"
-
-// Prevent serial comms from attempting to toggle rx/tx led pins
-#define TX_RX_LED_INIT
-#define TXLED1
-#define TXLED0
-#define RXLED1
-#define RXLED0
+#include "splitflap_module.h"
 
 const int flaps[] = {
   ' ',
@@ -36,29 +30,16 @@ const int flaps[] = {
   '\'',
 };
 
-#define DEBUG_LED_0_PIN 13
-#define DEBUG_LED_1_PIN 5
+#define DEBUG_LED_0_PIN (9)
+#define DEBUG_LED_1_PIN (10)
+#define OUT_LATCH_PIN (7)
+#define IN_LATCH_PIN (8)
 
 
 #define MOT_A_PHASE_A B00001000
 #define MOT_A_PHASE_B B00000100
 #define MOT_A_PHASE_C B00000010
 #define MOT_A_PHASE_D B00000001
-
-#define MOT_B_PHASE_A B00001000
-#define MOT_B_PHASE_B B00000100
-#define MOT_B_PHASE_C B00000010
-#define MOT_B_PHASE_D B00000001
-
-#define MOT_C_PHASE_A B10000000
-#define MOT_C_PHASE_B B01000000
-#define MOT_C_PHASE_C B00010000
-#define MOT_C_PHASE_D B00100000
-
-#define MOT_D_PHASE_A B01000000
-#define MOT_D_PHASE_B B00100000
-#define MOT_D_PHASE_C B00010000
-#define MOT_D_PHASE_D B10000000
 
 const uint8_t step_pattern_A[] = {
   MOT_A_PHASE_D | MOT_A_PHASE_A,
@@ -67,44 +48,51 @@ const uint8_t step_pattern_A[] = {
   MOT_A_PHASE_A | MOT_A_PHASE_B,
 };
 
-const uint8_t step_pattern_B[] = {
-  MOT_B_PHASE_D | MOT_B_PHASE_A,
-  MOT_B_PHASE_C | MOT_B_PHASE_D,
-  MOT_B_PHASE_B | MOT_B_PHASE_C,
-  MOT_B_PHASE_A | MOT_B_PHASE_B,
-};
+#define MOTOR_BUFFER_LENGTH (1)
+uint8_t motor_buffer[1];
 
-const uint8_t step_pattern_C[] = {
-  MOT_C_PHASE_D | MOT_C_PHASE_A,
-  MOT_C_PHASE_C | MOT_C_PHASE_D,
-  MOT_C_PHASE_B | MOT_C_PHASE_C,
-  MOT_C_PHASE_A | MOT_C_PHASE_B,
-};
+#define SENSOR_BUFFER_LENGTH (1)
+uint8_t sensor_buffer[1];
 
-const uint8_t step_pattern_D[] = {
-  MOT_D_PHASE_D | MOT_D_PHASE_A,
-  MOT_D_PHASE_C | MOT_D_PHASE_D,
-  MOT_D_PHASE_B | MOT_D_PHASE_C,
-  MOT_D_PHASE_A | MOT_D_PHASE_B,
-};
+SplitflapModule moduleA(flaps, step_pattern_A, motor_buffer[0], 0, sensor_buffer[0], B00000001, Acceleration::RAMP_PERIODS, Acceleration::NUM_RAMP_LEVELS);
 
-SplitflapModule moduleA(flaps, step_pattern_A, DDRB, PORTB, 0x0F, DDRF, PORTF, PINF, B10000000, Acceleration::RAMP_PERIODS, Acceleration::NUM_RAMP_LEVELS);
-SplitflapModule moduleB(flaps, step_pattern_B, DDRD, PORTD, 0x0F, DDRF, PORTF, PINF, B01000000, Acceleration::RAMP_PERIODS, Acceleration::NUM_RAMP_LEVELS);
-SplitflapModule moduleC(flaps, step_pattern_C, DDRD, PORTD, 0xF0, DDRF, PORTF, PINF, B00100000, Acceleration::RAMP_PERIODS, Acceleration::NUM_RAMP_LEVELS);
-SplitflapModule moduleD(flaps, step_pattern_D, DDRB, PORTB, 0xF0, DDRF, PORTF, PINF, B00010000, Acceleration::RAMP_PERIODS, Acceleration::NUM_RAMP_LEVELS);
+inline void spi_transfer() {
+  digitalWrite(IN_LATCH_PIN, LOW);
+  digitalWrite(IN_LATCH_PIN, HIGH);
 
+  for (int i = 0; i < MOTOR_BUFFER_LENGTH; i++) {
+    int val = SPI.transfer(motor_buffer[0]);
+    if (i < SENSOR_BUFFER_LENGTH) {
+      sensor_buffer[i] = val;
+    }
+  }
+
+  digitalWrite(OUT_LATCH_PIN, HIGH);
+  digitalWrite(OUT_LATCH_PIN, LOW);
+}
 
 void setup() {
-  clock_prescale_set(clock_div_1);
-
-  // Disable JTAG (shares port F). Have to write JTD bit twice in four cycles.
-  MCUCR |= (1<<JTD);
-  MCUCR |= (1<<JTD);
-
   Serial.begin(115200);
   
   pinMode(DEBUG_LED_0_PIN, OUTPUT);
   pinMode(DEBUG_LED_1_PIN, OUTPUT);
+
+  for (int i = 0; i < MOTOR_BUFFER_LENGTH; i++) {
+    motor_buffer[i] = 0;
+  }
+  for (int i = 0; i < SENSOR_BUFFER_LENGTH; i++) {
+    sensor_buffer[i] = 0;
+  }
+
+  // Initialize SPI
+  pinMode(IN_LATCH_PIN, OUTPUT);
+  pinMode(OUT_LATCH_PIN, OUTPUT);
+  digitalWrite(IN_LATCH_PIN, HIGH);
+  SPI.begin();
+  SPI.beginTransaction(SPISettings(3000000, MSBFIRST, SPI_MODE0));
+  spi_transfer();
+
+  Serial.print("Starting.\n");
 
   // Pulse DEBUG_LED_1_PIN for fun
   for (int i = 0; i < 255; i++) {
@@ -118,17 +106,11 @@ void setup() {
 
   digitalWrite(DEBUG_LED_0_PIN, HIGH);
   moduleA.init();
-  moduleB.init();
-  moduleC.init();
-  moduleD.init();
   moduleA.goHome();
-  moduleB.goHome();
-  moduleC.goHome();
-  moduleD.goHome();
   digitalWrite(DEBUG_LED_0_PIN, LOW);
 }
 
-#define NUM_MODULES 4
+#define NUM_MODULES 1
 int recv_buffer[] = {0, 0, 0, 0};
 int recv_count = 0;
 void loop() {
@@ -137,9 +119,6 @@ void loop() {
     switch (b) {
       case '@':
         moduleA.goHome();
-        moduleB.goHome();
-        moduleC.goHome();
-        moduleD.goHome();
         break;
       case '=':
         recv_count = 0;
@@ -152,15 +131,11 @@ void loop() {
         recv_count++;
         if (recv_count == NUM_MODULES) {
           moduleA.goToFlap(recv_buffer[0]);
-          moduleB.goToFlap(recv_buffer[1]);
-          moduleC.goToFlap(recv_buffer[2]);
-          moduleD.goToFlap(recv_buffer[3]);
         }
         break;
     }
   }
   moduleA.update();
-  moduleB.update();
-  moduleC.update();
-  moduleD.update();
+  spi_transfer();
 }
+

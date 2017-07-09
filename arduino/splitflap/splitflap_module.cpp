@@ -19,24 +19,18 @@
 SplitflapModule::SplitflapModule(
   const int (&flaps)[NUM_FLAPS],
   const uint8_t (&stepPattern)[4],
-  volatile uint8_t &motor_ddr,
-  volatile uint8_t &motor_port,
-  const uint8_t motor_mask,
-  volatile uint8_t &sensor_ddr,
-  volatile uint8_t &sensor_port,
-  volatile uint8_t &sensor_pin,
-  const uint8_t sensor_mask,
+  uint8_t &motor_out,
+  const uint8_t motor_bitshift,
+  uint8_t &sensor_in,
+  const uint8_t sensor_bitmask,
   const int* const ramp_periods,
   const int num_ramp_levels) :
     flaps(flaps),
     stepPattern(stepPattern),
-    motor_ddr(motor_ddr),
-    motor_port(motor_port),
-    motor_mask(motor_mask),
-    sensor_ddr(sensor_ddr),
-    sensor_port(sensor_port),
-    sensor_pin(sensor_pin),
-    sensor_mask(sensor_mask),
+    motor_out(motor_out),
+    motor_bitshift(motor_bitshift),
+    sensor_in(sensor_in),
+    sensor_bitmask(sensor_bitmask),
     ramp_periods(ramp_periods),
     num_ramp_levels(num_ramp_levels)
 {
@@ -51,33 +45,31 @@ int SplitflapModule::findFlapIndex(int character) {
   return -1;
 }
 
-bool SplitflapModule::readSensor() {
-  return (sensor_pin & sensor_mask) != 0;
-}
-
 void SplitflapModule::init() {
-  motor_ddr |= motor_mask;
-
-  // Set up sensor as input and enable internal pull-up
-  sensor_ddr &= ~sensor_mask;
-  sensor_port |= sensor_mask;
-  delay(5);
-  lastHome = readSensor();
+  // Consume the intial sensor state. If we we happen to already be "home" when
+  // we start, we wouldn't want to treat the first sensor read as a rising edge
+  // (since we might be halfway inside the home region rather than at the
+  // beginning of it), so we read the sensor and throw away the reading.
+  checkSensor();
 }
 
 void SplitflapModule::panic(String message) {
   Serial.print("#### PANIC! ####\n");
   Serial.print(message);
-  motor_port &= ~(motor_mask);
+  setMotor(0);
   state = PANIC;
 }
 
-inline bool SplitflapModule::sensorTriggered() {
-    int curHome = readSensor();
+inline bool SplitflapModule::checkSensor() {
+    int curHome = (sensor_in & sensor_bitmask) != 0;
     bool shift = curHome == HIGH && lastHome == LOW;
     lastHome = curHome;
 
     return shift;
+}
+
+inline void SplitflapModule::setMotor(uint8_t out) {
+  motor_out = (motor_out & ~(0x0F << motor_bitshift)) | ((out & 0x0F) << motor_bitshift);
 }
 
 void SplitflapModule::goHome() {
@@ -105,8 +97,83 @@ void SplitflapModule::goToFlapIndex(int flapIndex) {
   desiredFlapIndex = flapIndex;
 }
 
+int SplitflapModule::determineDesiredRampLevel() {
+  bool foundHome = checkSensor();
+  if (state == NORMAL) {
+    if (lookForHome) {
+      if (foundHome) {
+        lookForHome = false;
+
+        Serial.print("Hit home. current flap=");
+        Serial.print(currentFlapIndex);
+        Serial.write('\n');
+        if (currentFlapIndex > 0.5 && currentFlapIndex < NUM_FLAPS - 0.5) {
+          Serial.write("    *** CORRECTING ***\n");
+          // TODO: adjust `desired` accordingly to rotate the frame of reference, rather than giving up and going home...
+          goHome();
+          panic("FIXME");
+          return 0;
+        }
+      } else if (currentFlapIndex > 0.5 && currentFlapIndex < 5) {
+        Serial.print("Missed expected home *** CORRECTING ***\n");
+        goHome();
+        panic("FIXME");
+        return 0;
+      }
+    }
+    if (currentFlapIndex > 5 && currentFlapIndex < NUM_FLAPS - 5) {
+      lookForHome = true;
+    }
+
+    float deltaFlaps = desiredFlapIndex - currentFlapIndex;
+    if (deltaFlaps < -0.25) {
+      deltaFlaps += NUM_FLAPS;
+    } else if (deltaFlaps < 0) {
+      // If we're less than a quarter-flap past where we want to be, don't bother
+      // doing a full rotation; just stop here.
+      deltaFlaps = 0;
+    }
+
+    float delta = deltaFlaps * STEPS_PER_FLAP;
+    if (delta < 0) {
+      panic("negative delta");
+      return 0;
+    } else if (delta < 1) {
+      while (current > 64) {
+        current -= 64;
+      }
+      while (currentFlapIndex > NUM_FLAPS - 1.001) {
+        currentFlapIndex -= NUM_FLAPS;
+      }
+
+      return 0;
+    } else if (delta >= num_ramp_levels) {
+      return num_ramp_levels - 1;
+    } else {
+      return (int)delta;
+    }
+  } else if (state == RESET_TO_HOME) {
+    if (foundHome) {
+      state = NORMAL;
+      currentFlapIndex = 0;
+      lookForHome = false;
+
+      return 0;
+    } else {
+      if (++stepsLookingForHome > (NUM_FLAPS + 5) * STEPS_PER_FLAP) {
+        Serial.print("Never found home position. Entering disabled state.\n");
+        state = SENSOR_ERROR;
+        return 0;
+      } else  {
+        return num_ramp_levels / 6;
+      }
+    }
+  }
+}
+
 void SplitflapModule::update() {
   if (state == PANIC) {
+    setMotor(0);
     return;
   }
   unsigned long now = micros();
@@ -123,73 +190,7 @@ void SplitflapModule::update() {
       currentFlapIndex -= NUM_FLAPS;
     }
 
-    bool foundHome = sensorTriggered();
-    int desiredRampLevel = 0;
-    if (state == NORMAL) {
-      if (lookForHome) {
-        if (foundHome) {
-          lookForHome = false;
-      
-          Serial.print("Hit home. current flap=");
-          Serial.print(currentFlapIndex);
-          Serial.write('\n');
-          if (currentFlapIndex > 0.5 && currentFlapIndex < NUM_FLAPS - 0.5) {
-            Serial.write("    *** CORRECTING ***\n");
-            // TODO: adjust `desired` accordingly to rotate the frame of reference, rather than giving up and going home...
-            goHome();
-          }
-        } else if (currentFlapIndex > 0.5 && currentFlapIndex < 5) {
-          Serial.print("Missed expected home *** CORRECTING ***\n");
-          goHome();
-        }
-      }
-      if (currentFlapIndex > 5 && currentFlapIndex < NUM_FLAPS - 5) {
-        lookForHome = true;
-      }
-
-      float deltaFlaps = desiredFlapIndex - currentFlapIndex;
-      if (deltaFlaps < -0.25) {
-        deltaFlaps += NUM_FLAPS;
-      } else if (deltaFlaps < 0) {
-        // If we're less than a quarter-flap past where we want to be, don't bother
-        // doing a full rotation; just stop here.
-        deltaFlaps = 0;
-      }
-      
-      float delta = deltaFlaps * STEPS_PER_FLAP;
-      if (delta < 0) {
-        panic("negative delta");
-        return;
-      } else if (delta < 1) {
-        desiredRampLevel = 0;
-  
-        while (current > 64) {
-          current -= 64;
-        }
-        while (currentFlapIndex > NUM_FLAPS - 1.001) {
-          currentFlapIndex -= NUM_FLAPS;
-        }
-      } else if (delta >= num_ramp_levels) {
-        desiredRampLevel = num_ramp_levels - 1;
-      } else {
-        desiredRampLevel = (int)delta;
-      }
-    } else if (state == RESET_TO_HOME) {
-      if (foundHome) {
-        state = NORMAL;
-        currentFlapIndex = 0;
-        lookForHome = false;
-        
-        desiredRampLevel = 0;
-      } else {
-        if (++stepsLookingForHome > (NUM_FLAPS + 5) * STEPS_PER_FLAP) {
-          Serial.print("Never found home position. Entering disabled state.\n");
-          state = SENSOR_ERROR;
-        } else  {
-          desiredRampLevel = num_ramp_levels / 6;
-        }
-      }
-    }
+    int desiredRampLevel = determineDesiredRampLevel();
 
     // Update current velocity based on desired velocity
     if (curRampLevel > desiredRampLevel) {
@@ -201,10 +202,10 @@ void SplitflapModule::update() {
     // Set motor step outputs based on current step
     if (curRampLevel == 0) {
       stepPeriod = 0;
-      motor_port &= ~(motor_mask);
+      setMotor(0);
     } else {
       stepPeriod = curRampLevel > 0 ? ramp_periods[curRampLevel] : ramp_periods[-curRampLevel];
-      motor_port = (motor_port & ~(motor_mask)) | stepPattern[current & B11];
+      setMotor(stepPattern[current & B11]);
     }
 
     lastUpdateMicros = now;
