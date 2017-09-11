@@ -50,56 +50,43 @@ const uint8_t flaps[] = {
 #define IN_LATCH_BIT 0
 
 
-#define MOT_PHASE_A B00001000
-#define MOT_PHASE_B B00000100
-#define MOT_PHASE_C B00000010
-#define MOT_PHASE_D B00000001
-
-const uint8_t step_pattern[] = {
-  MOT_PHASE_D | MOT_PHASE_A,
-  MOT_PHASE_C | MOT_PHASE_D,
-  MOT_PHASE_B | MOT_PHASE_C,
-  MOT_PHASE_A | MOT_PHASE_B,
-};
-
-
-#define NUM_MODULES (1)
+#define NUM_MODULES (12)
 #define MOTOR_BUFFER_LENGTH (NUM_MODULES / 2 + (NUM_MODULES % 2 != 0))
 uint8_t motor_buffer[MOTOR_BUFFER_LENGTH];
 
 #define SENSOR_BUFFER_LENGTH (NUM_MODULES / 8 + (NUM_MODULES % 8 != 0))
 uint8_t sensor_buffer[SENSOR_BUFFER_LENGTH];
 
-SplitflapModule moduleA(flaps, step_pattern, motor_buffer[0], 0, sensor_buffer[0], B00000001);
-//SplitflapModule moduleB(flaps, step_pattern, motor_buffer[0], 4, sensor_buffer[0], B00000010, Acceleration::RAMP_PERIODS, Acceleration::NUM_RAMP_LEVELS);
-//SplitflapModule moduleC(flaps, step_pattern, motor_buffer[1], 0, sensor_buffer[0], B00000100, Acceleration::RAMP_PERIODS, Acceleration::NUM_RAMP_LEVELS);
-//SplitflapModule moduleD(flaps, step_pattern, motor_buffer[1], 4, sensor_buffer[0], B00001000, Acceleration::RAMP_PERIODS, Acceleration::NUM_RAMP_LEVELS);
-//
-//SplitflapModule moduleE(flaps, step_pattern, motor_buffer[1], 4, sensor_buffer[0], B00001000, Acceleration::RAMP_PERIODS, Acceleration::NUM_RAMP_LEVELS);
-//SplitflapModule moduleF(flaps, step_pattern, motor_buffer[1], 4, sensor_buffer[0], B00001000, Acceleration::RAMP_PERIODS, Acceleration::NUM_RAMP_LEVELS);
-//SplitflapModule moduleG(flaps, step_pattern, motor_buffer[1], 4, sensor_buffer[0], B00001000, Acceleration::RAMP_PERIODS, Acceleration::NUM_RAMP_LEVELS);
-//SplitflapModule moduleH(flaps, step_pattern, motor_buffer[1], 4, sensor_buffer[0], B00001000, Acceleration::RAMP_PERIODS, Acceleration::NUM_RAMP_LEVELS);
-//
-//SplitflapModule moduleI(flaps, step_pattern, motor_buffer[1], 4, sensor_buffer[0], B00001000, Acceleration::RAMP_PERIODS, Acceleration::NUM_RAMP_LEVELS);
-//SplitflapModule moduleJ(flaps, step_pattern, motor_buffer[1], 4, sensor_buffer[0], B00001000, Acceleration::RAMP_PERIODS, Acceleration::NUM_RAMP_LEVELS);
-//SplitflapModule moduleK(flaps, step_pattern, motor_buffer[1], 4, sensor_buffer[0], B00001000, Acceleration::RAMP_PERIODS, Acceleration::NUM_RAMP_LEVELS);
-//SplitflapModule moduleL(flaps, step_pattern, motor_buffer[1], 4, sensor_buffer[0], B00001000, Acceleration::RAMP_PERIODS, Acceleration::NUM_RAMP_LEVELS);
+SplitflapModule moduleA(motor_buffer[0], 0, sensor_buffer[0], B00000001);
+SplitflapModule moduleB(motor_buffer[0], 4, sensor_buffer[0], B00000010);
+SplitflapModule moduleC(motor_buffer[1], 0, sensor_buffer[0], B00000100);
+SplitflapModule moduleD(motor_buffer[1], 4, sensor_buffer[0], B00001000);
+
+SplitflapModule moduleE(motor_buffer[1], 4, sensor_buffer[0], B00001000);
+SplitflapModule moduleF(motor_buffer[1], 4, sensor_buffer[0], B00001000);
+SplitflapModule moduleG(motor_buffer[1], 4, sensor_buffer[0], B00001000);
+SplitflapModule moduleH(motor_buffer[1], 4, sensor_buffer[0], B00001000);
+
+SplitflapModule moduleI(motor_buffer[1], 4, sensor_buffer[0], B00001000);
+SplitflapModule moduleJ(motor_buffer[1], 4, sensor_buffer[0], B00001000);
+SplitflapModule moduleK(motor_buffer[1], 4, sensor_buffer[0], B00001000);
+SplitflapModule moduleL(motor_buffer[1], 4, sensor_buffer[0], B00001000);
 
 SplitflapModule modules[] = {
   moduleA,
-//  moduleB,
-//  moduleC,
-//  moduleD,
-//  
-//  moduleE,
-//  moduleF,
-//  moduleG,
-//  moduleH,
-//
-//  moduleI,
-//  moduleJ,
-//  moduleK,
-//  moduleL,
+  moduleB,
+  moduleC,
+  moduleD,
+
+  moduleE,
+  moduleF,
+  moduleG,
+  moduleH,
+
+  moduleI,
+  moduleJ,
+  moduleK,
+  moduleL,
 };
 int recv_buffer[NUM_MODULES];
 
@@ -192,6 +179,17 @@ void setup() {
   digitalWrite(DEBUG_LED_0_PIN, LOW);
 }
 
+
+inline int8_t FindFlapIndex(uint8_t character) {
+    for (int8_t i = 0; i < NUM_FLAPS; i++) {
+        if (character == flaps[i]) {
+          return i;
+        }
+    }
+    return -1;
+}
+
+
 bool was_idle = false;
 uint8_t recv_count = 0;
 void loop() {
@@ -203,7 +201,7 @@ void loop() {
       any_bad_timing |= modules[i].Update();
       bool is_idle = modules[i].state == PANIC
 #if HOME_CALIBRATION_ENABLED
-        || modules[i].state == RESET_TO_HOME
+        || modules[i].state == LOOK_FOR_HOME
         || modules[i].state == SENSOR_ERROR
 #endif
         || (modules[i].state == NORMAL && modules[i].current_accel_step == 0);
@@ -250,7 +248,10 @@ void loop() {
           case '\n':
               Serial.print("Going to '");
               for (uint8_t i = 0; i < NUM_MODULES; i++) {
-                modules[i].GoToFlap(recv_buffer[i]);
+                int8_t index = FindFlapIndex(recv_buffer[i]);
+                if (index != -1) {
+                  modules[i].GoToFlapIndex(index);
+                }
                 Serial.write(recv_buffer[i]);
               }
               Serial.print("'\n");

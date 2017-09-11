@@ -20,6 +20,8 @@
 #include <Arduino.h>
 #include "acceleration.h"
 
+#define VERBOSE_LOGGING false
+
 #define NUM_FLAPS (40)
 
 #define STEPS_PER_MOTOR_REVOLUTION (32)
@@ -44,7 +46,7 @@
 #define _ROUGH_STEPS_PER_FLAP (GEAR_RATIO_INPUT_STEPS / GEAR_RATIO_OUTPUT_FLAPS)
 
 // Enable for auto-calibration via home sensor feedback. Disable for basic open-loop control.
-#define HOME_CALIBRATION_ENABLED false
+#define HOME_CALIBRATION_ENABLED true
 #if HOME_CALIBRATION_ENABLED
 // The number of steps in either direction that's acceptable error for the home sensor
 #define HOME_ERROR_MARGIN_STEPS (_ROUGH_STEPS_PER_FLAP / 4)
@@ -62,13 +64,13 @@ enum HomeState {
     UNEXPECTED,
     // Home position is expected in this state/region
     EXPECTED,
-}
+};
 #endif
 
 enum State {
   NORMAL,
   PANIC,
-#ifdef HOME_CALIBRATION_ENABLED
+#if HOME_CALIBRATION_ENABLED
   LOOK_FOR_HOME,
   SENSOR_ERROR,
 #endif
@@ -77,9 +79,6 @@ enum State {
 class SplitflapModule {
  private:
   // Configuration:
-  const uint8_t (&flaps)[NUM_FLAPS];
-  const uint8_t (&step_pattern)[4];
-  
   uint8_t &motor_out;
   const uint8_t motor_bitshift;
 
@@ -107,8 +106,6 @@ class SplitflapModule {
   // Expected home position step plus some margin of error. If we get to this step without having seen a home
   // sensor blip, something is wrong and we need to recalibrate.
   uint32_t missed_home_step = 0;
-
-  uint32_t steps_looking_for_home = 0;
 #endif
 
   // Motor state
@@ -126,8 +123,6 @@ class SplitflapModule {
 
  public:
   SplitflapModule(
-    const uint8_t (&flaps)[NUM_FLAPS],
-    const uint8_t (&step_pattern)[4],
     uint8_t &motor_out,
     const uint8_t motor_bitshift,
     uint8_t &sensor_in,
@@ -141,7 +136,7 @@ class SplitflapModule {
 #endif
   uint8_t current_accel_step = 0;
 
-  void GoToFlap(uint8_t character);
+  void GoToFlapIndex(uint8_t index);
   void GoHome();
   bool Update();
   void Init();

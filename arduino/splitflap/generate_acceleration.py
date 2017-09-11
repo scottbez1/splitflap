@@ -20,7 +20,7 @@ import subprocess
 MIN_PERIOD_MICROS = 1200
 MAX_PERIOD_MICROS = 20000
 ACCEL_TIME_MICROS = 200000
-IDLE_PERIOD_MICROS = 1000000  # TODO: decrease this
+IDLE_PERIOD_MICROS = 1200
 
 _TEMPLATE = """/*
    Copyright 2017 Scott Bezek and the splitflap contributors
@@ -45,7 +45,7 @@ _TEMPLATE = """/*
 #define ACCELERATION
 
 namespace Acceleration {{
-    const uint16_t ACCEL_STEP_PERIODS[] = {{{periods_array}}};
+    const PROGMEM uint16_t ACCEL_STEP_PERIODS[] = {{{periods_array}}};
     const uint8_t MAX_ACCEL_STEP = {max_accel_step};
 }}
 #endif
