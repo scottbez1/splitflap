@@ -27,8 +27,8 @@ use<roboto/RobotoCondensed-Regular.ttf>;
 render_3d = true;
 
 // 3d parameters:
-render_enclosure = 1; // 2=opaque color; 1=translucent; 0=invisible
-render_flaps = true;
+render_enclosure = 1; // 0=invisible; 1=translucent; 2=opaque color;
+render_flaps = 2; // 0=invisible; 1=front flap only; 2=all flaps
 render_flap_area = 0; // 0=invisible; 1=collapsed flap exclusion; 2=collapsed+extended flap exclusion
 render_units = 2;
 render_unit_separation = 0;
@@ -42,7 +42,7 @@ render_etch = false;
 render_revision = "deadbeef";
 render_date = "YYYY-MM-DD";
 
-render_letter = "4";
+render_letters = "44";
 
 
 // Kerf based off http://blog.ponoko.com/2011/07/12/figuring-out-kerf-for-precision-parts/
@@ -717,7 +717,7 @@ module pcb() {
     }
 }
 
-module split_flap_3d() {
+module split_flap_3d(letter) {
     module positioned_front() {
         translate([0, front_forward_offset + thickness, -enclosure_height_lower])
             rotate([90, 0, 0])
@@ -792,7 +792,7 @@ module split_flap_3d() {
                 linear_extrude(height=0.1, center=true) {
                     translate([-flap_width / 2, -flap_pin_width/2]) {
                         difference() {
-                            text(text=render_letter, size=letter_height, font="RobotoCondensed", halign="center", valign="center");
+                            text(text=letter, size=letter_height, font="RobotoCondensed", halign="center", valign="center");
                             translate([-flap_width, -flap_height - eps]) {
                                 square([2 * flap_width, flap_height]);
                             }
@@ -809,7 +809,7 @@ module split_flap_3d() {
                 linear_extrude(height=0.1, center=true) {
                     translate([-flap_width / 2, flap_pin_width/2]) {
                         difference() {
-                            text(text=render_letter, size=letter_height, font="RobotoCondensed", halign="center", valign="center");
+                            text(text=letter, size=letter_height, font="RobotoCondensed", halign="center", valign="center");
                             translate([-flap_width, eps]) {
                                 square([2 * flap_width, flap_height]);
                             }
@@ -822,7 +822,7 @@ module split_flap_3d() {
 
     translate([enclosure_horizontal_inset + spool_width_slop/2 + thickness + m4_nut_length, 0, 0]) {
         // Flap area
-        if (render_flaps) {
+        if (render_flaps > 0) {
             echo(flap_exclusion_radius=exclusion_radius);
             rotate([0, 90, 0]) {
                 if (render_flap_area >= 1) {
@@ -840,7 +840,9 @@ module split_flap_3d() {
             translate([flap_width_slop/2, 0, 0]) {
                 // Collapsed flaps on the top
                 for (i=[0:num_flaps/2 - 1]) {
-                    rotate([360/num_flaps * i, 0, 0]) translated_flap();
+                    if (i == 0 || render_flaps == 2) {
+                        rotate([360/num_flaps * i, 0, 0]) translated_flap();
+                    }
                     if (i == 0) {
                         color([0,0,0]) {
                             translate([0, flap_pitch_radius + flap_thickness/2, 0]) {
@@ -853,8 +855,10 @@ module split_flap_3d() {
                 for (i=[1:num_flaps/2]) {
                     angle = -360/num_flaps*i;
                     translate([0, flap_pitch_radius*cos(angle), flap_pitch_radius * sin(angle)]) {
-                        rotate([-90, 0, 0]) {
-                            flap();
+                        if (i == 1 || render_flaps == 2) {
+                            rotate([-90, 0, 0]) {
+                                flap();
+                            }
                         }
                         if (i == 1) {
                             color([0,0,0]) {
@@ -918,7 +922,7 @@ module laser_etch() {
 if (render_3d) {
     for (i = [0 : render_units - 1]) {
         translate([-enclosure_width/2 + (-(render_units-1) / 2 + i)*(enclosure_width + render_unit_separation), 0, 0])
-            split_flap_3d();
+            split_flap_3d(render_letters[render_units - 1 - i]);
     }
 } else {
     sp = 5;

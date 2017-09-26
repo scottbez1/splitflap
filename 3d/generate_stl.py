@@ -36,7 +36,7 @@ if __name__ == '__main__':
     openscad_variables = {
         'render_3d': True,
         'render_enclosure': 2,
-        'render_flaps': True,
+        'render_flaps': 2,
         'render_units': 1,
         'render_pcb': True,
         'render_revision': rev_info.git_short_rev(),

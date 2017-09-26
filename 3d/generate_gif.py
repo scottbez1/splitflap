@@ -69,15 +69,15 @@ os.makedirs(output_folder)
 num_frames = 50
 render_rotation(output_folder, num_frames, 0, {
     'render_enclosure': 2,
-    'render_flaps': True,
+    'render_flaps': 2,
 })
 render_rotation(output_folder, num_frames, num_frames, {
     'render_enclosure': 1,
-    'render_flaps': True,
+    'render_flaps': 2,
 })
 render_rotation(output_folder, num_frames, num_frames*2, {
     'render_enclosure': 0,
-    'render_flaps': False,
+    'render_flaps': 0,
 })
 
 generate_gif(output_folder)
