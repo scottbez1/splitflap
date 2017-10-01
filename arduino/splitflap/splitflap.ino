@@ -19,7 +19,7 @@
 #include <SPI.h>
 #include "splitflap_module.h"
 
-#define NEOPIXEL_DEBUGGING_ENABLED false
+#define NEOPIXEL_DEBUGGING_ENABLED true
 
 #if NEOPIXEL_DEBUGGING_ENABLED
 #include <Adafruit_NeoPixel.h>
@@ -142,13 +142,13 @@ void setup() {
   SPI.beginTransaction(SPISettings(3000000, MSBFIRST, SPI_MODE0));
   spi_transfer();
 
-  Serial.print("Starting.\nNum modules: ");
+  Serial.print(F("Starting.\nNum modules: "));
   Serial.print(NUM_MODULES);
-  Serial.print("\nMotor buffer length: ");
+  Serial.print(F("\nMotor buffer length: "));
   Serial.print(MOTOR_BUFFER_LENGTH);
-  Serial.print("\nSensor buffer length: ");
+  Serial.print(F("\nSensor buffer length: "));
   Serial.print(SENSOR_BUFFER_LENGTH);
-  Serial.print("\n");
+  Serial.print('\n');
 
 #if NEOPIXEL_DEBUGGING_ENABLED
   strip.begin();
@@ -254,7 +254,7 @@ void loop() {
             recv_count = 0;
             break;
           case '\n':
-              Serial.print("Going to '");
+              Serial.print(F("Going to '"));
               for (uint8_t i = 0; i < NUM_MODULES; i++) {
                 int8_t index = FindFlapIndex(recv_buffer[i]);
                 if (index != -1) {
@@ -276,15 +276,15 @@ void loop() {
   
       if (!was_idle) {
         for (uint8_t i = 0; i < NUM_MODULES; i++) {
-          Serial.print("---\nStats ");
+          Serial.print(F("---\nStats "));
           Serial.print(i);
-          Serial.print(":\nM: ");
+          Serial.print(F(":\nM: "));
           Serial.print(modules[i].count_missed_home);
-          Serial.print("\nU: ");
+          Serial.print(F("\nU: "));
           Serial.print(modules[i].count_unexpected_home);
-          Serial.print("\n");
+          Serial.print('\n');
         }
-        Serial.print("##########\n");
+        Serial.print(F("##########\n"));
       }
     }
     was_idle = all_idle;
