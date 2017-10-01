@@ -15,11 +15,13 @@ The 3d model is built using OpenSCAD in `3d/splitflap.scad`, the driver board is
 ### Current Status ###
 This design is currently at a *prototype* stage. The source files provided here were able to produce a working prototype (with some manual modifications to correct for slight errors/omissions), but aren't necessarily recommended yet unless you enjoy incomplete documentation, frustration, and adventure!
 
+NOTE: There is active work ongoing to redesign the electronics to make it easier for a beginner hobbyist to build, so keep an eye out for changes, or track progress on issue [#12](https://github.com/scottbez1/splitflap/issues/12).
+
 | Component | Status | Notes |
 | --- | --- | --- |
 | Enclosure/Mechanics | *Release Candidate* | Need documentation on ordering. |
-| Electronics | *Beta* | Works but requires SMD soldering experience. Considering creating simpler variant: [#12](https://github.com/scottbez1/splitflap/issues/12) |
-| Firmware | *Alpha* | Works, but needs cleanup, testing, and stable serial protocol |
+| Electronics | *Beta* | Works but requires SMD soldering experience. A new electronics/driver design is in progress - see [#12](https://github.com/scottbez1/splitflap/issues/12) |
+| Firmware | *Alpha* | Works, but is being revamped as part of the new electronics design from [#12](https://github.com/scottbez1/splitflap/issues/12) |
 | Control Software | *none* | No work started; currently manual control using Arduino Serial Monitor |
 
 I'd love to hear your thoughts and questions about this project, and happy to incorporate any feedback you might have into these designs! Please feel free (and encouraged) to [open GitHub issues](https://github.com/scottbez1/splitflap/issues/new), email me directly, reach out [on Twitter](https://twitter.com/scottbez1), and [get involved](https://github.com/scottbez1/splitflap/pulls) in the open source development and let's keep chatting and building together!
@@ -32,14 +34,16 @@ I'd love to hear your thoughts and questions about this project, and happy to in
 
 ![2d laser cut rendering](https://s3.amazonaws.com/splitflap-travis/latest/3d_laser_raster.png)
 
-### Cost Breakdown ###
+### Rough Cost Breakdown ###
+This is an incomplete list of supplies needed to build a split-flap display module, to get a rough sense of the overall cost.
 * $5/2 units -- MDF 3.2mm P2 [on Ponoko](http://www.ponoko.com/make-and-sell/show-material/64-mdf-natural)
 * $20 -- laser cutting on Ponoko (can save ~$0.70 by skipping engraved label)
 * $7 -- shipping from Ponoko
 * ~$2 -- 28byj-48 motor (12V preferred!) and ULN2003 driver (see [motor notes](https://github.com/scottbez1/splitflap/wiki/Motor-info) for specific details)
 * $6.39/2 units -- vinyl letter stickers (minimum letter duplication per pack is 2) [on Amazon](http://www.amazon.com/Duro-Decal-Permanent-Adhesive-Letters/dp/B0027601CM)
 * $12/5 units or $36/25 units -- CR80 cards (each CR80 card becomes 2 flaps, each unit requires 40 flaps) on [Amazon](http://www.amazon.com/Plastic-printers-DataCard-Evolis-Magicard/dp/B007M413BC) or [Amazon](http://www.amazon.com/White-Blank-CR80-020-Graphic-Quality/dp/B007PKD6MW)
-* ? -- M4x12mm button head bolts (e.g. ISO 7380)
+* ~$10/10 units -- male-to-male 3-pin servo cable (for sensors) e.g. on [Amazon](https://www.amazon.com/VIMVIP-10pcs-300mm-Extension-Futaba/dp/B00N8OX7VO)
+* ? -- M4x12mm button head bolts - ISO7380 e.g. on [Amazon](https://www.amazon.com/M4-0-70-Button-Socket-Stainless-Quantity/dp/B01F7OKCOW) or [AliExpress](https://www.aliexpress.com/wholesale?catId=0&SearchText=m4+12+iso7380)
 * ? -- M4 nuts
 
 TBD:
@@ -47,8 +51,9 @@ TBD:
 * $14/10 units -- PCB for reflectance sensor [on seeedstudio](http://www.seeedstudio.com/service/index.php?r=pcb)
 * $6.66/4 units -- ATmega32U4 microcontroller for driver board [on digikey](http://www.digikey.com/product-detail/en/atmel/ATMEGA32U4-AUR/ATMEGA32U4-AURCT-ND/3440960)
 * ? -- Other electronics components for driver/sensor boards
+* ? -- 12V power supply
 
-Tools:
+Tools (one-time, up front cost):
 * $9.17 -- badge slot punch (for cutting notches out of cards to make flaps) [on Amazon](http://www.amazon.com/gp/product/B009YDRRB4)
 
 ## Build Your Own: Instructions ##
@@ -59,7 +64,7 @@ This design is still a work in progress; a build log/instructions for building a
 <img height="320" src="https://github.com/scottbez1/splitflap/wiki/images/flaps/punchedCard.jpg"/>
 </a>
 
-Note: most of the diagrams and downloadable files on this README page are auto-generated from the latest *experimental* code, which may be untested or broken. If you are interested in building one without digging into the design details much, I recommend using a stable design, as described in [the wiki](https://github.com/scottbez1/splitflap/wiki).
+Important: most of the diagrams and downloadable files on this README page are auto-generated from the latest *experimental* code, which may be untested or broken. If you are interested in building one without digging into the design details much, I recommend using a stable design, as described in [the wiki](https://github.com/scottbez1/splitflap/wiki).
 
 ## Design & Modification Guide ##
 
