@@ -54,7 +54,7 @@ const uint8_t flaps[] = {
 #define MOTOR_BUFFER_LENGTH (NUM_MODULES / 2 + (NUM_MODULES % 2 != 0))
 uint8_t motor_buffer[MOTOR_BUFFER_LENGTH];
 
-#define SENSOR_BUFFER_LENGTH (NUM_MODULES / 8 + (NUM_MODULES % 8 != 0))
+#define SENSOR_BUFFER_LENGTH (NUM_MODULES / 4 + (NUM_MODULES % 4 != 0))
 uint8_t sensor_buffer[SENSOR_BUFFER_LENGTH];
 
 SplitflapModule moduleA(motor_buffer[0], 0, sensor_buffer[0], B00000001);
@@ -62,15 +62,19 @@ SplitflapModule moduleB(motor_buffer[0], 4, sensor_buffer[0], B00000010);
 SplitflapModule moduleC(motor_buffer[1], 0, sensor_buffer[0], B00000100);
 SplitflapModule moduleD(motor_buffer[1], 4, sensor_buffer[0], B00001000);
 
-SplitflapModule moduleE(motor_buffer[1], 4, sensor_buffer[0], B00001000);
-SplitflapModule moduleF(motor_buffer[1], 4, sensor_buffer[0], B00001000);
-SplitflapModule moduleG(motor_buffer[1], 4, sensor_buffer[0], B00001000);
-SplitflapModule moduleH(motor_buffer[1], 4, sensor_buffer[0], B00001000);
+#if NUM_MODULES > 4
+SplitflapModule moduleE(motor_buffer[2], 0, sensor_buffer[1], B00000001);
+SplitflapModule moduleF(motor_buffer[2], 4, sensor_buffer[1], B00000010);
+SplitflapModule moduleG(motor_buffer[3], 0, sensor_buffer[1], B00000100);
+SplitflapModule moduleH(motor_buffer[3], 4, sensor_buffer[1], B00001000);
+#endif
 
-SplitflapModule moduleI(motor_buffer[1], 4, sensor_buffer[0], B00001000);
-SplitflapModule moduleJ(motor_buffer[1], 4, sensor_buffer[0], B00001000);
-SplitflapModule moduleK(motor_buffer[1], 4, sensor_buffer[0], B00001000);
-SplitflapModule moduleL(motor_buffer[1], 4, sensor_buffer[0], B00001000);
+#if NUM_MODULES > 8
+SplitflapModule moduleI(motor_buffer[4], 0, sensor_buffer[2], B00000001);
+SplitflapModule moduleJ(motor_buffer[4], 4, sensor_buffer[2], B00000010);
+SplitflapModule moduleK(motor_buffer[5], 0, sensor_buffer[2], B00000100);
+SplitflapModule moduleL(motor_buffer[5], 4, sensor_buffer[2], B00001000);
+#endif
 
 SplitflapModule modules[] = {
   moduleA,
@@ -78,15 +82,19 @@ SplitflapModule modules[] = {
   moduleC,
   moduleD,
 
+#if NUM_MODULES > 4
   moduleE,
   moduleF,
   moduleG,
   moduleH,
+#endif
 
+#if NUM_MODULES > 8
   moduleI,
   moduleJ,
   moduleK,
   moduleL,
+#endif
 };
 int recv_buffer[NUM_MODULES];
 
@@ -149,10 +157,10 @@ void setup() {
 
   // Pulse DEBUG_LED_1_PIN for fun
   digitalWrite(DEBUG_LED_0_PIN, HIGH);
-  for (int8_t i = 0; i < 100; i++) {
+  for (int16_t i = 0; i < 200; i++) {
     analogWrite(DEBUG_LED_1_PIN, i);
 #if NEOPIXEL_DEBUGGING_ENABLED
-    for (int j = 0; j < 24; j++) {
+    for (int j = 0; j < NUM_MODULES; j++) {
       strip.setPixelColor(j, i, 0, 0);
     }
     strip.show();
@@ -160,10 +168,10 @@ void setup() {
     delay(3);
   }
 
-  for (int8_t i = 100; i >= 0; i--) {
+  for (int16_t i = 200; i >= 0; i--) {
     analogWrite(DEBUG_LED_1_PIN, i);
 #if NEOPIXEL_DEBUGGING_ENABLED
-    for (int j = 0; j < 24; j++) {
+    for (int j = 0; j < NUM_MODULES; j++) {
       strip.setPixelColor(j, i, 0, 0);
     }
     strip.show();
@@ -219,7 +227,7 @@ void loop() {
           case NORMAL:
             color = color_green;
             break;
-          case RESET_TO_HOME:
+          case LOOK_FOR_HOME:
             color = color_teal;
             break;
           case SENSOR_ERROR:
