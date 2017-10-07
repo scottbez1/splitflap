@@ -41,13 +41,14 @@ const uint8_t flaps[] = {
 
 #define DEBUG_LED_0_PIN (14)
 #define DEBUG_LED_1_PIN (10)
-#define OUT_LATCH_PIN (7)
-#define IN_LATCH_PIN (8)
-
+#define OUT_LATCH_PIN (4)
 #define OUT_LATCH_PORT PORTD
-#define OUT_LATCH_BIT 7
-#define IN_LATCH_PORT PORTB
-#define IN_LATCH_BIT 0
+#define OUT_LATCH_BIT 4
+
+
+#define IN_LATCH_PIN (5)
+#define IN_LATCH_PORT PORTD
+#define IN_LATCH_BIT 5
 
 
 #define NUM_MODULES (12)
