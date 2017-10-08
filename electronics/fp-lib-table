@@ -8,4 +8,5 @@
   (lib (name PinHeaders)(type KiCad)(uri "$(KIPRJMOD)/lib/PinHeaders.pretty")(options "")(descr ""))
   (lib (name SolderJumpers)(type KiCad)(uri "$(KIPRJMOD)/lib/SolderJumpers.pretty")(options "")(descr ""))
   (lib (name Capacitor)(type KiCad)(uri "$(KIPRJMOD)/lib/Capacitor.pretty")(options "")(descr ""))
+  (lib (name ArduinoUnoShield)(type KiCad)(uri "$(KIPRJMOD)/lib/ArduinoUnoShield.pretty")(options "")(descr ""))
 )
