@@ -9,4 +9,5 @@
   (lib (name SolderJumpers)(type KiCad)(uri "$(KIPRJMOD)/lib/SolderJumpers.pretty")(options "")(descr ""))
   (lib (name Capacitor)(type KiCad)(uri "$(KIPRJMOD)/lib/Capacitor.pretty")(options "")(descr ""))
   (lib (name ArduinoUnoShield)(type KiCad)(uri "$(KIPRJMOD)/lib/ArduinoUnoShield.pretty")(options "")(descr ""))
+  (lib (name Resistor0805ThroughHole)(type KiCad)(uri "$(KIPRJMOD)/lib/Resistor0805ThroughHole.pretty")(options "")(descr ""))
 )
