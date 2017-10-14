@@ -764,10 +764,6 @@ NoConn ~ 1800 3500
 NoConn ~ 2300 3500
 NoConn ~ 4600 1700
 NoConn ~ 5900 3350
-NoConn ~ 5900 3250
-NoConn ~ 5900 3150
-NoConn ~ 5900 3050
-NoConn ~ 5900 2950
 NoConn ~ 5200 1700
 Text Notes 1250 6400 0    60   ~ 0
 Reflective IR Sensor
@@ -1302,4 +1298,15 @@ Wire Wire Line
 	1900 7400 1950 7400
 Wire Wire Line
 	2150 7400 2300 7400
+$Comp
+L CONN_01X04 P10
+U 1 1 59E1C132
+P 5700 3100
+F 0 "P10" H 5700 3350 50  0000 C CNN
+F 1 "CONN_01X04" V 5800 3100 50  0000 C CNN
+F 2 "PinHeaders:Pin_Header_Straight_1x04" H 5700 3100 50  0001 C CNN
+F 3 "" H 5700 3100 50  0000 C CNN
+	1    5700 3100
+	-1   0    0    -1  
+$EndComp
 $EndSCHEMATC
