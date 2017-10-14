@@ -3,7 +3,7 @@
 This is a work in progress DIY [split-flap display](https://en.wikipedia.org/wiki/Split-flap_display).
 Prototype two-character display: [video](https://www.youtube.com/watch?v=bslkflVv-Hw).
 
-![animated rendering](https://s3.amazonaws.com/splitflap-travis/latest/3d_animation.gif)
+![animated rendering](https://s3.amazonaws.com/splitflap-travis/branches/shift_register/3d_animation.gif)
 [![prototype video](renders/prototypeVideoThumbnail.jpg)](https://www.youtube.com/watch?v=bslkflVv-Hw)
 
 [![Build Status](https://travis-ci.org/scottbez1/splitflap.svg?branch=master)](https://travis-ci.org/scottbez1/splitflap)
@@ -30,7 +30,7 @@ I'd love to hear your thoughts and questions about this project, and happy to in
 * CR80 PVC cards for flaps, cheap in bulk
 * store-bought vinyl stickers for flap letters
 
-![2d laser cut rendering](https://s3.amazonaws.com/splitflap-travis/latest/3d_laser_raster.png)
+![2d laser cut rendering](https://s3.amazonaws.com/splitflap-travis/branches/shift_register/3d_laser_raster.png)
 
 ### Cost Breakdown ###
 * $5/2 units -- MDF 3.2mm P2 [on Ponoko](http://www.ponoko.com/make-and-sell/show-material/64-mdf-natural)
@@ -84,7 +84,7 @@ The `generate_2d.py` script interacts with the `projection_renderer` module by f
 
 Once the `combined.svg` file is generated, you'll want to manually remove a couple redundant cut lines that are shared by multiple adjacent pieces, to save time/cost when cutting. In Inkscape, select the "Edit paths by nodes" tool and select an edge to delete - the endpoints should turn blue. Then click "Delete segment between two non-endpoint nodes", and repeat this for all other redundant cut lines.
 
-Latest (Experimental!) Laser Cut Vector File: [svg](https://s3.amazonaws.com/splitflap-travis/latest/3d_laser_vector.svg)
+Latest (Experimental!) Laser Cut Vector File: [svg](https://s3.amazonaws.com/splitflap-travis/branches/shift_register/3d_laser_vector.svg)
 (In order to get the design laser-cut from Ponoko, you'll need to copy all of the shapes from that file into one of [Ponoko's templates](http://www.ponoko.com/starter-kits/inkscape))
 
 ##### Animated gif #####
@@ -99,8 +99,8 @@ The design can be rendered to a series of STL files (one per color used in the m
 ### Driver Electronics ###
 There is a work-in-progress driver circuit based on an ATmega32U4 AVR under `electronics/splitflap.pro` (KiCad project) which is under very active development. The driver supports 4 stepper motors using ULN2003 darlington arrays (which you easily remove from the 28byj-48 driver boards that often come with the motors) and 4 optical home position inputs (for GP2S60 IR reflectance sensors), with a micro-USB connector for computer control.
 
-<a href="https://s3.amazonaws.com/splitflap-travis/latest/schematic.pdf">
-<img height="320" src="https://s3.amazonaws.com/splitflap-travis/latest/schematic.png"/>
+<a href="https://s3.amazonaws.com/splitflap-travis/branches/shift_register/schematic.pdf">
+<img height="320" src="https://s3.amazonaws.com/splitflap-travis/branches/shift_register/schematic.png"/>
 </a>
 
 The PCB layout is designed to fit within the 5cm x 5cm bounds for a number of low-cost PCB manufacturers (e.g. Seeed Studio), and can be populated in two separate configurations (since many low-cost PCB manufacturers have a minimum order of identical PCBs):
@@ -110,14 +110,14 @@ The PCB layout is designed to fit within the 5cm x 5cm bounds for a number of lo
 
 This way, with an order of 5 identical PCBs you can populate a single 4-channel driver board and four home sensor boards for a complete electronics set for 4 split-flap units.
 
-![pcb rendering](https://s3.amazonaws.com/splitflap-travis/latest/pcb_raster.png)
+![pcb rendering](https://s3.amazonaws.com/splitflap-travis/branches/shift_register/pcb_raster.png)
 
 ##### Latest PCB Renderings #####
 These are automatically updated on every commit with the latest rendering from the `master` branch. See this blog post for more details on how that works: [Automated KiCad, OpenSCAD rendering using Travis CI](http://scottbezek.blogspot.com/2016/04/automated-kicad-openscad-rendering.html).
 
-Latest (experimental!) PCB Gerbers: [zip](https://s3.amazonaws.com/splitflap-travis/latest/pcb_gerber.zip)  
-Latest (experimental!) PCB Packet: [pdf](https://s3.amazonaws.com/splitflap-travis/latest/pcb_packet.pdf)  
-Latest (experimental!) rough bill of materials: [csv](https://s3.amazonaws.com/splitflap-travis/latest/bom.csv)
+Latest (experimental!) PCB Gerbers: [zip](https://s3.amazonaws.com/splitflap-travis/branches/shift_register/pcb_gerber.zip)  
+Latest (experimental!) PCB Packet: [pdf](https://s3.amazonaws.com/splitflap-travis/branches/shift_register/pcb_packet.pdf)  
+Latest (experimental!) rough bill of materials: [csv](https://s3.amazonaws.com/splitflap-travis/branches/shift_register/bom.csv)
 
 #### Rendering ####
 The PCB layout can be rendered to an svg or png (seen above) by running `electronics/generate_svg.py`. This uses KiCad's [python scripting API](https://github.com/blairbonnett-mirrors/kicad/blob/master/demos/python_scripts_examples/plot_board.py) to render several layers to individual svg files, manipulates them to apply color and opacity settings, and then merges them to a single svg. For additional details, see this blog post: [Scripting KiCad Pcbnew exports](http://scottbezek.blogspot.com/2016/04/scripting-kicad-pcbnew-exports.html).
