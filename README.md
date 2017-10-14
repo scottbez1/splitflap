@@ -110,7 +110,9 @@ The PCB layout is designed to fit within the 5cm x 5cm bounds for a number of lo
 
 This way, with an order of 5 identical PCBs you can populate a single 4-channel driver board and four home sensor boards for a complete electronics set for 4 split-flap units.
 
-![pcb rendering](https://s3.amazonaws.com/splitflap-travis/branches/shift_register/pcb_raster.png)
+<a href="https://s3.amazonaws.com/splitflap-travis/branches/shift_register/pcb_raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-travis/branches/shift_register/pcb_raster.png"/>
+</a>
 
 ##### Latest PCB Renderings #####
 These are automatically updated on every commit with the latest rendering from the `master` branch. See this blog post for more details on how that works: [Automated KiCad, OpenSCAD rendering using Travis CI](http://scottbezek.blogspot.com/2016/04/automated-kicad-openscad-rendering.html).

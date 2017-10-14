@@ -96,12 +96,12 @@ def plot_to_directory(output_directory, temp_dir):
         output_processor.write(final_svg)
 
         logger.info('Rasterizing...')
+        raster_width = 1280
         final_png = os.path.join(output_directory, 'merged.png')
-
         subprocess.check_call([
             'inkscape',
             '--export-area-drawing',
-            '--export-width=320',
+            '--export-width', str(raster_width),
             '--export-png', final_png,
             '--export-background', '#FFFFFF',
             final_svg,
