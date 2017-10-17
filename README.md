@@ -6,7 +6,7 @@ Prototype two-character display: [video](https://www.youtube.com/watch?v=bslkflV
 ![animated rendering](https://s3.amazonaws.com/splitflap-travis/branches/shift_register/3d_animation.gif)
 [![prototype video](renders/prototypeVideoThumbnail.jpg)](https://www.youtube.com/watch?v=bslkflVv-Hw)
 
-[![Build Status](https://travis-ci.org/scottbez1/splitflap.svg?branch=master)](https://travis-ci.org/scottbez1/splitflap)
+[![Build Status](https://travis-ci.org/scottbez1/splitflap.svg?branch=shift_register)](https://travis-ci.org/scottbez1/splitflap)
 
 The goal is to make a low-cost display that's easy to fabricate at home in small/single quantities (e.g. custom materials can be ordered from Ponoko or similar, and other hardware is generally available).
 
