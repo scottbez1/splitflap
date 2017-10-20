@@ -6,4 +6,5 @@
   (lib (name PinHeaders)(type KiCad)(uri "$(KIPRJMOD)/lib/PinHeaders.pretty")(options "")(descr ""))
   (lib (name ArduinoUnoShield)(type KiCad)(uri "$(KIPRJMOD)/lib/ArduinoUnoShield.pretty")(options "")(descr ""))
   (lib (name Resistor0805ThroughHole)(type KiCad)(uri "$(KIPRJMOD)/lib/Resistor0805ThroughHole.pretty")(options "")(descr ""))
+  (lib (name LED3mmBetterSilkScreen)(type KiCad)(uri "$(KIPRJMOD)/lib/LED3mmBetterSilkScreen.pretty")(options "")(descr ""))
 )
