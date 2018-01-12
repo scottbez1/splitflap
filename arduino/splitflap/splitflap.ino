@@ -35,11 +35,6 @@ const uint8_t flaps[] = {
   '\'',
 };
 
-#define DEBUG_LED_0_DDR DDRC
-#define DEBUG_LED_0_PORT PORTC
-#define DEBUG_LED_0_BIT 0
-
-#define DEBUG_LED_0_PIN (14)
 #define DEBUG_LED_1_PIN (10)
 #define OUT_LATCH_PIN (4)
 #define OUT_LATCH_PORT PORTD
@@ -101,10 +96,10 @@ int recv_buffer[NUM_MODULES];
 
 #if NEOPIXEL_DEBUGGING_ENABLED
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_MODULES, 6, NEO_GRB + NEO_KHZ800);
-uint32_t color_green = strip.Color(0, 50, 0);
+uint32_t color_green = strip.Color(0, 30, 0);
 uint32_t color_red = strip.Color(100, 0, 0);
-uint32_t color_teal = strip.Color(0, 50, 50);
-uint32_t color_orange = strip.Color(50, 20, 0);
+uint32_t color_purple = strip.Color(15, 0, 15);
+uint32_t color_orange = strip.Color(30, 7, 0);
 #endif
 
 inline void spi_transfer() {
@@ -123,7 +118,7 @@ inline void spi_transfer() {
 }
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(57600);
 
   pinMode(DEBUG_LED_0_PIN, OUTPUT);
   pinMode(DEBUG_LED_1_PIN, OUTPUT);
@@ -158,22 +153,18 @@ void setup() {
 
   // Pulse DEBUG_LED_1_PIN for fun
   digitalWrite(DEBUG_LED_0_PIN, HIGH);
-  for (int16_t i = 0; i < 200; i++) {
+  uint8_t vals[] = {0, 1, 3, 10, 16, 20, 24, 28, 28, 24, 20, 16, 10, 3, 1, 0};
+  for (int16_t i = 0; i < 400; i++) {
     analogWrite(DEBUG_LED_1_PIN, i);
 #if NEOPIXEL_DEBUGGING_ENABLED
     for (int j = 0; j < NUM_MODULES; j++) {
-      strip.setPixelColor(j, i, 0, 0);
-    }
-    strip.show();
-#endif
-    delay(3);
-  }
-
-  for (int16_t i = 200; i >= 0; i--) {
-    analogWrite(DEBUG_LED_1_PIN, i);
-#if NEOPIXEL_DEBUGGING_ENABLED
-    for (int j = 0; j < NUM_MODULES; j++) {
-      strip.setPixelColor(j, i, 0, 0);
+      int8_t index = i / 8 - j;
+      if (index < 0) {
+        index = 0;
+      } else if (index > 15) {
+        index = index % 16;
+      }
+      strip.setPixelColor(j, vals[index] * 2, vals[index] * 2, 0);
     }
     strip.show();
 #endif
@@ -200,14 +191,19 @@ inline int8_t FindFlapIndex(uint8_t character) {
 
 
 bool was_idle = false;
+bool was_stopped = false;
 uint8_t recv_count = 0;
+
+
 void loop() {
   while (1) {
     boolean all_idle = true;
+    boolean all_stopped = true;
     boolean any_bad_timing = false;
-    DEBUG_LED_0_PORT |= (1 << DEBUG_LED_0_BIT);
     for (uint8_t i = 0; i < NUM_MODULES; i++) {
+    DEBUG_LED_0_PORT |= (1 << DEBUG_LED_0_BIT);
       any_bad_timing |= modules[i].Update();
+    DEBUG_LED_0_PORT &= ~(1 << DEBUG_LED_0_BIT);
       bool is_idle = modules[i].state == PANIC
 #if HOME_CALIBRATION_ENABLED
         || modules[i].state == LOOK_FOR_HOME
@@ -215,8 +211,9 @@ void loop() {
 #endif
         || (modules[i].state == NORMAL && modules[i].current_accel_step == 0);
       all_idle &= is_idle;
+      all_stopped &= modules[i].current_accel_step == 0;
+      if (i & 0b11) spi_transfer();
     }
-    DEBUG_LED_0_PORT &= ~(1 << DEBUG_LED_0_BIT);
     spi_transfer();
 
     if (all_idle) {
@@ -229,7 +226,7 @@ void loop() {
             color = color_green;
             break;
           case LOOK_FOR_HOME:
-            color = color_teal;
+            color = color_purple;
             break;
           case SENSOR_ERROR:
             color = color_orange;
@@ -243,8 +240,11 @@ void loop() {
       strip.show();
 #endif
 
-      if (Serial.available() > 0) {
+      while (Serial.available() > 0) {
         int b = Serial.read();
+        Serial.print(F("Got "));
+        Serial.print(b);
+        Serial.write('\n');
         switch (b) {
           case '@':
             for (uint8_t i = 0; i < NUM_MODULES; i++) {
@@ -275,7 +275,7 @@ void loop() {
         }
       }
   
-      if (!was_idle) {
+      if (!was_stopped && all_stopped) {
         for (uint8_t i = 0; i < NUM_MODULES; i++) {
           Serial.print(F("---\nStats "));
           Serial.print(i);
@@ -287,7 +287,9 @@ void loop() {
         }
         Serial.print(F("##########\n"));
       }
+      Serial.flush();
     }
     was_idle = all_idle;
+    was_stopped = all_stopped;
   }
 }
