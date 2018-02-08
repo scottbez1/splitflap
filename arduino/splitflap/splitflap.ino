@@ -16,17 +16,16 @@
 
 #include <avr/power.h>
 #include <math.h>
+#include <SPI.h>
 #include "splitflap_module.h"
-#include "acceleration.h"
 
-// Prevent serial comms from attempting to toggle rx/tx led pins
-#define TX_RX_LED_INIT
-#define TXLED1
-#define TXLED0
-#define RXLED1
-#define RXLED0
+#define NEOPIXEL_DEBUGGING_ENABLED true
 
-const int flaps[] = {
+#if NEOPIXEL_DEBUGGING_ENABLED
+#include <Adafruit_NeoPixel.h>
+#endif
+
+const uint8_t flaps[] = {
   ' ',
   'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
   'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
@@ -36,131 +35,261 @@ const int flaps[] = {
   '\'',
 };
 
-#define DEBUG_LED_0_PIN 13
-#define DEBUG_LED_1_PIN 5
+#define DEBUG_LED_1_PIN (10)
+#define OUT_LATCH_PIN (4)
+#define OUT_LATCH_PORT PORTD
+#define OUT_LATCH_BIT 4
 
 
-#define MOT_A_PHASE_A B00001000
-#define MOT_A_PHASE_B B00000100
-#define MOT_A_PHASE_C B00000010
-#define MOT_A_PHASE_D B00000001
+#define IN_LATCH_PIN (5)
+#define IN_LATCH_PORT PORTD
+#define IN_LATCH_BIT 5
 
-#define MOT_B_PHASE_A B00001000
-#define MOT_B_PHASE_B B00000100
-#define MOT_B_PHASE_C B00000010
-#define MOT_B_PHASE_D B00000001
 
-#define MOT_C_PHASE_A B10000000
-#define MOT_C_PHASE_B B01000000
-#define MOT_C_PHASE_C B00010000
-#define MOT_C_PHASE_D B00100000
+#define NUM_MODULES (12)
+#define MOTOR_BUFFER_LENGTH (NUM_MODULES / 2 + (NUM_MODULES % 2 != 0))
+uint8_t motor_buffer[MOTOR_BUFFER_LENGTH];
 
-#define MOT_D_PHASE_A B01000000
-#define MOT_D_PHASE_B B00100000
-#define MOT_D_PHASE_C B00010000
-#define MOT_D_PHASE_D B10000000
+#define SENSOR_BUFFER_LENGTH (NUM_MODULES / 4 + (NUM_MODULES % 4 != 0))
+uint8_t sensor_buffer[SENSOR_BUFFER_LENGTH];
 
-const uint8_t step_pattern_A[] = {
-  MOT_A_PHASE_D | MOT_A_PHASE_A,
-  MOT_A_PHASE_C | MOT_A_PHASE_D,
-  MOT_A_PHASE_B | MOT_A_PHASE_C,
-  MOT_A_PHASE_A | MOT_A_PHASE_B,
+SplitflapModule moduleA(motor_buffer[0], 0, sensor_buffer[0], B00000001);
+SplitflapModule moduleB(motor_buffer[0], 4, sensor_buffer[0], B00000010);
+SplitflapModule moduleC(motor_buffer[1], 0, sensor_buffer[0], B00000100);
+SplitflapModule moduleD(motor_buffer[1], 4, sensor_buffer[0], B00001000);
+
+#if NUM_MODULES > 4
+SplitflapModule moduleE(motor_buffer[2], 0, sensor_buffer[1], B00000001);
+SplitflapModule moduleF(motor_buffer[2], 4, sensor_buffer[1], B00000010);
+SplitflapModule moduleG(motor_buffer[3], 0, sensor_buffer[1], B00000100);
+SplitflapModule moduleH(motor_buffer[3], 4, sensor_buffer[1], B00001000);
+#endif
+
+#if NUM_MODULES > 8
+SplitflapModule moduleI(motor_buffer[4], 0, sensor_buffer[2], B00000001);
+SplitflapModule moduleJ(motor_buffer[4], 4, sensor_buffer[2], B00000010);
+SplitflapModule moduleK(motor_buffer[5], 0, sensor_buffer[2], B00000100);
+SplitflapModule moduleL(motor_buffer[5], 4, sensor_buffer[2], B00001000);
+#endif
+
+SplitflapModule modules[] = {
+  moduleA,
+  moduleB,
+  moduleC,
+  moduleD,
+
+#if NUM_MODULES > 4
+  moduleE,
+  moduleF,
+  moduleG,
+  moduleH,
+#endif
+
+#if NUM_MODULES > 8
+  moduleI,
+  moduleJ,
+  moduleK,
+  moduleL,
+#endif
 };
+int recv_buffer[NUM_MODULES];
 
-const uint8_t step_pattern_B[] = {
-  MOT_B_PHASE_D | MOT_B_PHASE_A,
-  MOT_B_PHASE_C | MOT_B_PHASE_D,
-  MOT_B_PHASE_B | MOT_B_PHASE_C,
-  MOT_B_PHASE_A | MOT_B_PHASE_B,
-};
+#if NEOPIXEL_DEBUGGING_ENABLED
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_MODULES, 6, NEO_GRB + NEO_KHZ800);
+uint32_t color_green = strip.Color(0, 30, 0);
+uint32_t color_red = strip.Color(100, 0, 0);
+uint32_t color_purple = strip.Color(15, 0, 15);
+uint32_t color_orange = strip.Color(30, 7, 0);
+#endif
 
-const uint8_t step_pattern_C[] = {
-  MOT_C_PHASE_D | MOT_C_PHASE_A,
-  MOT_C_PHASE_C | MOT_C_PHASE_D,
-  MOT_C_PHASE_B | MOT_C_PHASE_C,
-  MOT_C_PHASE_A | MOT_C_PHASE_B,
-};
+inline void spi_transfer() {
+  IN_LATCH_PORT &= ~(1 << IN_LATCH_BIT);
+  IN_LATCH_PORT |= (1 << IN_LATCH_BIT);
 
-const uint8_t step_pattern_D[] = {
-  MOT_D_PHASE_D | MOT_D_PHASE_A,
-  MOT_D_PHASE_C | MOT_D_PHASE_D,
-  MOT_D_PHASE_B | MOT_D_PHASE_C,
-  MOT_D_PHASE_A | MOT_D_PHASE_B,
-};
+  for (uint8_t i = 0; i < MOTOR_BUFFER_LENGTH; i++) {
+    int val = SPI.transfer(motor_buffer[MOTOR_BUFFER_LENGTH - 1 - i]);
+    if (i < SENSOR_BUFFER_LENGTH) {
+      sensor_buffer[i] = val;
+    }
+  }
 
-SplitflapModule moduleA(flaps, step_pattern_A, DDRB, PORTB, 0x0F, DDRF, PORTF, PINF, B10000000, Acceleration::RAMP_PERIODS, Acceleration::NUM_RAMP_LEVELS);
-SplitflapModule moduleB(flaps, step_pattern_B, DDRD, PORTD, 0x0F, DDRF, PORTF, PINF, B01000000, Acceleration::RAMP_PERIODS, Acceleration::NUM_RAMP_LEVELS);
-SplitflapModule moduleC(flaps, step_pattern_C, DDRD, PORTD, 0xF0, DDRF, PORTF, PINF, B00100000, Acceleration::RAMP_PERIODS, Acceleration::NUM_RAMP_LEVELS);
-SplitflapModule moduleD(flaps, step_pattern_D, DDRB, PORTB, 0xF0, DDRF, PORTF, PINF, B00010000, Acceleration::RAMP_PERIODS, Acceleration::NUM_RAMP_LEVELS);
-
+  OUT_LATCH_PORT |= (1 << OUT_LATCH_BIT);
+  OUT_LATCH_PORT &= ~(1 << OUT_LATCH_BIT);
+}
 
 void setup() {
-  clock_prescale_set(clock_div_1);
+  Serial.begin(57600);
 
-  // Disable JTAG (shares port F). Have to write JTD bit twice in four cycles.
-  MCUCR |= (1<<JTD);
-  MCUCR |= (1<<JTD);
-
-  Serial.begin(115200);
-  
   pinMode(DEBUG_LED_0_PIN, OUTPUT);
   pinMode(DEBUG_LED_1_PIN, OUTPUT);
 
-  // Pulse DEBUG_LED_1_PIN for fun
-  for (int i = 0; i < 255; i++) {
-    analogWrite(DEBUG_LED_1_PIN, i);
-    delay(3);
+  for (uint8_t i = 0; i < MOTOR_BUFFER_LENGTH; i++) {
+    motor_buffer[i] = 0;
   }
-  for (int i = 255; i >= 0; i--) {
+  for (uint8_t i = 0; i < SENSOR_BUFFER_LENGTH; i++) {
+    sensor_buffer[i] = 0;
+  }
+
+  // Initialize SPI
+  pinMode(IN_LATCH_PIN, OUTPUT);
+  pinMode(OUT_LATCH_PIN, OUTPUT);
+  digitalWrite(IN_LATCH_PIN, HIGH);
+  SPI.begin();
+  SPI.beginTransaction(SPISettings(3000000, MSBFIRST, SPI_MODE0));
+  spi_transfer();
+
+  Serial.print(F("Starting.\nNum modules: "));
+  Serial.print(NUM_MODULES);
+  Serial.print(F("\nMotor buffer length: "));
+  Serial.print(MOTOR_BUFFER_LENGTH);
+  Serial.print(F("\nSensor buffer length: "));
+  Serial.print(SENSOR_BUFFER_LENGTH);
+  Serial.print('\n');
+
+#if NEOPIXEL_DEBUGGING_ENABLED
+  strip.begin();
+  strip.show();
+#endif
+
+  // Pulse DEBUG_LED_1_PIN for fun
+  digitalWrite(DEBUG_LED_0_PIN, HIGH);
+  uint8_t vals[] = {0, 1, 3, 10, 16, 20, 24, 28, 28, 24, 20, 16, 10, 3, 1, 0};
+  for (int16_t i = 0; i < 400; i++) {
     analogWrite(DEBUG_LED_1_PIN, i);
+#if NEOPIXEL_DEBUGGING_ENABLED
+    for (int j = 0; j < NUM_MODULES; j++) {
+      int8_t index = i / 8 - j;
+      if (index < 0) {
+        index = 0;
+      } else if (index > 15) {
+        index = index % 16;
+      }
+      strip.setPixelColor(j, vals[index] * 2, vals[index] * 2, 0);
+    }
+    strip.show();
+#endif
     delay(3);
   }
 
-  digitalWrite(DEBUG_LED_0_PIN, HIGH);
-  moduleA.init();
-  moduleB.init();
-  moduleC.init();
-  moduleD.init();
-  moduleA.goHome();
-  moduleB.goHome();
-  moduleC.goHome();
-  moduleD.goHome();
+  for (uint8_t i = 0; i < NUM_MODULES; i++) {
+    recv_buffer[i] = 0;
+    modules[i].Init();
+    modules[i].GoHome();
+  }
   digitalWrite(DEBUG_LED_0_PIN, LOW);
 }
 
-#define NUM_MODULES 4
-int recv_buffer[] = {0, 0, 0, 0};
-int recv_count = 0;
-void loop() {
-  if (Serial.available() > 0) {
-    int b = Serial.read();
-    switch (b) {
-      case '@':
-        moduleA.goHome();
-        moduleB.goHome();
-        moduleC.goHome();
-        moduleD.goHome();
-        break;
-      case '=':
-        recv_count = 0;
-        break;
-      default:
-        if (recv_count > NUM_MODULES - 1) {
-          break;
+
+inline int8_t FindFlapIndex(uint8_t character) {
+    for (int8_t i = 0; i < NUM_FLAPS; i++) {
+        if (character == flaps[i]) {
+          return i;
         }
-        recv_buffer[recv_count] = b;
-        recv_count++;
-        if (recv_count == NUM_MODULES) {
-          moduleA.goToFlap(recv_buffer[0]);
-          moduleB.goToFlap(recv_buffer[1]);
-          moduleC.goToFlap(recv_buffer[2]);
-          moduleD.goToFlap(recv_buffer[3]);
-        }
-        break;
     }
+    return -1;
+}
+
+
+bool was_idle = false;
+bool was_stopped = false;
+uint8_t recv_count = 0;
+
+
+void loop() {
+  while (1) {
+    boolean all_idle = true;
+    boolean all_stopped = true;
+    boolean any_bad_timing = false;
+    for (uint8_t i = 0; i < NUM_MODULES; i++) {
+    DEBUG_LED_0_PORT |= (1 << DEBUG_LED_0_BIT);
+      any_bad_timing |= modules[i].Update();
+    DEBUG_LED_0_PORT &= ~(1 << DEBUG_LED_0_BIT);
+      bool is_idle = modules[i].state == PANIC
+#if HOME_CALIBRATION_ENABLED
+        || modules[i].state == LOOK_FOR_HOME
+        || modules[i].state == SENSOR_ERROR
+#endif
+        || (modules[i].state == NORMAL && modules[i].current_accel_step == 0);
+      all_idle &= is_idle;
+      all_stopped &= modules[i].current_accel_step == 0;
+      if (i & 0b11) spi_transfer();
+    }
+    spi_transfer();
+
+    if (all_idle) {
+
+#if NEOPIXEL_DEBUGGING_ENABLED
+      for (int i = 0; i < NUM_MODULES; i++) {
+        uint32_t color;
+        switch (modules[i].state) {
+          case NORMAL:
+            color = color_green;
+            break;
+          case LOOK_FOR_HOME:
+            color = color_purple;
+            break;
+          case SENSOR_ERROR:
+            color = color_orange;
+            break;
+          case PANIC:
+            color = color_red;
+            break;
+        }
+        strip.setPixelColor(i, color);
+      }
+      strip.show();
+#endif
+
+      while (Serial.available() > 0) {
+        int b = Serial.read();
+        Serial.print(F("Got "));
+        Serial.print(b);
+        Serial.write('\n');
+        switch (b) {
+          case '@':
+            for (uint8_t i = 0; i < NUM_MODULES; i++) {
+              modules[i].GoHome();
+            }
+            break;
+          case '=':
+            recv_count = 0;
+            break;
+          case '\n':
+              Serial.print(F("Going to '"));
+              for (uint8_t i = 0; i < NUM_MODULES; i++) {
+                int8_t index = FindFlapIndex(recv_buffer[i]);
+                if (index != -1) {
+                  modules[i].GoToFlapIndex(index);
+                }
+                Serial.write(recv_buffer[i]);
+              }
+              Serial.print("'\n");
+              break;
+          default:
+            if (recv_count > NUM_MODULES - 1) {
+              break;
+            }
+            recv_buffer[recv_count] = b;
+            recv_count++;
+            break;
+        }
+      }
+  
+      if (!was_stopped && all_stopped) {
+        for (uint8_t i = 0; i < NUM_MODULES; i++) {
+          Serial.print(F("---\nStats "));
+          Serial.print(i);
+          Serial.print(F(":\nM: "));
+          Serial.print(modules[i].count_missed_home);
+          Serial.print(F("\nU: "));
+          Serial.print(modules[i].count_unexpected_home);
+          Serial.print('\n');
+        }
+        Serial.print(F("##########\n"));
+      }
+      Serial.flush();
+    }
+    was_idle = all_idle;
+    was_stopped = all_stopped;
   }
-  moduleA.update();
-  moduleB.update();
-  moduleC.update();
-  moduleD.update();
 }
