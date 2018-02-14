@@ -432,7 +432,6 @@ inline bool SplitflapModule::Update() {
                     home_state = EXPECTED;
                 }
             } else if (home_state == EXPECTED) {
-              //found_home=true; // XXX FIXME
                 if (found_home) {
 #if VERBOSE_LOGGING
                     Serial.print("VERBOSE: Found expected home.");
@@ -489,7 +488,6 @@ inline bool SplitflapModule::Update() {
                     Serial.print("VERBOSE: Gave up looking for home!\n");
 #endif
                     state = SENSOR_ERROR;
-                    //state = NORMAL; // XXX FIXME
                     target_accel_step = 0;
                 } else {
                     target_accel_step = Acceleration::MAX_ACCEL_STEP / 8;

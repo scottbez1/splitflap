@@ -31,6 +31,7 @@ I'd love to hear your thoughts and questions about this project, and happy to in
 * cheap, widely available 28byj-48 stepper motor (less expensive than NEMA-17 motors, and doesn't require an expensive high current stepper driver)
 * CR80 PVC cards for flaps, cheap in bulk
 * store-bought vinyl stickers for flap letters
+* control up to 12 modules from a single Arduino
 
 ![2d laser cut rendering](https://s3.amazonaws.com/splitflap-travis/branches/master/3d_laser_raster.png)
 
@@ -49,7 +50,6 @@ This is an incomplete list of supplies needed to build a split-flap display modu
 TBD:
 * $0.76 -- GP2S60 reflectance sensor [on digikey](http://www.digikey.com/product-detail/en/GP2S60B/425-2670-1-ND/1642454)
 * $14/10 units -- PCB for reflectance sensor [on seeedstudio](http://www.seeedstudio.com/service/index.php?r=pcb)
-* $6.66/4 units -- ATmega32U4 microcontroller for driver board [on digikey](http://www.digikey.com/product-detail/en/atmel/ATMEGA32U4-AUR/ATMEGA32U4-AURCT-ND/3440960)
 * ? -- Other electronics components for driver/sensor boards
 * ? -- 12V power supply
 
@@ -101,15 +101,17 @@ The design can be rendered to a series of STL files (one per color used in the m
 
 
 ### Driver Electronics ###
-There is a work-in-progress driver circuit based on an ATmega32U4 AVR under `electronics/splitflap.pro` (KiCad project) which is under very active development. The driver supports 4 stepper motors using ULN2003 darlington arrays (which you easily remove from the 28byj-48 driver boards that often come with the motors) and 4 optical home position inputs (for GP2S60 IR reflectance sensors), with a micro-USB connector for computer control.
+The driver board is designed to plug into an Arduino like a shield, and can control 4 stepper motors. Up to 3 driver boards can be chained together, for up to 12 modules controlled by a single Arduino. The designs for the controller can be found under `electronics/splitflap.pro` (KiCad project). Nearly everything is a through-hole component rather than SMD, so it's very easy to hand-solder.
+
+The driver uses 2 MIC5842 low-side shift-register drivers, with built-in transient-suppression diodes, to control the motors, and a 74HC165 shift register to read from 4 optical home position sensors. There are optional WS2812B RGB LEDs which can be used to indicate the status of each of the 4 channels.
 
 <a href="https://s3.amazonaws.com/splitflap-travis/branches/master/schematic.pdf">
 <img height="320" src="https://s3.amazonaws.com/splitflap-travis/branches/master/schematic.png"/>
 </a>
 
-The PCB layout is designed to fit within the 5cm x 5cm bounds for a number of low-cost PCB manufacturers (e.g. Seeed Studio), and can be populated in two separate configurations (since many low-cost PCB manufacturers have a minimum order of identical PCBs):
+The PCB layout is 10cm x 5cm which makes it fairly cheap to produce using a low-cost PCB manufacturer (e.g. Seeed Studio), and can be populated in two separate configurations (since many low-cost PCB manufacturers have a minimum order of identical PCBs):
 
-1. As a 4-channel driver board, with ATmega32U4, 3x ULN2003, USB, etc
+1. As a 4-channel driver board that plugs into an Arduino or chains to other driver boards
 1. As a home sensor board for a single character, with GP2S60 IR reflectance sensor and 3-pin connector
 
 This way, with an order of 5 identical PCBs you can populate a single 4-channel driver board and four home sensor boards for a complete electronics set for 4 split-flap units.
@@ -135,9 +137,9 @@ Gerber files for fabrication can be exported by running `electronics/generate_ge
 EESchema isn't easily scriptable, so to export the schematic and bill of materials `electronics/scripts/export_schematic.py` and `export_bom.py` start an X Virtual Frame Buffer (Xvfb) and open the `eeschema` GUI within that virtual display, and then send a series of hardcoded key presses via `xdotool` to interact with the GUI and click through the dialogs. This is very fragile but seems to work ok for now. For additional details, see this blog post: [Using UI automation to export KiCad schematics](http://scottbezek.blogspot.com/2016/04/automated-kicad-schematic-export.html).
 
 ### Driver Firmware ###
-The driver firmware is written using Arduino (superficially targeting the Arduino Micro board, since it's based on the same ATmega32U4 chip used in this design) and is available at `arduino/splitflap/splitflap.ino`. To avoid the need for an ICSP programmer (since Arduino doesn't support the stock DFU bootloader on the ATMega32U4), you can use Arduino only to compile the program (Sketch -> Export compiled binary) and then install the .hex binary onto the AVR separately using the `dfu-programmer` tool.
+The driver firmware is written using Arduino and is available at `arduino/splitflap/splitflap.ino`. 
 
-The firmware currently runs a basic closed-loop controller that accepts letters over USB serial and drives the stepper motors using a runtime-computed acceleration ramp for smooth control. The firmware automatically calibrates the spool position at startup, using the IR reflectance sensor, and will automatically recalibrate itself if it ever detects that the spool position has gotten out of sync. If a commanded rotation is expected to bring the spool past the "home" position, it will confirm that the sensor is triggered neither too early nor too late; otherwise it will search for the "home" position to get in sync before continuing to the desired letter.
+The firmware currently runs a basic closed-loop controller that accepts letters over USB serial and drives the stepper motors using a precomputed acceleration ramp for smooth control. The firmware automatically calibrates the spool position at startup, using the IR reflectance sensor, and will automatically recalibrate itself if it ever detects that the spool position has gotten out of sync. If a commanded rotation is expected to bring the spool past the "home" position, it will confirm that the sensor is triggered neither too early nor too late; otherwise it will search for the "home" position to get in sync before continuing to the desired letter.
 
 ### Computer Control Software ###
 There is currently no example computer software demonstrating how to communicate with the driver firmware over USB. This is planned for the future, but the protocol is currently undocumented and likely to change as the firmware continues to be developed. In the meantime, the best "documentation" of the protocol is the [firmware source code](https://github.com/scottbez1/splitflap/blob/master/arduino/splitflap/splitflap.ino) itself.
