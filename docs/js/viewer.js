@@ -3,7 +3,7 @@
 var enclosure_height = 148.786;
 var enclosure_height_lower = 82.6451;
 
-var model_base_url = 'https://s3.amazonaws.com/splitflap-travis/latest/3d_colored_stl/';
+var model_base_url = 'https://s3.amazonaws.com/splitflap-travis/branches/master/3d_colored_stl/';
 
 var debug = false;
 
