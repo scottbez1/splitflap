@@ -3,7 +3,7 @@
 var enclosure_height = 148.786;
 var enclosure_height_lower = 82.6451;
 
-var model_base_url = 'artifact_snapshot/3d_colored_stl/';
+var model_base_url = 'https://scottbez1.github.io/splitflap/artifact_snapshot/3d_colored_stl/';
 
 var debug = false;
 
@@ -139,3 +139,11 @@ var loadStl = function(url, color) {
         }
     });
 };
+
+if (canvas.classList.contains("embed")) {
+    window.addEventListener('resize', function () {
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+    });
+}

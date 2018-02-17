@@ -1,0 +1,34 @@
+<html>
+    <link>
+        <title>splitflap</title>
+        <link href='https://fonts.googleapis.com/css?family=Roboto:100,300,400' rel='stylesheet' type='text/css'>
+        <link href="css/style.css" rel="stylesheet" type="text/css"></link>
+        <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
+        <script src="js/three.js"></script>
+        <script src="js/stats.min.js"></script>
+        <script src="js/STLLoader.js"></script>
+        <script src="js/OrbitControls.js"></script>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114293392-1"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'UA-114293392-1');
+        </script>
+    </head>
+    <body>
+        <div class="embed_container">
+            <div id="viewer">
+                <canvas id="viewer_canvas" class="embed"></canvas>
+                <div id="banner">Click to rotate. Scroll to zoom.</div>
+            </div>
+        </div>
+        <div class="embed_caption">
+            <div>
+            DIY split-flap display by Scott Bezek. <a href="https://github.com/scottbez1/splitflap">View it on GitHub</a>.
+            </div>
+        </div>
+        <script src="js/viewer.js"></script>
+    </body>
+</html>
