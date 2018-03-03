@@ -14,12 +14,16 @@
    limitations under the License.
 */
 
-module projection_renderer(render_index = 0, kerf_width = 0) {
+module projection_renderer(render_index = -1, kerf_width = 0) {
     echo(num_components=$children);
 
-    offset(delta=kerf_width/2) {
-        projection() {
-            children(render_index);
+    if (render_index == -1) {
+        children();
+    } else {
+        offset(delta=kerf_width/2) {
+            projection() {
+                children(render_index);
+            }
         }
     }
 }

@@ -35,7 +35,7 @@ render_unit_separation = 0;
 render_pcb = true;
 
 // 2d parameters:
-render_index = 0;
+render_index = -1;
 render_etch = false;
 
 // Version label:
