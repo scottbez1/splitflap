@@ -100,11 +100,9 @@ flap_gap = 1;
 
 // Gears
 drive_pitch = 3;
-motor_teeth = 40;
-idler_teeth = 25;
 spool_teeth = 40;
-
-idler_shaft_radius = m4_hole_diameter/2;
+idler_teeth = 25;
+motor_teeth = 40;
 
 gear_separation = 0.5;
 
@@ -135,8 +133,6 @@ motor_offset = - pitch_radius(drive_pitch, motor_teeth) - pitch_radius(drive_pit
 motor_center_y_offset = idler_center_y_offset + cos(motor_angle) * motor_offset; 
 motor_center_z_offset = idler_center_z_offset - sin(motor_angle) * motor_offset;
 
-idler_gear_outer_radius = outer_radius(drive_pitch, idler_teeth, 0);
-motor_gear_outer_radius = outer_radius(drive_pitch, motor_teeth, 0);
 spool_gear_outer_radius = outer_radius(drive_pitch, spool_teeth, 0);
 
 
@@ -313,19 +309,12 @@ module spool_bushing() {
     }
 }
 
-module spool_gear() {
-    linear_extrude(height=thickness, center=true) {
-        difference() {
-            gear(drive_pitch, spool_teeth, 0, assembly_inner_radius * 2);
-            spool_strut_tab_holes();
 
-            // Hole for IR reflectance sensor to detect
-            translate([0, -ir_reflectance_hole_offset]) {
-                circle(r=ir_reflectance_hole_radius, $fn=15);
-            }
-        }
-    }
-}
+// TODO: fix this
+// // Hole for IR reflectance sensor to detect
+// translate([0, -ir_reflectance_hole_offset]) {
+//     circle(r=ir_reflectance_hole_radius, $fn=15);
+// }
 
 module spool_with_pulleys_assembly() {
     layer_separation = thickness;
@@ -335,8 +324,6 @@ module spool_with_pulleys_assembly() {
         // Gears on spool
         translate([0,0,layer_separation])
             spool_bushing();
-        translate([0,0,thickness/2 + layer_separation*2])
-            spool_gear();
     }
 }
 
@@ -457,10 +444,6 @@ module enclosure_left() {
             square([enclosure_height, enclosure_length]);
             translate([enclosure_height_lower, enclosure_length - front_forward_offset, 0])
                 circle(r=m4_hole_diameter/2, center=true, $fn=30);
-
-            // idler bolt hole
-            translate([enclosure_height_lower + idler_center_z_offset, enclosure_length - front_forward_offset + idler_center_y_offset])
-                circle(r=idler_shaft_radius, center=true, $fn=30);
 
             translate([enclosure_height_lower + motor_center_z_offset, enclosure_length - front_forward_offset + motor_center_y_offset])
                 motor_mount();
@@ -657,19 +640,6 @@ module enclosure_bottom_etch() {
             translate([2, 2, thickness]) {
                 text_label(["github.com/scottbez1/splitflap", str("rev. ", render_revision), render_date]);
             }
-        }
-    }
-}
-
-module idler_gear() {
-    gear(drive_pitch, idler_teeth, thickness, (idler_shaft_radius)*2);
-}
-
-module motor_gear() {
-    linear_extrude(height = thickness, center = true) {
-        difference() {
-            gear(drive_pitch, motor_teeth, 0, 0);
-            motor_shaft();
         }
     }
 }
@@ -883,33 +853,22 @@ module split_flap_3d(letter) {
                 flap_spool_complete();
     }
 
+//// motor bushing
+//color(assembly_color2)
+//translate([-thickness - thickness/2, motor_center_y_offset, motor_center_z_offset])
+//    rotate([0, 90, 0])
+//        motor_bushing();
+
+    translate([10, 0, 0])
     translate([enclosure_width - enclosure_horizontal_inset, 0, 0]) {
-        // idler gear
-        color(assembly_color2)
-        translate([-thickness-m4_nut_length-thickness/2, idler_center_y_offset, idler_center_z_offset])
-            rotate([0, 90, 0])
-                rotate([0, 0, 360/idler_teeth/2])
-                    idler_gear();
-
-        // motor gear
-        color(assembly_color1)
-        translate([-2*thickness - thickness/2, motor_center_y_offset, motor_center_z_offset])
-            rotate([0, 90, 0])
-                motor_gear();
-
-        // motor bushing
-        color(assembly_color2)
-        translate([-thickness - thickness/2, motor_center_y_offset, motor_center_z_offset])
-            rotate([0, 90, 0])
-                motor_bushing();
 
         echo(motor_pitch_radius=pitch_radius(drive_pitch, motor_teeth));
 
-        translate([0, motor_center_y_offset, motor_center_z_offset]) {
+        //translate([0, motor_center_y_offset, motor_center_z_offset]) {
             rotate([0, -90, 0]) {
                 Stepper28BYJ48();
             }
-        }
+        //}
     }
 }
 
@@ -967,16 +926,8 @@ if (render_3d) {
             flap_spool_complete();
 
         flap_spool_top = flap_spool_y_off + spool_outer_radius + sp;
-        // idler and motor gears above spools
-        translate([motor_gear_outer_radius, flap_spool_top + motor_gear_outer_radius])
-            motor_gear();
-        translate([motor_gear_outer_radius*2 + sp + idler_gear_outer_radius, flap_spool_top + idler_gear_outer_radius])
-            idler_gear();
         translate([motor_gear_outer_radius*2 + sp + idler_gear_outer_radius*2 + sp + motor_bushing_radius, flap_spool_top + motor_bushing_radius])
             motor_bushing();
-
-        translate([enclosure_height + sp + spool_gear_outer_radius, enclosure_width + sp + spool_gear_outer_radius])
-            spool_gear();
 
 
         // spool bushings
