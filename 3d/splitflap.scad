@@ -28,12 +28,13 @@ use<spool.scad>;
 render_3d = true;
 
 // 3d parameters:
-render_enclosure = 2; // 0=invisible; 1=translucent; 2=opaque color;
-render_flaps = 2; // 0=invisible; 1=front flap only; 2=all flaps
+render_enclosure = 1; // 0=invisible; 1=translucent; 2=opaque color;
+render_flaps = 1; // 0=invisible; 1=front flap only; 2=all flaps
 render_flap_area = 0; // 0=invisible; 1=collapsed flap exclusion; 2=collapsed+extended flap exclusion
 render_units = 2;
-render_unit_separation = 5;
+render_unit_separation = 5 + 3;
 render_pcb = true;
+render_bolts = true;
 
 // 2d parameters:
 render_index = -1;
@@ -63,7 +64,7 @@ m4_bolt_length = 12;
 m4_button_head_diameter = 7.6 + .2;
 m4_button_head_length = 2.2 + .2;
 m4_nut_width_flats = 7 + .2;
-m4_nut_width_corners = 7.66 + .4;
+m4_nut_width_corners = 7/cos(180/6) + .2;
 m4_nut_length = 3.2 + .2;
 
 captive_nut_inset=6;
@@ -138,14 +139,14 @@ spool_gear_outer_radius = outer_radius(drive_pitch, spool_teeth, 0);
 
 
 enclosure_horizontal_inset = m4_button_head_length;
-enclosure_width = enclosure_horizontal_inset + thickness + m4_nut_length + spool_width_slop/2 + flap_width + flap_width_slop + thickness*2 + m4_nut_length + thickness;
+enclosure_width = enclosure_horizontal_inset + thickness + spool_width_slop/2 + flap_width + flap_width_slop + thickness*2 + m4_nut_length + thickness;
 front_window_upper_base = (flap_height - flap_pin_width/2);
 front_window_overhang = 3;
 front_window_upper = front_window_upper_base - front_window_overhang;
 front_window_lower = sqrt(outer_exclusion_radius*outer_exclusion_radius - front_forward_offset*front_forward_offset);
 front_window_slop = 0;
 front_window_width = spool_width_slop + flap_width + flap_width_slop + front_window_slop;
-front_window_right_inset = thickness + m4_nut_length - front_window_slop/2;
+front_window_right_inset = thickness - front_window_slop/2;
 enclosure_vertical_margin = 10; // gap between top/bottom of flaps and top/bottom of enclosure
 enclosure_vertical_inset = thickness*1.5; // distance from top of sides to top of the top piece
 enclosure_height_upper = exclusion_radius + enclosure_vertical_margin + thickness + enclosure_vertical_inset;
@@ -168,9 +169,9 @@ spool_strut_tabs = 3;
 spool_strut_tab_width=8;
 spool_strut_tab_outset=8;
 spool_strut_width = (spool_strut_tab_outset + thickness/2) * 2;
-spool_strut_length_inset = thickness*0.25;
-spool_strut_length = flap_width + flap_width_slop + (2 * thickness) - (2 * spool_strut_length_inset);
-spool_strut_inner_length = flap_width + flap_width_slop - 2 * thickness;
+spool_strut_length_inset = 0;
+spool_strut_length = flap_width + flap_width_slop - (2 * spool_strut_length_inset);
+spool_strut_inner_length = flap_width + flap_width_slop - 4 * thickness;
 
 spool_strut_exclusion_radius = sqrt((spool_strut_tab_outset+thickness/2)*(spool_strut_tab_outset+thickness/2) + (spool_strut_tab_width/2)*(spool_strut_tab_width/2));
 
@@ -221,6 +222,12 @@ echo(front_window_lower=front_window_lower);
 echo(front_window_height=front_window_lower+front_window_upper);
 echo(front_forward_offset=front_forward_offset);
 
+
+module standard_m4_bolt() {
+    if (render_bolts) {
+        roughM4_7380(12);
+    }
+}
 
 
 // ##### CAPTIVE NUT NEGATIVE #####
@@ -291,22 +298,34 @@ module spool_struts() {
 }
 
 
-module flap_spool_complete() {
+module flap_spool_complete(captive_nut=false, motor_shaft_hole=false) {
     linear_extrude(thickness) {
         difference() {
-            flap_spool(num_flaps, flap_hole_radius, flap_gap, assembly_inner_radius, flap_spool_outset,
+            flap_spool(num_flaps, flap_hole_radius, flap_gap, flap_spool_outset,
                     height=0);
 
             spool_strut_tab_holes();
+            if (captive_nut) {
+                circle(r=m4_nut_width_corners/2, $fn=6);
+            }
+            if (motor_shaft_hole) {
+                circle(r=motor_shaft_radius, $fn=30);
+            }
         }
     }
 }
 
-module spool_bushing() {
+module spool_retaining_wall(m4_bolt_hole=false, motor_shaft_hole=false) {
     linear_extrude(thickness) {
         difference() {
-            circle(r=spool_bushing_radius, $fn=30);
-            circle(r=assembly_inner_radius, $fn=30);
+            square([spool_strut_width, spool_strut_width], center=true);
+            spool_strut_tab_holes();
+            if (m4_bolt_hole) {
+                circle(r=m4_hole_diameter/2, $fn=30);
+            }
+            if (motor_shaft_hole) {
+                motor_shaft();
+            }
         }
     }
 }
@@ -317,17 +336,6 @@ module spool_bushing() {
 // translate([0, -ir_reflectance_hole_offset]) {
 //     circle(r=ir_reflectance_hole_radius, $fn=15);
 // }
-
-module spool_with_pulleys_assembly() {
-    layer_separation = thickness;
-    union() {
-        flap_spool_complete();
-
-//        // Gears on spool
-//        translate([0,0,layer_separation])
-//            spool_bushing();
-    }
-}
 
 module flap() {
     color([1, 1, 1])
@@ -409,10 +417,19 @@ module enclosure_front() {
 module motor_mount() {
     motor_mount_hole_radius = m4_hole_diameter/2;
     circle(r=motor_shaft_radius+motor_slop_radius, center=true, $fn=30);
-    translate([-motor_mount_separation/2, -motor_mount_shaft_offset])
+    translate([-motor_mount_separation/2, -8]) {
         circle(r=motor_mount_hole_radius, center=true, $fn=30);
-    translate([motor_mount_separation/2, -motor_mount_shaft_offset])
+    }
+    translate([motor_mount_separation/2, -8]) {
         circle(r=motor_mount_hole_radius, center=true, $fn=30);
+    }
+    motor_chassis_width = 28;
+    motor_shaft_offset = 8;
+    motor_backpack_extent = 18;
+    motor_hole_slop = 1;
+    translate([-motor_chassis_width/2 - motor_hole_slop/2, -motor_shaft_offset - motor_backpack_extent - motor_hole_slop/2, 0]) {
+        square([motor_chassis_width + motor_hole_slop, motor_chassis_width/2 + motor_backpack_extent + motor_hole_slop]);
+    }
 }
 
 module side_tabs_negative(hole_sizes=[], extend_last_tab=false) {
@@ -447,7 +464,7 @@ module enclosure_left() {
             translate([enclosure_height_lower, enclosure_length - front_forward_offset, 0])
                 circle(r=m4_hole_diameter/2, center=true, $fn=30);
 
-            translate([enclosure_height_lower + motor_center_z_offset, enclosure_length - front_forward_offset + motor_center_y_offset])
+            translate([enclosure_height_lower, enclosure_length - front_forward_offset])
                 motor_mount();
 
             // bottom side tabs
@@ -792,7 +809,7 @@ module split_flap_3d(letter) {
         }
     }
 
-    translate([spool_width_slop/2 + thickness + m4_nut_length, 0, 0]) {
+    translate([spool_width_slop/2 + thickness, 0, 0]) {
         // Flap area
         if (render_flaps > 0) {
             echo(flap_exclusion_radius=exclusion_radius);
@@ -844,15 +861,42 @@ module split_flap_3d(letter) {
             }
         }
 
-        translate([-thickness, 0, 0])
-            spool_struts();
+        spool_struts();
 
         // spool with gears
-        color(assembly_color)
-            translate([flap_width + flap_width_slop - thickness, 0, 0]) rotate([0, 90, 0]) spool_with_pulleys_assembly();
-        color(assembly_color)
-            rotate([0, 90, 0])
-                flap_spool_complete();
+        color(assembly_color) {
+            translate([flap_width + flap_width_slop - thickness, 0, 0]) {
+                rotate([0, 90, 0]) {
+                    flap_spool_complete(motor_shaft_hole=true);
+                }
+            }
+        }
+        color(assembly_color1) {
+            translate([flap_width + flap_width_slop - thickness, 0, 0]) {
+                translate([-thickness, 0, 0]) {
+                    rotate([0, 90, 0]) {
+                        spool_retaining_wall(motor_shaft_hole=true);
+                    }
+                }
+            }
+        }
+        color(assembly_color) {
+            rotate([0, 90, 0]) {
+                flap_spool_complete(captive_nut=true);
+            }
+        }
+        color(assembly_color1) {
+            translate([thickness, 0, 0]) {
+                rotate([0, 90, 0]) {
+                    spool_retaining_wall(m4_bolt_hole=true);
+                }
+            }
+        }
+        translate([thickness * 2, 0, 0]) {
+            rotate([0, -90, 0]) {
+                standard_m4_bolt();
+            }
+        }
     }
 
 //// motor bushing
@@ -869,12 +913,12 @@ module split_flap_3d(letter) {
             translate([0, -motor_mount_shaft_offset, 0]) {
                 translate([0, 0, -motor_mount_separation/2]) {
                     rotate([0, 90, 0]) {
-                        roughM4_7380(12);
+                        standard_m4_bolt();
                     }
                 }
                 translate([0, 0, motor_mount_separation/2]) {
                     rotate([0, 90, 0]) {
-                        roughM4_7380(12);
+                        standard_m4_bolt();
                     }
                 }
             }
@@ -933,6 +977,8 @@ if (render_3d) {
             flap_spool_complete();
         translate([spool_outer_radius*3 + sp, flap_spool_y_off])
             flap_spool_complete();
+
+        // TODO: spool_retaining_wall_with_difference
 
         flap_spool_top = flap_spool_y_off + spool_outer_radius + sp;
         translate([motor_gear_outer_radius*2 + sp + idler_gear_outer_radius*2 + sp + motor_bushing_radius, flap_spool_top + motor_bushing_radius])
