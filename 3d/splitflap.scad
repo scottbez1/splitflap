@@ -28,11 +28,12 @@ use<spool.scad>;
 render_3d = true;
 
 // 3d parameters:
-render_enclosure = 1; // 0=invisible; 1=translucent; 2=opaque color;
+render_enclosure = 2; // 0=invisible; 1=translucent; 2=opaque color;
 render_flaps = 1; // 0=invisible; 1=front flap only; 2=all flaps
 render_flap_area = 0; // 0=invisible; 1=collapsed flap exclusion; 2=collapsed+extended flap exclusion
-render_units = 2;
-render_unit_separation = 5 + 3;
+render_letters = "44";
+render_units = len(render_letters);
+render_unit_separation = 0.1;
 render_pcb = true;
 render_bolts = true;
 
@@ -43,8 +44,6 @@ render_etch = false;
 // Version label:
 render_revision = "deadbeef";
 render_date = "YYYY-MM-DD";
-
-render_letters = "44";
 
 
 // Kerf based off http://blog.ponoko.com/2011/07/12/figuring-out-kerf-for-precision-parts/
@@ -99,15 +98,6 @@ flap_hole_radius = 1.2;
 flap_gap = 1;
 
 
-
-// Gears
-drive_pitch = 3;
-spool_teeth = 40;
-idler_teeth = 25;
-motor_teeth = 40;
-
-gear_separation = 0.5;
-
 flap_spool_outset = flap_hole_radius;
 flap_pitch_radius = flap_spool_pitch_radius(num_flaps, flap_hole_radius, flap_gap); //num_flaps * (flap_hole_radius*2 + flap_gap) / (2*PI);
 spool_outer_radius = flap_spool_outer_radius(num_flaps, flap_hole_radius, flap_gap, flap_spool_outset); //flap_pitch_radius + 2*flap_hole_radius;
@@ -125,21 +115,41 @@ echo(flap_notch=flap_notch);
 
 flap_pin_width = flap_hole_radius*2 - 1;
 
-idler_angle = -50;
-motor_angle = -50;
+spool_strut_tabs = 3;
+spool_strut_tab_width=8;
+spool_strut_tab_outset=8;
+spool_strut_width = (spool_strut_tab_outset + thickness/2) * 2;
+spool_strut_length_inset = 0;
+spool_strut_length = flap_width + flap_width_slop - (2 * spool_strut_length_inset);
+spool_strut_inner_length = flap_width + flap_width_slop - 4 * thickness;
 
-idler_offset = - pitch_radius(drive_pitch, spool_teeth) - pitch_radius(drive_pitch, idler_teeth) - gear_separation;
-idler_center_y_offset = cos(idler_angle) * idler_offset;
-idler_center_z_offset = -sin(idler_angle) * idler_offset;
-motor_offset = - pitch_radius(drive_pitch, motor_teeth) - pitch_radius(drive_pitch, idler_teeth) - gear_separation;
-motor_center_y_offset = idler_center_y_offset + cos(motor_angle) * motor_offset; 
-motor_center_z_offset = idler_center_z_offset - sin(motor_angle) * motor_offset;
-
-spool_gear_outer_radius = outer_radius(drive_pitch, spool_teeth, 0);
+spool_strut_exclusion_radius = sqrt((spool_strut_tab_outset+thickness/2)*(spool_strut_tab_outset+thickness/2) + (spool_strut_tab_width/2)*(spool_strut_tab_width/2));
 
 
-enclosure_horizontal_inset = m4_button_head_length;
-enclosure_width = enclosure_horizontal_inset + thickness + spool_width_slop/2 + flap_width + flap_width_slop + thickness*2 + m4_nut_length + thickness;
+ir_reflectance_hole_radius = 2.5;
+
+
+// PCB parameters
+pcb_offset_radius = spool_strut_exclusion_radius + ir_reflectance_hole_radius + 1;
+pcb_height = 48;
+pcb_length = 48;
+pcb_thickness = 1.6;
+pcb_mount_inset_vertical = 4;
+pcb_mount_inset_horizontal = 8;
+pcb_mount_slot_delta = 4;
+pcb_reference_horizontal = -pcb_length - pcb_offset_radius;
+pcb_reference_vertical = -4;
+pcb_sensor_horizontal_inset = 1.8; // how far in the sensor is from the edge of the PCB
+
+ir_reflectance_hole_offset = pcb_offset_radius + pcb_sensor_horizontal_inset;
+
+
+28byj48_bracket_thickness = 0.8;
+28byj48_chassis_height = 19;
+28byj48_chassis_height_slop = 1;
+enclosure_wall_to_wall_width = thickness + spool_width_slop/2 + flap_width_slop/2 + flap_width + flap_width_slop/2 + spool_width_slop/2 + m4_button_head_length + max(28byj48_bracket_thickness, pcb_thickness) + thickness;
+enclosure_width = enclosure_wall_to_wall_width + 28byj48_chassis_height + 28byj48_chassis_height_slop - thickness - 28byj48_bracket_thickness;
+enclosure_horizontal_inset = (enclosure_width - enclosure_wall_to_wall_width)/2;
 front_window_upper_base = (flap_height - flap_pin_width/2);
 front_window_overhang = 3;
 front_window_upper = front_window_upper_base - front_window_overhang;
@@ -153,9 +163,10 @@ enclosure_height_upper = exclusion_radius + enclosure_vertical_margin + thicknes
 enclosure_height_lower = flap_pitch_radius + flap_height + enclosure_vertical_margin + thickness + enclosure_vertical_inset;
 enclosure_height = enclosure_height_upper + enclosure_height_lower;
 
-enclosure_horizontal_rear_margin = thickness*2; // gap between back of gears and back of enclosure
+enclosure_horizontal_rear_margin = thickness; // minumum distance between the farthest feature and the rear
 
-enclosure_length = front_forward_offset - motor_center_y_offset + 10 + enclosure_horizontal_rear_margin; //pitch_radius(drive_pitch, motor_teeth) 
+// TODO: use PCB mounting hole location rather than "47" magic constant
+enclosure_length = front_forward_offset + 47 + enclosure_horizontal_rear_margin;
 
 
 motor_mount_separation = 35; // 28byj-48 mount hole separation
@@ -165,21 +176,9 @@ motor_shaft_under_radius = 0.1;
 motor_slop_radius = 3;
 motor_bushing_radius = motor_mount_separation/2 - m4_button_head_diameter/2 - 2;
 
-spool_strut_tabs = 3;
-spool_strut_tab_width=8;
-spool_strut_tab_outset=8;
-spool_strut_width = (spool_strut_tab_outset + thickness/2) * 2;
-spool_strut_length_inset = 0;
-spool_strut_length = flap_width + flap_width_slop - (2 * spool_strut_length_inset);
-spool_strut_inner_length = flap_width + flap_width_slop - 4 * thickness;
-
-spool_strut_exclusion_radius = sqrt((spool_strut_tab_outset+thickness/2)*(spool_strut_tab_outset+thickness/2) + (spool_strut_tab_width/2)*(spool_strut_tab_width/2));
-
-spool_bushing_radius = spool_strut_tab_outset - thickness/2;
-
 // Enclosure connector tabs: front/back
 num_front_tabs = 2;
-front_tab_width = (enclosure_width - 2*thickness - enclosure_horizontal_inset) / (num_front_tabs*2 - 1);
+front_tab_width = (enclosure_wall_to_wall_width - 2*thickness) / (num_front_tabs*2 - 1);
 
 num_side_tabs = 5;
 side_tab_width = (enclosure_length - 2*thickness) / (num_side_tabs*2 - 1);
@@ -190,28 +189,13 @@ enclosure_length_right = side_tab_width*4;
 backstop_bolt_vertical_offset = - (exclusion_radius + outer_exclusion_radius)/2;
 backstop_bolt_forward_range = 14;
 
-
-// PCB parameters
-pcb_offset_radius = spool_strut_exclusion_radius + 1;
-pcb_height = 48;
-pcb_length = 48;
-pcb_thickness = 0.8;
-pcb_mount_inset_vertical = 4;
-pcb_mount_inset_horizontal = 8;
-pcb_mount_slot_delta = 4;
-pcb_reference_horizontal = -pcb_length - pcb_offset_radius;
-pcb_reference_vertical = -4;
-pcb_sensor_horizontal_inset = 1.8; // how far in the sensor is from the edge of the PCB
-
-ir_reflectance_hole_offset = pcb_offset_radius + pcb_sensor_horizontal_inset;
-ir_reflectance_hole_radius = 2.5;
-
 connector_bolt_offset = 40;
 
 echo(enclosure_height=enclosure_height);
 echo(enclosure_height_upper=enclosure_height_upper);
 echo(enclosure_height_lower=enclosure_height_lower);
 echo(enclosure_width=enclosure_width);
+echo(enclosure_wall_to_wall_width=enclosure_wall_to_wall_width);
 echo(enclosure_length=enclosure_length);
 echo(enclosure_length_right=enclosure_length_right);
 echo(enclosure_length_real=enclosure_length+thickness);
@@ -298,7 +282,7 @@ module spool_struts() {
 }
 
 
-module flap_spool_complete(captive_nut=false, motor_shaft_hole=false) {
+module flap_spool_complete(captive_nut=false, motor_shaft_hole=false, ir_detector_hole=false) {
     linear_extrude(thickness) {
         difference() {
             flap_spool(num_flaps, flap_hole_radius, flap_gap, flap_spool_outset,
@@ -310,6 +294,12 @@ module flap_spool_complete(captive_nut=false, motor_shaft_hole=false) {
             }
             if (motor_shaft_hole) {
                 circle(r=motor_shaft_radius, $fn=30);
+            }
+            if (ir_detector_hole) {
+                // Hole for IR reflectance sensor to detect
+                translate([ir_reflectance_hole_offset, 0]) {
+                    circle(r=ir_reflectance_hole_radius, $fn=15);
+                }
             }
         }
     }
@@ -396,7 +386,9 @@ module front_tabs_negative() {
 module enclosure_front() {
     linear_extrude(height=thickness) {
         difference() {
-            square([enclosure_width, enclosure_height]);
+            translate([-enclosure_horizontal_inset, 0, 0]) {
+                square([enclosure_width, enclosure_height]);
+            }
 
             // Viewing window cutout
             translate([front_window_right_inset, enclosure_height_lower - front_window_lower])
@@ -464,12 +456,16 @@ module enclosure_left() {
             translate([enclosure_height_lower, enclosure_length - front_forward_offset, 0])
                 circle(r=m4_hole_diameter/2, center=true, $fn=30);
 
-            translate([enclosure_height_lower, enclosure_length - front_forward_offset])
-                motor_mount();
+            translate([enclosure_height_lower, enclosure_length - front_forward_offset]) {
+                rotate([0, 0, 90]) {
+                    motor_mount();
+                }
+            }
 
             // bottom side tabs
-            translate([thickness * 0.5 + enclosure_vertical_inset, 0, 0])
-                side_tabs_negative(hole_sizes=[0,0,0,1]);
+            translate([thickness * 0.5 + enclosure_vertical_inset, enclosure_length, 0])
+                mirror([0, 1, 0])
+                side_tabs_negative(hole_sizes=[1]);
 
             // top side tabs
             translate([enclosure_height - thickness * 0.5 - enclosure_vertical_inset, enclosure_length, 0])
@@ -477,16 +473,13 @@ module enclosure_left() {
                     side_tabs_negative(hole_sizes=[1]);
 
             // PCB mounting holes
-            translate([enclosure_height_lower + pcb_reference_vertical, enclosure_length - front_forward_offset + pcb_reference_horizontal]) {
-                pcb_mounting_holes(slots = true);
-            }
 
-            // Adjacent unit connector
-            translate([enclosure_height_lower + connector_bolt_offset, enclosure_length - front_forward_offset]) {
-                circle(r=m4_hole_diameter/2, $fn=15);
-            }
-            translate([enclosure_height_lower - connector_bolt_offset, enclosure_length - front_forward_offset]) {
-                circle(r=m4_hole_diameter/2, $fn=15);
+            translate([enclosure_height_lower, enclosure_length - front_forward_offset]) {
+                rotate([0, 0, -90]) {
+                    translate([pcb_reference_vertical, pcb_reference_horizontal]) {
+                        pcb_mounting_holes(slots = true);
+                    }
+                }
             }
         }
     }
@@ -522,14 +515,6 @@ module enclosure_right() {
             translate([enclosure_height - 0.5*thickness - enclosure_vertical_inset, enclosure_length_right, 0])
                 mirror([0, 1, 0])
                     side_tabs_negative(hole_sizes=[1]);
-
-            // Adjacent unit connector
-            translate([enclosure_height_upper - connector_bolt_offset, enclosure_length_right - front_forward_offset]) {
-                circle(r=m4_hole_diameter/2, $fn=15);
-            }
-            translate([enclosure_height_upper + connector_bolt_offset, enclosure_length_right - front_forward_offset]) {
-                circle(r=m4_hole_diameter/2, $fn=15);
-            }
         }
     }
 }
@@ -544,7 +529,7 @@ module front_back_tabs() {
 module side_tabs(tabs) {
     for (i = [0 : 2 : tabs*2-2]) {
         translate([-eps, i * side_tab_width + side_tab_width * (1 - side_tab_width_fraction)/2, 0])
-            square([thickness + enclosure_horizontal_inset + eps, side_tab_width * side_tab_width_fraction]);
+            square([thickness + eps, side_tab_width * side_tab_width_fraction]);
     }
 }
 
@@ -576,14 +561,14 @@ module enclosure_top() {
         translate([thickness, 0, 0]) {
             difference() {
                 union() {
-                    square([enclosure_width - 2 * thickness - enclosure_horizontal_inset, enclosure_length_right]);
+                    square([enclosure_wall_to_wall_width - 2 * thickness, enclosure_length_right]);
 
                     // front tabs
                     mirror([0, 1, 0])
                         front_back_tabs();
 
                     // left tabs
-                    translate([enclosure_width - 2 * thickness - enclosure_horizontal_inset, thickness, 0])
+                    translate([enclosure_wall_to_wall_width - 2 * thickness, thickness, 0])
                         side_tabs(2);
 
                     // right tabs
@@ -600,7 +585,7 @@ module enclosure_top() {
                     side_captive_nuts(hole_types = [1]);
 
                 // left captive nuts
-                translate([enclosure_width - 2 * thickness - enclosure_horizontal_inset, thickness, 0])
+                translate([enclosure_wall_to_wall_width - 2 * thickness, thickness, 0])
                     mirror([1, 0, 0])
                         side_captive_nuts(hole_types = [1]);
             }
@@ -613,14 +598,14 @@ module enclosure_bottom() {
         translate([thickness, 0, 0]) {
             difference() {
                 union() {
-                    square([enclosure_width - 2 * thickness - enclosure_horizontal_inset, enclosure_length_right]);
+                    square([enclosure_wall_to_wall_width - 2 * thickness, enclosure_length_right]);
 
                     // front tabs
                     translate([0, enclosure_length_right, 0])
                         front_back_tabs();
 
                     // left tabs
-                    translate([enclosure_width - 2 * thickness - enclosure_horizontal_inset, enclosure_length_right - thickness, 0])
+                    translate([enclosure_wall_to_wall_width - 2 * thickness, enclosure_length_right - thickness, 0])
                         mirror([0, 1, 0])
                             side_tabs(2);
 
@@ -642,7 +627,7 @@ module enclosure_bottom() {
                         side_captive_nuts(hole_types = [1]);
 
                 // left captive nuts
-                translate([enclosure_width - 2 * thickness - enclosure_horizontal_inset, enclosure_length_right - thickness, 0])
+                translate([enclosure_wall_to_wall_width - 2 * thickness, enclosure_length_right - thickness, 0])
                     mirror([0, 1, 0])
                         mirror([1, 0, 0])
                             side_captive_nuts(hole_types = [1]);
@@ -655,7 +640,7 @@ module enclosure_bottom() {
 module enclosure_bottom_etch() {
     color([0, 0, 0])
     linear_extrude(height=2, center=true) {
-        translate([m4_bolt_length, 0, 0]) {
+        translate([thickness, 0, 0]) {
             translate([2, 2, thickness]) {
                 text_label(["github.com/scottbez1/splitflap", str("rev. ", render_revision), render_date]);
             }
@@ -714,7 +699,7 @@ module split_flap_3d(letter) {
     }
 
     module positioned_left() {
-        translate([enclosure_width - enclosure_horizontal_inset, -enclosure_length + front_forward_offset, -enclosure_height_lower])
+        translate([enclosure_wall_to_wall_width, -enclosure_length + front_forward_offset, -enclosure_height_lower])
             rotate([0, -90, 0])
                 enclosure_left();
     }
@@ -770,7 +755,8 @@ module split_flap_3d(letter) {
 
     positioned_enclosure();
     if (render_pcb) {
-        translate([enclosure_width - thickness - enclosure_horizontal_inset, pcb_reference_horizontal, pcb_reference_vertical])
+        rotate([90, 0, 0])
+        translate([enclosure_wall_to_wall_width - thickness, pcb_reference_horizontal, pcb_reference_vertical])
             rotate([0, -90, 0])
                 pcb();
     }
@@ -863,11 +849,11 @@ module split_flap_3d(letter) {
 
         spool_struts();
 
-        // spool with gears
+        // motor spool
         color(assembly_color) {
             translate([flap_width + flap_width_slop - thickness, 0, 0]) {
                 rotate([0, 90, 0]) {
-                    flap_spool_complete(motor_shaft_hole=true);
+                    flap_spool_complete(motor_shaft_hole=true, ir_detector_hole=true);
                 }
             }
         }
@@ -899,13 +885,9 @@ module split_flap_3d(letter) {
         }
     }
 
-//// motor bushing
-//color(assembly_color2)
+    translate([enclosure_wall_to_wall_width - thickness - 28byj48_bracket_thickness, 0, 0]) {
 
-    28byj48_bracket_thickness = 0.8;
-    translate([enclosure_width - enclosure_horizontal_inset - thickness - 28byj48_bracket_thickness-6, 0, 0]) {
-
-        echo(motor_pitch_radius=pitch_radius(drive_pitch, motor_teeth));
+        rotate([-90, 0, 0]) {
 
             rotate([0, -90, 0]) {
                 Stepper28BYJ48();
@@ -922,6 +904,7 @@ module split_flap_3d(letter) {
                     }
                 }
             }
+        }
     }
 }
 
@@ -984,11 +967,6 @@ if (render_3d) {
         translate([motor_gear_outer_radius*2 + sp + idler_gear_outer_radius*2 + sp + motor_bushing_radius, flap_spool_top + motor_bushing_radius])
             motor_bushing();
 
-
-        // spool bushings
-        spool_bushing_y_off = flap_spool_top + motor_bushing_radius*2 + sp + spool_bushing_radius;
-        translate([motor_gear_outer_radius*2 + sp + spool_bushing_radius, spool_bushing_y_off])
-            spool_bushing();
     }
 }
 
