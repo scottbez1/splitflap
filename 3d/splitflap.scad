@@ -28,8 +28,8 @@ use<spool.scad>;
 render_3d = true;
 
 // 3d parameters:
-render_enclosure = 1; // 0=invisible; 1=translucent; 2=opaque color;
-render_flaps = 1; // 0=invisible; 1=front flap only; 2=all flaps
+render_enclosure = 2; // 0=invisible; 1=translucent; 2=opaque color;
+render_flaps = 2; // 0=invisible; 1=front flap only; 2=all flaps
 render_flap_area = 0; // 0=invisible; 1=collapsed flap exclusion; 2=collapsed+extended flap exclusion
 render_letters = "4";
 render_units = len(render_letters);
@@ -101,10 +101,10 @@ flap_rendered_angle = 90;
 letter_height = flap_height * 0.75 * 2;
 
 // Amount of slop of the flap side to side between the 2 spools
-flap_width_slop = 1.5;
+flap_width_slop = 0.5;
 
 // Amount of slop for the spool assembly side-to-side inside the enclosure
-spool_width_slop = 1;
+spool_width_slop = 0.5;
 
 
 num_flaps = 40;
@@ -135,7 +135,7 @@ spool_strut_tab_outset=8;
 spool_strut_width = (spool_strut_tab_outset + thickness/2) * 2;
 spool_strut_length_inset = 0;
 spool_strut_length = flap_width + flap_width_slop - (2 * spool_strut_length_inset);
-spool_strut_inner_length = flap_width + flap_width_slop - 4 * thickness;
+spool_strut_inner_length = flap_width + flap_width_slop - 3 * thickness;
 
 spool_strut_exclusion_radius = sqrt((spool_strut_tab_outset+thickness/2)*(spool_strut_tab_outset+thickness/2) + (spool_strut_tab_width/2)*(spool_strut_tab_width/2));
 
@@ -155,6 +155,7 @@ pcb_mount_hole_radius = m4_hole_diameter/2;
 pcb_reference_horizontal = -pcb_length - pcb_offset_radius;
 pcb_reference_vertical = -4;
 pcb_sensor_horizontal_inset = 1.8; // how far in the sensor is from the edge of the PCB
+pcb_connector_height = 3.2;
 
 ir_reflectance_hole_offset = pcb_offset_radius + pcb_sensor_horizontal_inset;
 
@@ -162,7 +163,7 @@ ir_reflectance_hole_offset = pcb_offset_radius + pcb_sensor_horizontal_inset;
 28byj48_bracket_thickness = 0.8;
 28byj48_chassis_height = 19;
 28byj48_chassis_height_slop = 1;
-enclosure_wall_to_wall_width = thickness + spool_width_slop/2 + flap_width_slop/2 + flap_width + flap_width_slop/2 + spool_width_slop/2 + m4_button_head_length + max(28byj48_bracket_thickness, pcb_thickness) + thickness;
+enclosure_wall_to_wall_width = thickness + spool_width_slop/2 + flap_width_slop/2 + flap_width + flap_width_slop/2 + spool_width_slop/2 + max(28byj48_bracket_thickness + m4_button_head_length, pcb_thickness + pcb_connector_height, pcb_thickness + m4_button_head_length) + thickness;
 enclosure_width = enclosure_wall_to_wall_width + 28byj48_chassis_height + 28byj48_chassis_height_slop - thickness - 28byj48_bracket_thickness;
 enclosure_horizontal_inset = (enclosure_width - enclosure_wall_to_wall_width)/2;
 front_window_upper_base = (flap_height - flap_pin_width/2);
@@ -307,7 +308,7 @@ module spool_struts() {
 }
 
 
-module flap_spool_complete(captive_nut=false, motor_shaft_hole=false, ir_detector_hole=false) {
+module flap_spool_complete(captive_nut=false, motor_shaft=false, ir_detector_hole=false) {
     linear_extrude(thickness) {
         difference() {
             flap_spool(num_flaps, flap_hole_radius, flap_gap, flap_spool_outset,
@@ -317,8 +318,10 @@ module flap_spool_complete(captive_nut=false, motor_shaft_hole=false, ir_detecto
             if (captive_nut) {
                 circle(r=m4_nut_width_corners_padded/2, $fn=6);
             }
-            if (motor_shaft_hole) {
-                circle(r=motor_shaft_radius, $fn=30);
+            if (motor_shaft) {
+                rotate([0, 0, 90]) {
+                    motor_shaft();
+                }
             }
             if (ir_detector_hole) {
                 // Hole for IR reflectance sensor to detect
@@ -330,18 +333,13 @@ module flap_spool_complete(captive_nut=false, motor_shaft_hole=false, ir_detecto
     }
 }
 
-module spool_retaining_wall(m4_bolt_hole=false, motor_shaft_hole=false) {
+module spool_retaining_wall(m4_bolt_hole=false) {
     linear_extrude(thickness) {
         difference() {
             square([spool_strut_width, spool_strut_width], center=true);
             spool_strut_tab_holes();
             if (m4_bolt_hole) {
                 circle(r=m4_hole_diameter/2, $fn=30);
-            }
-            if (motor_shaft_hole) {
-                rotate([0, 0, 90]) {
-                    motor_shaft();
-                }
             }
         }
     }
@@ -699,6 +697,23 @@ module pcb() {
             }
         }
     }
+    translate([10, 20, pcb_thickness]) {
+        color([0, 0, 0]) {
+            cube([16, 8, pcb_connector_height]);
+        }
+    }
+    translate([0, 0, pcb_thickness]) {
+        translate([pcb_mount_inset_vertical, pcb_mount_inset_horizontal]) {
+            rotate([180, 0, 0]) {
+                standard_m4_bolt(nut_distance=thickness+pcb_thickness);
+            }
+        }
+        translate([pcb_height - pcb_mount_inset_vertical, pcb_mount_inset_horizontal]) {
+            rotate([180, 0, 0]) {
+                standard_m4_bolt(nut_distance=thickness+pcb_thickness);
+            }
+        }
+    }
 }
 
 module split_flap_3d(letter) {
@@ -863,16 +878,7 @@ module split_flap_3d(letter) {
         color(assembly_color) {
             translate([flap_width + flap_width_slop - thickness + 5*spool_horizontal_explosion, 0, 0]) {
                 rotate([0, 90, 0]) {
-                    flap_spool_complete(motor_shaft_hole=true, ir_detector_hole=true);
-                }
-            }
-        }
-        color(assembly_color1) {
-            translate([flap_width + flap_width_slop - thickness + 3*spool_horizontal_explosion, 0, 0]) {
-                translate([-thickness, 0, 0]) {
-                    rotate([0, 90, 0]) {
-                        spool_retaining_wall(motor_shaft_hole=true);
-                    }
+                    flap_spool_complete(motor_shaft=true, ir_detector_hole=true);
                 }
             }
         }
@@ -975,12 +981,11 @@ if (render_3d) {
         // Flap spools above spool struts
         flap_spool_y_off = spool_strut_y_off + spool_strut_width*1.5 + sp*2 + spool_outer_radius;
         translate([spool_outer_radius, flap_spool_y_off])
-            flap_spool_complete(motor_shaft_hole=true, ir_detector_hole=true);
+            flap_spool_complete(motor_shaft=true, ir_detector_hole=true);
         translate([spool_outer_radius*3 + sp, flap_spool_y_off])
             flap_spool_complete(captive_nut=true);
 
         spool_retaining_wall(m4_bolt_hole=true);
-        spool_retaining_wall(motor_shaft_hole=true);
     }
 }
 
