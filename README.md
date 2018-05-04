@@ -36,22 +36,43 @@ I'd love to hear your thoughts and questions about this project, and happy to in
 ![2d laser cut rendering](https://s3.amazonaws.com/splitflap-travis/branches/master/3d_laser_raster.png)
 
 ### Rough Cost Breakdown ###
-This is an incomplete list of supplies needed to build a split-flap display module, to get a rough sense of the overall cost.
-* $5/2 units -- MDF 3.2mm P2 [on Ponoko](http://www.ponoko.com/make-and-sell/show-material/64-mdf-natural)
-* $20 -- laser cutting on Ponoko (can save ~$0.70 by skipping engraved label)
-* $7 -- shipping from Ponoko
-* ~$2 -- 28byj-48 motor (12V preferred!) and ULN2003 driver (see [motor notes](https://github.com/scottbez1/splitflap/wiki/Motor-info) for specific details)
-* $6.39/2 units -- vinyl letter stickers (minimum letter duplication per pack is 2) [on Amazon](http://www.amazon.com/Duro-Decal-Permanent-Adhesive-Letters/dp/B0027601CM)
-* $12/5 units or $36/25 units -- CR80 cards (each CR80 card becomes 2 flaps, each unit requires 40 flaps) on [Amazon](http://www.amazon.com/Plastic-printers-DataCard-Evolis-Magicard/dp/B007M413BC) or [Amazon](http://www.amazon.com/White-Blank-CR80-020-Graphic-Quality/dp/B007PKD6MW)
-* ~$10/10 units -- male-to-male 3-pin servo cable (for sensors) e.g. on [Amazon](https://www.amazon.com/VIMVIP-10pcs-300mm-Extension-Futaba/dp/B00N8OX7VO)
-* ? -- M4x12mm button head bolts - ISO7380 e.g. on [Amazon](https://www.amazon.com/M4-0-70-Button-Socket-Stainless-Quantity/dp/B01F7OKCOW) or [AliExpress](https://www.aliexpress.com/wholesale?catId=0&SearchText=m4+12+iso7380)
-* ? -- M4 nuts
 
-TBD:
-* $0.76 -- GP2S60 reflectance sensor [on digikey](http://www.digikey.com/product-detail/en/GP2S60B/425-2670-1-ND/1642454)
-* $14/10 units -- PCB for reflectance sensor [on seeedstudio](http://www.seeedstudio.com/service/index.php?r=pcb)
-* ? -- Other electronics components for driver/sensor boards
-* ? -- 12V power supply
+This is an incomplete list of supplies needed to build a split-flap display module, to get a rough sense of the overall cost, as of May 2018.
+
+#### Housing ####
+
+* $5.00		/2 units -- MDF 3.2mm P2 [on Ponoko](http://www.ponoko.com/make-and-sell/show-material/64-mdf-natural)
+* $30.53	/2 units -- v0.3 laser cutting on Ponoko (can save ~$0.70 by skipping engraved label)
+* $7-$18	/2 units -- shipping range from Ponoko to West Coast or East Coast 
+
+* $43-53	/2 units -- Total
+
+#### Hardware & Consumables ####
+
+Pricing from Fastenal
+* $1.04		/unit -- Qty 10 -- M4-12mm button head screw, hex drive, A2-70 stainless steel (MB2530012A20000) 
+* $0.61		/unit -- Qty 10 -- M4 hex nut, A2-70 stainless steel (MN2530000A20000) 
+* ???		/unit -- Qty 2 -- M5- **##** mm button head screw, hex drive, A2-70 stainless steel (MB25400 **##** A20000) 
+* $0.14		/unit -- Qty 2 -- M5 hex nut, A2-70 stainless steel (MN2540000A20000) 
+
+* ???		/unit -- Qty ?? -- Heatshrink
+
+#### Flaps ####
+
+* $6.39		/2 units -- vinyl letter stickers (minimum letter duplication per pack is 2) [on Amazon](http://www.amazon.com/Duro-Decal-Permanent-Adhesive-Letters/dp/B0027601CM)
+* $12		/5 units
+* or $36	/25 units -- CR80 cards (each CR80 card becomes 2 flaps, each unit requires 40 flaps) on [Amazon](http://www.amazon.com/Plastic-printers-DataCard-Evolis-Magicard/dp/B007M413BC) or [Amazon](http://www.amazon.com/White-Blank-CR80-020-Graphic-Quality/dp/B007PKD6MW)
+
+#### PCB ####
+
+* $14		/10 units -- PCB for reflectance sensor [on seeedstudio](http://www.seeedstudio.com/service/index.php?r=pcb)
+
+#### Electronics & Motor ####
+
+* ~$2		/unit -- 28byj-48 motor (12V preferred!) Ebay is a good place to find these motors. (see [motor notes](https://github.com/scottbez1/splitflap/wiki/Motor-info) for specific details)
+* ~$10		/10 units -- male-to-male 3-pin servo cable (for sensors) e.g. on [Amazon](https://www.amazon.com/VIMVIP-10pcs-300mm-Extension-Futaba/dp/B00N8OX7VO)
+* ~$18		/unit -- Digikey electrionic component purchases. ~$16/controller and ~$2/sensor board. More detailed breakout of BOM in [Wiki - Order Parts](https://github.com/scottbez1/splitflap/wiki/Order-parts)
+* $7 -- 12V power supply on [Digikey](https://www.digikey.com/product-detail/en/cui-inc/SWI5-12-N-P5/102-4122-ND/6579912)
 
 Tools (one-time, up front cost):
 * $9.17 -- badge slot punch (for cutting notches out of cards to make flaps) [on Amazon](http://www.amazon.com/gp/product/B009YDRRB4)
