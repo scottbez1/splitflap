@@ -68,7 +68,7 @@ Pricing from Fastenal
 
 * ~$2		/unit -- 28byj-48 motor (12V preferred!) Ebay is a good place to find these motors. (see [motor notes](https://github.com/scottbez1/splitflap/wiki/Motor-info) for specific details)
 * ~$10		/10 units -- male-to-male 3-pin servo cable (for sensors) e.g. on [Amazon](https://www.amazon.com/VIMVIP-10pcs-300mm-Extension-Futaba/dp/B00N8OX7VO)
-* ~$18		/unit -- Digikey electrionic component purchases. ~$16/controller and ~$2/sensor board. More detailed breakout of BOM in [Wiki - Order Parts](https://github.com/scottbez1/splitflap/wiki/Order-parts)
+* ~$16		/unit -- Digikey electrionic component purchases. ~$14/controller and ~$2/sensor board. More detailed breakout of BOM in [Wiki - Order Parts](https://github.com/scottbez1/splitflap/wiki/Order-parts)
 * $7 -- 12V power supply on [Digikey](https://www.digikey.com/product-detail/en/cui-inc/SWI5-12-N-P5/102-4122-ND/6579912)
 
 Tools (one-time, up front cost):
