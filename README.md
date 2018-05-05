@@ -50,11 +50,8 @@ This is an incomplete list of supplies needed to build a split-flap display modu
 #### Hardware & Consumables ####
 
 Pricing from Fastenal
-* $1.04		/unit -- Qty 10 -- M4-12mm button head screw, hex drive, A2-70 stainless steel (MB2530012A20000) 
-* $0.61		/unit -- Qty 10 -- M4 hex nut, A2-70 stainless steel (MN2530000A20000) 
-* ???		/unit -- Qty 2 -- M5- **##** mm button head screw, hex drive, A2-70 stainless steel (MB25400 **##** A20000) 
-* $0.14		/unit -- Qty 2 -- M5 hex nut, A2-70 stainless steel (MN2540000A20000) 
-
+* $1.25		/unit -- Qty 12 -- M4-12mm button head screw, hex drive, ISO7380, A2-70 stainless steel (MB2530012A20000) 
+* $0.67		/unit -- Qty 12 -- M4 hex nut, A2-70 stainless steel (MN2530000A20000) 
 * ???		/unit -- Qty ?? -- Heatshrink
 
 #### Flaps ####
