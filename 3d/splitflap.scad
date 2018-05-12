@@ -29,7 +29,7 @@ render_3d = true;
 
 // 3d parameters:
 render_enclosure = 2; // 0=invisible; 1=translucent; 2=opaque color;
-render_flaps = 2; // 0=invisible; 1=front flap only; 2=all flaps
+render_flaps = 1; // 0=invisible; 1=front flap only; 2=all flaps
 render_flap_area = 0; // 0=invisible; 1=collapsed flap exclusion; 2=collapsed+extended flap exclusion
 render_letters = "4";
 render_units = len(render_letters);
@@ -194,11 +194,12 @@ motor_slop_radius = 3;
 num_front_tabs = 2;
 front_tab_width = (enclosure_wall_to_wall_width - 2*thickness) / (num_front_tabs*2 - 1);
 
+enclosure_length_right = front_forward_offset + m4_hole_diameter/2 + 2;
+
 num_side_tabs = 5;
-side_tab_width = (enclosure_length - 2*thickness) / (num_side_tabs*2 - 1);
+side_tab_width = enclosure_length_right / 4;
 side_tab_width_fraction = 0.5;
 
-enclosure_length_right = side_tab_width*4;
 
 backstop_bolt_vertical_offset = - (exclusion_radius + outer_exclusion_radius)/2;
 backstop_bolt_forward_range = 14;
@@ -661,7 +662,7 @@ module enclosure_bottom_etch() {
     color([0, 0, 0])
     linear_extrude(height=2, center=true) {
         translate([captive_nut_inset + m4_nut_length + 1, 1, thickness]) {
-            text_label(["github.com/scottbez1/splitflap", str("rev. ", render_revision), render_date]);
+            text_label([str("rev. ", render_revision), render_date, "github.com/scottbez1/splitflap"]);
         }
     }
 }
