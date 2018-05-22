@@ -41,11 +41,11 @@ This is an incomplete list of supplies needed to build a split-flap display modu
 
 #### Housing ####
 
-* $5.00		/2 units -- MDF 3.2mm P2 [on Ponoko](http://www.ponoko.com/make-and-sell/show-material/64-mdf-natural)
-* $30.53	/2 units -- v0.3 laser cutting on Ponoko (can save ~$0.70 by skipping engraved label)
-* $7-$18	/2 units -- shipping range from Ponoko to West Coast or East Coast 
+* $2.00		/unit -- MDF 3.2mm P1 [on Ponoko](http://www.ponoko.com/make-and-sell/show-material/64-mdf-natural)
+* $8.67		/unit -- laser cutting on Ponoko (can save ~$0.70 by skipping engraved label)
+* ~$9		/unit -- shipping
 
-* $43-53	/2 units -- Total
+* ~$20  	/unit -- Total (can be cheaper if ordering multiple units at the same time)
 
 #### Hardware & Consumables ####
 
@@ -92,9 +92,9 @@ The main design file is `3d/splitflap.scad`
 You'll need a recent version of OpenSCAD (e.g. 2015-03), which may need to be installed through the PPA:
 `sudo add-apt-repository ppa:openscad/releases`
 
-In general, solid objects such as the gears or enclosure sides are built from 2d primitives and then extruded to the appropriate thickness for 3d rendering, rather than using 3d primitives. This simplifies the design without losing expressiveness; the perpendicular laser cut beam doesn't allow for cuts that vary in the Z dimension anyway.
+In general, solid objects such as the enclosure sides or spool components are built from 2d primitives and then extruded to the appropriate thickness for 3d rendering, rather than using 3d primitives. This simplifies the design without losing expressiveness; the perpendicular laser cut beam doesn't allow for cuts that vary in the Z dimension anyway.
 
-Note that while the design is parameterized and many values may be tweaked, there is currently no error checking for invalid parameters or combinations of parameters. Please take care to validate the design if you change any parameters. For instance, while most of the design would correctly adjust to a tweaked material `thickness` value, the `thickness` plays a role in the alignment of the gears, so changing this value may result in misaligned gears or issues with the motor shaft length.
+Note that while the design is parameterized and many values may be tweaked, there is currently no error checking for invalid parameters or combinations of parameters. Please take care to validate the design if you change any parameters. For instance, while most of the design will adjust to a changed `num_modules` value, certain values may cause some elements to intersect with other elements or protrude beyond their expected dimensions.
 
 #### Rendering ####
 ##### Laser-cut vector files #####
@@ -104,7 +104,7 @@ Internally, the design uses a `projection_renderer` module (`3d/projection_rende
 
 The `generate_2d.py` script interacts with the `projection_renderer` module by first using it to determine the number of subcomponents to render, then runs OpenSCAD to export each component to an SVG file. It does some post-processing on the SVG output (notably adds "mm" to the document dimensions), and then combines all components into the single `combined.svg` output.
 
-Once the `combined.svg` file is generated, you'll want to manually remove a couple redundant cut lines that are shared by multiple adjacent pieces, to save time/cost when cutting. In Inkscape, select the "Edit paths by nodes" tool and select an edge to delete - the endpoints should turn blue. Then click "Delete segment between two non-endpoint nodes", and repeat this for all other redundant cut lines.
+Once the `combined.svg` file is generated, you'll want to double-check there aren't any redundant cut lines that are shared by multiple adjacent pieces, to save time/cost when cutting. They should be detected automatically (and highlighted in red in the rendering above), but it doesn't hurt to double-check. In Inkscape, select the "Edit paths by nodes" tool and select an edge to delete - the endpoints should turn blue. Then click "Delete segment between two non-endpoint nodes", and repeat this for all other redundant cut lines.
 
 Latest (Experimental!) Laser Cut Vector File: [svg](https://s3.amazonaws.com/splitflap-travis/branches/master/3d_laser_vector.svg)
 (In order to get the design laser-cut from Ponoko, you'll need to copy all of the shapes from that file into one of [Ponoko's templates](http://www.ponoko.com/starter-kits/inkscape))
