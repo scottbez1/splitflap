@@ -44,11 +44,20 @@ if __name__ == '__main__':
     renderer.clean()
     svg_output = renderer.render_svgs()
 
+    logging.info('Removing redundant lines')
+    processor = SvgProcessor(svg_output)
+    redundant_lines = processor.remove_redundant_lines()
+    processor.write(svg_output)
+
     # Export to png
+    logging.info('Generating raster preview')
     raster_svg = os.path.join(laser_parts_directory, 'raster.svg')
     raster_png = os.path.join(laser_parts_directory, 'raster.png')
-    processor = SvgProcessor(svg_output)
     processor.apply_raster_render_style()
+
+    # Show which redundant lines were removed
+    processor.add_highlight_lines(redundant_lines)
+
     processor.write(raster_svg)
 
     logging.info('Resize SVG canvas')

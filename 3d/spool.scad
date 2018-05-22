@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-module flap_spool(flaps, flap_hole_radius, flap_gap, inner_radius, outset, height) {
+module flap_spool(flaps, flap_hole_radius, flap_gap, outset, height) {
     pitch_radius = flap_spool_pitch_radius(flaps, flap_hole_radius, flap_gap);
     outer_radius = flap_spool_outer_radius(flaps, flap_hole_radius, flap_gap, outset);
 
@@ -25,7 +25,6 @@ module flap_spool(flaps, flap_hole_radius, flap_gap, inner_radius, outset, heigh
             for (i = [0 : flaps - 1]) {
                 translate([cos(360/flaps*i)*pitch_radius, sin(360/flaps*i)*pitch_radius]) circle(r=flap_hole_radius, $fn=15);
             }
-            circle(r=inner_radius, $fn=30);
         }
     }
 
