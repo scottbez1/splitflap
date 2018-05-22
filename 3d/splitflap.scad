@@ -29,11 +29,11 @@ render_3d = true;
 
 // 3d parameters:
 render_enclosure = 2; // 0=invisible; 1=translucent; 2=opaque color;
-render_flaps = 1; // 0=invisible; 1=front flap only; 2=all flaps
+render_flaps = 2; // 0=invisible; 1=front flap only; 2=all flaps
 render_flap_area = 0; // 0=invisible; 1=collapsed flap exclusion; 2=collapsed+extended flap exclusion
-render_letters = "4";
+render_letters = "44";
 render_units = len(render_letters);
-render_unit_separation = 0.1;
+render_unit_separation = 0;
 render_pcb = true;
 render_bolts = true;
 render_motor = true;
