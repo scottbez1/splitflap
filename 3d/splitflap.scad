@@ -230,7 +230,7 @@ echo(front_forward_offset=front_forward_offset);
 
 module standard_m4_bolt(nut_distance=-1) {
     if (render_bolts) {
-        roughM4_7380(12);
+        roughM4_7380(10);
     }
     if (nut_distance >= 0) {
         color([0.70, 0.70, 0.72]) {
