@@ -23,6 +23,8 @@ use<roboto/RobotoCondensed-Regular.ttf>;
 use<rough7380.scad>;
 use<spool.scad>;
 
+include<flap_dimensions.scad>;
+
 // ##### RENDERING OPTIONS #####
 
 render_3d = true;
@@ -60,7 +62,7 @@ spool_horizontal_explosion = lookup(spool_explosion, [
 
 // Kerf based off http://blog.ponoko.com/2011/07/12/figuring-out-kerf-for-precision-parts/
 // It's better to underestimate (looser fit) than overestimate (no fit)
-kerf_value = 0.19 - 0.01;
+kerf_value = 0.19 - 0.05;
 kerf_width = render_etch ? -kerf_value : kerf_value;
 
 // MDF, .125in nominal
@@ -92,10 +94,6 @@ assembly_color2 = [.682, .537, .376]; //"ae8960";
 assembly_color3 = [.416, .325, .227]; //"6A533A";
 assembly_color4 = [.204, .161, .114]; //"34291D";
 
-flap_width = 54;
-flap_height = 43;
-flap_thickness = 30 / 1000 * 25.4; // 30 mil
-flap_corner_radius = 3.1; // 2.88-3.48mm (used just for display)
 flap_rendered_angle = 90;
 
 letter_height = flap_height * 0.75 * 2;
@@ -108,9 +106,9 @@ spool_width_slop = 0.5;
 
 
 num_flaps = 40;
-flap_hole_radius = 1.2;
-flap_gap = 1;
 
+flap_hole_radius = (flap_pin_width + 1) / 2;
+flap_gap = 1;
 
 flap_spool_outset = flap_hole_radius;
 flap_pitch_radius = flap_spool_pitch_radius(num_flaps, flap_hole_radius, flap_gap); //num_flaps * (flap_hole_radius*2 + flap_gap) / (2*PI);
@@ -126,8 +124,6 @@ front_forward_offset = flap_pitch_radius + flap_thickness/2;
 flap_notch = sqrt(spool_outer_radius*spool_outer_radius - flap_pitch_radius*flap_pitch_radius);
 echo(flap_notch=flap_notch);
 
-
-flap_pin_width = flap_hole_radius*2 - 1;
 
 spool_strut_tabs = 3;
 spool_strut_tab_width=8;
