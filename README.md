@@ -97,7 +97,7 @@ Note that while the design is parameterized and many values may be tweaked, ther
 
 #### Rendering ####
 ##### Laser-cut vector files #####
-The design can be rendered to 2d for laser cutting by running `3d/generate_2d.py`, which outputs to `3d/build/laser_parts/combined.svg`
+The design can be rendered to 2d for laser cutting by running `3d/generate_2d.py [--panelize <number>]`, which outputs to `3d/build/laser_parts/combined.svg`. The optional `--panelize` argument allows for rendering a panel of modules in a single SVG, for bulk laser-cutting.
 
 Internally, the design uses a `projection_renderer` module (`3d/projection_renderer.scad`), which takes a list of child elements to render, and depending on the `render_index` renders a single child at a time. It also _adds_ material to each shape to account for the kerf that will be cut away by the laser.
 

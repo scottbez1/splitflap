@@ -14,15 +14,20 @@
    limitations under the License.
 */
 
-module projection_renderer(render_index = -1, kerf_width = 0) {
+module projection_renderer(render_index = -1, render_etch = false, kerf_width = 0, panel_height, panel_horizontal, panel_vertical) {
     echo(num_components=$children);
 
     if (render_index == -1) {
         children();
     } else {
-        offset(delta=kerf_width/2) {
-            projection() {
-                children(render_index);
+        translate([(panel_horizontal == 1 ? -kerf_width : 0), (panel_horizontal == 1 ? panel_height - kerf_width : 0) - panel_vertical * panel_height]) {
+            rotate([0, 0, panel_horizontal == 1 ? 180 : 0]) {
+                offset_size = (render_etch ? -kerf_width : kerf_width)/2;
+                offset(delta=offset_size) {
+                    projection() {
+                        children(render_index);
+                    }
+                }
             }
         }
     }

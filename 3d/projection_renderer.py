@@ -55,18 +55,20 @@ class Renderer(object):
     def _get_component_file(self, i):
         return os.path.join(self.output_folder, 'component_%05d.svg' % i)
 
-    def _render_component(self, i):
+    def _render_component(self, i, panel_horizontal, panel_vertical):
         output_file = self._get_component_file(i)
         for style in ('cut', 'etch'):
             logging.debug('Rendering component %d, %s', i, style)
             try:
-                stdout, stderr = openscad.run(
+                _ = openscad.run(
                         self.input_file,
                         output_file,
-                        variables = self._get_variables({
+                        variables=self._get_variables({
                             'render_3d': False,
                             'render_index': i,
                             'render_etch': style == 'etch',
+                            'panel_horizontal': panel_horizontal,
+                            'panel_vertical': panel_vertical,
                         }),
                         capture_output=True,
                     )
@@ -89,16 +91,22 @@ class Renderer(object):
             raise ValueError("Invalid component!", i)
         return processor
 
-    def render_svgs(self):
+    def render_svgs(self, panelize_quantity):
+        assert panelize_quantity == 1 or panelize_quantity % 2 == 0, 'Panelize quantity must be 1 or an even number'
         num_components = int(self._get_num_components())
         logging.info('Found %d components to render', num_components)
         svg_output = None
-        for i in range(num_components):
-            svg_processor = self._render_component(i)
-            if svg_output is None:
-                svg_output = svg_processor
-            else:
-                svg_output.import_paths(svg_processor)
+
+        horizontal_range = 1 if panelize_quantity == 1 else 2
+        vertical_range = (panelize_quantity + 1) // 2
+        for panel_horizontal in range(0, horizontal_range):
+            for panel_vertical in range(0, vertical_range):
+                for i in range(num_components):
+                    svg_processor = self._render_component(i, panel_horizontal, panel_vertical)
+                    if svg_output is None:
+                        svg_output = svg_processor
+                    else:
+                        svg_output.import_paths(svg_processor)
         output_file_path = os.path.join(self.output_folder, 'combined.svg')
         svg_output.write(output_file_path)
         return output_file_path

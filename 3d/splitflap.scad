@@ -44,6 +44,10 @@ render_motor = true;
 render_index = -1;
 render_etch = false;
 
+// Panelization:
+panel_vertical = 0;
+panel_horizontal = 0;
+
 // Version label:
 render_revision = "deadbeef";
 render_date = "YYYY-MM-DD";
@@ -62,8 +66,7 @@ spool_horizontal_explosion = lookup(spool_explosion, [
 
 // Kerf based off http://blog.ponoko.com/2011/07/12/figuring-out-kerf-for-precision-parts/
 // It's better to underestimate (looser fit) than overestimate (no fit)
-kerf_value = 0.19 - 0.05;
-kerf_width = render_etch ? -kerf_value : kerf_value;
+kerf_width = 0.19 - 0.05;
 
 // MDF, .125in nominal
 // http://www.ponoko.com/make-and-sell/show-material/64-mdf-natural
@@ -943,7 +946,8 @@ if (render_3d) {
     }
 } else {
     sp = 5;
-    projection_renderer(render_index=render_index, kerf_width=kerf_width) {
+    panel_height = enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width + kerf_width;
+    projection_renderer(render_index=render_index, render_etch=render_etch, kerf_width=kerf_width, panel_height=panel_height, panel_horizontal=panel_horizontal, panel_vertical=panel_vertical) {
         translate([0, 0])
             enclosure_left();
         translate([0, enclosure_length + kerf_width])

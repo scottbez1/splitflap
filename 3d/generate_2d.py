@@ -18,6 +18,7 @@
 from __future__ import division
 from __future__ import print_function
 
+import argparse
 import logging
 import os
 import subprocess
@@ -33,6 +34,12 @@ from util import rev_info
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--panelize', type=int, default=1, help='Quantity to panelize - must be 1 or an even number')
+
+    args = parser.parse_args()
+
     laser_parts_directory = os.path.join('build', 'laser_parts')
 
     extra_variables = {
@@ -42,7 +49,7 @@ if __name__ == '__main__':
 
     renderer = Renderer('splitflap.scad', laser_parts_directory, extra_variables)
     renderer.clean()
-    svg_output = renderer.render_svgs()
+    svg_output = renderer.render_svgs(panelize_quantity=args.panelize)
 
     logging.info('Removing redundant lines')
     processor = SvgProcessor(svg_output)

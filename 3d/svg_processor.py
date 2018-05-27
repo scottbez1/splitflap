@@ -11,6 +11,8 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
+from collections import defaultdict
+
 from svg.path import Path
 from svg.path import parse_path
 from xml.dom import minidom
@@ -65,7 +67,7 @@ class SvgProcessor(object):
         eps = 0.0001
 
         def get_slope_intersect(p1, p2):
-            if p1.real == p2.real:
+            if abs(p1.real - p2.real) < eps:
                 # Vertical; no slope and return x-intercept
                 return None, p1.real
             m = (p2.imag - p1.imag) / (p2.real - p1.real)
@@ -74,52 +76,64 @@ class SvgProcessor(object):
             assert abs(b1 - b2) < eps
             return m, b1
 
-        lines = []
+        lines_bucketed_by_slope_intersect = defaultdict(list)
         paths = self.svg_node.getElementsByTagName('path')
+        overall_index = 0
         for path_index, path in enumerate(paths):
             path_text = path.attributes['d'].value
             path_obj = parse_path(path_text)
             for line_index, line in enumerate(path_obj):
-                lines.append((path_index, line_index, line))
+                slope, intersect = get_slope_intersect(line.start, line.end)
+                if slope is not None:
+                    slope = round(slope, ndigits=4)
+                intersect = round(intersect, ndigits=4)
+                lines_bucketed_by_slope_intersect[(slope, intersect)].append({
+                    'overall_index': overall_index,
+                    'path_index': path_index,
+                    'line_index': line_index,
+                    'line': line,
+                })
+                overall_index += 1
 
-        # Naive N^2 search for overlapping lines
         to_remove = {}
-        for i in range(len(lines)):
-            path_index1 = lines[i][0]
-            line_index1 = lines[i][1]
-            line1 = lines[i][2]
-            eq1 = get_slope_intersect(line1.start, line1.end)
-            for j in range(i + 1, len(lines)):
-                path_index2 = lines[j][0]
-                line_index2 = lines[j][1]
-                line2 = lines[j][2]
-                eq2 = get_slope_intersect(line2.start, line2.end)
-                # Compare slopes
-                if (eq1[0] is None and eq2[0] is None)\
-                        or (eq1[0] is not None and eq2[0] is not None and abs(eq1[0]-eq2[0]) < eps):
-                    # Compare intersects
-                    if abs(eq1[1] - eq2[1]) < eps:
-                        # Must be collinear, check for overlap
-                        l1x1 = min(line1.start.real, line1.end.real)
-                        l1x2 = max(line1.start.real, line1.end.real)
-                        l1y1 = min(line1.start.imag, line1.end.imag)
-                        l1y2 = max(line1.start.imag, line1.end.imag)
+        for slope_intersect, lines in lines_bucketed_by_slope_intersect.items():
+            # Naive N^2 search for overlapping lines within a slope-intersect bucket
+            for i in range(len(lines)):
+                line1 = lines[i]['line']
+                eq1 = get_slope_intersect(line1.start, line1.end)
+                for j in range(i + 1, len(lines)):
+                    line2 = lines[j]['line']
+                    eq2 = get_slope_intersect(line2.start, line2.end)
 
-                        l2x1 = min(line2.start.real, line2.end.real)
-                        l2x2 = max(line2.start.real, line2.end.real)
-                        l2y1 = min(line2.start.imag, line2.end.imag)
-                        l2y2 = max(line2.start.imag, line2.end.imag)
+                    # Compare slopes
+                    if (eq1[0] is None and eq2[0] is None) \
+                            or (eq1[0] is not None and eq2[0] is not None and abs(eq1[0] - eq2[0]) < eps):
+                        # Compare intersects
+                        if abs(eq1[1] - eq2[1]) < eps:
+                            # Must be collinear, check for overlap
+                            l1x1 = min(line1.start.real, line1.end.real)
+                            l1x2 = max(line1.start.real, line1.end.real)
+                            l1y1 = min(line1.start.imag, line1.end.imag)
+                            l1y2 = max(line1.start.imag, line1.end.imag)
 
-                        if l1x1 <= l2x1 and l1x2 >= l2x2 and l1y1 <= l2y1 and l1y2 >= l2y2:
-                            # Overlapping, line 1 is bigger
-                            assert line1.length() >= line2.length()
-                            to_remove[j] = (path_index2, line_index2, line2)
-                        elif l1x1 >= l2x1 and l1x2 <= l2x2 and l1y1 >= l2y1 and l1y2 <= l2y2:
-                            # Overlapping, line 2 is bigger
-                            assert line2.length() >= line1.length()
-                            to_remove[i] = (path_index1, line_index1, line1)
+                            l2x1 = min(line2.start.real, line2.end.real)
+                            l2x2 = max(line2.start.real, line2.end.real)
+                            l2y1 = min(line2.start.imag, line2.end.imag)
+                            l2y2 = max(line2.start.imag, line2.end.imag)
 
+                            if l1x1 <= l2x1 + eps and l1x2 + eps >= l2x2 and l1y1 <= l2y1 + eps and l1y2 + eps >= l2y2:
+                                # Overlapping, line 1 is bigger
+                                assert line1.length() + eps >= line2.length()
+                                to_remove[lines[j]['overall_index']] = (lines[j]['path_index'], lines[j]['line_index'], line2)
+                            elif l1x1 + eps >= l2x1 and l1x2 <= l2x2 + eps and l1y1 + eps >= l2y1 and l1y2 <= l2y2 + eps:
+                                # Overlapping, line 2 is bigger
+                                assert line2.length() + eps >= line1.length()
+                                to_remove[lines[i]['overall_index']] = (lines[i]['path_index'], lines[i]['line_index'], line1)
+
+        # Reconstruct the paths, but excluding the redundant lines we just identified
         i = 0
+        removed = 0
+        kept = 0
         for path_index, path in enumerate(paths):
             path_text = path.attributes['d'].value
             path_obj = parse_path(path_text)
@@ -131,12 +145,16 @@ class SvgProcessor(object):
                     assert path_index == to_remove[i][0]
                     assert line_index == to_remove[i][1]
                     assert line == to_remove[i][2]
+                    removed += 1
                 else:
                     filtered_path.append(line)
+                    kept += 1
                 i += 1
 
             # Update the path data with the filtered path data
             path.attributes['d'] = filtered_path.d()
+
+        print 'Removed {} and kept {} lines'.format(removed, kept)
 
         return [to_remove[k][2] for k in to_remove]
 
