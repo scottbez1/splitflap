@@ -210,14 +210,14 @@ backstop_bolt_forward_range = 14;
 motor_mount_hole_radius = m4_hole_diameter/2;
 motor_chassis_width = 28;
 motor_shaft_offset = 8;
-motor_backpack_extent = 18;
+motor_backpack_extent = 18 + 2; // Add 2mm to make sure there's room for the wires
 motor_hole_slop = 1;
 
 connector_bracket_thickness = 3;
 connector_bracket_length = enclosure_width - enclosure_wall_to_wall_width + thickness*2 + connector_bracket_thickness*2;
 connector_bracket_width = connector_bracket_thickness * 3;
 connector_bracket_tab_width = 1;
-connector_bracket_tab_depth = 0.5;
+connector_bracket_tab_depth = 0.7;
 connector_bracket_tab_inset = 1;
 connector_bracket_tab_gap_depth = 1.5;
 connector_bracket_tab_slop = 0.1;
@@ -1086,6 +1086,13 @@ if (render_3d) {
             spool_strut();
         translate([91, 22, thickness])
             spool_strut();
+
+        // Connector brackets cut out of right side
+        translate([enclosure_height_upper - backstop_bolt_vertical_offset/3, enclosure_length + kerf_width + enclosure_length_right - connector_bracket_width - 3, thickness])
+            connector_bracket();
+        translate([enclosure_height_upper - 2*backstop_bolt_vertical_offset/3, enclosure_length + kerf_width + connector_bracket_width + 3, thickness])
+            rotate([0, 0, 180])
+                connector_bracket();
 
         // Flap spools in window
         flap_spool_y_off = enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width - front_window_right_inset - enclosure_horizontal_inset - front_window_width/2;
