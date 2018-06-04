@@ -133,7 +133,9 @@ class SvgProcessor(object):
         # Reconstruct the paths, but excluding the redundant lines we just identified
         i = 0
         removed = 0
+        removed_length = 0
         kept = 0
+        kept_length = 0
         for path_index, path in enumerate(paths):
             path_text = path.attributes['d'].value
             path_obj = parse_path(path_text)
@@ -146,15 +148,22 @@ class SvgProcessor(object):
                     assert line_index == to_remove[i][1]
                     assert line == to_remove[i][2]
                     removed += 1
+                    removed_length += line.length()
                 else:
                     filtered_path.append(line)
                     kept += 1
+                    kept_length += line.length()
                 i += 1
 
             # Update the path data with the filtered path data
             path.attributes['d'] = filtered_path.d()
 
-        print 'Removed {} and kept {} lines'.format(removed, kept)
+        print 'Removed {} lines ({} length) and kept {} lines ({} length)'.format(
+            removed,
+            removed_length,
+            kept,
+            kept_length,
+        )
 
         return [to_remove[k][2] for k in to_remove]
 
