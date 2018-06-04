@@ -224,6 +224,7 @@ connector_bracket_tab_slop = 0.1;
 
 mounting_hole_inset = m4_button_head_diameter/2 + 2;
 
+echo(kerf_width=kerf_width);
 echo(enclosure_height=enclosure_height);
 echo(enclosure_height_upper=enclosure_height_upper);
 echo(enclosure_height_lower=enclosure_height_lower);
@@ -238,6 +239,7 @@ echo(front_window_upper=front_window_upper);
 echo(front_window_lower=front_window_lower);
 echo(front_window_height=front_window_lower+front_window_upper);
 echo(front_forward_offset=front_forward_offset);
+echo(connector_bracket_length=connector_bracket_length);
 
 
 module standard_m4_bolt(nut_distance=-1) {
@@ -1082,15 +1084,17 @@ if (render_3d) {
             spool_strut();
         translate([2, 32, thickness])
             spool_strut();
-        translate([35, spool_strut_width/2 + 3, thickness])
-            spool_strut();
-        translate([91, 22, thickness])
-            spool_strut();
+        translate([enclosure_height - spool_strut_length - kerf_width, spool_strut_width/2, thickness])
+            rotate([0, 0, 180])
+                spool_strut();
+        translate([enclosure_height, spool_strut_width/2, thickness])
+            rotate([0, 0, 180])
+                spool_strut();
 
         // Connector brackets cut out of right side
-        translate([enclosure_height_upper - backstop_bolt_vertical_offset/3, enclosure_length + kerf_width + enclosure_length_right - connector_bracket_width - 3, thickness])
+        translate([enclosure_height_upper - backstop_bolt_vertical_offset/2 - connector_bracket_length/2, enclosure_length + kerf_width + enclosure_length_right/2 - connector_bracket_width - kerf_width/2, thickness])
             connector_bracket();
-        translate([enclosure_height_upper - 2*backstop_bolt_vertical_offset/3, enclosure_length + kerf_width + connector_bracket_width + 3, thickness])
+        translate([enclosure_height_upper - backstop_bolt_vertical_offset/2 + connector_bracket_length/2, enclosure_length + kerf_width + enclosure_length_right/2 + connector_bracket_width + kerf_width/2, thickness])
             rotate([0, 0, 180])
                 connector_bracket();
 

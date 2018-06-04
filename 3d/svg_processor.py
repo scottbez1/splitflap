@@ -64,7 +64,7 @@ class SvgProcessor(object):
             self.svg_node.appendChild(output_node)
 
     def remove_redundant_lines(self):
-        eps = 0.0001
+        eps = 0.001
 
         def get_slope_intersect(p1, p2):
             if abs(p1.real - p2.real) < eps:
@@ -85,8 +85,8 @@ class SvgProcessor(object):
             for line_index, line in enumerate(path_obj):
                 slope, intersect = get_slope_intersect(line.start, line.end)
                 if slope is not None:
-                    slope = round(slope, ndigits=4)
-                intersect = round(intersect, ndigits=4)
+                    slope = round(slope, ndigits=3)
+                intersect = round(intersect, ndigits=3)
                 lines_bucketed_by_slope_intersect[(slope, intersect)].append({
                     'overall_index': overall_index,
                     'path_index': path_index,
