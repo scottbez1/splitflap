@@ -10,12 +10,14 @@ Prototype three-character display: [video](https://www.youtube.com/watch?v=bslkf
 
 The goal is to make a low-cost display that's easy to fabricate at home in small/single quantities (e.g. custom materials can be ordered from Ponoko or similar, and other hardware is generally available).
 
+**New!** Kits based on these designs will be available for sale soon (summer/fall 2018)! If you're interested, please see this page for more information and to fill out a brief interest survey: https://goo.gl/forms/O17gYmE1ZUTwa7M73
+
 The 3d model is built using OpenSCAD in `3d/splitflap.scad`, the driver board is designed in KiCad in `electronics/splitflap.pro`, and the driver firmware is written using Arduino in `arduino/splitflap/splitflap.ino`.
 
 You can view an interactive 3d model of the design on the [project website](https://scottbez1.github.io/splitflap/).
 
 ### Current Status ###
-This design is currently at a *prototype* stage. The source files provided here were able to produce a working prototype, but aren't necessarily recommended yet unless you enjoy incomplete documentation, frustration, and adventure!
+This design is currently at a *prototype* stage. The source files provided here were able to produce multiple working prototypes, but may still have some minor issues and/or incomplete documentation.
 
 | Component | Status | Notes |
 | --- | --- | --- |
