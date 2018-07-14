@@ -102,7 +102,7 @@ flap_rendered_angle = 90;
 letter_height = flap_height * 0.75 * 2;
 
 // Amount of slop of the flap side to side between the 2 spools
-flap_width_slop = 0.5;
+flap_width_slop = 0.1;
 
 // Amount of slop for the spool assembly side-to-side inside the enclosure
 spool_width_slop = 0.5;
@@ -125,15 +125,18 @@ outer_exclusion_radius = flap_pitch_radius + flap_height + 2;
 front_forward_offset = flap_pitch_radius + flap_thickness/2;
 
 flap_notch = sqrt(spool_outer_radius*spool_outer_radius - flap_pitch_radius*flap_pitch_radius);
+flap_notch_depth = 3;
 
 
+spool_width = flap_width - flap_notch_depth*2 + flap_width_slop + thickness*2;
+assert(spool_width >= flap_width, "Flap is wider than spool!");
 spool_strut_tabs = 3;
 spool_strut_tab_width=8;
 spool_strut_tab_outset=8;
 spool_strut_width = (spool_strut_tab_outset + thickness/2) * 2;
 spool_strut_length_inset = 0;
-spool_strut_length = flap_width + flap_width_slop - (2 * spool_strut_length_inset);
-spool_strut_inner_length = flap_width + flap_width_slop - 3 * thickness;
+spool_strut_length = spool_width - (2 * spool_strut_length_inset);
+spool_strut_inner_length = spool_width - 3 * thickness;
 
 spool_strut_exclusion_radius = sqrt((spool_strut_tab_outset+thickness/2)*(spool_strut_tab_outset+thickness/2) + (spool_strut_tab_width/2)*(spool_strut_tab_width/2));
 
@@ -163,7 +166,7 @@ ir_reflectance_hole_offset = pcb_offset_radius + pcb_sensor_horizontal_inset;
 28byj48_chassis_height_slop = 1;
 
 // Width measured from the outside of the walls
-enclosure_wall_to_wall_width = thickness + spool_width_slop/2 + flap_width_slop/2 + flap_width + flap_width_slop/2 + spool_width_slop/2 + max(28byj48_bracket_thickness + m4_button_head_length, pcb_thickness + pcb_connector_height, pcb_thickness + m4_button_head_length) + thickness;
+enclosure_wall_to_wall_width = thickness + spool_width_slop/2 + spool_width + spool_width_slop/2 + max(28byj48_bracket_thickness + m4_button_head_length, pcb_thickness + pcb_connector_height, pcb_thickness + m4_button_head_length) + thickness;
 
 // Width of the front panel
 enclosure_width = enclosure_wall_to_wall_width + 28byj48_chassis_height + 28byj48_chassis_height_slop - thickness - 28byj48_bracket_thickness;
@@ -173,7 +176,7 @@ front_window_overhang = 3;
 front_window_upper = front_window_upper_base - front_window_overhang;
 front_window_lower = sqrt(outer_exclusion_radius*outer_exclusion_radius - front_forward_offset*front_forward_offset);
 front_window_slop = 0;
-front_window_width = spool_width_slop + flap_width + flap_width_slop + front_window_slop;
+front_window_width = spool_width_slop + spool_width + front_window_slop;
 front_window_right_inset = thickness - front_window_slop/2;
 enclosure_vertical_margin = 10; // gap between top/bottom of flaps and top/bottom of enclosure
 enclosure_vertical_inset = thickness*1.5; // distance from top of sides to top of the top piece
@@ -239,6 +242,7 @@ echo(front_window_lower=front_window_lower);
 echo(front_window_height=front_window_lower+front_window_upper);
 echo(front_forward_offset=front_forward_offset);
 echo(connector_bracket_length=connector_bracket_length);
+echo(flap_exclusion_radius=exclusion_radius);
 echo(flap_hole_radius=flap_hole_radius);
 echo(flap_notch=flap_notch);
 
@@ -385,9 +389,9 @@ module flap() {
                 }
             }
             translate([-eps, flap_pin_width])
-                square([eps + thickness, flap_notch]);
-            translate([flap_width - thickness, flap_pin_width])
-                square([eps + thickness, flap_notch]);
+                square([eps + flap_notch_depth, flap_notch]);
+            translate([flap_width - flap_notch_depth, flap_pin_width])
+                square([eps + flap_notch_depth, flap_notch]);
         }
     }
 }
@@ -947,7 +951,6 @@ module split_flap_3d(letter, include_connector) {
     translate([spool_width_slop/2 + thickness, 0, 0]) {
         // Flap area
         if (render_flaps > 0) {
-            echo(flap_exclusion_radius=exclusion_radius);
             rotate([0, 90, 0]) {
                 if (render_flap_area >= 1) {
                     translate([0, 0, thickness]) {
@@ -961,7 +964,7 @@ module split_flap_3d(letter, include_connector) {
                 }
             }
 
-            translate([flap_width_slop/2, 0, 0]) {
+            translate([-flap_notch_depth + thickness + flap_width_slop/2, 0, 0]) {
                 // Collapsed flaps on the top
                 for (i=[0:num_flaps/2 - 1]) {
                     if (i == 0 || render_flaps == 2) {
@@ -1000,7 +1003,7 @@ module split_flap_3d(letter, include_connector) {
 
         // motor spool
         color(assembly_color) {
-            translate([flap_width + flap_width_slop - thickness + 5*spool_horizontal_explosion, 0, 0]) {
+            translate([spool_width - thickness + 5*spool_horizontal_explosion, 0, 0]) {
                 rotate([0, 90, 0]) {
                     flap_spool_complete(motor_shaft=true, ir_detector_hole=true);
                 }
