@@ -362,8 +362,6 @@ inline void SplitflapModule::UpdateExpectedHome() {
     unexpected_home_end_step = new_unexpected_home_end_step;
     missed_home_step = new_missed_home_step;
     home_state = IGNORE;
-#else
-#error "home calibration must be enabled"
 #endif
 }
 
@@ -386,8 +384,6 @@ inline void SplitflapModule::GoHome() {
 
     state = LOOK_FOR_HOME;
     delta_steps = MAX_STEPS_LOOKING_FOR_HOME;
-#else
-#error "home calibration must be enabled"
 #endif
 }
 

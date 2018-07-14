@@ -225,12 +225,14 @@ void loop() {
           case NORMAL:
             color = color_green;
             break;
+#if HOME_CALIBRATION_ENABLED
           case LOOK_FOR_HOME:
             color = color_purple;
             break;
           case SENSOR_ERROR:
             color = color_orange;
             break;
+#endif
           case PANIC:
             color = color_red;
             break;

@@ -125,7 +125,6 @@ outer_exclusion_radius = flap_pitch_radius + flap_height + 2;
 front_forward_offset = flap_pitch_radius + flap_thickness/2;
 
 flap_notch = sqrt(spool_outer_radius*spool_outer_radius - flap_pitch_radius*flap_pitch_radius);
-echo(flap_notch=flap_notch);
 
 
 spool_strut_tabs = 3;
@@ -216,8 +215,8 @@ motor_hole_slop = 1;
 connector_bracket_thickness = 3;
 connector_bracket_length = enclosure_width - enclosure_wall_to_wall_width + thickness*2 + connector_bracket_thickness*2;
 connector_bracket_width = connector_bracket_thickness * 3;
-connector_bracket_tab_width = 1;
-connector_bracket_tab_depth = 0.7;
+connector_bracket_tab_width = 1.5;
+connector_bracket_tab_depth = 1;
 connector_bracket_tab_inset = 1;
 connector_bracket_tab_gap_depth = 1.5;
 connector_bracket_tab_slop = 0.1;
@@ -240,6 +239,8 @@ echo(front_window_lower=front_window_lower);
 echo(front_window_height=front_window_lower+front_window_upper);
 echo(front_forward_offset=front_forward_offset);
 echo(connector_bracket_length=connector_bracket_length);
+echo(flap_hole_radius=flap_hole_radius);
+echo(flap_notch=flap_notch);
 
 
 module standard_m4_bolt(nut_distance=-1) {
@@ -424,20 +425,35 @@ module front_tabs_negative() {
 }
 
 module connector_bracket() {
+    module connector_bracket_cutouts() {
+        // Slots for left/right enclosure walls
+        translate([connector_bracket_thickness, -eps]) {
+            square([thickness, connector_bracket_width - connector_bracket_thickness + eps]);
+        }
+
+        // tab gaps (for inserting a lever to remove the connector bracket)
+        translate([connector_bracket_thickness - connector_bracket_tab_gap_depth, -eps]) {
+            square([connector_bracket_tab_gap_depth + eps, connector_bracket_tab_inset + eps]);
+        }
+
+        // subtract some thickness on the part that bends to make it less stiff
+        translate([-eps, connector_bracket_thickness]) {
+            square([connector_bracket_thickness/2 + eps, connector_bracket_width]);
+        }
+        translate([-eps, connector_bracket_width - connector_bracket_thickness/2]) {
+            square([connector_bracket_thickness*1.5 + eps, connector_bracket_thickness]);
+        }
+    }
+
     linear_extrude(height=thickness) {
         union() {
             difference() {
                 square([connector_bracket_length, connector_bracket_width]);
-                translate([connector_bracket_thickness, -eps]) {
-                    square([connector_bracket_length - connector_bracket_thickness*2, connector_bracket_width - connector_bracket_thickness + eps]);
-                }
-
-                // tab gaps (for inserting a lever to remove the connector bracket)
-                translate([connector_bracket_thickness - connector_bracket_tab_gap_depth, -eps]) {
-                    square([connector_bracket_tab_gap_depth + eps, connector_bracket_tab_inset + eps]);
-                }
-                translate([connector_bracket_length - connector_bracket_thickness - eps, -eps]) {
-                    square([connector_bracket_tab_gap_depth + eps, connector_bracket_tab_inset + eps]);
+                connector_bracket_cutouts();
+                translate([connector_bracket_length, 0]) {
+                    mirror([1, 0, 0]) {
+                        connector_bracket_cutouts();
+                    }
                 }
             }
 
@@ -1110,4 +1126,3 @@ if (render_3d) {
             spool_retaining_wall(m4_bolt_hole=true);
     }
 }
-
