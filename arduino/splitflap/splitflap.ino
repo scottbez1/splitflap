@@ -14,8 +14,6 @@
    limitations under the License.
 */
 
-#include <avr/power.h>
-#include <math.h>
 #include <SPI.h>
 #include "splitflap_module.h"
 
@@ -118,7 +116,7 @@ inline void spi_transfer() {
 }
 
 void setup() {
-  Serial.begin(57600);
+  Serial.begin(38400);
 
   pinMode(DEBUG_LED_0_PIN, OUTPUT);
   pinMode(DEBUG_LED_1_PIN, OUTPUT);
@@ -138,13 +136,9 @@ void setup() {
   SPI.beginTransaction(SPISettings(3000000, MSBFIRST, SPI_MODE0));
   spi_transfer();
 
-  Serial.print(F("Starting.\nNum modules: "));
+  Serial.print(F("{\"type\":\"init\", \"num_modules\":"));
   Serial.print(NUM_MODULES);
-  Serial.print(F("\nMotor buffer length: "));
-  Serial.print(MOTOR_BUFFER_LENGTH);
-  Serial.print(F("\nSensor buffer length: "));
-  Serial.print(SENSOR_BUFFER_LENGTH);
-  Serial.print('\n');
+  Serial.print(F("}\n"));
 
 #if NEOPIXEL_DEBUGGING_ENABLED
   strip.begin();
@@ -192,6 +186,7 @@ inline int8_t FindFlapIndex(uint8_t character) {
 
 bool was_idle = false;
 bool was_stopped = false;
+bool pending_no_op = false;
 uint8_t recv_count = 0;
 
 
@@ -244,28 +239,30 @@ void loop() {
 
       while (Serial.available() > 0) {
         int b = Serial.read();
-        Serial.print(F("Got "));
-        Serial.print(b);
-        Serial.write('\n');
         switch (b) {
           case '@':
             for (uint8_t i = 0; i < NUM_MODULES; i++) {
+              modules[i].ResetErrorCounters();
               modules[i].GoHome();
             }
+            break;
+          case '#':
+            pending_no_op = true;
             break;
           case '=':
             recv_count = 0;
             break;
           case '\n':
-              Serial.print(F("Going to '"));
-              for (uint8_t i = 0; i < NUM_MODULES; i++) {
+              Serial.print(F("{\"type\":\"move_echo\", \"dest\":\""));
+              for (uint8_t i = 0; i < recv_count; i++) {
                 int8_t index = FindFlapIndex(recv_buffer[i]);
                 if (index != -1) {
                   modules[i].GoToFlapIndex(index);
                 }
                 Serial.write(recv_buffer[i]);
               }
-              Serial.print("'\n");
+              Serial.print(F("\"}\n"));
+              Serial.flush();
               break;
           default:
             if (recv_count > NUM_MODULES - 1) {
@@ -276,22 +273,55 @@ void loop() {
             break;
         }
       }
+
+      if (pending_no_op && all_stopped) {
+        Serial.print(F("{\"type\":\"no_op\"}\n"));
+        Serial.flush();
+        pending_no_op = false;
+      }
   
       if (!was_stopped && all_stopped) {
-        for (uint8_t i = 0; i < NUM_MODULES; i++) {
-          Serial.print(F("---\nStats "));
-          Serial.print(i);
-          Serial.print(F(":\nM: "));
-          Serial.print(modules[i].count_missed_home);
-          Serial.print(F("\nU: "));
-          Serial.print(modules[i].count_unexpected_home);
-          Serial.print('\n');
-        }
-        Serial.print(F("##########\n"));
+        dump_status();
       }
-      Serial.flush();
     }
     was_idle = all_idle;
     was_stopped = all_stopped;
   }
 }
+
+void dump_status() {
+  Serial.print(F("{\"type\":\"status\", \"modules\":["));
+  for (uint8_t i = 0; i < NUM_MODULES; i++) {
+    Serial.print(F("{\"state\":\""));
+    switch (modules[i].state) {
+      case NORMAL:
+        Serial.print(F("normal"));
+        break;
+#if HOME_CALIBRATION_ENABLED
+      case LOOK_FOR_HOME:
+        Serial.print(F("look_for_home"));
+        break;
+      case SENSOR_ERROR:
+        Serial.print(F("sensor_error"));
+        break;
+#endif
+      case PANIC:
+        Serial.print(F("panic"));
+        break;
+    }
+    Serial.print(F("\", \"flap\":\""));
+    Serial.write(flaps[modules[i].GetCurrentFlapIndex()]);
+    Serial.print(F("\", \"count_missed_home\":"));
+    Serial.print(modules[i].count_missed_home);
+    Serial.print(F(", \"count_unexpected_home\":"));
+    Serial.print(modules[i].count_unexpected_home);
+    Serial.print(F("}"));
+    if (i < NUM_MODULES - 1) {
+      Serial.print(F(", "));
+    }
+  }
+  Serial.print(F("]}\n"));
+  Serial.flush();
+}
+
+

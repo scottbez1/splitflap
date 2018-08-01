@@ -23,8 +23,8 @@ This design is currently at a *prototype* stage. The source files provided here 
 | --- | --- | --- |
 | Enclosure/Mechanics | *Release Candidate* | Need documentation on ordering. |
 | Electronics | *Release Candidate* | Need documentation on ordering and assembly. |
-| Firmware | *Beta* | Works, but could use a better serial protocol for control/feedback. |
-| Control Software | *none* | No work started; currently manual control using Arduino Serial Monitor |
+| Firmware | *Release Candidate* | Works. |
+| Control Software | *Beta* | Example python code for driving the display is in the [software](https://github.com/scottbez1/splitflap/tree/master/electronics) directory|
 
 I'd love to hear your thoughts and questions about this project, and happy to incorporate any feedback you might have into these designs! Please feel free (and encouraged) to [open GitHub issues](https://github.com/scottbez1/splitflap/issues/new), email me directly, reach out [on Twitter](https://twitter.com/scottbez1), and [get involved](https://github.com/scottbez1/splitflap/pulls) in the open source development and let's keep chatting and building together!
 
@@ -161,7 +161,49 @@ The driver firmware is written using Arduino and is available at `arduino/splitf
 The firmware currently runs a basic closed-loop controller that accepts letters over USB serial and drives the stepper motors using a precomputed acceleration ramp for smooth control. The firmware automatically calibrates the spool position at startup, using the IR reflectance sensor, and will automatically recalibrate itself if it ever detects that the spool position has gotten out of sync. If a commanded rotation is expected to bring the spool past the "home" position, it will confirm that the sensor is triggered neither too early nor too late; otherwise it will search for the "home" position to get in sync before continuing to the desired letter.
 
 ### Computer Control Software ###
-There is currently no example computer software demonstrating how to communicate with the driver firmware over USB. This is planned for the future, but the protocol is currently undocumented and likely to change as the firmware continues to be developed. In the meantime, the best "documentation" of the protocol is the [firmware source code](https://github.com/scottbez1/splitflap/blob/master/arduino/splitflap/splitflap.ino) itself.
+The display can be controlled by a computer connected to the Arduino over USB serial. A basic python library for interfacing with the Arduino and a demo application that displays random words can be found in the [software](https://github.com/scottbez1/splitflap/tree/master/software) directory.
+
+Commands to the display are sent in a basic plain-text format, and messages _from_ the display are single-line JSON objects, always with a `type` entry describing which type of message it is.
+
+When the Arduino starts up, it sends an initialization message that looks like:
+```
+{"type":"init", "num_modules":4}
+```
+
+The display will automatically calibrate all modules, and when complete it will send a status update message:
+```
+{
+    "type":"status",
+    "modules":[
+        {"state":"normal", "flap":" ", "count_missed_home":0, "count_unexpected_home":0},
+        {"state":"sensor_error", "flap":"e", "count_missed_home":0, "count_unexpected_home":0},
+        {"state":"sensor_error", "flap":"e", "count_missed_home":0, "count_unexpected_home":0},
+        {"state":"sensor_error", "flap":"e", "count_missed_home":0, "count_unexpected_home":0}
+    ]
+}
+```
+(Note: this is sent as a single line, but has been reformatted for readability above)
+
+In this case the Arduino was programmed to support 4 modules, but only 1 module is connected, so the other 3 end up in `"sensor_error"` state. More on status updates below.
+
+At this point you can command the display to show some letters. To do this, send a message to the Arduino that looks like this:
+```
+=hiya\n
+```
+The `=` indicates a movement command, followed by any number of letters, followed by a newline. You don't have to send the exact number of modules - if you send fewer letters than modules, only the first N modules will be updated and the remainder won't move. For instance, you could send `=a\n` as shorthand to only set the first module (even if there are 12 modules connected). Any letters that can't be displayed are considered a no-op for that module.
+
+Whenever ALL modules come to a stop, the Arduino will send a status update message (just like the one following initialization, shown above). Here's what the fields mean in each module's status entry:
+- **state** - `normal` indicates it's working as intended, `sensor_error` indicates the module can't find the home position and has given up trying (it will no longer respond to movement commands until told to recalibrate - see below). `panic` indicates the firmware detected a programming bug and has gone into failsafe mode (it will no longer respond to movement commands and requires a full reset of the Arduino to recover - should never happen).
+- **flap** - which letter is shown by this module
+- **count\_missed\_home** - number of times the module expected to pass the home position but failed to detect it. If this is non-zero, it indicates either a flaky sensor or that the motor may have jammed up. The module automatically attempts to recalibrate whenever it misses the home position, so if this number is non-zero and the module is still in the `normal` state, it means the module successfully recovered from the issue(s). However, if this number keeps going up over continued use, it may indicate a recurrent transient issue that warrants investigation.
+- **count\_unexpected\_home** - number of times the module detected the home position when it wasn't supposed to. This is rare, but would indicate a flaky/broken sensor that is tripping at the wrong time. Just like with missed home errors, unexpected home errors will cause the module to attempt to recalibrate itself.
+
+If you want to make all modules recalibrate their home position, send a single @ symbol (no newline follows):
+```
+@
+```
+This recalibrates all modules, including any that were in the `sensor_error` state; if recalibration succeeds they will return to the `normal` state and start responding to movement commands again.
+
 
 ## License ##
 I'd love to hear your thoughts and questions about this project, and happy to incorporate any feedback you might have into these designs! Please feel free (and encouraged) to [open GitHub issues](https://github.com/scottbez1/splitflap/issues/new), email me directly, reach out [on Twitter](https://twitter.com/scottbez1), and [get involved](https://github.com/scottbez1/splitflap/pulls) in the open source development and let's keep chatting and building together!
