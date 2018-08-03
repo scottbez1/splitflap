@@ -7,4 +7,5 @@
   (lib (name ArduinoUnoShield)(type KiCad)(uri "$(KIPRJMOD)/lib/ArduinoUnoShield.pretty")(options "")(descr ""))
   (lib (name Resistor0805ThroughHole)(type KiCad)(uri "$(KIPRJMOD)/lib/Resistor0805ThroughHole.pretty")(options "")(descr ""))
   (lib (name LED3mmBetterSilkScreen)(type KiCad)(uri "$(KIPRJMOD)/lib/LED3mmBetterSilkScreen.pretty")(options "")(descr ""))
+  (lib (name ah1815)(type KiCad)(uri "$(KIPRJMOD)/lib/ah1815.pretty")(options "")(descr ""))
 )
