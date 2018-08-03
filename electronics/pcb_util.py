@@ -38,8 +38,9 @@ _LAYER_NAME = {
     pcbnew.F_Mask: 'F.Mask',
     pcbnew.B_Mask: 'B.Mask',
     pcbnew.Edge_Cuts: 'Edge.Cuts',
-    #TODO: add the rest
+    # TODO: add the rest
 }
+
 
 @contextmanager
 def versioned_board(filename):
@@ -53,18 +54,21 @@ def versioned_board(filename):
         board = pcbnew.LoadBoard(temp_pcb.name)
         yield board
 
+
 def get_layer_name(kicad_layer_id):
     if kicad_layer_id in _LAYER_NAME:
         return _LAYER_NAME[kicad_layer_id]
     else:
         return 'Unknown(%r)' % (kicad_layer_id,)
 
+
 @contextmanager
 def get_plotter(pcb_filename, build_directory):
     with versioned_board(pcb_filename) as board:
-        yield GerberPlotter(board, build_directory)
+        yield Plotter(board, build_directory)
 
-class GerberPlotter(object):
+
+class Plotter(object):
     def __init__(self, board, build_directory):
         self.board = board
         self.build_directory = build_directory
@@ -119,6 +123,7 @@ class GerberPlotter(object):
         )
         return drill_file_name, map_file_name
 
+
 def _get_versioned_contents(filename):
     with open(filename, 'rb') as pcb:
         original_contents = pcb.read()
@@ -126,6 +131,7 @@ def _get_versioned_contents(filename):
         return original_contents \
             .replace('COMMIT: deadbeef', 'COMMIT: ' + version_info['revision']) \
             .replace('DATE: YYYY-MM-DD', 'DATE: ' + version_info['date'])
+
 
 def get_version_info():
     git_rev = subprocess.check_output([
@@ -148,4 +154,3 @@ if __name__ == '__main__':
         logger.info('Loaded %s', board.GetFileName())
         for module in board.GetModules():
             logger.info('Module %s: %s', module.GetReference(), module.GetValue())
- 

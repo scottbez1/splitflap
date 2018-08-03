@@ -3,9 +3,9 @@
   (general
     (links 3)
     (no_connects 0)
-    (area 19.924999 19.924999 116.075001 68.075001)
+    (area 17.892999 15.098999 116.075001 68.075001)
     (thickness 1.6)
-    (drawings 10)
+    (drawings 8)
     (tracks 6)
     (zones 0)
     (modules 3)
@@ -212,6 +212,7 @@
       (net 3 "Net-(P1-Pad1)"))
   )
 
+  (gr_line (start 20 20) (end 116 20) (angle 90) (layer Edge.Cuts) (width 0.15))
   (gr_text AH1815 (at 31.938 26.35) (layer F.SilkS)
     (effects (font (size 1.2 1.2) (thickness 0.24)))
   )
@@ -226,10 +227,7 @@
   )
   (gr_line (start 36.256 15.174) (end 36.256 54.544) (angle 90) (layer Edge.Cuts) (width 0.15))
   (gr_line (start 17.968 36.256) (end 73.848 36.256) (angle 90) (layer Edge.Cuts) (width 0.15))
-  (gr_line (start 116 20) (end 116 68) (angle 90) (layer Edge.Cuts) (width 0.15))
   (gr_line (start 20 68) (end 20 20) (angle 90) (layer Edge.Cuts) (width 0.15))
-  (gr_line (start 116 68) (end 20 68) (angle 90) (layer Edge.Cuts) (width 0.15))
-  (gr_line (start 20 20) (end 116 20) (angle 90) (layer Edge.Cuts) (width 0.15))
 
   (segment (start 32.7 23.302) (end 32.7 28.636) (width 0.25) (layer F.Cu) (net 1))
   (segment (start 32.7 28.636) (end 28.128 33.208) (width 0.25) (layer F.Cu) (net 1))

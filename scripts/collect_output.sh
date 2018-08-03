@@ -12,7 +12,7 @@ cp 3d/build/laser_parts/raster.png deploy/3d_laser_raster.png
 
 cp -r 3d/build/colored_stl deploy/3d_colored_stl
 
-cp electronics/build/merged.png deploy/pcb_raster.png
+cp electronics/build/splitflap_merged.png deploy/pcb_raster.png
 ./scripts/annotate_image.sh deploy/pcb_raster.png
 
 cp electronics/build/splitflap_packet.pdf deploy/pcb_packet.pdf

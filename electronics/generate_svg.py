@@ -12,7 +12,7 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
-
+import argparse
 import logging
 import os
 import pcbnew
@@ -26,24 +26,27 @@ from svg_processor import SvgProcessor
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-PCB_FILENAME = 'splitflap.kicad_pcb'
-
 # Have to use absolute path for build_directory otherwise pcbnew will output relative to the temp file
 BUILD_DIRECTORY = os.path.abspath('build')
+
 
 def color_with_alpha(base_color, alpha):
     return (base_color & ~(0xFF << 24)) | ((alpha & 0xFF) << 24)
 
-def run():
+
+def run(pcb_file):
     temp_dir = os.path.join(BUILD_DIRECTORY, 'temp_layers')
     shutil.rmtree(temp_dir, ignore_errors=True)
     try:
         os.makedirs(temp_dir)
-        plot_to_directory(BUILD_DIRECTORY, temp_dir)
+        plot_to_directory(pcb_file, BUILD_DIRECTORY, temp_dir)
     finally:
         shutil.rmtree(temp_dir, ignore_errors=True)
 
-def plot_to_directory(output_directory, temp_dir):
+
+def plot_to_directory(pcb_file, output_directory, temp_dir):
+    board_name = os.path.splitext(os.path.basename(pcb_file))[0]
+
     layers = [
         {
             'layer': pcbnew.B_SilkS,
@@ -66,13 +69,14 @@ def plot_to_directory(output_directory, temp_dir):
             'alpha': 0.8,
         },
     ]
-    with pcb_util.get_plotter(PCB_FILENAME, temp_dir) as plotter:
+    with pcb_util.get_plotter(pcb_file, temp_dir) as plotter:
         plotter.plot_options.SetExcludeEdgeLayer(False)
         processed_svg_files = []
         for i, layer in enumerate(layers):
             output_filename = plotter.plot(layer['layer'], pcbnew.PLOT_FORMAT_SVG)
             logger.info('Post-processing %s...', output_filename)
             processor = SvgProcessor(output_filename)
+
             def colorize(original):
                 if original.lower() == '#000000':
                     return layer['color']
@@ -87,7 +91,7 @@ def plot_to_directory(output_directory, temp_dir):
             processed_svg_files.append((output_filename2, processor))
 
         logger.info('Merging layers...')
-        final_svg = os.path.join(output_directory, 'merged.svg')
+        final_svg = os.path.join(output_directory, '%s_merged.svg' % board_name)
 
         shutil.copyfile(processed_svg_files[0][0], final_svg)
         output_processor = SvgProcessor(final_svg)
@@ -97,7 +101,7 @@ def plot_to_directory(output_directory, temp_dir):
 
         logger.info('Rasterizing...')
         raster_width = 1280
-        final_png = os.path.join(output_directory, 'merged.png')
+        final_png = os.path.join(output_directory, '%s_merged.png' % board_name)
         subprocess.check_call([
             'inkscape',
             '--export-area-drawing',
@@ -108,4 +112,7 @@ def plot_to_directory(output_directory, temp_dir):
         ])
 
 if __name__ == '__main__':
-    run()
+    parser = argparse.ArgumentParser('Generate an SVG rendering of the PCB')
+    parser.add_argument('pcb_file')
+    args = parser.parse_args()
+    run(args.pcb_file)
