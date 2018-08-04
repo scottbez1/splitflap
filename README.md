@@ -1,10 +1,10 @@
 # DIY Split-Flap Display
 
 This is a work in progress DIY [split-flap display](https://en.wikipedia.org/wiki/Split-flap_display).
-Prototype three-character display: [video](https://www.youtube.com/watch?v=bslkflVv-Hw).
+Prototype four-character display: [video](https://www.youtube.com/watch?v=vq4o_88kN8g).
 
 ![animated rendering](https://s3.amazonaws.com/splitflap-travis/branches/master/3d_animation.gif)
-[![prototype video](renders/prototypeVideoThumbnail.jpg)](https://www.youtube.com/watch?v=bslkflVv-Hw)
+[![prototype video](renders/prototypeVideoThumbnail.jpg)](https://www.youtube.com/watch?v=vq4o_88kN8g)
 
 [![Build Status](https://travis-ci.org/scottbez1/splitflap.svg?branch=master)](https://travis-ci.org/scottbez1/splitflap)
 
@@ -15,6 +15,9 @@ The goal is to make a low-cost display that's easy to fabricate at home in small
 The 3d model is built using OpenSCAD in `3d/splitflap.scad`, the driver board is designed in KiCad in `electronics/splitflap.pro`, and the driver firmware is written using Arduino in `arduino/splitflap/splitflap.ino`.
 
 You can view an interactive 3d model of the design on the [project website](https://scottbez1.github.io/splitflap/).
+
+Want to help support prototyping and development?
+<a href="https://www.buymeacoffee.com/scottbez1" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" height="22" ></a>
 
 ### Current Status ###
 This design is currently at a *prototype* stage. The source files provided here were able to produce multiple working prototypes, but may still have some minor issues and/or incomplete documentation.
@@ -210,7 +213,7 @@ I'd love to hear your thoughts and questions about this project, and happy to in
 
 The vast majority of this project is licensed under Apache v2 (see [LICENSE.txt](LICENSE.txt) for full details).
 
-    Copyright 2015-2016 Scott Bezek and the splitflap contributors
+    Copyright 2015-2018 Scott Bezek and the splitflap contributors
     
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
