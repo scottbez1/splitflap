@@ -23,3 +23,14 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
+----
+
+panelize.py - Copyright (c) 2016, Martin Furter <mf@borg.ch>
+
+ANY-LICENSE:
+You can use this software under any license approved by the
+Open Source Initiative as long as the license you choose is
+compatible to the dependencies of Tin's Kicad Tools.
+
+See http://www.opensource.org/licenses/ for a list of
+approved licenses.

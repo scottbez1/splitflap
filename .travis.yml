@@ -13,6 +13,7 @@ script:
 - (cd electronics && python -u generate_svg.py splitflap.kicad_pcb)
 - (cd electronics && python -u generate_pdf.py splitflap.kicad_pcb)
 - (cd electronics && python -u generate_gerber.py splitflap.kicad_pcb)
+- (cd electronics && python -u generate_panelize_config.py && python3 -u ../thirdparty/panelize.py build/panelized_sensor_config.txt && python -u generate_svg.py build/panelized_sensor.kicad_pcb && python -u generate_pdf.py build/panelized_sensor.kicad_pcb && python -u generate_gerber.py build/panelized_sensor.kicad_pcb)
 - python -u electronics/scripts/export_schematic.py
 - python -u electronics/scripts/export_bom.py
 - ./scripts/collect_output.sh

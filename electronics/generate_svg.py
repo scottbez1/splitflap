@@ -68,9 +68,19 @@ def plot_to_directory(pcb_file, output_directory, temp_dir):
             'color': '#00CCCC',
             'alpha': 0.8,
         },
+        {
+            'layer': pcbnew.Cmts_User,
+            'color': '#333333',
+            'alpha': 0.8,
+        },
+        {
+            'layer': pcbnew.Edge_Cuts,
+            'color': '#3333CC',
+            'alpha': 0.8,
+        },
     ]
     with pcb_util.get_plotter(pcb_file, temp_dir) as plotter:
-        plotter.plot_options.SetExcludeEdgeLayer(False)
+        plotter.plot_options.SetExcludeEdgeLayer(True)
         processed_svg_files = []
         for i, layer in enumerate(layers):
             output_filename = plotter.plot(layer['layer'], pcbnew.PLOT_FORMAT_SVG)

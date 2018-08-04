@@ -38,6 +38,7 @@ _LAYER_NAME = {
     pcbnew.F_Mask: 'F.Mask',
     pcbnew.B_Mask: 'B.Mask',
     pcbnew.Edge_Cuts: 'Edge.Cuts',
+    pcbnew.Cmts_User: 'Cmts.User',
     # TODO: add the rest
 }
 

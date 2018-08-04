@@ -21,3 +21,8 @@ cp electronics/build/splitflap.pdf deploy/schematic.pdf
 cp electronics/build/schematic.png deploy/schematic.png
 cp electronics/build/bom.csv deploy/bom.csv
 
+cp electronics/build/panelized_sensor_merged.png deploy/sensor_pcb_raster.png
+./scripts/annotate_image.sh deploy/sensor_pcb_raster.png
+cp electronics/build/panelized_sensor_packet.pdf deploy/sensor_pcb_packet.pdf
+cp electronics/build/panelized_sensor_gerber.zip deploy/sensor_pcb_gerber.zip
+
