@@ -136,6 +136,7 @@ There are optional WS2812B RGB LEDs which can be used to indicate the status of 
 </a>
 
 The PCB layout is 10cm x 5cm which makes it fairly cheap to produce using a low-cost PCB manufacturer (e.g. Seeed Studio).
+
 <a href="https://s3.amazonaws.com/splitflap-travis/branches/hall_effect/pcb_raster.png">
 <img width="640" src="https://s3.amazonaws.com/splitflap-travis/branches/hall_effect/pcb_raster.png"/>
 </a>
@@ -153,7 +154,7 @@ and is optimized for production at SeeedStudio.
 These are automatically updated on every commit with the latest rendering from the `hall_effect` branch.
 See this blog post for more details on how that works: [Automated KiCad, OpenSCAD rendering using Travis CI](http://scottbezek.blogspot.com/2016/04/automated-kicad-openscad-rendering.html).
 
-For Stable PCB designs, make sure to check out the [Releases]() instead of using these
+For Stable PCB designs, make sure to check out the [Releases](https://github.com/scottbez1/splitflap/releases) instead of using these experimental files.
 
 Latest (experimental!) Controller PCB Gerbers: [zip](https://s3.amazonaws.com/splitflap-travis/branches/hall_effect/pcb_gerber.zip)
 
