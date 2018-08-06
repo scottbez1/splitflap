@@ -1,5 +1,5 @@
 /*
-   Copyright 2015-2016 Scott Bezek and the splitflap contributors
+   Copyright 2015-2018 Scott Bezek and the splitflap contributors
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -24,13 +24,15 @@ use<rough7380.scad>;
 use<spool.scad>;
 
 include<flap_dimensions.scad>;
+include<m4_dimensions.scad>;
+include<pcb.scad>;
 
 // ##### RENDERING OPTIONS #####
 
 render_3d = true;
 
 // 3d parameters:
-render_enclosure = 2; // 0=invisible; 1=translucent; 2=opaque color;
+render_enclosure = 1; // 0=invisible; 1=translucent; 2=opaque color;
 render_flaps = 2; // 0=invisible; 1=front flap only; 2=all flaps
 render_flap_area = 0; // 0=invisible; 1=collapsed flap exclusion; 2=collapsed+extended flap exclusion
 render_letters = "44";
@@ -74,22 +76,9 @@ thickness = 3.2;
 
 eps=.01;
 
-// M4 bolts
-m4_hole_diameter = 4.5;
-m4_bolt_length = 12;
-m4_button_head_diameter = 7.6 + .2;
-m4_button_head_length = 2.2 + .2;
-m4_nut_width_flats = 7 + .2;
-m4_nut_width_corners = 7/cos(180/6);
-m4_nut_width_corners_padded = m4_nut_width_corners + .2;
-m4_nut_length = 3.2;
-m4_nut_length_padded = m4_nut_length + .2;
-
 captive_nut_inset=6;
 
-
 assembly_inner_radius = m4_hole_diameter/2;
-
 
 assembly_color = [.76, .60, .42];
 assembly_color1 = [.882, .694, .486]; //"e1b17c";
@@ -141,29 +130,14 @@ spool_strut_inner_length = spool_width - 3 * thickness;
 spool_strut_exclusion_radius = sqrt((spool_strut_tab_outset+thickness/2)*(spool_strut_tab_outset+thickness/2) + (spool_strut_tab_width/2)*(spool_strut_tab_width/2));
 
 
-ir_reflectance_hole_radius = 2.5;
-
-
-// PCB parameters
-pcb_offset_radius = spool_strut_exclusion_radius + ir_reflectance_hole_radius + 1;
-pcb_height = 48;
-pcb_length = 48;
-pcb_thickness = 1.6;
-pcb_mount_inset_vertical = 4;
-pcb_mount_inset_horizontal = 8;
-pcb_mount_slot_delta = 4;
-pcb_mount_hole_radius = m4_hole_diameter/2;
-pcb_reference_horizontal = -pcb_length - pcb_offset_radius;
-pcb_reference_vertical = -4;
-pcb_sensor_horizontal_inset = 1.8; // how far in the sensor is from the edge of the PCB
-pcb_connector_height = 3.2;
-
-ir_reflectance_hole_offset = pcb_offset_radius + pcb_sensor_horizontal_inset;
-
+magnet_hole_radius = (4 - 0.1)/2;
+magnet_hole_offset = (spool_strut_exclusion_radius + flap_pitch_radius)/2;
 
 28byj48_bracket_thickness = 0.8;
 28byj48_chassis_height = 19;
 28byj48_chassis_height_slop = 1;
+
+// XXX REMOVE PCB DIMENSIONS
 
 // Width measured from the outside of the walls
 enclosure_wall_to_wall_width = thickness + spool_width_slop/2 + spool_width + spool_width_slop/2 + max(28byj48_bracket_thickness + m4_button_head_length, pcb_thickness + pcb_connector_height, pcb_thickness + m4_button_head_length) + thickness;
@@ -186,7 +160,7 @@ enclosure_height = enclosure_height_upper + enclosure_height_lower;
 
 enclosure_horizontal_rear_margin = thickness; // minumum distance between the farthest feature and the rear
 
-enclosure_length = front_forward_offset + pcb_reference_vertical + pcb_height - pcb_mount_inset_vertical + pcb_mount_slot_delta + pcb_mount_hole_radius + enclosure_horizontal_rear_margin;
+enclosure_length = front_forward_offset + 20; // XXX pcb_reference_vertical + pcb_height - pcb_mount_inset_vertical + pcb_mount_slot_delta + pcb_mount_hole_radius + enclosure_horizontal_rear_margin;
 
 
 motor_mount_separation = 35; // 28byj-48 mount hole separation
@@ -334,7 +308,7 @@ module spool_struts() {
 }
 
 
-module flap_spool_complete(captive_nut=false, motor_shaft=false, ir_detector_hole=false) {
+module flap_spool_complete(captive_nut=false, motor_shaft=false, magnet_hole=false) {
     linear_extrude(thickness) {
         difference() {
             flap_spool(num_flaps, flap_hole_radius, flap_gap, flap_spool_outset,
@@ -349,10 +323,10 @@ module flap_spool_complete(captive_nut=false, motor_shaft=false, ir_detector_hol
                     motor_shaft();
                 }
             }
-            if (ir_detector_hole) {
-                // Hole for IR reflectance sensor to detect
-                translate([ir_reflectance_hole_offset, 0]) {
-                    circle(r=ir_reflectance_hole_radius, $fn=15);
+            if (magnet_hole) {
+                // Hole for press fit magnet
+                translate([magnet_hole_offset, 0]) {
+                    circle(r=magnet_hole_radius, $fn=15);
                 }
             }
         }
@@ -580,6 +554,8 @@ module enclosure_left() {
 
 
             // PCB mounting holes
+            // XXX
+            /*
             translate([enclosure_height_lower, enclosure_length - front_forward_offset]) {
                 rotate([0, 0, -90]) {
                     translate([pcb_reference_vertical, pcb_reference_horizontal]) {
@@ -587,6 +563,7 @@ module enclosure_left() {
                     }
                 }
             }
+            */
         }
     }
 }
@@ -770,7 +747,8 @@ module enclosure_bottom_etch() {
         }
     }
 }
-
+/*
+XXX
 module pcb_mounting_holes(slots=false) {
     module pcb_mounting_hole() {
         if (slots) {
@@ -793,7 +771,10 @@ module pcb_mounting_holes(slots=false) {
         pcb_mounting_hole();
     }
 }
+*/
 
+/*
+XXX
 module pcb() {
     color([0, 0.5, 0]) {
         linear_extrude(height=pcb_thickness) {
@@ -821,6 +802,7 @@ module pcb() {
         }
     }
 }
+*/
 
 module split_flap_3d(letter, include_connector) {
     module positioned_front() {
@@ -908,10 +890,15 @@ module split_flap_3d(letter, include_connector) {
 
     positioned_enclosure();
     if (render_pcb) {
-        rotate([90, 0, 0])
-        translate([enclosure_wall_to_wall_width - thickness, pcb_reference_horizontal, pcb_reference_vertical])
-            rotate([0, -90, 0])
-                pcb();
+        translate([enclosure_wall_to_wall_width, 0, -magnet_hole_offset]) {
+            rotate([0, 90, 0]) {
+                rotate([0, 0, 90]) {
+                    translate([-pcb_hole_to_sensor_x, -pcb_hole_to_sensor_y]) {
+                        pcb();
+                    }
+                }
+            }
+        }
     }
 
     module letter_top_half() {
@@ -1005,7 +992,7 @@ module split_flap_3d(letter, include_connector) {
         color(assembly_color) {
             translate([spool_width - thickness + 5*spool_horizontal_explosion, 0, 0]) {
                 rotate([0, 90, 0]) {
-                    flap_spool_complete(motor_shaft=true, ir_detector_hole=true);
+                    flap_spool_complete(motor_shaft=true, magnet_hole=true);
                 }
             }
         }
@@ -1121,7 +1108,7 @@ if (render_3d) {
         flap_spool_y_off = enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width - front_window_right_inset - enclosure_horizontal_inset - front_window_width/2;
         flap_spool_x_off = spool_outer_radius + enclosure_height_lower - front_window_lower + kerf_width + 2;
         translate([flap_spool_x_off, flap_spool_y_off])
-            flap_spool_complete(motor_shaft=true, ir_detector_hole=true);
+            flap_spool_complete(motor_shaft=true, magnet_hole=true);
         translate([flap_spool_x_off + spool_outer_radius*2 + 2, flap_spool_y_off])
             flap_spool_complete(captive_nut=true);
 
