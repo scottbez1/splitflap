@@ -32,7 +32,7 @@ include<pcb.scad>;
 render_3d = true;
 
 // 3d parameters:
-render_enclosure = 1; // 0=invisible; 1=translucent; 2=opaque color;
+render_enclosure = 2; // 0=invisible; 1=translucent; 2=opaque color;
 render_flaps = 2; // 0=invisible; 1=front flap only; 2=all flaps
 render_flap_area = 0; // 0=invisible; 1=collapsed flap exclusion; 2=collapsed+extended flap exclusion
 render_letters = "44";
@@ -160,7 +160,7 @@ enclosure_height = enclosure_height_upper + enclosure_height_lower;
 
 enclosure_horizontal_rear_margin = thickness; // minumum distance between the farthest feature and the rear
 
-enclosure_length = front_forward_offset + 20; // XXX pcb_reference_vertical + pcb_height - pcb_mount_inset_vertical + pcb_mount_slot_delta + pcb_mount_hole_radius + enclosure_horizontal_rear_margin;
+enclosure_length = front_forward_offset + 40; // XXX pcb_reference_vertical + pcb_height - pcb_mount_inset_vertical + pcb_mount_slot_delta + pcb_mount_hole_radius + enclosure_horizontal_rear_margin;
 
 
 motor_mount_separation = 35; // 28byj-48 mount hole separation
@@ -554,16 +554,13 @@ module enclosure_left() {
 
 
             // PCB mounting holes
-            // XXX
-            /*
-            translate([enclosure_height_lower, enclosure_length - front_forward_offset]) {
-                rotate([0, 0, -90]) {
-                    translate([pcb_reference_vertical, pcb_reference_horizontal]) {
-                        pcb_mounting_holes(slots = true);
+            translate([enclosure_height_lower - magnet_hole_offset - pcb_hole_to_sensor_y, enclosure_length - front_forward_offset - pcb_hole_to_sensor_x]) {
+                rotate([180, 0, 0]) {
+                    rotate([0, 0, -90]) {
+                        pcb_cutouts();
                     }
                 }
             }
-            */
         }
     }
 }
@@ -747,62 +744,6 @@ module enclosure_bottom_etch() {
         }
     }
 }
-/*
-XXX
-module pcb_mounting_holes(slots=false) {
-    module pcb_mounting_hole() {
-        if (slots) {
-            hull() {
-                translate([-pcb_mount_slot_delta, 0]) {
-                    circle(r=pcb_mount_hole_radius, $fn=15);
-                }
-                translate([pcb_mount_slot_delta, 0]) {
-                    circle(r=pcb_mount_hole_radius, $fn=15);
-                }
-            }
-        } else {
-            circle(r=pcb_mount_hole_radius, $fn=15);
-        }
-    }
-    translate([pcb_mount_inset_vertical, pcb_mount_inset_horizontal]) {
-        pcb_mounting_hole();
-    }
-    translate([pcb_height - pcb_mount_inset_vertical, pcb_mount_inset_horizontal]) {
-        pcb_mounting_hole();
-    }
-}
-*/
-
-/*
-XXX
-module pcb() {
-    color([0, 0.5, 0]) {
-        linear_extrude(height=pcb_thickness) {
-            difference() {
-                square([pcb_height, pcb_length]);
-                pcb_mounting_holes(slots=false);
-            }
-        }
-    }
-    translate([10, 20, pcb_thickness]) {
-        color([0, 0, 0]) {
-            cube([16, 8, pcb_connector_height]);
-        }
-    }
-    translate([0, 0, pcb_thickness]) {
-        translate([pcb_mount_inset_vertical, pcb_mount_inset_horizontal]) {
-            rotate([180, 0, 0]) {
-                standard_m4_bolt(nut_distance=thickness+pcb_thickness);
-            }
-        }
-        translate([pcb_height - pcb_mount_inset_vertical, pcb_mount_inset_horizontal]) {
-            rotate([180, 0, 0]) {
-                standard_m4_bolt(nut_distance=thickness+pcb_thickness);
-            }
-        }
-    }
-}
-*/
 
 module split_flap_3d(letter, include_connector) {
     module positioned_front() {
@@ -890,11 +831,12 @@ module split_flap_3d(letter, include_connector) {
 
     positioned_enclosure();
     if (render_pcb) {
-        translate([enclosure_wall_to_wall_width, 0, -magnet_hole_offset]) {
+        translate([enclosure_wall_to_wall_width, -pcb_hole_to_sensor_x, -magnet_hole_offset - pcb_hole_to_sensor_y]) {
             rotate([0, 90, 0]) {
                 rotate([0, 0, 90]) {
-                    translate([-pcb_hole_to_sensor_x, -pcb_hole_to_sensor_y]) {
-                        pcb();
+                    pcb();
+                    translate([0, 0, -thickness]) {
+                        standard_m4_bolt(nut_distance=thickness + pcb_thickness);
                     }
                 }
             }

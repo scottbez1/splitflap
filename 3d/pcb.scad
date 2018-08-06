@@ -94,6 +94,26 @@ module pcb() {
 
 // 2D cutouts needed to mount the PCB module, origin at the center of the mounting hole
 module pcb_cutouts() {
+    hull_slide() {
+        translate([-m4_hole_diameter/2, -m4_hole_diameter/2]) {
+            square([m4_hole_diameter/2 + pcb_hole_to_sensor_pin_1_x + sensor_pin_pitch, m4_hole_diameter]);
+        }
+        translate([pcb_hole_to_connector_pin_1_x - connector_pin_pitch, -pcb_hole_to_connector_pin_1_x]) {
+            square([connector_pin_pitch * 4, connector_pin_pitch], center=true);
+        }
+    }
+}
 
+module hull_slide() {
+    for (i = [0:$children - 1]) {
+        hull() {
+            translate([-pcb_adjustment_range, 0]) {
+                children(i);
+            }
+            translate([pcb_adjustment_range, 0]) {
+                children(i);
+            }
+        }
+    }
 }
 
