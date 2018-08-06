@@ -14,15 +14,14 @@
    limitations under the License.
 */
 
-use<28byj-48.scad>;
 use<assert.scad>;
 use<label.scad>;
 use<projection_renderer.scad>;
-use<publicDomainGearV1.1.scad>;
 use<roboto/RobotoCondensed-Regular.ttf>;
 use<rough7380.scad>;
 use<spool.scad>;
 
+include<28byj-48.scad>;
 include<flap_dimensions.scad>;
 include<m4_dimensions.scad>;
 include<pcb.scad>;
@@ -133,22 +132,17 @@ spool_strut_exclusion_radius = sqrt((spool_strut_tab_outset+thickness/2)*(spool_
 magnet_hole_radius = (4 - 0.1)/2;
 magnet_hole_offset = (spool_strut_exclusion_radius + flap_pitch_radius)/2;
 
-28byj48_bracket_thickness = 0.8;
-28byj48_chassis_height = 19;
 28byj48_chassis_height_slop = 1;
 
-motor_mount_separation = 35; // 28byj-48 mount hole separation
-motor_mount_shaft_offset = 8;
-motor_shaft_radius = 2.5;
 motor_shaft_under_radius = 0.1;
 motor_slop_radius = 3;
 
 
 // Width measured from the outside of the walls
-enclosure_wall_to_wall_width = thickness + spool_width_slop/2 + spool_width + spool_width_slop/2 + max(28byj48_bracket_thickness + m4_button_head_length, 4 + 28byj48_bracket_thickness - spool_width_slop/2) + thickness;
+enclosure_wall_to_wall_width = thickness + spool_width_slop/2 + spool_width + spool_width_slop/2 + max(28byj48_mount_bracket_height + m4_button_head_length, 4 + 28byj48_mount_bracket_height - spool_width_slop/2) + thickness;
 
 // Width of the front panel
-enclosure_width = enclosure_wall_to_wall_width + 28byj48_chassis_height + 28byj48_chassis_height_slop - thickness - 28byj48_bracket_thickness;
+enclosure_width = enclosure_wall_to_wall_width + 28byj48_chassis_height + 28byj48_chassis_height_slop - thickness - 28byj48_mount_bracket_height;
 enclosure_horizontal_inset = (enclosure_width - enclosure_wall_to_wall_width)/2;
 front_window_upper_base = (flap_height - flap_pin_width/2);
 front_window_overhang = 3;
@@ -165,7 +159,7 @@ enclosure_height = enclosure_height_upper + enclosure_height_lower;
 
 enclosure_horizontal_rear_margin = thickness; // minumum distance between the farthest feature and the rear
 
-enclosure_length = front_forward_offset + motor_mount_separation/2 + m4_hole_diameter/2 + enclosure_horizontal_rear_margin;
+enclosure_length = front_forward_offset + 28byj48_mount_center_offset + m4_hole_diameter/2 + enclosure_horizontal_rear_margin;
 
 
 // Enclosure connector tabs: front/back
@@ -183,9 +177,7 @@ backstop_bolt_vertical_offset = - (exclusion_radius + outer_exclusion_radius)/2;
 backstop_bolt_forward_range = 14;
 
 motor_mount_hole_radius = m4_hole_diameter/2;
-motor_chassis_width = 28;
-motor_shaft_offset = 8;
-motor_backpack_extent = 18 + 2; // Add 2mm to make sure there's room for the wires
+motor_backpack_extent = 28byj48_backpack_extent + 2; // Add 2mm to make sure there's room for the wires
 motor_hole_slop = 1;
 
 connector_bracket_thickness = 3;
@@ -223,14 +215,14 @@ echo(flap_notch=flap_notch);
 module standard_m4_bolt(nut_distance=-1) {
     if (render_bolts) {
         roughM4_7380(10);
-    }
-    if (nut_distance >= 0) {
-        color([0.70, 0.70, 0.72]) {
-            translate([0, 0, nut_distance]) {
-                linear_extrude(m4_nut_length) {
-                    difference() {
-                        circle(r=m4_nut_width_corners/2, $fn=6);
-                        circle(r=m4_hole_diameter/2, $fn=20);
+        if (nut_distance >= 0) {
+            color([0.70, 0.70, 0.72]) {
+                translate([0, 0, nut_distance]) {
+                    linear_extrude(m4_nut_length) {
+                        difference() {
+                            circle(r=m4_nut_width_corners/2, $fn=6);
+                            circle(r=m4_hole_diameter/2, $fn=20);
+                        }
                     }
                 }
             }
@@ -383,10 +375,10 @@ module translated_flap() {
 module motor_shaft() {
     union() {
         intersection() {
-            circle(r=motor_shaft_radius-motor_shaft_under_radius, $fn=50);
-            square([motor_shaft_radius*2, 3], center=true);
+            circle(r=28byj48_shaft_radius-motor_shaft_under_radius, $fn=50);
+            square([28byj48_shaft_radius*2, 3], center=true);
         }
-        square([motor_shaft_radius/3, motor_shaft_radius*4], center=true);
+        square([28byj48_shaft_radius/3, 28byj48_shaft_radius*4], center=true);
     }
 }
 
@@ -469,15 +461,15 @@ module enclosure_front() {
 
 // holes for 28byj-48 motor, centered around motor shaft
 module motor_mount() {
-    circle(r=motor_shaft_radius+motor_slop_radius, center=true, $fn=30);
-    translate([-motor_mount_separation/2, -8]) {
+    circle(r=28byj48_shaft_radius+motor_slop_radius, center=true, $fn=30);
+    translate([-28byj48_mount_center_offset, -8]) {
         circle(r=motor_mount_hole_radius, center=true, $fn=30);
     }
-    translate([motor_mount_separation/2, -8]) {
+    translate([28byj48_mount_center_offset, -8]) {
         circle(r=motor_mount_hole_radius, center=true, $fn=30);
     }
-    translate([-motor_chassis_width/2 - motor_hole_slop/2, -motor_shaft_offset - motor_backpack_extent - motor_hole_slop/2, 0]) {
-        square([motor_chassis_width + motor_hole_slop, motor_chassis_width/2 + motor_backpack_extent + motor_hole_slop]);
+    translate([-28byj48_chassis_radius - motor_hole_slop/2, -28byj48_shaft_offset - motor_backpack_extent - motor_hole_slop/2, 0]) {
+        square([28byj48_chassis_radius*2 + motor_hole_slop, 28byj48_chassis_radius + motor_backpack_extent + motor_hole_slop]);
     }
 }
 
@@ -566,7 +558,7 @@ module enclosure_left() {
 
 module shaft_centered_motor_hole() {
     margin = 5;
-    width = motor_mount_separation + 3.5*2 + margin*2;
+    width = 28byj48_mount_center_offset*2 + 3.5*2 + margin*2;
     length = 18 + 14 + margin*2;
 
     translate([-width/2, -(margin + 18 + 8)])
@@ -959,25 +951,25 @@ module split_flap_3d(letter, include_connector) {
     }
 
     if (render_motor) {
-        translate([enclosure_wall_to_wall_width - thickness - 28byj48_bracket_thickness, 0, 0]) {
+        translate([enclosure_wall_to_wall_width - thickness - 28byj48_mount_bracket_height, 0, 0]) {
 
             rotate([-90, 0, 0]) {
 
                 rotate([0, -90, 0]) {
                     Stepper28BYJ48();
                 }
-                translate([0, -motor_mount_shaft_offset, 0]) {
-                    translate([0, 0, -motor_mount_separation/2]) {
+                translate([0, -28byj48_shaft_offset, 0]) {
+                    translate([0, 0, -28byj48_mount_center_offset]) {
                         rotate([0, 90, 0]) {
                             rotate([0, 0, 90]) {
-                                standard_m4_bolt(nut_distance=thickness+28byj48_bracket_thickness);
+                                standard_m4_bolt(nut_distance=thickness+28byj48_mount_bracket_height);
                             }
                         }
                     }
-                    translate([0, 0, motor_mount_separation/2]) {
+                    translate([0, 0, 28byj48_mount_center_offset]) {
                         rotate([0, 90, 0]) {
                             rotate([0, 0, 90]) {
-                                standard_m4_bolt(nut_distance=thickness+28byj48_bracket_thickness);
+                                standard_m4_bolt(nut_distance=thickness+28byj48_mount_bracket_height);
                             }
                         }
                     }
@@ -1053,7 +1045,7 @@ if (render_3d) {
         translate([flap_spool_x_off + spool_outer_radius*2 + 2, flap_spool_y_off])
             flap_spool_complete(captive_nut=true);
 
-        translate([enclosure_height_lower + motor_shaft_offset, enclosure_length - front_forward_offset])
+        translate([enclosure_height_lower + 28byj48_shaft_offset, enclosure_length - front_forward_offset])
             spool_retaining_wall(m4_bolt_hole=true);
     }
 }
