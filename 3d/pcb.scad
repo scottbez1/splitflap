@@ -29,7 +29,7 @@ pcb_length = 16.256;
 pcb_hole_to_sensor_pin_1_x = 8.636;
 pcb_hole_to_sensor_pin_1_y = 1.27;
 sensor_pin_pitch = 1.27;
-sensor_pin_length = 8; // XXX FIXME
+sensor_pin_length = 8;
 pcb_hole_to_connector_pin_1_x = 8.636;
 pcb_hole_to_connector_pin_1_y = 8.636;
 connector_pin_pitch = 2.54;
@@ -49,6 +49,11 @@ pcb_hole_to_sensor_y = pcb_hole_to_sensor_pin_1_y + AH1815_sensor_offset_y;
 pcb_connector_height = 3.2;
 pcb_connector_width = 8.2;
 pcb_connector_length = 18;
+pcb_connector_pin_width = 0.64;
+pcb_connector_pin_slop = 0.1;
+pcb_connector_pin_tail_length = 3.05 + 2.5/2;
+
+pcb_sensor_pin_width = 0.43;
 
 
 // 3D PCB module, origin at the center of the mounting hole on the bottom surface of the PCB
@@ -71,15 +76,30 @@ module pcb() {
         }
     }
 
+    // Connector pins
+    color([0.5, 0.5, 0.5]) {
+        translate([pcb_hole_to_connector_pin_1_x - pcb_connector_pin_width/2, -pcb_hole_to_connector_pin_1_y - pcb_connector_pin_width/2, -pcb_connector_pin_tail_length + pcb_thickness + 2.5/2]) {
+            cube([pcb_connector_pin_width, pcb_connector_pin_width, pcb_connector_pin_tail_length]);
+            translate([-connector_pin_pitch, 0, 0]) {
+                cube([pcb_connector_pin_width, pcb_connector_pin_width, pcb_connector_pin_tail_length]);
+            }
+            translate([-connector_pin_pitch * 2, 0, 0]) {
+                cube([pcb_connector_pin_width, pcb_connector_pin_width, pcb_connector_pin_tail_length]);
+            }
+        }
+    }
+
+
+
     // Sensor pins
     color([0.5, 0.5, 0.5]) {
-        translate([pcb_hole_to_sensor_pin_1_x - sensor_pin_pitch/4, pcb_hole_to_sensor_pin_1_y - sensor_pin_pitch/4, -sensor_pin_length + pcb_thickness + 0.1]) {
-            cube([sensor_pin_pitch / 2, sensor_pin_pitch / 2, sensor_pin_length]);
+        translate([pcb_hole_to_sensor_pin_1_x - pcb_sensor_pin_width/2, pcb_hole_to_sensor_pin_1_y - pcb_sensor_pin_width/2, -sensor_pin_length + pcb_thickness + 0.1]) {
+            cube([pcb_sensor_pin_width, pcb_sensor_pin_width, sensor_pin_length]);
             translate([-sensor_pin_pitch, 0, 0]) {
-                cube([sensor_pin_pitch / 2, sensor_pin_pitch / 2, sensor_pin_length]);
+                cube([pcb_sensor_pin_width, pcb_sensor_pin_width, sensor_pin_length]);
             }
             translate([-sensor_pin_pitch * 2, 0, 0]) {
-                cube([sensor_pin_pitch / 2, sensor_pin_pitch / 2, sensor_pin_length]);
+                cube([pcb_sensor_pin_width, pcb_sensor_pin_width, sensor_pin_length]);
             }
         }
     }
@@ -99,7 +119,7 @@ module pcb_cutouts() {
             square([m4_hole_diameter/2 + pcb_hole_to_sensor_pin_1_x + sensor_pin_pitch, m4_hole_diameter]);
         }
         translate([pcb_hole_to_connector_pin_1_x - connector_pin_pitch, -pcb_hole_to_connector_pin_1_x]) {
-            square([connector_pin_pitch * 4, connector_pin_pitch], center=true);
+            square([connector_pin_pitch * 4, pcb_connector_pin_width + pcb_connector_pin_slop], center=true);
         }
     }
 }

@@ -94,7 +94,7 @@ letter_height = flap_height * 0.75 * 2;
 flap_width_slop = 0.1;
 
 // Amount of slop for the spool assembly side-to-side inside the enclosure
-spool_width_slop = 0.5;
+spool_width_slop = 1;
 
 
 num_flaps = 40;
@@ -137,10 +137,15 @@ magnet_hole_offset = (spool_strut_exclusion_radius + flap_pitch_radius)/2;
 28byj48_chassis_height = 19;
 28byj48_chassis_height_slop = 1;
 
-// XXX REMOVE PCB DIMENSIONS
+motor_mount_separation = 35; // 28byj-48 mount hole separation
+motor_mount_shaft_offset = 8;
+motor_shaft_radius = 2.5;
+motor_shaft_under_radius = 0.1;
+motor_slop_radius = 3;
+
 
 // Width measured from the outside of the walls
-enclosure_wall_to_wall_width = thickness + spool_width_slop/2 + spool_width + spool_width_slop/2 + max(28byj48_bracket_thickness + m4_button_head_length, pcb_thickness + pcb_connector_height, pcb_thickness + m4_button_head_length) + thickness;
+enclosure_wall_to_wall_width = thickness + spool_width_slop/2 + spool_width + spool_width_slop/2 + max(28byj48_bracket_thickness + m4_button_head_length, 4 + 28byj48_bracket_thickness - spool_width_slop/2) + thickness;
 
 // Width of the front panel
 enclosure_width = enclosure_wall_to_wall_width + 28byj48_chassis_height + 28byj48_chassis_height_slop - thickness - 28byj48_bracket_thickness;
@@ -160,14 +165,8 @@ enclosure_height = enclosure_height_upper + enclosure_height_lower;
 
 enclosure_horizontal_rear_margin = thickness; // minumum distance between the farthest feature and the rear
 
-enclosure_length = front_forward_offset + 40; // XXX pcb_reference_vertical + pcb_height - pcb_mount_inset_vertical + pcb_mount_slot_delta + pcb_mount_hole_radius + enclosure_horizontal_rear_margin;
+enclosure_length = front_forward_offset + motor_mount_separation/2 + m4_hole_diameter/2 + enclosure_horizontal_rear_margin;
 
-
-motor_mount_separation = 35; // 28byj-48 mount hole separation
-motor_mount_shaft_offset = 8;
-motor_shaft_radius = 2.5;
-motor_shaft_under_radius = 0.1;
-motor_slop_radius = 3;
 
 // Enclosure connector tabs: front/back
 num_front_tabs = 2;
@@ -831,12 +830,12 @@ module split_flap_3d(letter, include_connector) {
 
     positioned_enclosure();
     if (render_pcb) {
-        translate([enclosure_wall_to_wall_width, -pcb_hole_to_sensor_x, -magnet_hole_offset - pcb_hole_to_sensor_y]) {
+        translate([enclosure_wall_to_wall_width + eps, -pcb_hole_to_sensor_x, -magnet_hole_offset - pcb_hole_to_sensor_y]) {
             rotate([0, 90, 0]) {
                 rotate([0, 0, 90]) {
                     pcb();
-                    translate([0, 0, -thickness]) {
-                        standard_m4_bolt(nut_distance=thickness + pcb_thickness);
+                    translate([0, 0, -thickness - 2 * eps]) {
+                        standard_m4_bolt(nut_distance=thickness + pcb_thickness + 4*eps);
                     }
                 }
             }
