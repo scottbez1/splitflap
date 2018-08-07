@@ -15,7 +15,9 @@ script:
 - (cd electronics && python -u generate_gerber.py splitflap.kicad_pcb)
 - (cd electronics && python -u generate_panelize_config.py && python3 -u ../thirdparty/panelize.py build/panelized_sensor_config.txt && python -u generate_svg.py build/panelized_sensor.kicad_pcb && python -u generate_pdf.py build/panelized_sensor.kicad_pcb && python -u generate_gerber.py build/panelized_sensor.kicad_pcb)
 - python -u electronics/scripts/export_schematic.py
-- python -u electronics/scripts/export_bom.py
+
+# Note: include sensor.xml 4 times since there are 4 sensors per control board
+- (cd electronics && python -u scripts/export_bom.py splitflap.sch && python -u scripts/export_bom.py sensor.sch && python -u bom/generate_bom_csv.py build/bom.csv splitflap.xml sensor.xml sensor.xml sensor.xml sensor.xml)
 - ./scripts/collect_output.sh
 deploy:
   provider: s3

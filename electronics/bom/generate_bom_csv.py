@@ -32,6 +32,8 @@
 from __future__ import print_function
 
 # Import the KiCad python helper module and the csv formatter
+import argparse
+
 import kicad_netlist_reader
 import csv
 import sys
@@ -52,35 +54,47 @@ def part_number_eq(self, other):
 # equivalency operator.
 kicad_netlist_reader.comp.__eq__ = part_number_eq
 
-if len(sys.argv) != 3:
-    print("Usage ", __file__, "<generic_netlist.xml> <output.csv>", file=sys.stderr)
-    sys.exit(1)
 
-
-# Generate an instance of a generic netlist, and load the netlist tree from
-# the command line option. If the file doesn't exist, execution will stop
-net = kicad_netlist_reader.netlist(sys.argv[1])
+parser = argparse.ArgumentParser()
+parser.add_argument('output')
+parser.add_argument('netlist', nargs='+')
+args = parser.parse_args()
 
 # Open a file to write to, if the file cannot be opened output to stdout
 # instead
 try:
-    f = open(sys.argv[2], 'w')
+    f = open(args.output, 'w')
 except IOError:
-    e = "Can't open output file for writing: " + sys.argv[2]
+    e = "Can't open output file for writing: " + args.output
     print( __file__, ":", e, sys.stderr )
     f = sys.stdout
 
-# subset the components to those wanted in the BOM, controlled
-# by <configure> block in kicad_netlist_reader.py
-components = net.getInterestingComponents()
+dates = []
+tools = []
+components = []
+columnset = set()
 
-compfields = net.gatherComponentFieldUnion(components)
-partfields = net.gatherLibPartFieldUnion()
+for netlist_file in args.netlist:
+    # Generate an instance of a generic netlist, and load the netlist tree from
+    # the command line option. If the file doesn't exist, execution will stop
+    net = kicad_netlist_reader.netlist(netlist_file)
 
-# remove Reference, Value, Datasheet, and Footprint, they will come from 'columns' below
-partfields -= set( ['Reference', 'Value', 'Datasheet', 'Footprint'] )
+    dates.append(net.getDate())
+    tools.append(net.getTool())
 
-columnset = compfields | partfields     # union
+    # subset the components to those wanted in the BOM, controlled
+    # by <configure> block in kicad_netlist_reader.py
+    components += net.getInterestingComponents()
+
+    compfields = kicad_netlist_reader.netlist.gatherComponentFieldUnion(components)
+    partfields = net.gatherLibPartFieldUnion()
+
+    # remove Reference, Value, Datasheet, and Footprint, they will come from 'columns' below
+    partfields -= set( ['Reference', 'Value', 'Datasheet', 'Footprint'] )
+
+    columnset |= compfields
+    columnset |= partfields
+
 
 # prepend an initial 'hard coded' list and put the enchillada into list 'columns'
 custom_fields = sorted(list(columnset))
@@ -97,8 +111,9 @@ def writerow( acsvwriter, columns ):
     acsvwriter.writerow( utf8row )
 
 # Output a set of rows as a header providing general information
-writerow( out, ['Date:', net.getDate()] )
-writerow( out, ['Tool:', net.getTool()] )
+writerow( out, ['Source:', '; '.join(args.netlist)] )
+writerow( out, ['Date:', '; '.join(dates)] )
+writerow( out, ['Tool:', '; '.join(tools)] )
 writerow( out, ['Generator:', sys.argv[0]] )
 writerow( out, ['Component Count:', len(components)] )
 writerow( out, [] )
@@ -106,7 +121,7 @@ writerow( out, columns )
 
 # Get all of the components in groups of matching parts + values
 # (see kicad_netlist_reader.py)
-grouped = net.groupComponents(components)
+grouped = kicad_netlist_reader.netlist.groupComponents(components)
 
 
 # Output component information organized by group, aka as collated:
@@ -128,13 +143,13 @@ for group in grouped:
     item += 1
     row.append(item)
     row.append(len(group))
-    row.append(', '.join(refs));
+    row.append(', '.join(refs))
     row.append(', '.join(sorted(list(values))))
     row.append(c.getLibName() + ":" + c.getPartName())
-    row.append(net.getGroupFootprint(group))
+    row.append(kicad_netlist_reader.netlist.getGroupFootprint(group))
 
     for field in custom_fields:
-        row.append(net.getGroupField(group, field));
+        row.append(kicad_netlist_reader.netlist.getGroupField(group, field))
 
     writerow( out, row  )
 

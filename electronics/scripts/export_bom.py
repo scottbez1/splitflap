@@ -13,14 +13,12 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
-
+import argparse
 import logging
 import os
 import subprocess
 import sys
 import time
-
-from contextlib import contextmanager
 
 electronics_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 repo_root = os.path.dirname(electronics_root)
@@ -38,7 +36,8 @@ from export_util import (
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-def eeschema_export_bom(output_directory):
+
+def eeschema_export_bom():
     wait_for_window('eeschema', '\[')
 
     logger.info('Focus main eeschema window')
@@ -56,8 +55,8 @@ def eeschema_export_bom(output_directory):
     logger.info('Wait before shutdown')
     time.sleep(2)
 
-def export_bom():
-    schematic_file = os.path.join(electronics_root, 'splitflap.sch')
+
+def export_bom(schematic_file):
     output_dir = os.path.join(electronics_root, 'build')
     file_util.mkdir_p(output_dir)
 
@@ -66,19 +65,13 @@ def export_bom():
     with versioned_schematic(schematic_file):
         with recorded_xvfb(screencast_output_file, width=800, height=600, colordepth=24):
             with PopenContext(['eeschema', schematic_file], close_fds=True) as eeschema_proc:
-                eeschema_export_bom(output_dir)
+                eeschema_export_bom()
                 eeschema_proc.terminate()
-
-    logger.info('Convert component XML to useful BOM CSV file...')
-    subprocess.check_call([
-        'python',
-        '-u',
-        os.path.join(electronics_root, 'bom', 'generate_bom_csv.py'),
-        os.path.join(electronics_root, 'splitflap.xml'),
-        os.path.join(output_dir, 'bom.csv'),
-    ])
 
 
 if __name__ == '__main__':
-    export_bom()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('schematic')
+    args = parser.parse_args()
+    export_bom(args.schematic)
 

@@ -12,6 +12,7 @@ build/
 
 # KiCAD bom
 splitflap.xml
+sensor.xml
 
 # Arduino compiled output
 *.hex

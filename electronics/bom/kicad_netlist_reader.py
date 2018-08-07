@@ -537,11 +537,10 @@ class netlist():
         """Return the tool string which was used to create the netlist tree"""
         return self.design.get("tool")
 
-    def gatherComponentFieldUnion(self, components=None):
+    @classmethod
+    def gatherComponentFieldUnion(cls, components):
         """Gather the complete 'set' of unique component fields, fields found in any component.
         """
-        if not components:
-            components=self.components
 
         s = set()
         for c in components:
@@ -641,17 +640,15 @@ class netlist():
 
         return ret
 
-
-    def groupComponents(self, components = None):
+    @classmethod
+    def groupComponents(cls, components):
         """Return a list of component lists. Components are grouped together
         when the value, library and part identifiers match.
 
         Keywords:
         components -- is a list of components, typically an interesting subset
-        of all components, or None.  If None, then all components are looked at.
+        of all components, or None.
         """
-        if not components:
-            components = self.components
 
         groups = []
 
@@ -688,7 +685,8 @@ class netlist():
 
         return groups
 
-    def getGroupField(self, group, field):
+    @classmethod
+    def getGroupField(cls, group, field):
         """Return the whatever is known about the given field by consulting each
         component in the group.  If any of them know something about the property/field,
         then return that first non-blank value.
@@ -699,7 +697,8 @@ class netlist():
                 return ret
         return group[0].getLibPart().getField(field)
 
-    def getGroupFootprint(self, group):
+    @classmethod
+    def getGroupFootprint(cls, group):
         """Return the whatever is known about the Footprint by consulting each
         component in the group.  If any of them know something about the Footprint,
         then return that first non-blank value.
