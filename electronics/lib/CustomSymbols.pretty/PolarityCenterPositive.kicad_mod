@@ -1,0 +1,18 @@
+(module PolarityCenterPositive (layer F.Cu) (tedit 5B69365B)
+  (fp_text reference REF** (at 0 -3.175) (layer F.SilkS) hide
+    (effects (font (size 1 1) (thickness 0.15)))
+  )
+  (fp_text value PolarityCenterPositive (at 0 -3.302) (layer F.Fab) hide
+    (effects (font (size 1 1) (thickness 0.15)))
+  )
+  (fp_circle (center 0 0) (end 0 -0.127) (layer F.SilkS) (width 0.2))
+  (fp_circle (center 0 0) (end 0 -0.254) (layer F.SilkS) (width 0.2))
+  (fp_line (start 2.54 -0.381) (end 2.54 0.381) (layer F.SilkS) (width 0.2))
+  (fp_line (start 2.159 0) (end 2.921 0) (layer F.SilkS) (width 0.2))
+  (fp_line (start -2.921 0) (end -2.159 0) (layer F.SilkS) (width 0.2))
+  (fp_line (start 1.778 0) (end 0 0) (layer F.SilkS) (width 0.2))
+  (fp_line (start -1.778 0) (end -0.762 0) (layer F.SilkS) (width 0.2))
+  (fp_circle (center -2.54 0) (end -3.302 0) (layer F.SilkS) (width 0.2))
+  (fp_circle (center 2.54 0) (end 3.302 0) (layer F.SilkS) (width 0.2))
+  (fp_arc (start 0 0) (end 0.538815 0.538815) (angle 270) (layer F.SilkS) (width 0.2))
+)
