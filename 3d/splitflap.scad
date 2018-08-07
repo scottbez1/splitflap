@@ -992,7 +992,7 @@ if (render_3d) {
     }
 } else {
     sp = 5;
-    panel_height = enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width + kerf_width;
+    panel_height = enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width + kerf_width + spool_strut_width + kerf_width;
     projection_renderer(render_index=render_index, render_etch=render_etch, kerf_width=kerf_width, panel_height=panel_height, panel_horizontal=panel_horizontal, panel_vertical=panel_vertical) {
         translate([0, 0])
             enclosure_left();
@@ -1002,31 +1002,32 @@ if (render_3d) {
             rotate([0, 0, -90])
                 enclosure_front();
 
-        translate([enclosure_height + kerf_width + enclosure_length_right, enclosure_length + kerf_width + enclosure_length_right + kerf_width ])
+        translate([enclosure_height + kerf_width + enclosure_length_right, enclosure_length + kerf_width + enclosure_length_right + kerf_width + 2])
             rotate([0, 0, 90])
             enclosure_top();
 
-        translate([enclosure_height + kerf_width, enclosure_length])
+        translate([enclosure_height + kerf_width, enclosure_length + kerf_width + enclosure_length_right + 2])
             rotate([0, 0, -90])
                 enclosure_bottom();
 
         laser_etch()
-            translate([enclosure_height + kerf_width, enclosure_length, thickness])
+            translate([enclosure_height + kerf_width, enclosure_length + kerf_width + enclosure_length_right + 2, thickness])
                 rotate([0, 0, -90])
                     enclosure_bottom_etch();
 
-        // Spool struts 2x2 above left/right sides
-        spool_strut_y_off = enclosure_length + enclosure_length_right + enclosure_width + sp + spool_strut_width / 2;
-
-        // Spool struts cut out of left/right sides
+        // Spool struts cut out of right side
         translate([thickness*2 + 5, enclosure_length + kerf_width + enclosure_length_right - spool_strut_width/2 - 3, thickness])
             spool_strut();
-        translate([2, 32, thickness])
-            spool_strut();
-        translate([enclosure_height - spool_strut_length - kerf_width, spool_strut_width/2, thickness])
+
+        // Spool struts at the top
+        spool_strut_y_offset = enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width + kerf_width + spool_strut_width/2;
+        translate([spool_strut_length, spool_strut_y_offset, thickness/2])
             rotate([0, 0, 180])
                 spool_strut();
-        translate([enclosure_height, spool_strut_width/2, thickness])
+        translate([spool_strut_length*2 + kerf_width, spool_strut_y_offset, thickness/2])
+            rotate([0, 0, 180])
+                spool_strut();
+        translate([spool_strut_length*3 + kerf_width*2, spool_strut_y_offset, thickness/2])
             rotate([0, 0, 180])
                 spool_strut();
 
@@ -1045,7 +1046,7 @@ if (render_3d) {
         translate([flap_spool_x_off + spool_outer_radius*2 + 2, flap_spool_y_off])
             flap_spool_complete(captive_nut=true);
 
-        translate([enclosure_height_lower + 28byj48_shaft_offset, enclosure_length - front_forward_offset])
+        translate([enclosure_height_lower + 28byj48_shaft_offset - 28byj48_chassis_radius - motor_hole_slop/2 + spool_strut_width/2 + kerf_width, enclosure_length - front_forward_offset - 28byj48_chassis_radius - motor_hole_slop/2 + spool_strut_width/2 + kerf_width])
             spool_retaining_wall(m4_bolt_hole=true);
     }
 }
