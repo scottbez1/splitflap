@@ -26,7 +26,7 @@ def run():
             print('Going to {}'.format(word))
             status = s.set_text(word)
             print_status(status)
-            time.sleep(3)
+            time.sleep(10)
 
 
 def ask_for_serial_port():

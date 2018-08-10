@@ -50,43 +50,6 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L GP2S60 U9
-U 1 1 5641B6A5
-P 1500 6750
-F 0 "U9" H 1300 6950 50  0000 L CNN
-F 1 "GP2S60" H 1300 6550 50  0000 L CNN
-F 2 "GP2S60:GP2S60_WITH_MOUNT" H 1300 6550 50  0001 L CIN
-F 3 "" H 1500 6750 50  0000 L CNN
-F 4 "425-1097-1-ND" H 1500 6750 60  0001 C CNN "DK#"
-	1    1500 6750
-	1    0    0    -1  
-$EndComp
-$Comp
-L CONN_01X03 P5
-U 1 1 56499725
-P 2500 6750
-F 0 "P5" H 2500 6950 50  0000 C CNN
-F 1 "SENSOR" V 2600 6750 50  0000 C CNN
-F 2 "PinHeaders:Pin_Header_Straight_1x03" H 2500 6750 60  0001 C CNN
-F 3 "" H 2500 6750 60  0000 C CNN
-F 4 "S1112EC-03-ND" H 2500 6750 60  0001 C CNN "DK#"
-F 5 "Consider ordering 1xN headers and breaking into multiple 1x3 headers, rather than ordering exact 1x3 headers" H 2500 6750 60  0001 C CNN "BOM_Note"
-	1    2500 6750
-	1    0    0    -1  
-$EndComp
-$Comp
-L R_Small R2
-U 1 1 5649983B
-P 2050 6750
-F 0 "R2" V 2000 6700 50  0000 L CNN
-F 1 "220" V 2050 6700 50  0000 L CNN
-F 2 "Resistor0805ThroughHole:R_0805_ThroughHole" H 2050 6750 60  0001 C CNN
-F 3 "" H 2050 6750 60  0000 C CNN
-F 4 "CF14JT220RCT-ND" V 2050 6750 60  0001 C CNN "DK#"
-	1    2050 6750
-	0    1    1    0   
-$EndComp
-$Comp
 L CONN_01X05 P1
 U 1 1 5649AA03
 P 10850 2100
@@ -787,8 +750,6 @@ NoConn ~ 2300 3500
 NoConn ~ 4600 1700
 NoConn ~ 5900 3350
 NoConn ~ 5200 1700
-Text Notes 1250 6400 0    60   ~ 0
-Reflective IR Sensor
 $Comp
 L Led_Small D2
 U 1 1 59D78B15
@@ -848,43 +809,6 @@ F 4 "BC2665CT-ND" H 3650 5550 60  0001 C CNN "DK#"
 	1    0    0    -1  
 $EndComp
 $Comp
-L GP2S60 U10
-U 1 1 59DABE89
-P 1500 7400
-F 0 "U10" H 1300 7600 50  0000 L CNN
-F 1 "GP2S60" H 1300 7200 50  0000 L CNN
-F 2 "GP2S60:GP2S60_WITH_MOUNT" H 1300 7200 50  0001 L CIN
-F 3 "" H 1500 7400 50  0000 L CNN
-F 4 "425-1097-1-ND" H 1500 7400 60  0001 C CNN "DK#"
-	1    1500 7400
-	1    0    0    -1  
-$EndComp
-$Comp
-L CONN_01X03 P9
-U 1 1 59DABE8F
-P 2500 7400
-F 0 "P9" H 2500 7600 50  0000 C CNN
-F 1 "SENSOR" V 2600 7400 50  0000 C CNN
-F 2 "PinHeaders:Pin_Header_Straight_1x03" H 2500 7400 60  0001 C CNN
-F 3 "" H 2500 7400 60  0000 C CNN
-F 4 "S1112EC-03-ND" H 2500 7400 60  0001 C CNN "DK#"
-F 5 "Consider ordering 1xN headers and breaking into multiple 1x3 headers, rather than ordering exact 1x3 headers" H 2500 7400 60  0001 C CNN "BOM_Note"
-	1    2500 7400
-	1    0    0    -1  
-$EndComp
-$Comp
-L R_Small R8
-U 1 1 59DABE96
-P 2050 7400
-F 0 "R8" V 2000 7350 50  0000 L CNN
-F 1 "220" V 2050 7350 50  0000 L CNN
-F 2 "Resistor0805ThroughHole:R_0805_ThroughHole" H 2050 7400 60  0001 C CNN
-F 3 "" H 2050 7400 60  0000 C CNN
-F 4 "CF14JT220RCT-ND" V 2050 7400 60  0001 C CNN "DK#"
-	1    2050 7400
-	0    1    1    0   
-$EndComp
-$Comp
 L R_Small R9
 U 1 1 59DAC74F
 P 4700 1850
@@ -899,23 +823,6 @@ $EndComp
 Wire Wire Line
 	4700 1700 4700 1750
 Wire Wire Line
-	1800 7300 2300 7300
-Wire Wire Line
-	1800 7500 2300 7500
-Connection ~ 1850 7500
-Wire Wire Line
-	1200 7500 1200 7650
-Wire Wire Line
-	1200 7650 1850 7650
-Wire Wire Line
-	1850 7650 1850 7500
-Wire Wire Line
-	1200 7300 1200 7150
-Wire Wire Line
-	1200 7150 1900 7150
-Wire Wire Line
-	1900 7150 1900 7400
-Wire Wire Line
 	3650 5650 4700 5650
 Wire Wire Line
 	3850 5700 3850 5650
@@ -929,10 +836,6 @@ Wire Wire Line
 Wire Wire Line
 	4700 5650 4700 5450
 Connection ~ 3850 5650
-Wire Notes Line
-	3350 6300 3350 7800
-Wire Notes Line
-	500  6300 3350 6300
 Wire Wire Line
 	10600 2800 10600 2300
 Wire Wire Line
@@ -1080,23 +983,6 @@ Wire Wire Line
 Connection ~ 4700 2600
 Wire Wire Line
 	3850 2600 4700 2600
-Wire Wire Line
-	1800 6650 2300 6650
-Wire Wire Line
-	1800 6850 2300 6850
-Connection ~ 1850 6850
-Wire Wire Line
-	1200 6850 1200 7000
-Wire Wire Line
-	1200 7000 1850 7000
-Wire Wire Line
-	1850 7000 1850 6850
-Wire Wire Line
-	1200 6650 1200 6500
-Wire Wire Line
-	1200 6500 1900 6500
-Wire Wire Line
-	1900 6500 1900 6750
 Wire Wire Line
 	1700 5550 1850 5550
 Wire Wire Line
@@ -1315,14 +1201,6 @@ Wire Wire Line
 	5600 1700 5600 3750
 Wire Wire Line
 	7400 3350 7800 3350
-Wire Wire Line
-	1900 6750 1950 6750
-Wire Wire Line
-	2150 6750 2300 6750
-Wire Wire Line
-	1900 7400 1950 7400
-Wire Wire Line
-	2150 7400 2300 7400
 $Comp
 L CONN_01X04 P10
 U 1 1 59E1C132
@@ -1375,4 +1253,32 @@ F 4 "CF14JT47K0CT-ND" V 7550 3500 60  0001 C CNN "DK#"
 	1    7550 3500
 	1    0    0    -1  
 $EndComp
+$Comp
+L GND #PWR?
+U 1 1 5B6D253E
+P 4300 1750
+F 0 "#PWR?" H 4300 1500 50  0001 C CNN
+F 1 "GND" H 4300 1600 50  0000 C CNN
+F 2 "" H 4300 1750 50  0001 C CNN
+F 3 "" H 4300 1750 50  0001 C CNN
+	1    4300 1750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4300 1700 4300 1750
+$Comp
+L VCC #PWR?
+U 1 1 5B6D26FA
+P 4500 1850
+F 0 "#PWR?" H 4500 1700 50  0001 C CNN
+F 1 "VCC" H 4500 2000 50  0000 C CNN
+F 2 "" H 4500 1850 50  0001 C CNN
+F 3 "" H 4500 1850 50  0001 C CNN
+	1    4500 1850
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4400 1700 4400 1850
+Wire Wire Line
+	4400 1850 4500 1850
 $EndSCHEMATC
