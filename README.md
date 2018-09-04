@@ -25,7 +25,7 @@ This design is currently at a *prototype* stage. The source files provided here 
 | Component | Status | Notes |
 | --- | --- | --- |
 | Enclosure/Mechanics | *Release Candidate* | Need documentation on ordering. |
-| Electronics | *Release Candidate* | Need documentation on ordering and assembly. |
+| Electronics | *Release Candidate* SEE NOTE ON AVAILABILITY | Need documentation on ordering and assembly. **AVAILABILITY NOTE**: As of 8/23/2018 it appears Digikey (my preferred supplier) has temporarily discountinued carrying a key component (GP2S60). It still appears to be available from other suppliers, such as [Mouser](https://www.mouser.com/ProductDetail/Sharp-Microelectronics/GP2S60?qs=5S%2F4hkdqNNeooxIGyEnzJA%3D%3D), so keep that in mind when building/ordering parts. However, there also happens to be work underway to replace this IR sensor with a hall-effect sensor in future designs; see [#29](https://github.com/scottbez1/splitflap/issues/29) and the [hall_effect](https://github.com/scottbez1/splitflap/tree/hall_effect) branch for updates on that. |
 | Firmware | *Release Candidate* | Works. |
 | Control Software | *Beta* | Example python code for driving the display is in the [software](https://github.com/scottbez1/splitflap/tree/master/electronics) directory|
 

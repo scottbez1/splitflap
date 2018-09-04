@@ -17,10 +17,18 @@
 #include <SPI.h>
 #include "splitflap_module.h"
 
+#define NUM_MODULES (12)
 #define NEOPIXEL_DEBUGGING_ENABLED true
+#define SPI_IO true
 
 #if NEOPIXEL_DEBUGGING_ENABLED
 #include <Adafruit_NeoPixel.h>
+#endif
+
+#if SPI_IO
+#include "spi_io_config.h"
+#else
+#include "basic_io_config.h"
 #endif
 
 const uint8_t flaps[] = {
@@ -33,63 +41,6 @@ const uint8_t flaps[] = {
   '\'',
 };
 
-#define DEBUG_LED_1_PIN (10)
-#define OUT_LATCH_PIN (4)
-#define OUT_LATCH_PORT PORTD
-#define OUT_LATCH_BIT 4
-
-
-#define IN_LATCH_PIN (5)
-#define IN_LATCH_PORT PORTD
-#define IN_LATCH_BIT 5
-
-
-#define NUM_MODULES (12)
-#define MOTOR_BUFFER_LENGTH (NUM_MODULES / 2 + (NUM_MODULES % 2 != 0))
-uint8_t motor_buffer[MOTOR_BUFFER_LENGTH];
-
-#define SENSOR_BUFFER_LENGTH (NUM_MODULES / 4 + (NUM_MODULES % 4 != 0))
-uint8_t sensor_buffer[SENSOR_BUFFER_LENGTH];
-
-SplitflapModule moduleA(motor_buffer[0], 0, sensor_buffer[0], B00000001);
-SplitflapModule moduleB(motor_buffer[0], 4, sensor_buffer[0], B00000010);
-SplitflapModule moduleC(motor_buffer[1], 0, sensor_buffer[0], B00000100);
-SplitflapModule moduleD(motor_buffer[1], 4, sensor_buffer[0], B00001000);
-
-#if NUM_MODULES > 4
-SplitflapModule moduleE(motor_buffer[2], 0, sensor_buffer[1], B00000001);
-SplitflapModule moduleF(motor_buffer[2], 4, sensor_buffer[1], B00000010);
-SplitflapModule moduleG(motor_buffer[3], 0, sensor_buffer[1], B00000100);
-SplitflapModule moduleH(motor_buffer[3], 4, sensor_buffer[1], B00001000);
-#endif
-
-#if NUM_MODULES > 8
-SplitflapModule moduleI(motor_buffer[4], 0, sensor_buffer[2], B00000001);
-SplitflapModule moduleJ(motor_buffer[4], 4, sensor_buffer[2], B00000010);
-SplitflapModule moduleK(motor_buffer[5], 0, sensor_buffer[2], B00000100);
-SplitflapModule moduleL(motor_buffer[5], 4, sensor_buffer[2], B00001000);
-#endif
-
-SplitflapModule modules[] = {
-  moduleA,
-  moduleB,
-  moduleC,
-  moduleD,
-
-#if NUM_MODULES > 4
-  moduleE,
-  moduleF,
-  moduleG,
-  moduleH,
-#endif
-
-#if NUM_MODULES > 8
-  moduleI,
-  moduleJ,
-  moduleK,
-  moduleL,
-#endif
-};
 int recv_buffer[NUM_MODULES];
 
 #if NEOPIXEL_DEBUGGING_ENABLED
@@ -100,41 +51,12 @@ uint32_t color_purple = strip.Color(15, 0, 15);
 uint32_t color_orange = strip.Color(30, 7, 0);
 #endif
 
-inline void spi_transfer() {
-  IN_LATCH_PORT &= ~(1 << IN_LATCH_BIT);
-  IN_LATCH_PORT |= (1 << IN_LATCH_BIT);
-
-  for (uint8_t i = 0; i < MOTOR_BUFFER_LENGTH; i++) {
-    int val = SPI.transfer(motor_buffer[MOTOR_BUFFER_LENGTH - 1 - i]);
-    if (i < SENSOR_BUFFER_LENGTH) {
-      sensor_buffer[i] = val;
-    }
-  }
-
-  OUT_LATCH_PORT |= (1 << OUT_LATCH_BIT);
-  OUT_LATCH_PORT &= ~(1 << OUT_LATCH_BIT);
-}
 
 void setup() {
   Serial.begin(38400);
 
-  pinMode(DEBUG_LED_0_PIN, OUTPUT);
-  pinMode(DEBUG_LED_1_PIN, OUTPUT);
-
-  for (uint8_t i = 0; i < MOTOR_BUFFER_LENGTH; i++) {
-    motor_buffer[i] = 0;
-  }
-  for (uint8_t i = 0; i < SENSOR_BUFFER_LENGTH; i++) {
-    sensor_buffer[i] = 0;
-  }
-
-  // Initialize SPI
-  pinMode(IN_LATCH_PIN, OUTPUT);
-  pinMode(OUT_LATCH_PIN, OUTPUT);
-  digitalWrite(IN_LATCH_PIN, HIGH);
-  SPI.begin();
-  SPI.beginTransaction(SPISettings(3000000, MSBFIRST, SPI_MODE0));
-  spi_transfer();
+  motor_sensor_setup();
+  motor_sensor_io();
 
   Serial.print(F("{\"type\":\"init\", \"num_modules\":"));
   Serial.print(NUM_MODULES);
@@ -143,14 +65,10 @@ void setup() {
 #if NEOPIXEL_DEBUGGING_ENABLED
   strip.begin();
   strip.show();
-#endif
 
-  // Pulse DEBUG_LED_1_PIN for fun
-  digitalWrite(DEBUG_LED_0_PIN, HIGH);
+  // Pulse neopixels for fun
   uint8_t vals[] = {0, 1, 3, 10, 16, 20, 24, 28, 28, 24, 20, 16, 10, 3, 1, 0};
   for (int16_t i = 0; i < 400; i++) {
-    analogWrite(DEBUG_LED_1_PIN, i);
-#if NEOPIXEL_DEBUGGING_ENABLED
     for (int j = 0; j < NUM_MODULES; j++) {
       int8_t index = i / 8 - j;
       if (index < 0) {
@@ -161,16 +79,15 @@ void setup() {
       strip.setPixelColor(j, vals[index] * 2, vals[index] * 2, 0);
     }
     strip.show();
-#endif
     delay(3);
   }
+#endif
 
   for (uint8_t i = 0; i < NUM_MODULES; i++) {
     recv_buffer[i] = 0;
     modules[i].Init();
     modules[i].GoHome();
   }
-  digitalWrite(DEBUG_LED_0_PIN, LOW);
 }
 
 
@@ -196,9 +113,7 @@ void loop() {
     boolean all_stopped = true;
     boolean any_bad_timing = false;
     for (uint8_t i = 0; i < NUM_MODULES; i++) {
-    DEBUG_LED_0_PORT |= (1 << DEBUG_LED_0_BIT);
       any_bad_timing |= modules[i].Update();
-    DEBUG_LED_0_PORT &= ~(1 << DEBUG_LED_0_BIT);
       bool is_idle = modules[i].state == PANIC
 #if HOME_CALIBRATION_ENABLED
         || modules[i].state == LOOK_FOR_HOME
@@ -207,9 +122,9 @@ void loop() {
         || (modules[i].state == NORMAL && modules[i].current_accel_step == 0);
       all_idle &= is_idle;
       all_stopped &= modules[i].current_accel_step == 0;
-      if (i & 0b11) spi_transfer();
+      if (i & 0b11) motor_sensor_io();
     }
-    spi_transfer();
+    motor_sensor_io();
 
     if (all_idle) {
 

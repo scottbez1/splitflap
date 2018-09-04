@@ -1,5 +1,5 @@
 /*
-   Copyright 2015-2016 Scott Bezek and the splitflap contributors
+   Copyright 2015-2018 Scott Bezek and the splitflap contributors
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -28,12 +28,6 @@
 // Enable for auto-calibration via home sensor feedback. Disable for basic open-loop control (useful when first
 // testing the split-flap, since home calibration can be tricky to fine tune)
 #define HOME_CALIBRATION_ENABLED true
-
-#define DEBUG_LED_0_DDR DDRC
-#define DEBUG_LED_0_PORT PORTC
-#define DEBUG_LED_0_BIT 0
-
-#define DEBUG_LED_0_PIN (14)
 
 #define NUM_FLAPS (40)
 
