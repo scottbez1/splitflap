@@ -142,7 +142,7 @@ The PCB layout is 10cm x 5cm which makes it fairly cheap to produce using a low-
 <img width="640" src="https://s3.amazonaws.com/splitflap-travis/branches/hall_effect/pcb_raster.png"/>
 </a>
 
-Each module also needs a hall-effect sensor board, with an AH1815 sensor and connector.
+Each module also needs a hall-effect sensor board, with an AH3391Q (or similar) sensor and connector.
 These boards are small (about 16mm x 16 mm) and are available on a second PCB design that's panelized.
 The panelization is configurable (see [generate_panelize_config.py](https://github.com/scottbez1/splitflap/blob/hall_effect/electronics/generate_panelize_config.py))
 and is optimized for production at SeeedStudio.

@@ -18,10 +18,10 @@ include <m4_dimensions.scad>;
 pcb_thickness = 1.6;
 
 // From datasheet:
-AH1815_height = (2.8 + 3.2) / 2;
-AH1815_width = (3.9 + 4.3) / 2;
-AH1815_thickness = (1.40 + 1.60) / 2;
-AH1815_sensor_offset_y = AH1815_height - 1.25;
+hall_effect_height = (2.8 + 3.2) / 2;
+hall_effect_width = (3.9 + 4.3) / 2;
+hall_effect_thickness = (1.40 + 1.60) / 2;
+hall_effect_sensor_offset_y = hall_effect_height - 1.25;
 
 // From sensor.kicad_pcb:
 pcb_height = 16.256;
@@ -42,7 +42,7 @@ pcb_hole_radius = m4_hole_diameter/2;
 
 // Computed dimensions
 pcb_hole_to_sensor_x = pcb_hole_to_sensor_pin_1_x - sensor_pin_pitch;
-pcb_hole_to_sensor_y = pcb_hole_to_sensor_pin_1_y + AH1815_sensor_offset_y;
+pcb_hole_to_sensor_y = pcb_hole_to_sensor_pin_1_y + hall_effect_sensor_offset_y;
 
 
 // Rough numbers for 3d rendering only (non-critical dimensions)
@@ -106,8 +106,8 @@ module pcb() {
 
     // Sensor body
     color([0, 0, 0]) {
-        translate([pcb_hole_to_sensor_pin_1_x - sensor_pin_pitch - AH1815_width/2, pcb_hole_to_sensor_pin_1_y, -sensor_pin_length - AH1815_thickness/2 + pcb_thickness]) {
-            cube([AH1815_width, AH1815_height, AH1815_thickness]);
+        translate([pcb_hole_to_sensor_pin_1_x - sensor_pin_pitch - hall_effect_width/2, pcb_hole_to_sensor_pin_1_y, -sensor_pin_length - hall_effect_thickness/2 + pcb_thickness]) {
+            cube([hall_effect_width, hall_effect_height, hall_effect_thickness]);
         }
     }
 }
