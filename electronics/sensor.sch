@@ -51,10 +51,10 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L CONN_01X03 P1
+L CONN_01X03 P100
 U 1 1 56499725
 P 5450 3700
-F 0 "P1" H 5450 3900 50  0000 C CNN
+F 0 "P100" H 5450 3900 50  0000 C CNN
 F 1 "SENSOR" V 5550 3700 50  0000 C CNN
 F 2 "PinHeaders:Pin_Header_Straight_1x03" H 5450 3700 60  0001 C CNN
 F 3 "" H 5450 3700 60  0000 C CNN
@@ -64,10 +64,10 @@ F 5 "Consider ordering 1xN headers and breaking into multiple 1x3 headers, rathe
 	1    0    0    -1  
 $EndComp
 $Comp
-L hall_effect U1
+L hall_effect U100
 U 1 1 5B63B9BC
 P 4450 3700
-F 0 "U1" H 4550 3900 60  0000 C CNN
+F 0 "U100" H 4600 4000 60  0000 C CNN
 F 1 "AH3391Q" V 4350 3700 60  0000 C CNN
 F 2 "hall_effect:hall_effect" H 4450 3700 60  0001 C CNN
 F 3 "" H 4450 3700 60  0001 C CNN

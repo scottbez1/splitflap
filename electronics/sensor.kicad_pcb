@@ -3,7 +3,7 @@
   (general
     (links 3)
     (no_connects 0)
-    (area 1.514287 7.37 116.075001 68.075001)
+    (area 17.892999 15.098999 116.075001 68.075001)
     (thickness 1.6)
     (drawings 18)
     (tracks 6)
@@ -99,9 +99,9 @@
   )
 
   (net 0 "")
-  (net 1 "Net-(P1-Pad3)")
-  (net 2 "Net-(P1-Pad2)")
-  (net 3 "Net-(P1-Pad1)")
+  (net 1 "Net-(P100-Pad1)")
+  (net 2 "Net-(P100-Pad2)")
+  (net 3 "Net-(P100-Pad3)")
 
   (net_class Default "This is the default net class."
     (clearance 0.2)
@@ -110,6 +110,9 @@
     (via_drill 0.4)
     (uvia_dia 0.3)
     (uvia_drill 0.1)
+    (add_net "Net-(P100-Pad1)")
+    (add_net "Net-(P100-Pad2)")
+    (add_net "Net-(P100-Pad3)")
   )
 
   (net_class 5V ""
@@ -128,9 +131,6 @@
     (via_drill 0.4)
     (uvia_dia 0.3)
     (uvia_drill 0.1)
-    (add_net "Net-(P1-Pad1)")
-    (add_net "Net-(P1-Pad2)")
-    (add_net "Net-(P1-Pad3)")
   )
 
   (net_class VMOT ""
@@ -142,12 +142,12 @@
     (uvia_drill 0.1)
   )
 
-  (module PinHeaders:Pin_Header_Straight_1x03 (layer F.Cu) (tedit 5B63E8CD) (tstamp 5B63BF29)
+  (module PinHeaders:Pin_Header_Straight_1x03 (layer F.Cu) (tedit 5B8F01C4) (tstamp 5B63BF29)
     (at 33.208 33.208 270)
     (descr "Through hole pin header")
     (tags "pin header")
     (path /56499725)
-    (fp_text reference P1 (at -2.032 0 360) (layer F.SilkS) hide
+    (fp_text reference P100 (at -2.032 0 360) (layer F.SilkS) hide
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_text value SENSOR (at -2.032 4.318 360) (layer F.Fab) hide
@@ -158,11 +158,11 @@
     (fp_line (start 1.2 -1.2) (end 1.2 6.28) (layer F.SilkS) (width 0.15))
     (fp_line (start -1.2 -1.2) (end 1.2 -1.2) (layer F.SilkS) (width 0.15))
     (pad 1 thru_hole rect (at 0 0 270) (size 1.75 1.75) (drill 1) (layers *.Cu *.Mask F.SilkS)
-      (net 3 "Net-(P1-Pad1)"))
+      (net 1 "Net-(P100-Pad1)"))
     (pad 2 thru_hole circle (at 0 2.54 270) (size 1.75 1.75) (drill 1) (layers *.Cu *.Mask F.SilkS)
-      (net 2 "Net-(P1-Pad2)"))
+      (net 2 "Net-(P100-Pad2)"))
     (pad 3 thru_hole circle (at 0 5.08 270) (size 1.75 1.75) (drill 1) (layers *.Cu *.Mask F.SilkS)
-      (net 1 "Net-(P1-Pad3)"))
+      (net 3 "Net-(P100-Pad3)"))
     (model Pin_Headers.3dshapes/Pin_Header_Straight_1x03.wrl
       (at (xyz 0 -0.1 0))
       (scale (xyz 1 1 1))
@@ -183,13 +183,13 @@
       (clearance 1.5))
   )
 
-  (module hall_effect:hall_effect (layer B.Cu) (tedit 5B676C6C) (tstamp 5B63BF36)
+  (module hall_effect:hall_effect (layer B.Cu) (tedit 5B8F01BA) (tstamp 5B63BF36)
     (at 31.938 23.302 180)
     (path /5B63B9BC)
-    (fp_text reference U1 (at 5.08 1.27 180) (layer B.SilkS) hide
+    (fp_text reference U100 (at 5.08 1.27 180) (layer B.SilkS) hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
     )
-    (fp_text value hall_effect (at 0 2.54 180) (layer B.Fab) hide
+    (fp_text value AH3391Q (at 0 2.54 180) (layer B.Fab) hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
     )
     (fp_line (start 2.2 -0.58) (end -2.2 -0.58) (layer F.SilkS) (width 0.15))
@@ -205,11 +205,11 @@
     (fp_line (start -2.2 -0.22) (end -2.2 0.58) (layer B.SilkS) (width 0.15))
     (fp_line (start -2.2 0.58) (end 2.2 0.58) (layer B.SilkS) (width 0.15))
     (pad 1 thru_hole rect (at -1.27 0 180) (size 0.9 1.4) (drill 0.6) (layers *.Cu *.Mask)
-      (net 2 "Net-(P1-Pad2)"))
+      (net 2 "Net-(P100-Pad2)"))
     (pad 2 thru_hole oval (at 0 0 180) (size 0.9 1.4) (drill 0.6) (layers *.Cu *.Mask)
-      (net 1 "Net-(P1-Pad3)"))
+      (net 3 "Net-(P100-Pad3)"))
     (pad 3 thru_hole oval (at 1.27 0 180) (size 0.9 1.4) (drill 0.6) (layers *.Cu *.Mask)
-      (net 3 "Net-(P1-Pad1)"))
+      (net 1 "Net-(P100-Pad1)"))
   )
 
   (gr_text 5V (at 33.208 24.318 70) (layer F.SilkS)
@@ -313,11 +313,11 @@
   (gr_line (start 17.968 36.256) (end 73.848 36.256) (angle 90) (layer Edge.Cuts) (width 0.15))
   (gr_line (start 20 68) (end 20 20) (angle 90) (layer Edge.Cuts) (width 0.15))
 
-  (segment (start 31.938 23.302) (end 31.938 29.398) (width 0.5) (layer F.Cu) (net 1) (status 10))
-  (segment (start 31.938 29.398) (end 28.128 33.208) (width 0.5) (layer F.Cu) (net 1) (tstamp 5B65CF35) (status 20))
+  (segment (start 33.208 33.208) (end 30.668 30.668) (width 0.5) (layer B.Cu) (net 1) (status 10))
+  (segment (start 30.668 30.668) (end 30.668 23.302) (width 0.5) (layer B.Cu) (net 1) (tstamp 5B65CF4A) (status 20))
   (segment (start 33.208 23.302) (end 33.208 30.668) (width 0.5) (layer F.Cu) (net 2) (status 10))
   (segment (start 33.208 30.668) (end 30.668 33.208) (width 0.5) (layer F.Cu) (net 2) (tstamp 5B65CF41) (status 20))
-  (segment (start 33.208 33.208) (end 30.668 30.668) (width 0.5) (layer B.Cu) (net 3) (status 10))
-  (segment (start 30.668 30.668) (end 30.668 23.302) (width 0.5) (layer B.Cu) (net 3) (tstamp 5B65CF4A) (status 20))
+  (segment (start 31.938 23.302) (end 31.938 29.398) (width 0.5) (layer F.Cu) (net 3) (status 10))
+  (segment (start 31.938 29.398) (end 28.128 33.208) (width 0.5) (layer F.Cu) (net 3) (tstamp 5B65CF35) (status 20))
 
 )
