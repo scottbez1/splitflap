@@ -34,7 +34,7 @@ LIBS:arduino_uno_shield
 LIBS:74HC165
 LIBS:MIC5842
 LIBS:ws2812b
-LIBS:ah1815
+LIBS:hall_effect
 LIBS:sensor-cache
 EELAYER 25 0
 EELAYER END
@@ -64,14 +64,14 @@ F 5 "Consider ordering 1xN headers and breaking into multiple 1x3 headers, rathe
 	1    0    0    -1  
 $EndComp
 $Comp
-L AH1815 U1
+L hall_effect U1
 U 1 1 5B63B9BC
 P 4450 3700
 F 0 "U1" H 4550 3900 60  0000 C CNN
-F 1 "AH1815" V 4350 3700 60  0000 C CNN
-F 2 "ah1815:AH1815" H 4450 3700 60  0001 C CNN
+F 1 "AH3391Q" V 4350 3700 60  0000 C CNN
+F 2 "hall_effect:hall_effect" H 4450 3700 60  0001 C CNN
 F 3 "" H 4450 3700 60  0001 C CNN
-F 4 "AH1815-P-BDI-ND, 469-1027-ND" H 4450 3700 60  0001 C CNN "DK#"
+F 4 "AH3391Q-P-BDI-ND (sensor), 469-1027-ND (magnet)" H 4450 3700 60  0001 C CNN "DK#"
 	1    4450 3700
 	1    0    0    -1  
 $EndComp

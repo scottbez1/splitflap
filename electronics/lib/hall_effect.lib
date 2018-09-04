@@ -1,11 +1,11 @@
 EESchema-LIBRARY Version 2.3
 #encoding utf-8
 #
-# AH1815
+# hall_effect
 #
-DEF AH1815 U 0 40 Y Y 1 F N
+DEF hall_effect U 0 40 Y Y 1 F N
 F0 "U" 100 200 60 H V C CNN
-F1 "AH1815" -100 0 60 V V C CNN
+F1 "hall_effect" -100 0 60 V V C CNN
 F2 "" 0 0 60 H I C CNN
 F3 "" 0 0 60 H I C CNN
 DRAW

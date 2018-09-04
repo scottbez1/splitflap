@@ -64,4 +64,4 @@ LibName32=lib/arduino_uno_shield
 LibName33=lib/74HC165
 LibName34=lib/MIC5842
 LibName35=lib/ws2812b
-LibName36=lib/ah1815
+LibName36=lib/hall_effect
