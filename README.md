@@ -25,7 +25,7 @@ This design is currently at a *prototype* stage. The source files provided here 
 | Component | Status | Notes |
 | --- | --- | --- |
 | Enclosure/Mechanics | *Release Candidate* | Need documentation on ordering. |
-| Electronics | *Release Candidate* SEE NOTE ON AVAILABILITY | Need documentation on ordering and assembly. **AVAILABILITY NOTE**: As of 8/23/2018 it appears Digikey (my preferred supplier) has temporarily discountinued carrying a key component (GP2S60). It still appears to be available from other suppliers, such as [Mouser](https://www.mouser.com/ProductDetail/Sharp-Microelectronics/GP2S60?qs=5S%2F4hkdqNNeooxIGyEnzJA%3D%3D), so keep that in mind when building/ordering parts. However, there also happens to be work underway to replace this IR sensor with a hall-effect sensor in future designs; see [#29](https://github.com/scottbez1/splitflap/issues/29) and the [hall_effect](https://github.com/scottbez1/splitflap/tree/hall_effect) branch for updates on that. |
+| Electronics | *Release Candidate* | Need documentation on ordering and assembly. |
 | Firmware | *Release Candidate* | Works. |
 | Control Software | *Beta* | Example python code for driving the display is in the [software](https://github.com/scottbez1/splitflap/tree/master/electronics) directory|
 
@@ -66,7 +66,8 @@ This is an incomplete list of supplies needed to build a split-flap display modu
 
 #### PCB ####
 
-* $14		/10 units -- PCB for reflectance sensor [on seeedstudio](http://www.seeedstudio.com/service/index.php?r=pcb)
+* $25		/40 units -- PCB for controller [on seeedstudio](http://www.seeedstudio.com/service/index.php?r=pcb) - will be available for purchase in smaller qantities soon!
+* $25		/200 units -- PCB for hall-effect sensor [on seeedstudio](http://www.seeedstudio.com/service/index.php?r=pcb) - will be available for purchase in smaller quantities soon!
 
 #### Electronics & Motor ####
 
@@ -128,7 +129,7 @@ Up to 3 driver boards can be chained together, for up to 12 modules controlled b
 The designs for the controller can be found under `electronics/splitflap.pro` (KiCad project).
 Nearly everything is a through-hole component rather than SMD, so it's very easy to hand-solder.
 
-The driver uses 2 MIC5842 low-side shift-register drivers, with built-in transient-suppression diodes, to control the motors, and a 74HC165 shift register to read from 4 optical home position sensors.
+The driver uses 2 MIC5842 low-side shift-register drivers, with built-in transient-suppression diodes, to control the motors, and a 74HC165 shift register to read from 4 hall-effect magnetic home position sensors.
 There are optional WS2812B RGB LEDs which can be used to indicate the status of each of the 4 channels.
 
 <a href="https://s3.amazonaws.com/splitflap-travis/branches/hall_effect/schematic.pdf">
@@ -182,7 +183,7 @@ EESchema isn't easily scriptable, so to export the schematic and bill of materia
 ### Driver Firmware ###
 The driver firmware is written using Arduino and is available at `arduino/splitflap/splitflap.ino`. 
 
-The firmware currently runs a basic closed-loop controller that accepts letters over USB serial and drives the stepper motors using a precomputed acceleration ramp for smooth control. The firmware automatically calibrates the spool position at startup, using the IR reflectance sensor, and will automatically recalibrate itself if it ever detects that the spool position has gotten out of sync. If a commanded rotation is expected to bring the spool past the "home" position, it will confirm that the sensor is triggered neither too early nor too late; otherwise it will search for the "home" position to get in sync before continuing to the desired letter.
+The firmware currently runs a basic closed-loop controller that accepts letters over USB serial and drives the stepper motors using a precomputed acceleration ramp for smooth control. The firmware automatically calibrates the spool position at startup, using the hall-effect magnetic sensor, and will automatically recalibrate itself if it ever detects that the spool position has gotten out of sync. If a commanded rotation is expected to bring the spool past the "home" position, it will confirm that the sensor is triggered neither too early nor too late; otherwise it will search for the "home" position to get in sync before continuing to the desired letter.
 
 ### Computer Control Software ###
 The display can be controlled by a computer connected to the Arduino over USB serial. A basic python library for interfacing with the Arduino and a demo application that displays random words can be found in the [software](https://github.com/scottbez1/splitflap/tree/master/software) directory.
