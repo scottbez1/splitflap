@@ -3,10 +3,10 @@
 This is a work in progress DIY [split-flap display](https://en.wikipedia.org/wiki/Split-flap_display).
 Prototype four-character display: [video](https://www.youtube.com/watch?v=vq4o_88kN8g).
 
-![animated rendering](https://s3.amazonaws.com/splitflap-travis/branches/master/3d_animation.gif)
+![animated rendering](https://s3.amazonaws.com/splitflap-travis/branches/hall_effect/3d_animation.gif)
 [![prototype video](renders/prototypeVideoThumbnail.jpg)](https://www.youtube.com/watch?v=vq4o_88kN8g)
 
-[![Build Status](https://travis-ci.org/scottbez1/splitflap.svg?branch=master)](https://travis-ci.org/scottbez1/splitflap)
+[![Build Status](https://travis-ci.org/scottbez1/splitflap.svg?branch=hall_effect)](https://travis-ci.org/scottbez1/splitflap)
 
 The goal is to make a low-cost display that's easy to fabricate at home in small/single quantities (e.g. custom materials can be ordered from Ponoko or similar, and other hardware is generally available).
 
@@ -25,7 +25,7 @@ This design is currently at a *prototype* stage. The source files provided here 
 | Component | Status | Notes |
 | --- | --- | --- |
 | Enclosure/Mechanics | *Release Candidate* | Need documentation on ordering. |
-| Electronics | *Release Candidate* SEE NOTE ON AVAILABILITY | Need documentation on ordering and assembly. **AVAILABILITY NOTE**: As of 8/23/2018 it appears Digikey (my preferred supplier) has temporarily discountinued carrying a key component (GP2S60). It still appears to be available from other suppliers, such as [Mouser](https://www.mouser.com/ProductDetail/Sharp-Microelectronics/GP2S60?qs=5S%2F4hkdqNNeooxIGyEnzJA%3D%3D), so keep that in mind when building/ordering parts. However, there also happens to be work underway to replace this IR sensor with a hall-effect sensor in future designs; see [#29](https://github.com/scottbez1/splitflap/issues/29) and the [hall_effect](https://github.com/scottbez1/splitflap/tree/hall_effect) branch for updates on that. |
+| Electronics | *Release Candidate* | Need documentation on ordering and assembly. |
 | Firmware | *Release Candidate* | Works. |
 | Control Software | *Beta* | Example python code for driving the display is in the [software](https://github.com/scottbez1/splitflap/tree/master/electronics) directory|
 
@@ -38,7 +38,7 @@ I'd love to hear your thoughts and questions about this project, and happy to in
 * store-bought vinyl stickers for flap letters
 * control up to 12 modules from a single Arduino
 
-![2d laser cut rendering](https://s3.amazonaws.com/splitflap-travis/branches/master/3d_laser_raster.png)
+![2d laser cut rendering](https://s3.amazonaws.com/splitflap-travis/branches/hall_effect/3d_laser_raster.png)
 
 ### Rough Cost Breakdown ###
 
@@ -66,7 +66,8 @@ This is an incomplete list of supplies needed to build a split-flap display modu
 
 #### PCB ####
 
-* $14		/10 units -- PCB for reflectance sensor [on seeedstudio](http://www.seeedstudio.com/service/index.php?r=pcb)
+* $25		/40 units -- PCB for controller [on seeedstudio](http://www.seeedstudio.com/service/index.php?r=pcb) - will be available for purchase in smaller qantities soon!
+* $25		/200 units -- PCB for hall-effect sensor [on seeedstudio](http://www.seeedstudio.com/service/index.php?r=pcb) - will be available for purchase in smaller quantities soon!
 
 #### Electronics & Motor ####
 
@@ -110,7 +111,7 @@ The `generate_2d.py` script interacts with the `projection_renderer` module by f
 
 Once the `combined.svg` file is generated, you'll want to double-check there aren't any redundant cut lines that are shared by multiple adjacent pieces, to save time/cost when cutting. They should be detected automatically (and highlighted in red in the rendering above), but it doesn't hurt to double-check. In Inkscape, select the "Edit paths by nodes" tool and select an edge to delete - the endpoints should turn blue. Then click "Delete segment between two non-endpoint nodes", and repeat this for all other redundant cut lines.
 
-Latest (Experimental!) Laser Cut Vector File: [svg](https://s3.amazonaws.com/splitflap-travis/branches/master/3d_laser_vector.svg)
+Latest (Experimental!) Laser Cut Vector File: [svg](https://s3.amazonaws.com/splitflap-travis/branches/hall_effect/3d_laser_vector.svg)
 (In order to get the design laser-cut from Ponoko, you'll need to copy all of the shapes from that file into one of [Ponoko's templates](http://www.ponoko.com/starter-kits/inkscape))
 
 ##### Animated gif #####
@@ -123,45 +124,66 @@ The design can be rendered to a series of STL files (one per color used in the m
 
 
 ### Driver Electronics ###
-The driver board is designed to plug into an Arduino like a shield, and can control 4 stepper motors. Up to 3 driver boards can be chained together, for up to 12 modules controlled by a single Arduino. The designs for the controller can be found under `electronics/splitflap.pro` (KiCad project). Nearly everything is a through-hole component rather than SMD, so it's very easy to hand-solder.
+The driver board is designed to plug into an Arduino like a shield, and can control 4 stepper motors.
+Up to 3 driver boards can be chained together, for up to 12 modules controlled by a single Arduino.
+The designs for the controller can be found under `electronics/splitflap.pro` (KiCad project).
+Nearly everything is a through-hole component rather than SMD, so it's very easy to hand-solder.
 
-The driver uses 2 MIC5842 low-side shift-register drivers, with built-in transient-suppression diodes, to control the motors, and a 74HC165 shift register to read from 4 optical home position sensors. There are optional WS2812B RGB LEDs which can be used to indicate the status of each of the 4 channels.
+The driver uses 2 MIC5842 low-side shift-register drivers, with built-in transient-suppression diodes, to control the motors, and a 74HC165 shift register to read from 4 hall-effect magnetic home position sensors.
+There are optional WS2812B RGB LEDs which can be used to indicate the status of each of the 4 channels.
 
-<a href="https://s3.amazonaws.com/splitflap-travis/branches/master/schematic.pdf">
-<img height="320" src="https://s3.amazonaws.com/splitflap-travis/branches/master/schematic.png"/>
+<a href="https://s3.amazonaws.com/splitflap-travis/branches/hall_effect/schematic.pdf">
+<img height="320" src="https://s3.amazonaws.com/splitflap-travis/branches/hall_effect/schematic.png"/>
 </a>
 
-The PCB layout is 10cm x 5cm which makes it fairly cheap to produce using a low-cost PCB manufacturer (e.g. Seeed Studio), and can be populated in two separate configurations (since many low-cost PCB manufacturers have a minimum order of identical PCBs):
+The PCB layout is 10cm x 5cm which makes it fairly cheap to produce using a low-cost PCB manufacturer (e.g. Seeed Studio).
 
-1. As a 4-channel driver board that plugs into an Arduino or chains to other driver boards
-1. As a home sensor board for a single character, with GP2S60 IR reflectance sensor and 3-pin connector
+<a href="https://s3.amazonaws.com/splitflap-travis/branches/hall_effect/pcb_raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-travis/branches/hall_effect/pcb_raster.png"/>
+</a>
 
-This way, with an order of 5 identical PCBs you can populate a single 4-channel driver board and four home sensor boards for a complete electronics set for 4 split-flap units.
+Each module also needs a hall-effect sensor board, with an AH3391Q (or similar) sensor and connector.
+These boards are small (about 16mm x 16 mm) and are available on a second PCB design that's panelized.
+The panelization is configurable (see [generate_panelize_config.py](https://github.com/scottbez1/splitflap/blob/hall_effect/electronics/generate_panelize_config.py))
+and is optimized for production at SeeedStudio.
 
-<a href="https://s3.amazonaws.com/splitflap-travis/branches/master/pcb_raster.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-travis/branches/master/pcb_raster.png"/>
+<a href="https://s3.amazonaws.com/splitflap-travis/branches/hall_effect/sensor_pcb_raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-travis/branches/hall_effect/sensor_pcb_raster.png"/>
 </a>
 
 ##### Latest PCB Renderings #####
-These are automatically updated on every commit with the latest rendering from the `master` branch. See this blog post for more details on how that works: [Automated KiCad, OpenSCAD rendering using Travis CI](http://scottbezek.blogspot.com/2016/04/automated-kicad-openscad-rendering.html).
+These are automatically updated on every commit with the latest rendering from the `hall_effect` branch.
+See this blog post for more details on how that works: [Automated KiCad, OpenSCAD rendering using Travis CI](http://scottbezek.blogspot.com/2016/04/automated-kicad-openscad-rendering.html).
 
-Latest (experimental!) PCB Gerbers: [zip](https://s3.amazonaws.com/splitflap-travis/branches/master/pcb_gerber.zip)
-Latest (experimental!) PCB Packet: [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/pcb_packet.pdf)
-Latest (experimental!) rough bill of materials: [csv](https://s3.amazonaws.com/splitflap-travis/branches/master/bom.csv)
+For Stable PCB designs, make sure to check out the [Releases](https://github.com/scottbez1/splitflap/releases) instead of using these experimental files.
+
+Latest (experimental!) Controller PCB Gerbers: [zip](https://s3.amazonaws.com/splitflap-travis/branches/hall_effect/pcb_gerber.zip)
+
+Latest (experimental!) Controller PCB Packet: [pdf](https://s3.amazonaws.com/splitflap-travis/branches/hall_effect/pcb_packet.pdf)
+
+Latest (experimental!) Sensor PCB Gerbers: [zip](https://s3.amazonaws.com/splitflap-travis/branches/hall_effect/sensor_pcb_gerber.zip)
+
+Latest (experimental!) Sensor PCB Packet: [pdf](https://s3.amazonaws.com/splitflap-travis/branches/hall_effect/sensor_pcb_packet.pdf)
+
+Latest (experimental!) rough bill of materials: [csv](https://s3.amazonaws.com/splitflap-travis/branches/hall_effect/bom.csv)
 
 #### Rendering ####
-The PCB layout can be rendered to an svg or png (seen above) by running `electronics/generate_svg.py`. This uses KiCad's [python scripting API](https://github.com/blairbonnett-mirrors/kicad/blob/master/demos/python_scripts_examples/plot_board.py) to render several layers to individual svg files, manipulates them to apply color and opacity settings, and then merges them to a single svg. For additional details, see this blog post: [Scripting KiCad Pcbnew exports](http://scottbezek.blogspot.com/2016/04/scripting-kicad-pcbnew-exports.html).
+The PCB layout can be rendered to an svg or png (seen above) by running `electronics/generate_svg.py file.kicad_pcb`.
+This uses KiCad's [python scripting API](https://github.com/blairbonnett-mirrors/kicad/blob/master/demos/python_scripts_examples/plot_board.py)
+to render several layers to individual svg files, manipulates them to apply color and opacity settings, and then merges them to a single svg.
+For additional details, see this blog post: [Scripting KiCad Pcbnew exports](http://scottbezek.blogspot.com/2016/04/scripting-kicad-pcbnew-exports.html).
 
-For reviewing the design, a pdf packet with copper, silkscreen, and drill info can be produced by running `electronics/generate_pdf.py`.
+For reviewing the design, a pdf packet with copper, silkscreen, and drill info can be produced by running `electronics/generate_pdf.py file.kicad_pcb`.
 
-Gerber files for fabrication can be exported by running `electronics/generate_gerber.py`. This generates gerber files and an Excellon drill file with Seeed Studio's [naming conventions](http://support.seeedstudio.com/knowledgebase/articles/422482-fusion-pcb-order-submission-guidelines) and produces a `.zip` which can be sent for fabrication.
+Gerber files for fabrication can be exported by running `electronics/generate_gerber.py file.kicad_pcb`.
+This generates gerber files and an Excellon drill file with Seeed Studio's [naming conventions](http://support.seeedstudio.com/knowledgebase/articles/422482-fusion-pcb-order-submission-guidelines) and produces a `.zip` which can be sent for fabrication.
 
 EESchema isn't easily scriptable, so to export the schematic and bill of materials `electronics/scripts/export_schematic.py` and `export_bom.py` start an X Virtual Frame Buffer (Xvfb) and open the `eeschema` GUI within that virtual display, and then send a series of hardcoded key presses via `xdotool` to interact with the GUI and click through the dialogs. This is very fragile but seems to work ok for now. For additional details, see this blog post: [Using UI automation to export KiCad schematics](http://scottbezek.blogspot.com/2016/04/automated-kicad-schematic-export.html).
 
 ### Driver Firmware ###
 The driver firmware is written using Arduino and is available at `arduino/splitflap/splitflap.ino`. 
 
-The firmware currently runs a basic closed-loop controller that accepts letters over USB serial and drives the stepper motors using a precomputed acceleration ramp for smooth control. The firmware automatically calibrates the spool position at startup, using the IR reflectance sensor, and will automatically recalibrate itself if it ever detects that the spool position has gotten out of sync. If a commanded rotation is expected to bring the spool past the "home" position, it will confirm that the sensor is triggered neither too early nor too late; otherwise it will search for the "home" position to get in sync before continuing to the desired letter.
+The firmware currently runs a basic closed-loop controller that accepts letters over USB serial and drives the stepper motors using a precomputed acceleration ramp for smooth control. The firmware automatically calibrates the spool position at startup, using the hall-effect magnetic sensor, and will automatically recalibrate itself if it ever detects that the spool position has gotten out of sync. If a commanded rotation is expected to bring the spool past the "home" position, it will confirm that the sensor is triggered neither too early nor too late; otherwise it will search for the "home" position to get in sync before continuing to the desired letter.
 
 ### Computer Control Software ###
 The display can be controlled by a computer connected to the Arduino over USB serial. A basic python library for interfacing with the Arduino and a demo application that displays random words can be found in the [software](https://github.com/scottbez1/splitflap/tree/master/software) directory.

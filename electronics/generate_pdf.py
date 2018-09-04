@@ -12,7 +12,7 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
-
+import argparse
 import logging
 import os
 import pcbnew
@@ -26,24 +26,24 @@ import pcb_util
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-PCB_FILENAME = 'splitflap.kicad_pcb'
-
 # Have to use absolute path for build_directory otherwise pcbnew will output relative to the temp file
 BUILD_DIRECTORY = os.path.abspath('build')
 
-def run():
+
+def run(pcb_file):
     temp_dir = os.path.join(BUILD_DIRECTORY, 'temp_pdfs')
     shutil.rmtree(temp_dir, ignore_errors=True)
     try:
         os.makedirs(temp_dir)
-        plot_to_directory(BUILD_DIRECTORY, temp_dir)
+        plot_to_directory(pcb_file, BUILD_DIRECTORY, temp_dir)
     finally:
         shutil.rmtree(temp_dir, ignore_errors=True)
 
-def plot_to_directory(output_directory, temp_dir):
-    board_name = os.path.splitext(os.path.basename(PCB_FILENAME))[0]
 
-    with pcb_util.get_plotter(PCB_FILENAME, temp_dir) as plotter:
+def plot_to_directory(pcb_file, output_directory, temp_dir):
+    board_name = os.path.splitext(os.path.basename(pcb_file))[0]
+
+    with pcb_util.get_plotter(pcb_file, temp_dir) as plotter:
         plotter.plot_options.SetDrillMarksType(pcbnew.PCB_PLOT_PARAMS.NO_DRILL_SHAPE)
         plotter.plot_options.SetExcludeEdgeLayer(False)
 
@@ -70,5 +70,8 @@ def plot_to_directory(output_directory, temp_dir):
         subprocess.check_call(command)
 
 if __name__ == '__main__':
-    run()
+    parser = argparse.ArgumentParser('Generate a pdf of the PCB')
+    parser.add_argument('pcb_file')
+    args = parser.parse_args()
+    run(args.pcb_file)
 
