@@ -3,10 +3,10 @@
 This is a work in progress DIY [split-flap display](https://en.wikipedia.org/wiki/Split-flap_display).
 Prototype four-character display: [video](https://www.youtube.com/watch?v=vq4o_88kN8g).
 
-![animated rendering](https://s3.amazonaws.com/splitflap-travis/branches/hall_effect/3d_animation.gif)
+![animated rendering](https://s3.amazonaws.com/splitflap-travis/branches/pcb_redesign/3d_animation.gif)
 [![prototype video](renders/prototypeVideoThumbnail.jpg)](https://www.youtube.com/watch?v=vq4o_88kN8g)
 
-[![Build Status](https://travis-ci.org/scottbez1/splitflap.svg?branch=hall_effect)](https://travis-ci.org/scottbez1/splitflap)
+[![Build Status](https://travis-ci.org/scottbez1/splitflap.svg?branch=pcb_redesign)](https://travis-ci.org/scottbez1/splitflap)
 
 The goal is to make a low-cost display that's easy to fabricate at home in small/single quantities (e.g. custom materials can be ordered from Ponoko or similar, and other hardware is generally available).
 
@@ -38,7 +38,7 @@ I'd love to hear your thoughts and questions about this project, and happy to in
 * store-bought vinyl stickers for flap letters
 * control up to 12 modules from a single Arduino
 
-![2d laser cut rendering](https://s3.amazonaws.com/splitflap-travis/branches/hall_effect/3d_laser_raster.png)
+![2d laser cut rendering](https://s3.amazonaws.com/splitflap-travis/branches/pcb_redesign/3d_laser_raster.png)
 
 ### Rough Cost Breakdown ###
 
@@ -110,7 +110,7 @@ The `generate_2d.py` script interacts with the `projection_renderer` module by f
 
 Once the `combined.svg` file is generated, you'll want to double-check there aren't any redundant cut lines that are shared by multiple adjacent pieces, to save time/cost when cutting. They should be detected automatically (and highlighted in red in the rendering above), but it doesn't hurt to double-check. In Inkscape, select the "Edit paths by nodes" tool and select an edge to delete - the endpoints should turn blue. Then click "Delete segment between two non-endpoint nodes", and repeat this for all other redundant cut lines.
 
-Latest (Experimental!) Laser Cut Vector File: [svg](https://s3.amazonaws.com/splitflap-travis/branches/hall_effect/3d_laser_vector.svg)
+Latest (Experimental!) Laser Cut Vector File: [svg](https://s3.amazonaws.com/splitflap-travis/branches/pcb_redesign/3d_laser_vector.svg)
 (In order to get the design laser-cut from Ponoko, you'll need to copy all of the shapes from that file into one of [Ponoko's templates](http://www.ponoko.com/starter-kits/inkscape))
 
 ##### Animated gif #####
@@ -131,40 +131,40 @@ Nearly everything is a through-hole component rather than SMD, so it's very easy
 The driver uses 2 MIC5842 low-side shift-register drivers, with built-in transient-suppression diodes, to control the motors, and a 74HC165 shift register to read from 4 optical home position sensors.
 There are optional WS2812B RGB LEDs which can be used to indicate the status of each of the 4 channels.
 
-<a href="https://s3.amazonaws.com/splitflap-travis/branches/hall_effect/schematic.pdf">
-<img height="320" src="https://s3.amazonaws.com/splitflap-travis/branches/hall_effect/schematic.png"/>
+<a href="https://s3.amazonaws.com/splitflap-travis/branches/pcb_redesign/schematic.pdf">
+<img height="320" src="https://s3.amazonaws.com/splitflap-travis/branches/pcb_redesign/schematic.png"/>
 </a>
 
 The PCB layout is 10cm x 5cm which makes it fairly cheap to produce using a low-cost PCB manufacturer (e.g. Seeed Studio).
 
-<a href="https://s3.amazonaws.com/splitflap-travis/branches/hall_effect/pcb_raster.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-travis/branches/hall_effect/pcb_raster.png"/>
+<a href="https://s3.amazonaws.com/splitflap-travis/branches/pcb_redesign/pcb_raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-travis/branches/pcb_redesign/pcb_raster.png"/>
 </a>
 
 Each module also needs a hall-effect sensor board, with an AH1815 sensor and connector.
 These boards are small (about 16mm x 16 mm) and are available on a second PCB design that's panelized.
-The panelization is configurable (see [generate_panelize_config.py](https://github.com/scottbez1/splitflap/blob/hall_effect/electronics/generate_panelize_config.py))
+The panelization is configurable (see [generate_panelize_config.py](https://github.com/scottbez1/splitflap/blob/pcb_redesign/electronics/generate_panelize_config.py))
 and is optimized for production at SeeedStudio.
 
-<a href="https://s3.amazonaws.com/splitflap-travis/branches/hall_effect/sensor_pcb_raster.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-travis/branches/hall_effect/sensor_pcb_raster.png"/>
+<a href="https://s3.amazonaws.com/splitflap-travis/branches/pcb_redesign/sensor_pcb_raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-travis/branches/pcb_redesign/sensor_pcb_raster.png"/>
 </a>
 
 ##### Latest PCB Renderings #####
-These are automatically updated on every commit with the latest rendering from the `hall_effect` branch.
+These are automatically updated on every commit with the latest rendering from the `pcb_redesign` branch.
 See this blog post for more details on how that works: [Automated KiCad, OpenSCAD rendering using Travis CI](http://scottbezek.blogspot.com/2016/04/automated-kicad-openscad-rendering.html).
 
 For Stable PCB designs, make sure to check out the [Releases](https://github.com/scottbez1/splitflap/releases) instead of using these experimental files.
 
-Latest (experimental!) Controller PCB Gerbers: [zip](https://s3.amazonaws.com/splitflap-travis/branches/hall_effect/pcb_gerber.zip)
+Latest (experimental!) Controller PCB Gerbers: [zip](https://s3.amazonaws.com/splitflap-travis/branches/pcb_redesign/pcb_gerber.zip)
 
-Latest (experimental!) Controller PCB Packet: [pdf](https://s3.amazonaws.com/splitflap-travis/branches/hall_effect/pcb_packet.pdf)
+Latest (experimental!) Controller PCB Packet: [pdf](https://s3.amazonaws.com/splitflap-travis/branches/pcb_redesign/pcb_packet.pdf)
 
-Latest (experimental!) Sensor PCB Gerbers: [zip](https://s3.amazonaws.com/splitflap-travis/branches/hall_effect/sensor_pcb_gerber.zip)
+Latest (experimental!) Sensor PCB Gerbers: [zip](https://s3.amazonaws.com/splitflap-travis/branches/pcb_redesign/sensor_pcb_gerber.zip)
 
-Latest (experimental!) Sensor PCB Packet: [pdf](https://s3.amazonaws.com/splitflap-travis/branches/hall_effect/sensor_pcb_packet.pdf)
+Latest (experimental!) Sensor PCB Packet: [pdf](https://s3.amazonaws.com/splitflap-travis/branches/pcb_redesign/sensor_pcb_packet.pdf)
 
-Latest (experimental!) rough bill of materials: [csv](https://s3.amazonaws.com/splitflap-travis/branches/hall_effect/bom.csv)
+Latest (experimental!) rough bill of materials: [csv](https://s3.amazonaws.com/splitflap-travis/branches/pcb_redesign/bom.csv)
 
 #### Rendering ####
 The PCB layout can be rendered to an svg or png (seen above) by running `electronics/generate_svg.py file.kicad_pcb`.
