@@ -115,7 +115,7 @@ F 1 "CONN_01X04" V 2150 4600 50  0000 C CNN
 F 2 "PinHeaders:Pin_Header_Straight_1x04" H 2050 4600 50  0001 C CNN
 F 3 "" H 2050 4600 50  0000 C CNN
 F 4 "S1012EC-04-ND" H 2050 4600 60  0001 C CNN "DK#"
-F 5 "Consider ordering 1xN headers and breaking into multiple 1x4 headers, rather than ordering exact 1x4 headers" H 2050 4600 60  0001 C CNN "BOM_Note"
+F 5 "Combine S1012EC-* male headers with other components and order a single, longer header (e.g. 1x40 and snap it apart)" H 2050 4600 60  0001 C CNN "BOM_Note"
 	1    2050 4600
 	1    0    0    -1  
 $EndComp
@@ -128,7 +128,7 @@ F 1 "CONN_01X04" V 2600 4600 50  0000 C CNN
 F 2 "PinHeaders:Pin_Header_Straight_1x04" H 2500 4600 50  0001 C CNN
 F 3 "" H 2500 4600 50  0000 C CNN
 F 4 "S1012EC-04-ND" H 2500 4600 60  0001 C CNN "DK#"
-F 5 "Consider ordering 1xN headers and breaking into multiple 1x4 headers, rather than ordering exact 1x4 headers" H 2500 4600 60  0001 C CNN "BOM_Note"
+F 5 "Combine S1012EC-* male headers with other components and order a single, longer header (e.g. 1x40 and snap it apart)" H 2500 4600 60  0001 C CNN "BOM_Note"
 	1    2500 4600
 	1    0    0    -1  
 $EndComp
@@ -141,7 +141,7 @@ F 1 "CONN_01X04" V 3050 4600 50  0000 C CNN
 F 2 "PinHeaders:Pin_Header_Straight_1x04" H 2950 4600 50  0001 C CNN
 F 3 "" H 2950 4600 50  0000 C CNN
 F 4 "S1012EC-04-ND" H 2950 4600 60  0001 C CNN "DK#"
-F 5 "Consider ordering 1xN headers and breaking into multiple 1x4 headers, rather than ordering exact 1x4 headers" H 2950 4600 60  0001 C CNN "BOM_Note"
+F 5 "Combine S1012EC-* male headers with other components and order a single, longer header (e.g. 1x40 and snap it apart)" H 2950 4600 60  0001 C CNN "BOM_Note"
 	1    2950 4600
 	1    0    0    -1  
 $EndComp
@@ -247,7 +247,8 @@ F 0 "U1" H 5050 1250 60  0000 C CNN
 F 1 "arduino_uno_shield" H 5400 1400 60  0000 C CNN
 F 2 "ArduinoUnoShield:arduino_uno_shield" H 6050 1400 60  0001 C CNN
 F 3 "" H 6050 1400 60  0001 C CNN
-F 4 "S1012EC-04-ND, S7106-ND" H 5850 1500 60  0001 C CNN "DK#"
+F 4 "S1012EC-03-ND, S1012EC-02-ND, S7106-ND" H 5850 1500 60  0001 C CNN "DK#"
+F 5 "Combine S1012EC-* male headers with other components and order a single, longer header (e.g. 1x40 and snap it apart)" H 5850 1500 60  0001 C CNN "BOM_Note"
 	1    5850 1500
 	0    1    1    0   
 $EndComp
@@ -747,7 +748,6 @@ NoConn ~ 1800 1800
 NoConn ~ 2300 1800
 NoConn ~ 1800 3500
 NoConn ~ 2300 3500
-NoConn ~ 4600 1700
 NoConn ~ 5900 3350
 NoConn ~ 5200 1700
 $Comp
@@ -1210,6 +1210,7 @@ F 1 "CONN_01X04" V 5800 3100 50  0000 C CNN
 F 2 "PinHeaders:Pin_Header_Straight_1x04" H 5700 3100 50  0001 C CNN
 F 3 "" H 5700 3100 50  0000 C CNN
 F 4 "N/A" H 5700 3100 60  0001 C CNN "DK#"
+F 5 "Unused pins, leave unpopulated" H 5700 3100 60  0001 C CNN "BOM_Note"
 	1    5700 3100
 	-1   0    0    -1  
 $EndComp
@@ -1285,7 +1286,8 @@ F 0 "JP1" H 3750 1830 50  0000 C CNN
 F 1 "VIN <-> VCC" H 3760 1690 50  0000 C CNN
 F 2 "Pin_Headers:Pin_Header_Straight_1x02_Pitch2.54mm" H 3750 1750 50  0001 C CNN
 F 3 "" H 3750 1750 50  0001 C CNN
-F 4 "S9337-ND" H 3750 1750 60  0001 C CNN "DK#"
+F 4 "S1012EC-02-ND, S9337-ND (Both optional)" H 3750 1750 60  0001 C CNN "DK#"
+F 5 "Combine S1012EC-* male headers with other components and order a single, longer header (e.g. 1x40 and snap it apart)" H 3750 1750 60  0001 C CNN "BOM_Note"
 	1    3750 1750
 	1    0    0    -1  
 $EndComp
