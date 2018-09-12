@@ -34,6 +34,7 @@ LIBS:arduino_uno_shield
 LIBS:74HC165
 LIBS:MIC5842
 LIBS:ws2812b
+LIBS:no_pin
 LIBS:splitflap-cache
 EELAYER 25 0
 EELAYER END
@@ -81,6 +82,7 @@ F 1 "MOTOR_PWR" H 1400 5350 50  0000 C CNN
 F 2 "PJ-202A:PJ-202A" H 1400 5550 50  0001 C CNN
 F 3 "" H 1400 5550 50  0000 C CNN
 F 4 "CP-202A-ND" H 1400 5550 60  0001 C CNN "DK#"
+F 5 "Only needed on first board in chain (motor power transferred through ribbon cable to 2nd/3rd boards)" H 1400 5550 60  0001 C CNN "BOM_Note"
 	1    1400 5550
 	1    0    0    -1  
 $EndComp
@@ -248,7 +250,7 @@ F 1 "arduino_uno_shield" H 5400 1400 60  0000 C CNN
 F 2 "ArduinoUnoShield:arduino_uno_shield" H 6050 1400 60  0001 C CNN
 F 3 "" H 6050 1400 60  0001 C CNN
 F 4 "S1012EC-03-ND, S1012EC-02-ND, S7106-ND" H 5850 1500 60  0001 C CNN "DK#"
-F 5 "Combine S1012EC-* male headers with other components and order a single, longer header (e.g. 1x40 and snap it apart)" H 5850 1500 60  0001 C CNN "BOM_Note"
+F 5 "Arduino connections; only needed on *first* controller board in chain. Combine S1012EC-* male headers with other components and order a single, longer header (e.g. 1x40 and snap it apart)." H 5850 1500 60  0001 C CNN "BOM_Note"
 	1    5850 1500
 	0    1    1    0   
 $EndComp
@@ -431,6 +433,7 @@ F 1 "EXP. IN" V 2050 1500 50  0000 C CNN
 F 2 "PinHeaders:Pin_Header_Straight_2x07_Pitch2.54mm_IDC_Shrouded" H 2050 300 50  0001 C CNN
 F 3 "" H 2050 300 50  0001 C CNN
 F 4 "S9170-ND" H 2050 1500 60  0001 C CNN "DK#"
+F 5 "J1 (Expansion In) is NOT needed on first board, and J2 (Expansion Out) is NOT needed on third/last board in chain." H 2050 1500 60  0001 C CNN "BOM_Note"
 	1    2050 1500
 	1    0    0    -1  
 $EndComp
@@ -608,94 +611,95 @@ SPI_CLOCK
 $Comp
 L CONN_02X07 J2
 U 1 1 59D7346F
-P 2050 3200
-F 0 "J2" H 2050 3600 50  0000 C CNN
-F 1 "EXP. OUT" V 2050 3200 50  0000 C CNN
-F 2 "PinHeaders:Pin_Header_Straight_2x07_Pitch2.54mm_IDC_Shrouded" H 2050 2000 50  0001 C CNN
-F 3 "" H 2050 2000 50  0001 C CNN
-F 4 "S9170-ND" H 2050 3200 60  0001 C CNN "DK#"
-	1    2050 3200
+P 2050 2600
+F 0 "J2" H 2050 3000 50  0000 C CNN
+F 1 "EXP. OUT" V 2050 2600 50  0000 C CNN
+F 2 "PinHeaders:Pin_Header_Straight_2x07_Pitch2.54mm_IDC_Shrouded" H 2050 1400 50  0001 C CNN
+F 3 "" H 2050 1400 50  0001 C CNN
+F 4 "S9170-ND" H 2050 2600 60  0001 C CNN "DK#"
+F 5 "J1 (Expansion In) is NOT needed on first board, and J2 (Expansion Out) is NOT needed on third/last board in chain." H 2050 2600 60  0001 C CNN "BOM_Note"
+	1    2050 2600
 	1    0    0    -1  
 $EndComp
 $Comp
 L VCC #PWR023
 U 1 1 59D73475
-P 1800 2750
-F 0 "#PWR023" H 1800 2600 50  0001 C CNN
-F 1 "VCC" H 1800 2900 50  0000 C CNN
-F 2 "" H 1800 2750 50  0001 C CNN
-F 3 "" H 1800 2750 50  0001 C CNN
-	1    1800 2750
+P 1800 2150
+F 0 "#PWR023" H 1800 2000 50  0001 C CNN
+F 1 "VCC" H 1800 2300 50  0000 C CNN
+F 2 "" H 1800 2150 50  0001 C CNN
+F 3 "" H 1800 2150 50  0001 C CNN
+	1    1800 2150
 	1    0    0    -1  
 $EndComp
 $Comp
 L VCC #PWR024
 U 1 1 59D7347B
-P 2300 2750
-F 0 "#PWR024" H 2300 2600 50  0001 C CNN
-F 1 "VCC" H 2300 2900 50  0000 C CNN
-F 2 "" H 2300 2750 50  0001 C CNN
-F 3 "" H 2300 2750 50  0001 C CNN
-	1    2300 2750
+P 2300 2150
+F 0 "#PWR024" H 2300 2000 50  0001 C CNN
+F 1 "VCC" H 2300 2300 50  0000 C CNN
+F 2 "" H 2300 2150 50  0001 C CNN
+F 3 "" H 2300 2150 50  0001 C CNN
+	1    2300 2150
 	1    0    0    -1  
 $EndComp
 $Comp
 L GND #PWR025
 U 1 1 59D73483
-P 850 3000
-F 0 "#PWR025" H 850 2750 50  0001 C CNN
-F 1 "GND" H 850 2850 50  0000 C CNN
-F 2 "" H 850 3000 50  0001 C CNN
-F 3 "" H 850 3000 50  0001 C CNN
-	1    850  3000
+P 850 2400
+F 0 "#PWR025" H 850 2150 50  0001 C CNN
+F 1 "GND" H 850 2250 50  0000 C CNN
+F 2 "" H 850 2400 50  0001 C CNN
+F 3 "" H 850 2400 50  0001 C CNN
+	1    850  2400
 	1    0    0    -1  
 $EndComp
 $Comp
 L GND #PWR026
 U 1 1 59D73489
-P 3150 3000
-F 0 "#PWR026" H 3150 2750 50  0001 C CNN
-F 1 "GND" H 3150 2850 50  0000 C CNN
-F 2 "" H 3150 3000 50  0001 C CNN
-F 3 "" H 3150 3000 50  0001 C CNN
-	1    3150 3000
+P 3150 2400
+F 0 "#PWR026" H 3150 2150 50  0001 C CNN
+F 1 "GND" H 3150 2250 50  0000 C CNN
+F 2 "" H 3150 2400 50  0001 C CNN
+F 3 "" H 3150 2400 50  0001 C CNN
+	1    3150 2400
 	1    0    0    -1  
 $EndComp
 $Comp
 L +5V #PWR027
 U 1 1 59D73491
-P 1550 2900
-F 0 "#PWR027" H 1550 2750 50  0001 C CNN
-F 1 "+5V" H 1550 3040 50  0000 C CNN
-F 2 "" H 1550 2900 50  0001 C CNN
-F 3 "" H 1550 2900 50  0001 C CNN
-	1    1550 2900
+P 1550 2300
+F 0 "#PWR027" H 1550 2150 50  0001 C CNN
+F 1 "+5V" H 1550 2440 50  0000 C CNN
+F 2 "" H 1550 2300 50  0001 C CNN
+F 3 "" H 1550 2300 50  0001 C CNN
+	1    1550 2300
 	1    0    0    -1  
 $EndComp
 $Comp
 L +5V #PWR028
 U 1 1 59D73497
-P 2550 2900
-F 0 "#PWR028" H 2550 2750 50  0001 C CNN
-F 1 "+5V" H 2550 3040 50  0000 C CNN
-F 2 "" H 2550 2900 50  0001 C CNN
-F 3 "" H 2550 2900 50  0001 C CNN
-	1    2550 2900
+P 2550 2300
+F 0 "#PWR028" H 2550 2150 50  0001 C CNN
+F 1 "+5V" H 2550 2440 50  0000 C CNN
+F 2 "" H 2550 2300 50  0001 C CNN
+F 3 "" H 2550 2300 50  0001 C CNN
+	1    2550 2300
 	1    0    0    -1  
 $EndComp
-Text Label 950  3200 0    60   ~ 0
+Text Label 950  2600 0    60   ~ 0
 MOTOR_DATA_OUT
-Text Label 3000 3200 2    60   ~ 0
+Text Label 3000 2600 2    60   ~ 0
 MOTOR_LATCH
-Text Label 950  3300 0    60   ~ 0
+Text Label 950  2700 0    60   ~ 0
 SENSOR_DATA_IN
-Text Label 3000 3300 2    60   ~ 0
+Text Label 3000 2700 2    60   ~ 0
 SENSOR_LATCH
-Text Label 3000 3400 2    60   ~ 0
+Text Label 3000 2800 2    60   ~ 0
 DBGLED_OUT
-Text Label 950  3400 0    60   ~ 0
+Text Label 950  2800 0    60   ~ 0
 SPI_CLOCK
-Text Notes 1700 2500 0    60   ~ 0
+Text Notes 1650 750  0    60   ~ 0
 EXPANSION PORT
 $Comp
 L CONN_01X05 P2
@@ -746,8 +750,8 @@ F 4 "455-2270-ND" H 10300 3900 60  0001 C CNN "DK#"
 $EndComp
 NoConn ~ 1800 1800
 NoConn ~ 2300 1800
-NoConn ~ 1800 3500
-NoConn ~ 2300 3500
+NoConn ~ 1800 2900
+NoConn ~ 2300 2900
 NoConn ~ 5900 3350
 NoConn ~ 5200 1700
 $Comp
@@ -817,6 +821,7 @@ F 1 "470" V 4600 1850 50  0000 C CNN
 F 2 "Resistors_ThroughHole:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" H 4700 1850 60  0001 C CNN
 F 3 "" H 4700 1850 60  0000 C CNN
 F 4 "CF14JT470RCT-ND" V 4700 1850 60  0001 C CNN "DK#"
+F 5 "Only needed on first board in chain." V 4700 1850 60  0001 C CNN "BOM_Note"
 	1    4700 1850
 	1    0    0    -1  
 $EndComp
@@ -847,33 +852,33 @@ Wire Wire Line
 Wire Wire Line
 	9900 2700 10100 2700
 Wire Wire Line
-	2300 3200 3000 3200
+	2300 2600 3000 2600
 Wire Wire Line
-	3000 3300 2300 3300
+	3000 2700 2300 2700
 Wire Wire Line
-	2300 3400 3000 3400
+	2300 2800 3000 2800
 Wire Wire Line
-	950  3200 1800 3200
+	950  2600 1800 2600
 Wire Wire Line
-	1800 3300 950  3300
+	1800 2700 950  2700
 Wire Wire Line
-	950  3400 1800 3400
+	950  2800 1800 2800
 Wire Wire Line
-	2550 3100 2550 2900
+	2550 2500 2550 2300
 Wire Wire Line
-	2300 3100 2550 3100
+	2300 2500 2550 2500
 Wire Wire Line
-	1550 3100 1800 3100
+	1550 2500 1800 2500
 Wire Wire Line
-	1550 2900 1550 3100
+	1550 2300 1550 2500
 Wire Wire Line
-	2300 3000 3150 3000
+	2300 2400 3150 2400
 Wire Wire Line
-	850  3000 1800 3000
+	850  2400 1800 2400
 Wire Wire Line
-	2300 2900 2300 2750
+	2300 2300 2300 2150
 Wire Wire Line
-	1800 2750 1800 2900
+	1800 2150 1800 2300
 Wire Wire Line
 	2300 1500 3000 1500
 Wire Wire Line
@@ -1287,7 +1292,7 @@ F 1 "VIN <-> VCC" H 3760 1690 50  0000 C CNN
 F 2 "Pin_Headers:Pin_Header_Straight_1x02_Pitch2.54mm" H 3750 1750 50  0001 C CNN
 F 3 "" H 3750 1750 50  0001 C CNN
 F 4 "S1012EC-02-ND, S9337-ND (Both optional)" H 3750 1750 60  0001 C CNN "DK#"
-F 5 "Combine S1012EC-* male headers with other components and order a single, longer header (e.g. 1x40 and snap it apart)" H 3750 1750 60  0001 C CNN "BOM_Note"
+F 5 "Optional pin headers and jumper to power Arduino from 12V motor power. Combine S1012EC-* male headers with other components and order a single, longer header (e.g. 1x40 and snap it apart)" H 3750 1750 60  0001 C CNN "BOM_Note"
 	1    3750 1750
 	1    0    0    -1  
 $EndComp
@@ -1299,4 +1304,72 @@ Wire Wire Line
 	3600 1700 3600 1750
 Wire Wire Line
 	3600 1750 3650 1750
+$Comp
+L no_pin Z4
+U 1 1 5B992FE3
+P 2050 3300
+F 0 "Z4" H 1700 3450 60  0000 C CNN
+F 1 "ribbon cable (BOM only)" H 2050 3300 60  0000 C CNN
+F 2 "Oddities:Dummy_Empty" H 2050 3300 60  0001 C CNN
+F 3 "" H 2050 3300 60  0001 C CNN
+F 4 "H3CCS-1418G-ND" H 2050 3300 60  0001 C CNN "DK#"
+F 5 "Cable connects *between* controller boards in chain, so 2 are needed per 3 boards." H 2050 3300 60  0001 C CNN "BOM_Note"
+	1    2050 3300
+	1    0    0    -1  
+$EndComp
+$Comp
+L MOUNT_1pin Z1
+U 1 1 5B99526A
+P 1800 6250
+F 0 "Z1" H 1800 6400 60  0000 C CNN
+F 1 "MOUNT" H 1800 6300 60  0000 C CNN
+F 2 "MountingHoles:M4_mount" H 1800 6250 60  0001 C CNN
+F 3 "" H 1800 6250 60  0000 C CNN
+F 4 "N/A" H 1800 6250 60  0001 C CNN "DK#"
+F 5 "This is a mounting hole, not a component." H 1800 6250 60  0001 C CNN "BOM_Note"
+	1    1800 6250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1800 6450 2500 6450
+Connection ~ 2150 6450
+$Comp
+L GND #PWR035
+U 1 1 5B995C93
+P 2150 6550
+F 0 "#PWR035" H 2150 6300 50  0001 C CNN
+F 1 "GND" H 2150 6400 50  0000 C CNN
+F 2 "" H 2150 6550 50  0001 C CNN
+F 3 "" H 2150 6550 50  0001 C CNN
+	1    2150 6550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2150 6450 2150 6550
+$Comp
+L MOUNT_1pin Z2
+U 1 1 5B998432
+P 2150 6250
+F 0 "Z2" H 2150 6400 60  0000 C CNN
+F 1 "MOUNT" H 2150 6300 60  0000 C CNN
+F 2 "MountingHoles:M4_mount" H 2150 6250 60  0001 C CNN
+F 3 "" H 2150 6250 60  0000 C CNN
+F 4 "N/A" H 2150 6250 60  0001 C CNN "DK#"
+F 5 "This is a mounting hole, not a component." H 2150 6250 60  0001 C CNN "BOM_Note"
+	1    2150 6250
+	1    0    0    -1  
+$EndComp
+$Comp
+L MOUNT_1pin Z3
+U 1 1 5B9984BA
+P 2500 6250
+F 0 "Z3" H 2500 6400 60  0000 C CNN
+F 1 "MOUNT" H 2500 6300 60  0000 C CNN
+F 2 "MountingHoles:M4_mount" H 2500 6250 60  0001 C CNN
+F 3 "" H 2500 6250 60  0000 C CNN
+F 4 "N/A" H 2500 6250 60  0001 C CNN "DK#"
+F 5 "This is a mounting hole, not a component." H 2500 6250 60  0001 C CNN "BOM_Note"
+	1    2500 6250
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC

@@ -1,4 +1,4 @@
-update=Fri Oct 13 22:05:18 2017
+update=Wed Sep 12 08:08:41 2018
 version=1
 last_client=kicad
 [pcbnew]
@@ -64,3 +64,4 @@ LibName32=lib/arduino_uno_shield
 LibName33=lib/74HC165
 LibName34=lib/MIC5842
 LibName35=lib/ws2812b
+LibName36=lib/no_pin
