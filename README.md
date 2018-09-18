@@ -61,9 +61,8 @@ This is an incomplete list of supplies needed to build a split-flap display modu
 #### Flaps ####
 
 * $6.39		/2 units -- vinyl letter stickers (minimum letter duplication per pack is 2) [on Amazon](http://www.amazon.com/Duro-Decal-Permanent-Adhesive-Letters/dp/B0027601CM)
-* $12		/5 units -- blank white CR80 cards (each CR80 card becomes 2 flaps, each unit requires 40 flaps) on [Amazon](http://www.amazon.com/Plastic-printers-DataCard-Evolis-Magicard/dp/B007M413BC)
-* or $36	/25 units -- blank white CR80 cards (each CR80 card becomes 2 flaps, each unit requires 40 flaps) on [Amazon](http://www.amazon.com/White-Blank-CR80-020-Graphic-Quality/dp/B007PKD6MW)
-* or $50 /4 units -- Professional fully pre-cut high quality flaps (no manual cutting/punching needed), custom made for this project [on Tindie](https://www.tindie.com/products/scottbez1/blank-split-flap-display-flaps/). Proceeds help support continued development and prototyping.
+* $14		/4 units -- blank white CR80 cards (each CR80 card becomes 2 flaps, each unit requires 40 flaps = 20 cards. 100 cards is enough for 5 units in theory, but 4 in practice because there are no spares for mistakes) on [Amazon](http://www.amazon.com/Plastic-printers-DataCard-Evolis-Magicard/dp/B007M413BC)
+* or $50 /4 units -- Professional pre-cut high quality flaps (no manual cutting/punching needed), custom made for this project, on [Tindie](https://www.tindie.com/products/scottbez1/blank-split-flap-display-flaps/). Proceeds help support continued development and prototyping.
 
 #### PCB ####
 
