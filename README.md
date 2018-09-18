@@ -61,13 +61,15 @@ This is an incomplete list of supplies needed to build a split-flap display modu
 #### Flaps ####
 
 * $6.39		/2 units -- vinyl letter stickers (minimum letter duplication per pack is 2) [on Amazon](http://www.amazon.com/Duro-Decal-Permanent-Adhesive-Letters/dp/B0027601CM)
-* $12		/5 units
-* or $36	/25 units -- CR80 cards (each CR80 card becomes 2 flaps, each unit requires 40 flaps) on [Amazon](http://www.amazon.com/Plastic-printers-DataCard-Evolis-Magicard/dp/B007M413BC) or [Amazon](http://www.amazon.com/White-Blank-CR80-020-Graphic-Quality/dp/B007PKD6MW)
+* $12		/5 units -- blank white CR80 cards (each CR80 card becomes 2 flaps, each unit requires 40 flaps) on [Amazon](http://www.amazon.com/Plastic-printers-DataCard-Evolis-Magicard/dp/B007M413BC)
+* or $36	/25 units -- blank white CR80 cards (each CR80 card becomes 2 flaps, each unit requires 40 flaps) on [Amazon](http://www.amazon.com/White-Blank-CR80-020-Graphic-Quality/dp/B007PKD6MW)
+* or $50 /4 units -- Professional fully pre-cut high quality flaps (no manual cutting/punching needed), custom made for this project [on Tindie](https://www.tindie.com/products/scottbez1/blank-split-flap-display-flaps/). Proceeds help support continued development and prototyping.
 
 #### PCB ####
 
 * $25		/40 units -- PCB for controller [on seeedstudio](http://www.seeedstudio.com/service/index.php?r=pcb) - will be available for purchase in smaller qantities soon!
-* $25		/200 units -- PCB for hall-effect sensor [on seeedstudio](http://www.seeedstudio.com/service/index.php?r=pcb) - will be available for purchase in smaller quantities soon!
+* $4		/4 units -- PCB for hall-effect sensor [on Tindie](https://www.tindie.com/products/scottbez1/hall-effect-breakout-pcbs-for-splitflap-display/)
+* or $25		/200 units -- PCB for hall-effect sensor [on seeedstudio](http://www.seeedstudio.com/service/index.php?r=pcb)
 
 #### Electronics & Motor ####
 
