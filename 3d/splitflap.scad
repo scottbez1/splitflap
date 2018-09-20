@@ -162,7 +162,7 @@ enclosure_horizontal_rear_margin = thickness; // minumum distance between the fa
 enclosure_length = front_forward_offset + 28byj48_mount_center_offset + m4_hole_diameter/2 + enclosure_horizontal_rear_margin;
 
 
-// Enclosure connector tabs: front/back
+// Enclosure tabs: front/back
 num_front_tabs = 2;
 front_tab_width = (enclosure_wall_to_wall_width - 2*thickness) / (num_front_tabs*2 - 1);
 
@@ -179,14 +179,12 @@ motor_mount_hole_radius = m4_hole_diameter/2;
 motor_backpack_extent = 28byj48_backpack_extent + 2; // Add 2mm to make sure there's room for the wires
 motor_hole_slop = 1;
 
-connector_bracket_thickness = 3;
-connector_bracket_length = enclosure_width - enclosure_wall_to_wall_width + thickness*2 + connector_bracket_thickness*2;
-connector_bracket_width = connector_bracket_thickness * 3;
-connector_bracket_tab_width = 1.5;
-connector_bracket_tab_depth = 1;
-connector_bracket_tab_inset = 1;
-connector_bracket_tab_gap_depth = 1.5;
-connector_bracket_tab_slop = 0.1;
+connector_bracket_length_outer = 14;
+connector_bracket_length_inner = side_tab_width * 2 - m4_button_head_diameter/2;
+connector_bracket_thickness = captive_nut_inset - thickness - 0.2;
+connector_bracket_width = enclosure_width - enclosure_wall_to_wall_width + thickness*2 + connector_bracket_thickness*2;
+connector_bracket_overlap = 4;
+
 
 mounting_hole_inset = m4_button_head_diameter/2 + 2;
 
@@ -205,7 +203,6 @@ echo(front_window_upper=front_window_upper);
 echo(front_window_lower=front_window_lower);
 echo(front_window_height=front_window_lower+front_window_upper);
 echo(front_forward_offset=front_forward_offset);
-echo(connector_bracket_length=connector_bracket_length);
 echo(flap_exclusion_radius=exclusion_radius);
 echo(flap_hole_radius=flap_hole_radius);
 echo(flap_notch=flap_notch);
@@ -393,44 +390,17 @@ module front_tabs_negative() {
 }
 
 module connector_bracket() {
-    module connector_bracket_cutouts() {
-        // Slots for left/right enclosure walls
-        translate([connector_bracket_thickness, -eps]) {
-            square([thickness, connector_bracket_width - connector_bracket_thickness + eps]);
-        }
-
-        // tab gaps (for inserting a lever to remove the connector bracket)
-        translate([connector_bracket_thickness - connector_bracket_tab_gap_depth, -eps]) {
-            square([connector_bracket_tab_gap_depth + eps, connector_bracket_tab_inset + eps]);
-        }
-
-        // subtract some thickness on the part that bends to make it less stiff
-        translate([-eps, connector_bracket_thickness]) {
-            square([connector_bracket_thickness/2 + eps, connector_bracket_width]);
-        }
-        translate([-eps, connector_bracket_width - connector_bracket_thickness/2]) {
-            square([connector_bracket_thickness*1.5 + eps, connector_bracket_thickness]);
-        }
-    }
-
     linear_extrude(height=thickness) {
-        union() {
-            difference() {
-                square([connector_bracket_length, connector_bracket_width]);
-                connector_bracket_cutouts();
-                translate([connector_bracket_length, 0]) {
-                    mirror([1, 0, 0]) {
-                        connector_bracket_cutouts();
-                    }
-                }
+        difference() {
+            square([connector_bracket_width, connector_bracket_length_outer]);
+            translate([connector_bracket_thickness, -eps]) {
+                square([connector_bracket_width - connector_bracket_thickness*2, connector_bracket_length_outer - connector_bracket_length_inner + eps]);
             }
-
-            // locking tabs:
-            translate([connector_bracket_thickness - eps, connector_bracket_tab_inset]) {
-                square([connector_bracket_tab_depth + eps, connector_bracket_tab_width]);
+            translate([connector_bracket_thickness, -eps]) {
+                square([thickness, connector_bracket_length_outer - connector_bracket_overlap + eps]);
             }
-            translate([connector_bracket_length - connector_bracket_thickness - connector_bracket_tab_depth, connector_bracket_tab_inset]) {
-                square([connector_bracket_tab_depth + eps, connector_bracket_tab_width]);
+            translate([connector_bracket_width - connector_bracket_thickness - thickness, -eps]) {
+                square([thickness, connector_bracket_length_outer - connector_bracket_overlap + eps]);
             }
         }
     }
@@ -498,14 +468,9 @@ module backstop_bolt_slot(radius) {
 }
 
 module connector_bracket_side_holes() {
-    // slot
-    translate([-eps, -connector_bracket_thickness]) {
-        square([enclosure_vertical_inset + eps, connector_bracket_thickness + eps]);
-    }
-
-    // locking tab hole
-    translate([enclosure_vertical_inset - thickness - connector_bracket_tab_slop, -connector_bracket_width + connector_bracket_tab_inset - connector_bracket_tab_slop]) {
-        square([thickness + 2*connector_bracket_tab_slop, connector_bracket_tab_width + 2*connector_bracket_tab_slop]);
+    // overlap slot
+    translate([enclosure_vertical_inset - thickness, -connector_bracket_overlap]) {
+        square([thickness, connector_bracket_overlap + eps]);
     }
 }
 
@@ -775,13 +740,13 @@ module split_flap_3d(letter, include_connector) {
     }
 
     module positioned_top_connector() {
-        translate([enclosure_wall_to_wall_width - thickness - connector_bracket_thickness, front_forward_offset - connector_bracket_width, enclosure_height_upper - enclosure_vertical_inset]) {
+        translate([enclosure_wall_to_wall_width - thickness - connector_bracket_thickness, front_forward_offset - connector_bracket_length_outer, enclosure_height_upper - enclosure_vertical_inset]) {
             connector_bracket();
         }
     }
 
     module positioned_bottom_connector() {
-        translate([enclosure_wall_to_wall_width - thickness - connector_bracket_thickness, front_forward_offset - connector_bracket_width, - enclosure_height_lower + enclosure_vertical_inset - thickness]) {
+        translate([enclosure_wall_to_wall_width - thickness - connector_bracket_thickness, front_forward_offset - connector_bracket_length_outer, - enclosure_height_lower + enclosure_vertical_inset - thickness]) {
             connector_bracket();
         }
     }
@@ -1088,10 +1053,10 @@ if (render_3d) {
             rotate([0, 0, 180])
                 spool_strut();
 
-        // Connector brackets cut out of right side
-        translate([enclosure_height_upper - backstop_bolt_vertical_offset/2 - connector_bracket_length/2, enclosure_length + kerf_width + enclosure_length_right/2 - connector_bracket_width - kerf_width/2, thickness])
+        // Connector brackets cut out of left side
+        translate([12, (enclosure_length - connector_bracket_length_outer*2)/2, thickness])
             connector_bracket();
-        translate([enclosure_height_upper - backstop_bolt_vertical_offset/2 + connector_bracket_length/2, enclosure_length + kerf_width + enclosure_length_right/2 + connector_bracket_width + kerf_width/2, thickness])
+        translate([12 + connector_bracket_width, (enclosure_length - connector_bracket_length_outer*2)/2 + 2 * connector_bracket_length_outer + kerf_width, thickness])
             rotate([0, 0, 180])
                 connector_bracket();
 
