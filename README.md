@@ -16,9 +16,6 @@ The 3d model is built using OpenSCAD in `3d/splitflap.scad`, the driver board is
 
 You can view an interactive 3d model of the design on the [project website](https://scottbez1.github.io/splitflap/).
 
-Want to help support prototyping and development?
-<a href="https://www.buymeacoffee.com/scottbez1" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" height="22" ></a>
-
 ### Current Status ###
 This design is currently at a *prototype* stage. The source files provided here were able to produce multiple working prototypes, but may still have some minor issues and/or incomplete documentation.
 
