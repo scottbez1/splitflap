@@ -7,7 +7,7 @@ var model_base_url = 'https://s3.amazonaws.com/splitflap-travis/branches/master/
 
 var debug = false;
 
-var viewer_canvas = document.getElementById("error-container");
+var error_container = document.getElementById("error-container");
 var canvas = document.getElementById("viewer_canvas");
 
 if (WEBGL.isWebGLAvailable()) {
@@ -151,5 +151,5 @@ if (WEBGL.isWebGLAvailable()) {
   }
 } else {
     var warning = WEBGL.getWebGLErrorMessage();
-    viewer_canvas.appendChild(warning);
+    error_container.appendChild(warning);
 }
