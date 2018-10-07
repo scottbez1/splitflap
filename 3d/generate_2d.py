@@ -37,6 +37,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--panelize', type=int, default=1, help='Quantity to panelize - must be 1 or an even number')
+    parser.add_argument('--skip-optimize', action='store_true', help='Don\'t remove redundant/overlapping cut lines')
 
     args = parser.parse_args()
 
@@ -53,7 +54,11 @@ if __name__ == '__main__':
 
     logging.info('Removing redundant lines')
     processor = SvgProcessor(svg_output)
-    redundant_lines = processor.remove_redundant_lines()
+
+    redundant_lines, merged_lines = None, None
+    if not args.skip_optimize:
+        redundant_lines, merged_lines = processor.remove_redundant_lines()
+
     processor.write(svg_output)
 
     # Export to png
@@ -62,8 +67,10 @@ if __name__ == '__main__':
     raster_png = os.path.join(laser_parts_directory, 'raster.png')
     processor.apply_raster_render_style()
 
-    # Show which redundant lines were removed
-    processor.add_highlight_lines(redundant_lines)
+    if not args.skip_optimize:
+        # Show which redundant lines were removed and lines merged
+        processor.add_highlight_lines(redundant_lines, '#ff0000')
+        processor.add_highlight_lines(merged_lines, '#0000ff')
 
     processor.write(raster_svg)
 
