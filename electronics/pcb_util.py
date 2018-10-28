@@ -26,23 +26,6 @@ from contextlib import contextmanager
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-_LAYER_NAME = {
-    pcbnew.F_Cu: 'F.Cu',
-    pcbnew.B_Cu: 'B.Cu',
-    pcbnew.F_Adhes: 'F.Adhes',
-    pcbnew.B_Adhes: 'B.Adhes',
-    pcbnew.F_SilkS: 'F.SilkS',
-    pcbnew.B_SilkS: 'B.SilkS',
-    pcbnew.F_Paste: 'F.Paste',
-    pcbnew.B_Paste: 'B.Paste',
-    pcbnew.F_Mask: 'F.Mask',
-    pcbnew.B_Mask: 'B.Mask',
-    pcbnew.Edge_Cuts: 'Edge.Cuts',
-    pcbnew.Cmts_User: 'Cmts.User',
-    # TODO: add the rest
-}
-
-
 @contextmanager
 def versioned_board(filename):
     versioned_contents = _get_versioned_contents(filename)
@@ -54,14 +37,6 @@ def versioned_board(filename):
         logger.debug('Load board')
         board = pcbnew.LoadBoard(temp_pcb.name)
         yield board
-
-
-def get_layer_name(kicad_layer_id):
-    if kicad_layer_id in _LAYER_NAME:
-        return _LAYER_NAME[kicad_layer_id]
-    else:
-        return 'Unknown(%r)' % (kicad_layer_id,)
-
 
 @contextmanager
 def get_plotter(pcb_filename, build_directory):
@@ -85,8 +60,8 @@ class Plotter(object):
         self.plot_options.SetExcludeEdgeLayer(True)
 
     def plot(self, layer, plot_format):
-        logger.info('Plotting layer %s (kicad layer=%r)', get_layer_name(layer), layer)
-        layer_name = get_layer_name(layer)
+        layer_name = self.board.GetLayerName(layer)
+        logger.info('Plotting layer %s (kicad layer=%r)', layer_name, layer)
         self.plot_controller.SetLayer(layer)
         self.plot_controller.OpenPlotfile(layer_name, plot_format , 'Plot')
         output_filename = self.plot_controller.GetPlotFileName()
