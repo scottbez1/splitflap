@@ -15,7 +15,7 @@ uint8_t sensor_buffer[SENSOR_BUFFER_LENGTH];
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_MODULES, 6, NEO_GRB + NEO_KHZ800);
 uint32_t color_green = strip.Color(0, 30, 0);
-uint32_t color_purple = strip.Color(2, 0, 2);
+uint32_t color_purple = strip.Color(5, 0, 5);
 
 void setup() {
   Serial.begin(38400);
