@@ -204,3 +204,7 @@ def mkdir_p(path):
             pass
         else:
             raise
+
+if __name__ == '__main__':
+    import sys
+    ColoredStlExporter(sys.argv[1], sys.argv[2]).run()
