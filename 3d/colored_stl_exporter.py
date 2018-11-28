@@ -34,6 +34,11 @@ import logging
 import os
 import re
 
+try:
+    import webcolors
+except ImportError:
+    webcolors = None
+
 from multiprocessing.dummy import Pool
 
 import openscad
@@ -187,13 +192,20 @@ module color_extractor(c) {
     @staticmethod
     def parse_openscad_color(color):
         match = RGB_COLOR_REGEX.search(color)
-        if not match:
-            raise ValueError('Failed to parse color. Must be in [<r>, <g>, <b>] format. {}'.format(color))
-        return [
-            float(match.group('r')),
-            float(match.group('g')),
-            float(match.group('b')),
-        ]
+        if match:
+            return [
+                float(match.group('r')),
+                float(match.group('g')),
+                float(match.group('b')),
+            ]
+        if '"' in color and webcolors:
+            try:
+                c = webcolors.name_to_rgb(color[1:-1]) # skip the ""
+                return c.red/255., c.green/255., c.blue/255.
+            except ValueError:
+                pass
+
+        raise ValueError('Failed to parse color. Must be named webcolor or in [<r>, <g>, <b>] format. {}'.format(color))
 
 
 def mkdir_p(path):
