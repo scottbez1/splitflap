@@ -10,7 +10,7 @@ Prototype four-character display: [video](https://www.youtube.com/watch?v=vq4o_8
 
 The goal is to make a low-cost display that's easy to fabricate at home in small/single quantities (e.g. custom materials can be ordered from Ponoko or similar, and other hardware is generally available).
 
-**New!** Kits based on these designs will be available for sale soon (summer/fall 2018)! If you're interested, please see this page for more information and to fill out a brief interest survey: https://goo.gl/forms/O17gYmE1ZUTwa7M73
+**New!** A limited number of kits based on these designs are [now available for sale on Tindie](https://www.tindie.com/products/15627/)!
 
 The 3d model is built using OpenSCAD in `3d/splitflap.scad`, the driver board is designed in KiCad in `electronics/splitflap.pro`, and the driver firmware is written using Arduino in `arduino/splitflap/splitflap.ino`.
 
@@ -20,13 +20,13 @@ Want to help support prototyping and development?
 <a href="https://www.buymeacoffee.com/scottbez1" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" height="22" ></a>
 
 ### Current Status ###
-This design is currently at a *prototype* stage. The source files provided here were able to produce multiple working prototypes, but may still have some minor issues and/or incomplete documentation.
+This design is currently nearly stable. The source files provided here have been used to produce multiple working prototypes, but may still have some minor issues and/or incomplete documentation (for more reliable design files, make sure to use files from the official [Releases](https://github.com/scottbez1/splitflap/releases) rather than the bleeding edge designs linked on this page).
 
 | Component | Status | Notes |
 | --- | --- | --- |
-| Enclosure/Mechanics | *Release Candidate* | Need documentation on ordering. |
-| Electronics | *Release Candidate* | Need documentation on ordering and assembly. |
-| Firmware | *Release Candidate* | Works. |
+| Enclosure/Mechanics | *Stable* | |
+| Electronics | *Stable* | |
+| Firmware | *Stable* | |
 | Control Software | *Beta* | Example python code for driving the display is in the [software](https://github.com/scottbez1/splitflap/tree/master/electronics) directory|
 
 I'd love to hear your thoughts and questions about this project, and happy to incorporate any feedback you might have into these designs! Please feel free (and encouraged) to [open GitHub issues](https://github.com/scottbez1/splitflap/issues/new), email me directly, reach out [on Twitter](https://twitter.com/scottbez1), and [get involved](https://github.com/scottbez1/splitflap/pulls) in the open source development and let's keep chatting and building together!
@@ -56,29 +56,29 @@ This is an incomplete list of supplies needed to build a split-flap display modu
 
 * $2.40		/unit -- Qty 12 -- M4-10mm button head screw, hex drive, ISO7380, (e.g. Fastenal A2-70 stainless steel MB2530010A20000)
 * $0.67		/unit -- Qty 12 -- M4 hex nut, (e.g. Fastenal A2-70 stainless steel MN2530000A20000)
-* ???		/unit -- Qty ?? -- Heatshrink
 
 #### Flaps ####
 
 * $6.39		/2 units -- vinyl letter stickers (minimum letter duplication per pack is 2) [on Amazon](http://www.amazon.com/Duro-Decal-Permanent-Adhesive-Letters/dp/B0027601CM)
 * $14		/4 units -- blank white CR80 cards (each CR80 card becomes 2 flaps, each unit requires 40 flaps = 20 cards. 100 cards is enough for 5 units in theory, but 4 in practice because there are no spares for mistakes) on [Amazon](http://www.amazon.com/Plastic-printers-DataCard-Evolis-Magicard/dp/B007M413BC)
-* or $50 /4 units -- Professional pre-cut high quality flaps (no manual cutting/punching needed), custom made for this project, on [Tindie](https://www.tindie.com/products/scottbez1/blank-split-flap-display-flaps/). Proceeds help support continued development and prototyping.
+  * or $50 /4 units -- Professional pre-cut high quality flaps (no manual cutting/punching needed), custom made for this project, on [Tindie](https://www.tindie.com/products/14844/). Proceeds help support continued development and prototyping.
 
 #### PCB ####
 
-* $25		/40 units -- PCB for controller [on seeedstudio](http://www.seeedstudio.com/service/index.php?r=pcb) - will be available for purchase in smaller qantities soon!
-* $4		/4 units -- PCB for hall-effect sensor [on Tindie](https://www.tindie.com/products/scottbez1/hall-effect-breakout-pcbs-for-splitflap-display/)
-* or $25		/200 units -- PCB for hall-effect sensor [on seeedstudio](http://www.seeedstudio.com/service/index.php?r=pcb)
+* $4 /4 units -- PCB for controller [on Tindie](https://www.tindie.com/products/15608/)
+  * or ~$25		/40 units -- PCB for controller [on seeedstudio](http://www.seeedstudio.com/service/index.php?r=pcb)
+* $3		/4 units -- PCB for hall-effect sensor [on Tindie](https://www.tindie.com/products/14793/)
+  * or ~$25		/200 units -- PCB for hall-effect sensor [on seeedstudio](http://www.seeedstudio.com/service/index.php?r=pcb)
 
 #### Electronics & Motor ####
 
-* ~$2		/unit -- 28byj-48 motor (12V preferred!) Ebay is a good place to find these motors. (see [motor notes](https://github.com/scottbez1/splitflap/wiki/Motor-info) for specific details)
+* ~$2		/unit -- 28byj-48 motor (12V preferred!) Ebay or AliExpress are good places to find these motors. (see [motor notes](https://github.com/scottbez1/splitflap/wiki/Motor-info) for specific details)
 * ~$10		/10 units -- male-to-male 3-pin servo cable (for sensors) e.g. on [Amazon](https://www.amazon.com/VIMVIP-10pcs-300mm-Extension-Futaba/dp/B00N8OX7VO)
-* ~$16		/unit -- Digikey electrionic component purchases. ~$14/controller and ~$2/sensor board. More detailed breakout of BOM in [Wiki - Order Parts](https://github.com/scottbez1/splitflap/wiki/Order-parts)
-* $7 -- 12V power supply on [Digikey](https://www.digikey.com/product-detail/en/cui-inc/SWI5-12-N-P5/102-4122-ND/6579912)
+* ~$16		/unit -- Digikey electrionic component purchases. ~$14/controller and ~$2/sensor board. More detailed breakout of BOM in [Ordering instructions](https://paper.dropbox.com/doc/Ordering-Splitflap-v0.5--ATdB3cgS5GyvwTWq1kpunkD4Ag-iCwwMo0hRkkAlwdutccWf)
+* $8-15 /4 units -- 12V power supply
 
 Tools (one-time, up front cost):
-* $9.17 -- badge slot punch (for cutting notches out of cards to make flaps) [on Amazon](http://www.amazon.com/gp/product/B009YDRRB4)
+* $9.17 -- badge slot punch for cutting notches out of cards to make flaps (not needed if using die-cut flaps from Tindie) [on Amazon](http://www.amazon.com/gp/product/B009YDRRB4)
 
 ## Build Your Own: Instructions ##
 This design is still a work in progress; a build log/instructions for building a prototype split-flap display of your own is posted in [the wiki](https://github.com/scottbez1/splitflap/wiki).
@@ -127,7 +127,7 @@ The design can be rendered to a series of STL files (one per color used in the m
 ### Driver Electronics ###
 The driver board is designed to plug into an Arduino like a shield, and can control 4 stepper motors.
 Up to 3 driver boards can be chained together, for up to 12 modules controlled by a single Arduino.
-The designs for the controller can be found under `electronics/splitflap.pro` (KiCad project).
+The designs for the controller can be found under `electronics/splitflap.pro` (KiCad 4 project).
 Nearly everything is a through-hole component rather than SMD, so it's very easy to hand-solder.
 
 The driver uses 2 MIC5842 low-side shift-register drivers, with built-in transient-suppression diodes, to control the motors, and a 74HC165 shift register to read from 4 hall-effect magnetic home position sensors.
