@@ -19,6 +19,7 @@
 
 # Scott's modifications:
 # 2018-08-03 - Changed "page" from Text to List, to support page definitions like "User 111 123" instead of "A4"
+# 2018-12-18 - Added \n to the set of characters that will trigger a text element to be quoted when written
 
 import math
 import sys
@@ -2031,13 +2032,16 @@ class Writer:
 	def write_text( self, value ):
 		#if value == "" or ' ' in value or '\t' in value:
 		#	value = "\"%s\"" % value.replace( "\"", "\\\"" )
-		if value == "":
-			value = '""'
+		quote = False
+		if value == "" or "\\n" in value:
+			quote = True
 		else:
 			for c in value:
 				if c in " \t()":
-					value = "\"%s\"" % value
+					quote=True
 					break
+		if quote:
+			value = "\"%s\"" % value
 		self.ofd.write( " %s" % value )
 
 
