@@ -160,9 +160,9 @@ Latest (experimental!) Controller PCB Gerbers: [zip](https://s3.amazonaws.com/sp
 
 Latest (experimental!) Controller PCB Packet: [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/pcb_packet.pdf)
 
-Latest (experimental!) Controller PCB (Panelized) Gerbers: [zip](https://s3.amazonaws.com/splitflap-travis/branches/master/pcb_gerber.zip)
+Latest (experimental!) Controller PCB (Panelized) Gerbers: [zip](https://s3.amazonaws.com/splitflap-travis/branches/master/panelized_pcb_gerber.zip)
 
-Latest (experimental!) Controller PCB (Panelized) Packet: [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/pcb_packet.pdf)
+Latest (experimental!) Controller PCB (Panelized) Packet: [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/panelized_pcb_packet.pdf)
 
 Latest (experimental!) Sensor PCB (Panelized) Gerbers: [zip](https://s3.amazonaws.com/splitflap-travis/branches/master/sensor_pcb_gerber.zip)
 
