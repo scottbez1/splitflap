@@ -10,8 +10,6 @@ Prototype four-character display: [video](https://www.youtube.com/watch?v=vq4o_8
 
 The goal is to make a low-cost display that's easy to fabricate at home in small/single quantities (e.g. custom materials can be ordered from Ponoko or similar, and other hardware is generally available).
 
-**New!** A limited number of kits based on these designs are [now available for sale on Tindie](https://www.tindie.com/products/15627/)!
-
 The 3d model is built using OpenSCAD in `3d/splitflap.scad`, the driver board is designed in KiCad in `electronics/splitflap.pro`, and the driver firmware is written using Arduino in `arduino/splitflap/splitflap.ino`.
 
 You can view an interactive 3d model of the design on the [project website](https://scottbez1.github.io/splitflap/).
@@ -162,9 +160,13 @@ Latest (experimental!) Controller PCB Gerbers: [zip](https://s3.amazonaws.com/sp
 
 Latest (experimental!) Controller PCB Packet: [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/pcb_packet.pdf)
 
-Latest (experimental!) Sensor PCB Gerbers: [zip](https://s3.amazonaws.com/splitflap-travis/branches/master/sensor_pcb_gerber.zip)
+Latest (experimental!) Controller PCB (Panelized) Gerbers: [zip](https://s3.amazonaws.com/splitflap-travis/branches/master/pcb_gerber.zip)
 
-Latest (experimental!) Sensor PCB Packet: [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/sensor_pcb_packet.pdf)
+Latest (experimental!) Controller PCB (Panelized) Packet: [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/pcb_packet.pdf)
+
+Latest (experimental!) Sensor PCB (Panelized) Gerbers: [zip](https://s3.amazonaws.com/splitflap-travis/branches/master/sensor_pcb_gerber.zip)
+
+Latest (experimental!) Sensor PCB (Panelized) Packet: [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/sensor_pcb_packet.pdf)
 
 Latest (experimental!) rough bill of materials: [csv](https://s3.amazonaws.com/splitflap-travis/branches/master/bom.csv)
 
