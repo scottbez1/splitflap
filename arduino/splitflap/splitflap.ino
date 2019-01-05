@@ -14,23 +14,16 @@
    limitations under the License.
 */
 
-#include <SPI.h>
-#include "splitflap_module.h"
+/***** CONFIGURATION *****/
 
 #define NUM_MODULES (12)
+#define SENSOR_TEST false
 #define NEOPIXEL_DEBUGGING_ENABLED true
+#define NEOPIXEL_PIN 6
 #define SPI_IO true
+#define REVERSE_MOTOR_DIRECTION false
 
-#if NEOPIXEL_DEBUGGING_ENABLED
-#include <Adafruit_NeoPixel.h>
-#endif
-
-#if SPI_IO
-#include "spi_io_config.h"
-#else
-#include "basic_io_config.h"
-#endif
-
+// This should match the order of flaps on the spool:
 const uint8_t flaps[] = {
   ' ',
   'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
@@ -41,10 +34,25 @@ const uint8_t flaps[] = {
   '\'',
 };
 
+/*************************/
+
+#include "splitflap_module.h"
+
+#include <SPI.h>
+#if NEOPIXEL_DEBUGGING_ENABLED
+#include <Adafruit_NeoPixel.h>
+#endif
+
+#if SPI_IO
+#include "spi_io_config.h"
+#else
+#include "basic_io_config.h"
+#endif
+
 int recv_buffer[NUM_MODULES];
 
 #if NEOPIXEL_DEBUGGING_ENABLED
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_MODULES, 6, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_MODULES, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 uint32_t color_green = strip.Color(0, 30, 0);
 uint32_t color_red = strip.Color(100, 0, 0);
 uint32_t color_purple = strip.Color(15, 0, 15);
@@ -86,7 +94,9 @@ void setup() {
   for (uint8_t i = 0; i < NUM_MODULES; i++) {
     recv_buffer[i] = 0;
     modules[i].Init();
+#if !SENSOR_TEST
     modules[i].GoHome();
+#endif
   }
 }
 
@@ -100,15 +110,12 @@ inline int8_t FindFlapIndex(uint8_t character) {
     return -1;
 }
 
-
 bool was_idle = false;
 bool was_stopped = false;
 bool pending_no_op = false;
 uint8_t recv_count = 0;
 
-
-void loop() {
-  while (1) {
+inline void run_iteration() {
     boolean all_idle = true;
     boolean all_stopped = true;
     boolean any_bad_timing = false;
@@ -127,7 +134,6 @@ void loop() {
     motor_sensor_io();
 
     if (all_idle) {
-
 #if NEOPIXEL_DEBUGGING_ENABLED
       for (int i = 0; i < NUM_MODULES; i++) {
         uint32_t color;
@@ -198,9 +204,39 @@ void loop() {
       if (!was_stopped && all_stopped) {
         dump_status();
       }
+
     }
     was_idle = all_idle;
     was_stopped = all_stopped;
+}
+
+void sensor_test_iteration() {
+    motor_sensor_io();
+    for (uint8_t i = 0; i < NUM_MODULES; i++) {
+      uint32_t color;
+      if (!modules[i].GetHomeState()) {
+        color = color_green;
+      } else {
+        color = color_purple;
+      }
+
+      // Make LEDs flash in sequence to indicate sensor test mode
+      if ((millis() / 32) % NUM_MODULES == i) {
+        color += 8 + (8 << 8) + (8 << 16);
+      }
+      strip.setPixelColor(i, color);
+    }
+    strip.show();
+}
+
+
+void loop() {
+  while (1) {
+#if SENSOR_TEST
+    sensor_test_iteration();
+#else
+    run_iteration();
+#endif
   }
 }
 
@@ -238,5 +274,3 @@ void dump_status() {
   Serial.print(F("]}\n"));
   Serial.flush();
 }
-
-

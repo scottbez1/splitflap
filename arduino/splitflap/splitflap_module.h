@@ -147,12 +147,11 @@ class SplitflapModule {
   void ResetErrorCounters();
   inline bool Update();
   void Init();
+  bool GetHomeState();
   
   uint8_t count_unexpected_home = 0;
   uint8_t count_missed_home = 0;
 };
-
-
 
 
 
@@ -162,10 +161,17 @@ class SplitflapModule {
 #define MOT_PHASE_D B00000001
 
 const uint8_t step_pattern[] = {
+#if REVERSE_MOTOR_DIRECTION
+  MOT_PHASE_D | MOT_PHASE_A,
+  MOT_PHASE_C | MOT_PHASE_D,
+  MOT_PHASE_B | MOT_PHASE_C,
+  MOT_PHASE_A | MOT_PHASE_B,
+#else
   MOT_PHASE_A | MOT_PHASE_B,
   MOT_PHASE_B | MOT_PHASE_C,
   MOT_PHASE_C | MOT_PHASE_D,
   MOT_PHASE_D | MOT_PHASE_A,
+#endif
 };
 
 SplitflapModule::SplitflapModule(
@@ -538,6 +544,10 @@ void SplitflapModule::ResetErrorCounters() {
 
 void SplitflapModule::Init() {
     CheckSensor();
+}
+
+bool SplitflapModule::GetHomeState() {
+  return (sensor_in & sensor_bitmask) != 0;
 }
 
 #endif
