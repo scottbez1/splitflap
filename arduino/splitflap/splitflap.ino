@@ -18,8 +18,6 @@
 
 #define NUM_MODULES (12)
 #define SENSOR_TEST false
-#define NEOPIXEL_DEBUGGING_ENABLED true
-#define NEOPIXEL_PIN 6
 #define SPI_IO true
 #define REVERSE_MOTOR_DIRECTION false
 
@@ -38,16 +36,16 @@ const uint8_t flaps[] = {
 
 #include "splitflap_module.h"
 
-#include <SPI.h>
-#if NEOPIXEL_DEBUGGING_ENABLED
-#include <Adafruit_NeoPixel.h>
-#endif
-
 #if SPI_IO
 #include "spi_io_config.h"
 #else
 #include "basic_io_config.h"
 #endif
+
+#if NEOPIXEL_DEBUGGING_ENABLED
+#include <Adafruit_NeoPixel.h>
+#endif
+
 
 int recv_buffer[NUM_MODULES];
 
@@ -59,6 +57,12 @@ uint32_t color_purple = strip.Color(15, 0, 15);
 uint32_t color_orange = strip.Color(30, 7, 0);
 #endif
 
+#ifdef __AVR__
+#define FAVR(x) F(x)
+#else
+#define FAVR(x) x
+#endif
+
 
 void setup() {
   Serial.begin(38400);
@@ -66,9 +70,9 @@ void setup() {
   motor_sensor_setup();
   motor_sensor_io();
 
-  Serial.print(F("{\"type\":\"init\", \"num_modules\":"));
+  Serial.print(FAVR("{\"type\":\"init\", \"num_modules\":"));
   Serial.print(NUM_MODULES);
-  Serial.print(F("}\n"));
+  Serial.print(FAVR("}\n"));
 
 #if NEOPIXEL_DEBUGGING_ENABLED
   strip.begin();
@@ -174,7 +178,7 @@ inline void run_iteration() {
             recv_count = 0;
             break;
           case '\n':
-              Serial.print(F("{\"type\":\"move_echo\", \"dest\":\""));
+              Serial.print(FAVR("{\"type\":\"move_echo\", \"dest\":\""));
               for (uint8_t i = 0; i < recv_count; i++) {
                 int8_t index = FindFlapIndex(recv_buffer[i]);
                 if (index != -1) {
@@ -182,7 +186,7 @@ inline void run_iteration() {
                 }
                 Serial.write(recv_buffer[i]);
               }
-              Serial.print(F("\"}\n"));
+              Serial.print(FAVR("\"}\n"));
               Serial.flush();
               break;
           default:
@@ -196,7 +200,7 @@ inline void run_iteration() {
       }
 
       if (pending_no_op && all_stopped) {
-        Serial.print(F("{\"type\":\"no_op\"}\n"));
+        Serial.print(FAVR("{\"type\":\"no_op\"}\n"));
         Serial.flush();
         pending_no_op = false;
       }
@@ -237,40 +241,45 @@ void loop() {
 #else
     run_iteration();
 #endif
+
+    #ifdef ESP8266
+    // Yield to avoid triggering Soft WDT
+    yield();
+    #endif
   }
 }
 
 void dump_status() {
-  Serial.print(F("{\"type\":\"status\", \"modules\":["));
+  Serial.print(FAVR("{\"type\":\"status\", \"modules\":["));
   for (uint8_t i = 0; i < NUM_MODULES; i++) {
-    Serial.print(F("{\"state\":\""));
+    Serial.print(FAVR("{\"state\":\""));
     switch (modules[i].state) {
       case NORMAL:
-        Serial.print(F("normal"));
+        Serial.print(FAVR("normal"));
         break;
 #if HOME_CALIBRATION_ENABLED
       case LOOK_FOR_HOME:
-        Serial.print(F("look_for_home"));
+        Serial.print(FAVR("look_for_home"));
         break;
       case SENSOR_ERROR:
-        Serial.print(F("sensor_error"));
+        Serial.print(FAVR("sensor_error"));
         break;
 #endif
       case PANIC:
-        Serial.print(F("panic"));
+        Serial.print(FAVR("panic"));
         break;
     }
-    Serial.print(F("\", \"flap\":\""));
+    Serial.print(FAVR("\", \"flap\":\""));
     Serial.write(flaps[modules[i].GetCurrentFlapIndex()]);
-    Serial.print(F("\", \"count_missed_home\":"));
+    Serial.print(FAVR("\", \"count_missed_home\":"));
     Serial.print(modules[i].count_missed_home);
-    Serial.print(F(", \"count_unexpected_home\":"));
+    Serial.print(FAVR(", \"count_unexpected_home\":"));
     Serial.print(modules[i].count_unexpected_home);
-    Serial.print(F("}"));
+    Serial.print(FAVR("}"));
     if (i < NUM_MODULES - 1) {
-      Serial.print(F(", "));
+      Serial.print(FAVR(", "));
     }
   }
-  Serial.print(F("]}\n"));
+  Serial.print(FAVR("]}\n"));
   Serial.flush();
 }

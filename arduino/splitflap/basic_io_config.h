@@ -21,9 +21,8 @@
 #error "Basic IO mode only supports up to 3 modules. Set NUM_MODULES to 3 or fewer."
 #endif
 
-#if NEOPIXEL_DEBUGGING_ENABLED
-#error "Neopixel debugging isn't supported with basic IO mode. Set NEOPIXEL_DEBUGGING_ENABLED to false."
-#endif
+// Neopixel debugging isn't currently supported with basic IO mode
+#define NEOPIXEL_DEBUGGING_ENABLED false
 
 #if !defined(__AVR_ATmega168__) && !defined(__AVR_ATmega328P__)
 #error "Basic IO configuration only works for ATmega168/328-based boards (Arduino Diecimila, Duemilanove, Uno)"  

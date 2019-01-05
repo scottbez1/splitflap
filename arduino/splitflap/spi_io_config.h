@@ -17,13 +17,42 @@
 #ifndef IO_CONFIG_H
 #define IO_CONFIG_H
 
-#define OUT_LATCH_PIN (4)
-#define OUT_LATCH_PORT PORTD
-#define OUT_LATCH_BIT 4
+#include <SPI.h>
 
-#define IN_LATCH_PIN (5)
-#define IN_LATCH_PORT PORTD
-#define IN_LATCH_BIT 5
+#define NEOPIXEL_DEBUGGING_ENABLED true
+
+#if defined(__AVR_ATmega168__) || defined(__AVR_ATmega328P__)
+  #define NEOPIXEL_PIN 6
+
+  #define OUT_LATCH_PIN (4)
+  #define _OUT_LATCH_PORT PORTD
+  #define _OUT_LATCH_BIT 4
+
+  #define IN_LATCH_PIN (5)
+  #define _IN_LATCH_PORT PORTD
+  #define _IN_LATCH_BIT 5
+
+  #define OUT_LATCH(){\
+    _OUT_LATCH_PORT |= (1 << _OUT_LATCH_BIT);\
+    _OUT_LATCH_PORT &= ~(1 << _OUT_LATCH_BIT);\
+  }
+  #define IN_LATCH() {\
+    _IN_LATCH_PORT &= ~(1 << _IN_LATCH_BIT);\
+    _IN_LATCH_PORT |= (1 << _IN_LATCH_BIT);\
+  }
+#endif
+#ifdef ARDUINO_ESP8266_WEMOS_D1MINI
+  #define NEOPIXEL_PIN (D8)
+  #define OUT_LATCH_PIN (D1)
+  #define IN_LATCH_PIN (D2)
+
+  #define OUT_LATCH() {digitalWrite(OUT_LATCH_PIN, HIGH); digitalWrite(OUT_LATCH_PIN, LOW);}
+  #define IN_LATCH() {digitalWrite(IN_LATCH_PIN, LOW); digitalWrite(IN_LATCH_PIN, HIGH);}
+#endif
+
+#if !defined(OUT_LATCH) || !defined(IN_LATCH)
+#error "Unknown/unsupported board. Only ATmega328-based boards (Uno, Duemilanove, Diecimila) are currently supported"
+#endif
 
 #define MOTOR_BUFFER_LENGTH (NUM_MODULES / 2 + (NUM_MODULES % 2 != 0))
 uint8_t motor_buffer[MOTOR_BUFFER_LENGTH];
@@ -77,6 +106,7 @@ inline void motor_sensor_setup() {
   pinMode(IN_LATCH_PIN, OUTPUT);
   pinMode(OUT_LATCH_PIN, OUTPUT);
   digitalWrite(IN_LATCH_PIN, HIGH);
+
   SPI.begin();
   SPI.beginTransaction(SPISettings(3000000, MSBFIRST, SPI_MODE0));
   
@@ -89,8 +119,7 @@ inline void motor_sensor_setup() {
 }
 
 inline void motor_sensor_io() {
-  IN_LATCH_PORT &= ~(1 << IN_LATCH_BIT);
-  IN_LATCH_PORT |= (1 << IN_LATCH_BIT);
+  IN_LATCH();
 
   for (uint8_t i = 0; i < MOTOR_BUFFER_LENGTH; i++) {
     int val = SPI.transfer(motor_buffer[MOTOR_BUFFER_LENGTH - 1 - i]);
@@ -99,8 +128,7 @@ inline void motor_sensor_io() {
     }
   }
 
-  OUT_LATCH_PORT |= (1 << OUT_LATCH_BIT);
-  OUT_LATCH_PORT &= ~(1 << OUT_LATCH_BIT);
+  OUT_LATCH();
 }
 
 #endif
