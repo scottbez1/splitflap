@@ -1191,17 +1191,16 @@ class Drill( KicadFatObj ):
 		KicadFatObj.__init__( self, name, (
 			Vector( "offset" ),
 		) )
-		self.size = None
+		self.args = []
 
 	def tag_value( self, factory, value ):
-		if self.size == None:
-			self.size = value
+		self.args.append(value)
 
 	def write( self, writer ):
-		if self.size or self.offset.is_set():
+		if len(self.args) or self.offset.is_set():
 			writer.begin( self )
-			if self.size:
-				writer.write_text( self.size )
+			for arg in self.args:
+				writer.write_text( arg )
 			if self.offset.is_set():
 				self.write_obj( writer, "offset", False )
 			writer.end()
@@ -1210,9 +1209,8 @@ class Drill( KicadFatObj ):
 		obj = Drill( self.obj_name )
 		if self.offset.x != None:
 			obj.set( "offset", trans.add_flip_rot( self.offset ) )
-		if self.size != None:
-			# obj.set( "size", self.size.clone() )
-			obj.set( "size", self.size )
+		for arg in self.args:
+			obj.args.append(arg)
 		return obj
 
 
