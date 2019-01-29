@@ -99,6 +99,7 @@ class SplitflapModule {
   uint8_t target_flap_index = 0;
 
   // Current position/destination. Numbers are modulo GEAR_RATIO_INPUT_STEPS
+  const uint32_t offset_steps;
   uint32_t current_step = 0;
   uint32_t delta_steps = 0;
 
@@ -131,7 +132,8 @@ class SplitflapModule {
     uint8_t &motor_out,
     const uint8_t motor_bitshift,
     uint8_t &sensor_in,
-    const uint8_t sensor_bitmask
+    const uint8_t sensor_bitmask,
+    const uint8_t offset_steps
   );
 
 #if HOME_CALIBRATION_ENABLED
@@ -178,11 +180,13 @@ SplitflapModule::SplitflapModule(
   uint8_t &motor_out,
   const uint8_t motor_bitshift,
   uint8_t &sensor_in,
-  const uint8_t sensor_bitmask) :
+  const uint8_t sensor_bitmask,
+  const uint8_t offset_steps = 0) :
     motor_out(motor_out),
     motor_bitshift(motor_bitshift),
     sensor_in(sensor_in),
-    sensor_bitmask(sensor_bitmask)
+    sensor_bitmask(sensor_bitmask),
+    offset_steps(offset_steps)
 {
 }
 
@@ -273,7 +277,7 @@ inline uint32_t SplitflapModule::GetTargetStepForFlapIndex(uint32_t from_step, u
 
 __attribute__((always_inline))
 inline void SplitflapModule::GoToTargetFlapIndex() {
-    delta_steps = GetTargetStepForFlapIndex(current_step, target_flap_index) - current_step;
+    delta_steps = GetTargetStepForFlapIndex(current_step, target_flap_index) - current_step + offset_steps;
 
 
 #if VERBOSE_LOGGING
