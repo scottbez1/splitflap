@@ -121,10 +121,22 @@ inline void motor_sensor_setup() {
 inline void motor_sensor_io() {
   IN_LATCH();
 
+#ifdef ARDUINO_ESP8266_WEMOS_D1MINI
+  // Due to timing differences in the SPI implementation on the ESP8266, the
+  // first bit is "lost" when using SPI to shift in data from a 74HC165
+  // register. To correct for that, we manually read the first bit before
+  // using SPI to read byte-by-byte and shift the data accordingly.
+  bool extra_bit = digitalRead(D6);
+#endif
   for (uint8_t i = 0; i < MOTOR_BUFFER_LENGTH; i++) {
     int val = SPI.transfer(motor_buffer[MOTOR_BUFFER_LENGTH - 1 - i]);
     if (i < SENSOR_BUFFER_LENGTH) {
+#ifdef ARDUINO_ESP8266_WEMOS_D1MINI
+      sensor_buffer[i] = (extra_bit << 7) | (val >> 1);
+      extra_bit = val & B00000001;
+#else
       sensor_buffer[i] = val;
+#endif
     }
   }
 
