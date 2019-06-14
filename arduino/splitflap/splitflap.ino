@@ -16,10 +16,11 @@
 
 /***** CONFIGURATION *****/
 
-#define NUM_MODULES (12)
+#define NUM_MODULES (12) //ON ESP32 you can control much more modules, but need to adapt SPI_IO_CONFIG accordingly
 #define SENSOR_TEST false
 #define SPI_IO true
 #define REVERSE_MOTOR_DIRECTION false
+#define BLUETOOTH true
 
 // This should match the order of flaps on the spool:
 const uint8_t flaps[] = {
@@ -63,6 +64,15 @@ uint32_t color_orange = strip.Color(30, 7, 0);
 #define FAVR(x) x
 #endif
 
+#if defined(ESP32) && BLUETOOTH
+#include "BluetoothSerial.h"
+#if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
+#error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
+#endif
+
+BluetoothSerial SerialBT;
+#endif
+
 
 void setup() {
   Serial.begin(38400);
@@ -102,6 +112,11 @@ void setup() {
     modules[i].GoHome();
 #endif
   }
+
+#if defined(ESP32) && BLUETOOTH
+  SerialBT.begin("SplitFlap1"); //Bluetooth device name
+  Serial.println("The device started, now you can pair it with bluetooth!");
+#endif
 }
 
 
@@ -199,6 +214,45 @@ inline void run_iteration() {
         }
       }
 
+#if defined(ESP32) && BLUETOOTH
+      while (SerialBT.available() > 0) {
+        int c = SerialBT.read();
+        switch (c) {
+          case '@':
+            for (uint8_t i = 0; i < NUM_MODULES; i++) {
+              modules[i].ResetErrorCounters();
+              modules[i].GoHome();
+            }
+            break;
+          case '#':
+            pending_no_op = true;
+            break;
+          case '=':
+            recv_count = 0;
+            break;
+          case '\n':
+              Serial.print(FAVR("{\"type\":\"move_echo\", \"dest\":\""));
+              for (uint8_t i = 0; i < recv_count; i++) {
+                int8_t index = FindFlapIndex(recv_buffer[i]);
+                if (index != -1) {
+                  modules[i].GoToFlapIndex(index);
+                }
+                Serial.write(recv_buffer[i]);
+              }
+              Serial.print(FAVR("\"}\n"));
+              Serial.flush();
+              break;
+          default:
+            if (recv_count > NUM_MODULES - 1) {
+              break;
+            }
+            recv_buffer[recv_count] = c;
+            recv_count++;
+            break;
+        }
+      }
+#endif
+
       if (pending_no_op && all_stopped) {
         Serial.print(FAVR("{\"type\":\"no_op\"}\n"));
         Serial.flush();
@@ -242,7 +296,7 @@ void loop() {
     run_iteration();
 #endif
 
-    #ifdef ESP8266
+    #ifdef ESP8266 || defined(ESP32)
     // Yield to avoid triggering Soft WDT
     yield();
     #endif

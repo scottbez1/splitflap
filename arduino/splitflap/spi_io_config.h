@@ -50,8 +50,17 @@
   #define IN_LATCH() {digitalWrite(IN_LATCH_PIN, LOW); digitalWrite(IN_LATCH_PIN, HIGH);}
 #endif
 
+#ifdef ESP32
+  #define NEOPIXEL_PIN (13) //Any pin will work
+  #define OUT_LATCH_PIN (12)//Any pin will work
+  #define IN_LATCH_PIN (27) //Any pin will work
+
+  #define OUT_LATCH() {digitalWrite(OUT_LATCH_PIN, HIGH); digitalWrite(OUT_LATCH_PIN, LOW);}
+  #define IN_LATCH() {digitalWrite(IN_LATCH_PIN, LOW);digitalWrite(IN_LATCH_PIN, LOW);digitalWrite(IN_LATCH_PIN, HIGH);}  //on ESP32, for some weird reason, it sometimes doesnt work if we do only 1 digitalWrite!
+#endif
+
 #if !defined(OUT_LATCH) || !defined(IN_LATCH)
-#error "Unknown/unsupported board. Only ATmega328-based boards (Uno, Duemilanove, Diecimila) are currently supported"
+#error "Unknown/unsupported board. ATmega328-based boards (Uno, Duemilanove, Diecimila), ESP8266 and ESP32 are currently supported"
 #endif
 
 #define MOTOR_BUFFER_LENGTH (NUM_MODULES / 2 + (NUM_MODULES % 2 != 0))
@@ -107,7 +116,8 @@ inline void motor_sensor_setup() {
   pinMode(OUT_LATCH_PIN, OUTPUT);
   digitalWrite(IN_LATCH_PIN, HIGH);
 
-  SPI.begin();
+  //SPI.begin(18, 19, 23, 27);  //-->ESP32 pins VSPI
+  SPI.begin();  //ESP32 uses the VSPI pins by default
   SPI.beginTransaction(SPISettings(3000000, MSBFIRST, SPI_MODE0));
   
   for (uint8_t i = 0; i < MOTOR_BUFFER_LENGTH; i++) {
@@ -127,11 +137,14 @@ inline void motor_sensor_io() {
   // register. To correct for that, we manually read the first bit before
   // using SPI to read byte-by-byte and shift the data accordingly.
   bool extra_bit = digitalRead(D6);
+#elif defined(ESP32)
+  // Same problem for the ESP32, same solution.
+  bool extra_bit = digitalRead(MISO);
 #endif
   for (uint8_t i = 0; i < MOTOR_BUFFER_LENGTH; i++) {
     int val = SPI.transfer(motor_buffer[MOTOR_BUFFER_LENGTH - 1 - i]);
     if (i < SENSOR_BUFFER_LENGTH) {
-#ifdef ARDUINO_ESP8266_WEMOS_D1MINI
+#if defined(ARDUINO_ESP8266_WEMOS_D1MINI) || defined(ESP32)
       sensor_buffer[i] = (extra_bit << 7) | (val >> 1);
       extra_bit = val & B00000001;
 #else
