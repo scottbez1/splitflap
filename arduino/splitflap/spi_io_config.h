@@ -138,7 +138,7 @@ inline void motor_sensor_io() {
   // using SPI to read byte-by-byte and shift the data accordingly.
   bool extra_bit = digitalRead(D6);
 #elif defined(ESP32)
-  // Same problem for the ESP32, same solution
+  // Same problem for the ESP32, same solution.
   bool extra_bit = digitalRead(MISO);
 #endif
   for (uint8_t i = 0; i < MOTOR_BUFFER_LENGTH; i++) {
