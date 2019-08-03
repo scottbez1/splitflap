@@ -103,6 +103,14 @@ void setup() {
     strip.show();
     delay(3);
   }
+#else
+  pinMode(LED_BUILTIN, OUTPUT);
+
+  // Pulse the builtin LED - not as fun but indicates that we're running
+  for (int i = 0; i < 11; i++) {
+    digitalWrite(LED_BUILTIN, i % 2 ? HIGH : LOW);
+    delay(100);
+  }
 #endif
 
   for (uint8_t i = 0; i < NUM_MODULES; i++) {
@@ -270,6 +278,8 @@ inline void run_iteration() {
 
 void sensor_test_iteration() {
     motor_sensor_io();
+
+#if NEOPIXEL_DEBUGGING_ENABLED
     for (uint8_t i = 0; i < NUM_MODULES; i++) {
       uint32_t color;
       if (!modules[i].GetHomeState()) {
@@ -285,6 +295,12 @@ void sensor_test_iteration() {
       strip.setPixelColor(i, color);
     }
     strip.show();
+#else
+    // We only have one LED - just show the first module's home state status
+    if (NUM_MODULES > 0) {
+      digitalWrite(LED_BUILTIN, !modules[0].GetHomeState() ? HIGH : LOW);
+    }
+#endif
 }
 
 
