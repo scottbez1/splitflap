@@ -38,6 +38,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--panelize', type=int, default=1, help='Quantity to panelize - must be 1 or an even number')
     parser.add_argument('--skip-optimize', action='store_true', help='Don\'t remove redundant/overlapping cut lines')
+    parser.add_argument('--kerf', type=float, help='Override kerf_width value')
 
     args = parser.parse_args()
 
@@ -47,6 +48,8 @@ if __name__ == '__main__':
         'render_revision': rev_info.git_short_rev(),
         'render_date': rev_info.current_date(),
     }
+    if args.kerf is not None:
+        extra_variables['kerf_width'] = args.kerf
 
     renderer = Renderer('splitflap.scad', laser_parts_directory, extra_variables)
     renderer.clean()
