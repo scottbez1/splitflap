@@ -1,5 +1,5 @@
 /*
-   Copyright 2015-2016 Scott Bezek and the splitflap contributors
+   Copyright 2020 Scott Bezek and the splitflap contributors
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -13,6 +13,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+
+#include <Arduino.h>
 
 /***** CONFIGURATION *****/
 
@@ -73,6 +75,7 @@ uint32_t color_orange = strip.Color(30, 7, 0);
 BluetoothSerial SerialBT;
 #endif
 
+void dump_status(void);
 
 void setup() {
   Serial.begin(38400);
@@ -296,7 +299,7 @@ void loop() {
     run_iteration();
 #endif
 
-    #ifdef ESP8266 || defined(ESP32)
+    #if defined(ESP8266) || defined(ESP32)
     // Yield to avoid triggering Soft WDT
     yield();
     #endif
