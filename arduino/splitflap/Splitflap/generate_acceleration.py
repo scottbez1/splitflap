@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#   Copyright 2017 Scott Bezek and the splitflap contributors
+#   Copyright 2020 Scott Bezek and the splitflap contributors
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ ACCEL_TIME_MICROS = 200000
 IDLE_PERIOD_MICROS = 1200
 
 _TEMPLATE = """/*
-   Copyright 2017 Scott Bezek and the splitflap contributors
+   Copyright 2020 Scott Bezek and the splitflap contributors
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
