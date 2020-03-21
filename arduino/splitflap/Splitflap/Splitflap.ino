@@ -22,6 +22,10 @@
 #define SENSOR_TEST false
 #define SPI_IO true
 #define REVERSE_MOTOR_DIRECTION false
+
+// Whether to force a full rotation when the same letter is specified again
+#define FORCE_FULL_ROTATION true
+
 #define BLUETOOTH true
 
 // This should match the order of flaps on the spool:
@@ -200,7 +204,9 @@ inline void run_iteration() {
               for (uint8_t i = 0; i < recv_count; i++) {
                 int8_t index = FindFlapIndex(recv_buffer[i]);
                 if (index != -1) {
-                  modules[i].GoToFlapIndex(index);
+                  if (FORCE_FULL_ROTATION || index != modules[i].GetTargetFlapIndex()) {
+                    modules[i].GoToFlapIndex(index);
+                  }
                 }
                 Serial.write(recv_buffer[i]);
               }

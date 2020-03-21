@@ -143,6 +143,7 @@ class SplitflapModule {
 
   void GoToFlapIndex(uint8_t index);
   uint8_t GetCurrentFlapIndex();
+  uint8_t GetTargetFlapIndex();
   void GoHome();
   void ResetErrorCounters();
   inline bool Update();
@@ -380,6 +381,10 @@ inline void SplitflapModule::GoToFlapIndex(uint8_t index) {
 __attribute__((always_inline))
 inline uint8_t SplitflapModule::GetCurrentFlapIndex() {
    return (uint8_t)(GetFlapFloor(current_step) % NUM_FLAPS);
+}
+
+uint8_t SplitflapModule::GetTargetFlapIndex() {
+   return target_flap_index;
 }
 
 __attribute__((always_inline))
