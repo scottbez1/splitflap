@@ -136,8 +136,7 @@ inline int8_t FindFlapIndex(uint8_t character) {
     return -1;
 }
 
-bool was_idle = false;
-bool was_stopped = false;
+bool pending_move_response = true;
 bool pending_no_op = false;
 uint8_t recv_count = 0;
 
@@ -184,6 +183,16 @@ inline void run_iteration() {
       strip.show();
 #endif
 
+      if (pending_no_op && all_stopped) {
+        Serial.print(FAVR("{\"type\":\"no_op\"}\n"));
+        Serial.flush();
+        pending_no_op = false;
+      }
+      if (pending_move_response && all_stopped) {
+        pending_move_response = false;
+        dump_status();
+      }
+
       while (Serial.available() > 0) {
         int b = Serial.read();
         switch (b) {
@@ -200,6 +209,7 @@ inline void run_iteration() {
             recv_count = 0;
             break;
           case '\n':
+              pending_move_response = true;
               Serial.print(FAVR("{\"type\":\"move_echo\", \"dest\":\""));
               for (uint8_t i = 0; i < recv_count; i++) {
                 int8_t index = FindFlapIndex(recv_buffer[i]);
@@ -262,19 +272,7 @@ inline void run_iteration() {
       }
 #endif
 
-      if (pending_no_op && all_stopped) {
-        Serial.print(FAVR("{\"type\":\"no_op\"}\n"));
-        Serial.flush();
-        pending_no_op = false;
-      }
-  
-      if (!was_stopped && all_stopped) {
-        dump_status();
-      }
-
     }
-    was_idle = all_idle;
-    was_stopped = all_stopped;
 }
 
 void sensor_test_iteration() {
