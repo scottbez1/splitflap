@@ -1,4 +1,4 @@
-#   Copyright 2015-2016 Scott Bezek and the splitflap contributors
+#   Copyright 2015-2020 Scott Bezek and the splitflap contributors
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -87,9 +87,16 @@ def run(
 
     stdout_type = subprocess.PIPE if capture_output else None
     stderr_type = subprocess.PIPE if capture_output else None
-    proc = subprocess.Popen(command, stdout=stdout_type, stderr=stderr_type)
-    stdout, stderr = proc.communicate()
-    returncode = proc.returncode
+    try:
+        proc = subprocess.Popen(command, stdout=stdout_type, stderr=stderr_type)
+        stdout, stderr = proc.communicate()
+        returncode = proc.returncode
+    except OSError as e:
+        if 'No such file or directory' in e.strerror:
+            raise RuntimeError('Could not find openscad! Make sure you\'ve installed OpenSCAD and it\'s on your PATH '
+                               'environment variable')
+        else:
+            raise
 
     logger.debug('returncode:%d', returncode)
     if returncode != 0:
