@@ -41,6 +41,10 @@ const uint8_t flaps[] = {
 
 /*************************/
 
+#if NUM_MODULES < 1
+#error NUM_MODULES must be at least 1
+#endif
+
 #include "splitflap_module.h"
 
 #if SPI_IO
@@ -109,6 +113,14 @@ void setup() {
     }
     strip.show();
     delay(3);
+  }
+#else
+  pinMode(LED_BUILTIN, OUTPUT);
+
+  // Pulse the builtin LED - not as fun but indicates that we're running
+  for (int i = 0; i < 11; i++) {
+    digitalWrite(LED_BUILTIN, i % 2 ? HIGH : LOW);
+    delay(100);
   }
 #endif
 
@@ -277,6 +289,8 @@ inline void run_iteration() {
 
 void sensor_test_iteration() {
     motor_sensor_io();
+
+#if NEOPIXEL_DEBUGGING_ENABLED
     for (uint8_t i = 0; i < NUM_MODULES; i++) {
       uint32_t color;
       if (!modules[i].GetHomeState()) {
@@ -292,6 +306,13 @@ void sensor_test_iteration() {
       strip.setPixelColor(i, color);
     }
     strip.show();
+#else
+#if NUM_MODULES > 1
+#error NEOPIXEL_DEBUGGING_ENABLED is false, but NUM_MODULES is > 1. To run a sensor test without neopixels, the Arduino will use the builtin LED so NUM_MODULES must be set to 1.
+#endif
+    // We only have one LED - just show the first module's home state status
+    digitalWrite(LED_BUILTIN, !modules[0].GetHomeState() ? HIGH : LOW);
+#endif
 }
 
 
