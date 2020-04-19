@@ -27,8 +27,14 @@ class Splitflap(object):
 
     def _loop_for_status(self):
         while True:
-            line = self.serial.readline().lstrip('\0').rstrip('\n')
-            data = json.loads(line)
+            line = self.serial.readline().lstrip(b'\0').rstrip(b'\n')
+            if not len(line):
+                continue
+            try:
+                data = json.loads(line)
+            except:
+                print('Failed to parse', line)
+                raise
             t = data['type']
             if t == 'init':
                 if self.has_inited:
@@ -70,11 +76,11 @@ class Splitflap(object):
                 list(_ALPHABET),
             )
         self.last_command = text
-        self.serial.write('={}\n'.format(text))
+        self.serial.write(b'=' + text.encode() + b'\n')
         return self._loop_for_status()
 
     def recalibrate_all(self):
-        self.serial.write('@')
+        self.serial.write(b'@')
         return self._loop_for_status()
 
     def get_status(self):

@@ -1,5 +1,5 @@
 /*
-   Copyright 2015-2018 Scott Bezek and the splitflap contributors
+   Copyright 2015-2020 Scott Bezek and the splitflap contributors
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -117,7 +117,7 @@ flap_notch_depth = 3;
 
 
 spool_width = flap_width - flap_notch_depth*2 + flap_width_slop + thickness*2;
-assert(spool_width >= flap_width, "Flap is wider than spool!");
+legacyAssert(spool_width >= flap_width, "Flap is wider than spool!");
 spool_strut_tabs = 3;
 spool_strut_tab_width=8;
 spool_strut_tab_outset=8;

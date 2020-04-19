@@ -1,5 +1,5 @@
 /*
-   Copyright 2015-2016 Scott Bezek and the splitflap contributors
+   Copyright 2020 Scott Bezek and the splitflap contributors
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -14,12 +14,18 @@
    limitations under the License.
 */
 
+#include <Arduino.h>
+
 /***** CONFIGURATION *****/
 
 #define NUM_MODULES (12) //ON ESP32 you can control much more modules, but need to adapt SPI_IO_CONFIG accordingly
 #define SENSOR_TEST false
 #define SPI_IO true
 #define REVERSE_MOTOR_DIRECTION false
+
+// Whether to force a full rotation when the same letter is specified again
+#define FORCE_FULL_ROTATION true
+
 #define BLUETOOTH true
 
 // This should match the order of flaps on the spool:
@@ -73,6 +79,7 @@ uint32_t color_orange = strip.Color(30, 7, 0);
 BluetoothSerial SerialBT;
 #endif
 
+void dump_status(void);
 
 void setup() {
   Serial.begin(38400);
@@ -137,8 +144,7 @@ inline int8_t FindFlapIndex(uint8_t character) {
     return -1;
 }
 
-bool was_idle = false;
-bool was_stopped = false;
+bool pending_move_response = true;
 bool pending_no_op = false;
 uint8_t recv_count = 0;
 
@@ -185,6 +191,16 @@ inline void run_iteration() {
       strip.show();
 #endif
 
+      if (pending_no_op && all_stopped) {
+        Serial.print(FAVR("{\"type\":\"no_op\"}\n"));
+        Serial.flush();
+        pending_no_op = false;
+      }
+      if (pending_move_response && all_stopped) {
+        pending_move_response = false;
+        dump_status();
+      }
+
       while (Serial.available() > 0) {
         int b = Serial.read();
         switch (b) {
@@ -201,11 +217,14 @@ inline void run_iteration() {
             recv_count = 0;
             break;
           case '\n':
+              pending_move_response = true;
               Serial.print(FAVR("{\"type\":\"move_echo\", \"dest\":\""));
               for (uint8_t i = 0; i < recv_count; i++) {
                 int8_t index = FindFlapIndex(recv_buffer[i]);
                 if (index != -1) {
-                  modules[i].GoToFlapIndex(index);
+                  if (FORCE_FULL_ROTATION || index != modules[i].GetTargetFlapIndex()) {
+                    modules[i].GoToFlapIndex(index);
+                  }
                 }
                 Serial.write(recv_buffer[i]);
               }
@@ -261,19 +280,7 @@ inline void run_iteration() {
       }
 #endif
 
-      if (pending_no_op && all_stopped) {
-        Serial.print(FAVR("{\"type\":\"no_op\"}\n"));
-        Serial.flush();
-        pending_no_op = false;
-      }
-  
-      if (!was_stopped && all_stopped) {
-        dump_status();
-      }
-
     }
-    was_idle = all_idle;
-    was_stopped = all_stopped;
 }
 
 void sensor_test_iteration() {
@@ -312,7 +319,7 @@ void loop() {
     run_iteration();
 #endif
 
-    #ifdef ESP8266 || defined(ESP32)
+    #if defined(ESP8266) || defined(ESP32)
     // Yield to avoid triggering Soft WDT
     yield();
     #endif

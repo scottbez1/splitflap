@@ -1,5 +1,5 @@
 /*
-   Copyright 2015-2016 Scott Bezek and the splitflap contributors
+   Copyright 2015-2020 Scott Bezek and the splitflap contributors
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-module assert(truth, msg="(no messsage provided)") {
+module legacyAssert(truth, msg="(no messsage provided)") {
     if (!truth) {
         // Intentionally don't close the <div> tag to make the entire console red
         echo(str(
@@ -38,6 +38,6 @@ module assert(truth, msg="(no messsage provided)") {
 required_widgets = 24;
 widgets = 12 + 3;
 
-assert(widgets >= required_widgets, str("Not enough widgets! Required ", required_widgets, " but found ", widgets));
+legacyAssert(widgets >= required_widgets, str("Not enough widgets! Required ", required_widgets, " but found ", widgets));
 
 

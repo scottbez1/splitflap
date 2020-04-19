@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import random
+import six
 import time
 
 import serial
@@ -41,7 +42,7 @@ def ask_for_serial_port():
     for i, port in enumerate(ports):
         print('[{: 2}] {} - {}'.format(i, port.device, port.description))
     print()
-    value = raw_input('Use which port? ')
+    value = six.moves.input('Use which port? ')
     port_index = int(value)
     assert 0 <= port_index < len(ports)
     return ports[port_index].device
