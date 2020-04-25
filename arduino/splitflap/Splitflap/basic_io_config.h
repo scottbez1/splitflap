@@ -41,13 +41,13 @@ SplitflapModule moduleA((uint8_t&)PORTD, 4, (uint8_t&)PINB, B00010000);
 SplitflapModule moduleB((uint8_t&)PORTB, 0, (uint8_t&)PINC, B00010000);
 SplitflapModule moduleC((uint8_t&)PORTC, 0, (uint8_t&)PINC, B00100000);
 
-SplitflapModule modules[] = {
-  moduleA,
-  moduleB,
-  moduleC,
+SplitflapModule* modules[] = {
+  &moduleA,
+  &moduleB,
+  &moduleC,
 };
 
-inline void motor_sensor_setup() {
+void initialize_modules() {
   // Initialize motor outputs
   DDRD |= 0xF0; // Motor A
   DDRB |= 0xF; // Motor B

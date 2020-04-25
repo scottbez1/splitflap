@@ -88,7 +88,7 @@ void dump_status(void);
 void setup() {
   Serial.begin(38400);
 
-  motor_sensor_setup();
+  initialize_modules();
   motor_sensor_io();
 
   Serial.print(FAVR("{\"type\":\"init\", \"num_modules\":"));
@@ -126,9 +126,9 @@ void setup() {
 
   for (uint8_t i = 0; i < NUM_MODULES; i++) {
     recv_buffer[i] = 0;
-    modules[i].Init();
+    modules[i]->Init();
 #if !SENSOR_TEST
-    modules[i].GoHome();
+    modules[i]->GoHome();
 #endif
   }
 
@@ -157,15 +157,15 @@ inline void run_iteration() {
     boolean all_stopped = true;
     boolean any_bad_timing = false;
     for (uint8_t i = 0; i < NUM_MODULES; i++) {
-      any_bad_timing |= modules[i].Update();
-      bool is_idle = modules[i].state == PANIC
+      any_bad_timing |= modules[i]->Update();
+      bool is_idle = modules[i]->state == PANIC
 #if HOME_CALIBRATION_ENABLED
-        || modules[i].state == LOOK_FOR_HOME
-        || modules[i].state == SENSOR_ERROR
+        || modules[i]->state == LOOK_FOR_HOME
+        || modules[i]->state == SENSOR_ERROR
 #endif
-        || (modules[i].state == NORMAL && modules[i].current_accel_step == 0);
+        || (modules[i]->state == NORMAL && modules[i]->current_accel_step == 0);
       all_idle &= is_idle;
-      all_stopped &= modules[i].current_accel_step == 0;
+      all_stopped &= modules[i]->current_accel_step == 0;
       if (i & 0b11) motor_sensor_io();
     }
     motor_sensor_io();
@@ -174,7 +174,7 @@ inline void run_iteration() {
 #if NEOPIXEL_DEBUGGING_ENABLED
       for (int i = 0; i < NUM_MODULES; i++) {
         uint32_t color;
-        switch (modules[i].state) {
+        switch (modules[i]->state) {
           case NORMAL:
             color = color_green;
             break;
@@ -210,8 +210,8 @@ inline void run_iteration() {
         switch (b) {
           case '@':
             for (uint8_t i = 0; i < NUM_MODULES; i++) {
-              modules[i].ResetErrorCounters();
-              modules[i].GoHome();
+              modules[i]->ResetErrorCounters();
+              modules[i]->GoHome();
             }
             break;
           case '#':
@@ -226,8 +226,8 @@ inline void run_iteration() {
               for (uint8_t i = 0; i < recv_count; i++) {
                 int8_t index = FindFlapIndex(recv_buffer[i]);
                 if (index != -1) {
-                  if (FORCE_FULL_ROTATION || index != modules[i].GetTargetFlapIndex()) {
-                    modules[i].GoToFlapIndex(index);
+                  if (FORCE_FULL_ROTATION || index != modules[i]->GetTargetFlapIndex()) {
+                    modules[i]->GoToFlapIndex(index);
                   }
                 }
                 Serial.write(recv_buffer[i]);
@@ -251,8 +251,8 @@ inline void run_iteration() {
         switch (c) {
           case '@':
             for (uint8_t i = 0; i < NUM_MODULES; i++) {
-              modules[i].ResetErrorCounters();
-              modules[i].GoHome();
+              modules[i]->ResetErrorCounters();
+              modules[i]->GoHome();
             }
             break;
           case '#':
@@ -266,7 +266,7 @@ inline void run_iteration() {
               for (uint8_t i = 0; i < recv_count; i++) {
                 int8_t index = FindFlapIndex(recv_buffer[i]);
                 if (index != -1) {
-                  modules[i].GoToFlapIndex(index);
+                  modules[i]->GoToFlapIndex(index);
                 }
                 Serial.write(recv_buffer[i]);
               }
@@ -293,7 +293,7 @@ void sensor_test_iteration() {
 #if NEOPIXEL_DEBUGGING_ENABLED
     for (uint8_t i = 0; i < NUM_MODULES; i++) {
       uint32_t color;
-      if (!modules[i].GetHomeState()) {
+      if (!modules[i]->GetHomeState()) {
         color = color_green;
       } else {
         color = color_purple;
@@ -307,11 +307,11 @@ void sensor_test_iteration() {
     }
     strip.show();
 #else
-#if NUM_MODULES > 1
+#if NUM_MODULES > 1 && SENSOR_TEST
 #error NEOPIXEL_DEBUGGING_ENABLED is false, but NUM_MODULES is > 1. To run a sensor test without neopixels, the Arduino will use the builtin LED so NUM_MODULES must be set to 1.
 #endif
     // We only have one LED - just show the first module's home state status
-    digitalWrite(LED_BUILTIN, !modules[0].GetHomeState() ? HIGH : LOW);
+    digitalWrite(LED_BUILTIN, !modules[0]->GetHomeState() ? HIGH : LOW);
 #endif
 }
 
@@ -335,7 +335,7 @@ void dump_status() {
   Serial.print(FAVR("{\"type\":\"status\", \"modules\":["));
   for (uint8_t i = 0; i < NUM_MODULES; i++) {
     Serial.print(FAVR("{\"state\":\""));
-    switch (modules[i].state) {
+    switch (modules[i]->state) {
       case NORMAL:
         Serial.print(FAVR("normal"));
         break;
@@ -352,11 +352,11 @@ void dump_status() {
         break;
     }
     Serial.print(FAVR("\", \"flap\":\""));
-    Serial.write(flaps[modules[i].GetCurrentFlapIndex()]);
+    Serial.write(flaps[modules[i]->GetCurrentFlapIndex()]);
     Serial.print(FAVR("\", \"count_missed_home\":"));
-    Serial.print(modules[i].count_missed_home);
+    Serial.print(modules[i]->count_missed_home);
     Serial.print(FAVR(", \"count_unexpected_home\":"));
-    Serial.print(modules[i].count_unexpected_home);
+    Serial.print(modules[i]->count_unexpected_home);
     Serial.print(FAVR("}"));
     if (i < NUM_MODULES - 1) {
       Serial.print(FAVR(", "));

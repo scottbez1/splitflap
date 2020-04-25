@@ -63,54 +63,30 @@
 #error "Unknown/unsupported board. ATmega328-based boards (Uno, Duemilanove, Diecimila), ESP8266 and ESP32 are currently supported"
 #endif
 
+
 #define MOTOR_BUFFER_LENGTH (NUM_MODULES / 2 + (NUM_MODULES % 2 != 0))
 uint8_t motor_buffer[MOTOR_BUFFER_LENGTH];
 
 #define SENSOR_BUFFER_LENGTH (NUM_MODULES / 4 + (NUM_MODULES % 4 != 0))
 uint8_t sensor_buffer[SENSOR_BUFFER_LENGTH];
 
-SplitflapModule moduleA(motor_buffer[0], 0, sensor_buffer[0], B00000001);
-SplitflapModule moduleB(motor_buffer[0], 4, sensor_buffer[0], B00000010);
-SplitflapModule moduleC(motor_buffer[1], 0, sensor_buffer[0], B00000100);
-SplitflapModule moduleD(motor_buffer[1], 4, sensor_buffer[0], B00001000);
+// Define placement new so we can initialize SplitflapModules at runtime into a static buffer.
+// (see https://arduino.stackexchange.com/a/1499)
+void* operator new(size_t size, void* ptr) {
+  return ptr;
+}
 
-#if NUM_MODULES > 4
-SplitflapModule moduleE(motor_buffer[2], 0, sensor_buffer[1], B00000001);
-SplitflapModule moduleF(motor_buffer[2], 4, sensor_buffer[1], B00000010);
-SplitflapModule moduleG(motor_buffer[3], 0, sensor_buffer[1], B00000100);
-SplitflapModule moduleH(motor_buffer[3], 4, sensor_buffer[1], B00001000);
-#endif
+// Static buffer for SplitflapModules (initialized at runtime)
+static char moduleBuffer[NUM_MODULES][sizeof(SplitflapModule)];
 
-#if NUM_MODULES > 8
-SplitflapModule moduleI(motor_buffer[4], 0, sensor_buffer[2], B00000001);
-SplitflapModule moduleJ(motor_buffer[4], 4, sensor_buffer[2], B00000010);
-SplitflapModule moduleK(motor_buffer[5], 0, sensor_buffer[2], B00000100);
-SplitflapModule moduleL(motor_buffer[5], 4, sensor_buffer[2], B00001000);
-#endif
+SplitflapModule* modules[NUM_MODULES];
 
-SplitflapModule modules[] = {
-  moduleA,
-  moduleB,
-  moduleC,
-  moduleD,
+inline void initialize_modules() {
+  for (uint8_t i = 0; i < NUM_MODULES; i++) {
+    // Create SplitflapModules in a statically allocated buffer using placement new
+    modules[i] = new (moduleBuffer[i]) SplitflapModule(motor_buffer[i/2], i % 2 == 0 ? 0 : 4, sensor_buffer[i/4], 1 << (i % 4));
+  }
 
-#if NUM_MODULES > 4
-  moduleE,
-  moduleF,
-  moduleG,
-  moduleH,
-#endif
-
-#if NUM_MODULES > 8
-  moduleI,
-  moduleJ,
-  moduleK,
-  moduleL,
-#endif
-};
-
-
-inline void motor_sensor_setup() {
   // Initialize SPI
   pinMode(IN_LATCH_PIN, OUTPUT);
   pinMode(OUT_LATCH_PIN, OUTPUT);

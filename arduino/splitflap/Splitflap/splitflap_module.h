@@ -413,11 +413,11 @@ inline bool SplitflapModule::Update() {
 #if HOME_CALIBRATION_ENABLED
             bool found_home = CheckSensor();
             if (home_state == IGNORE) {
-                if (found_home) {
 #if VERBOSE_LOGGING
+                if (found_home) {
                     Serial.print("VERBOSE: Ignoring home");
-#endif
                 }
+#endif
                 if (current_step == unexpected_home_start_step) {
                     home_state = UNEXPECTED;
                 }
