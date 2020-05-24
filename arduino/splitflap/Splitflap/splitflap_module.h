@@ -28,6 +28,7 @@
 // Enable for auto-calibration via home sensor feedback. Disable for basic open-loop control (useful when first
 // testing the split-flap, since home calibration can be tricky to fine tune)
 #define HOME_CALIBRATION_ENABLED true
+#define FAKE_HOME_SENSOR true
 
 #define NUM_FLAPS (40)
 
@@ -440,7 +441,7 @@ inline bool SplitflapModule::Update() {
                     home_state = EXPECTED;
                 }
             } else if (home_state == EXPECTED) {
-                if (found_home) {
+                if (FAKE_HOME_SENSOR || found_home) {
 #if VERBOSE_LOGGING
                     Serial.print("VERBOSE: Found expected home.");
 #endif
@@ -475,7 +476,7 @@ inline bool SplitflapModule::Update() {
 #if HOME_CALIBRATION_ENABLED
         } else if (state == LOOK_FOR_HOME) {
             bool found_home = CheckSensor();
-            if (found_home) {
+            if (FAKE_HOME_SENSOR || found_home) {
 #if VERBOSE_LOGGING
                 Serial.print("VERBOSE: Found home!\n");
 #endif
