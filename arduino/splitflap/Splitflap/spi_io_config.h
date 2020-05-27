@@ -66,6 +66,7 @@
   #define NEOPIXEL_PIN (13) //Any pin will work
   #define OUT_LATCH_PIN (12)//Any pin will work
   #define IN_LATCH_PIN (27) //Any pin will work
+  #define OUTPUT_ENABLE_PIN (32) // Any pin will work
 
   #define SPI_CLOCK 8000000
 
@@ -96,7 +97,7 @@
 #define SENSOR_BUFFER_LENGTH (NUM_MODULES / 4 + (NUM_MODULES % 4 != 0))
 
 BUFFER_ATTRS uint8_t motor_buffer[MOTOR_BUFFER_LENGTH];
-BUFFER_ATTRS uint8_t sensor_buffer[MOTOR_BUFFER_LENGTH];
+BUFFER_ATTRS uint8_t sensor_buffer[SENSOR_BUFFER_LENGTH];
 
 #ifdef __AVR__
 // Define placement new so we can initialize SplitflapModules at runtime into a static buffer.
@@ -126,7 +127,7 @@ SplitflapModule* modules[NUM_MODULES];
 inline void initialize_modules() {
   for (uint8_t i = 0; i < NUM_MODULES; i++) {
     // Create SplitflapModules in a statically allocated buffer using placement new
-    modules[i] = new (moduleBuffer[i]) SplitflapModule(motor_buffer[i/2], i % 2 == 0 ? 0 : 4, sensor_buffer[i/4], 1 << (i % 4));
+    modules[i] = new (moduleBuffer[i]) SplitflapModule(motor_buffer[(NUM_MODULES - i - 1)/2], i % 2 == 0 ? 0 : 4, sensor_buffer[i/4], 1 << (i % 4));
   }
   
   memset(motor_buffer, 0, MOTOR_BUFFER_LENGTH);
@@ -162,10 +163,11 @@ inline void initialize_modules() {
       .duty_cycle_pos=0,
       .cs_ena_pretrans=0,
       .cs_ena_posttrans=0,
-      .clock_speed_hz=8*1000*1000,
+      .clock_speed_hz=SPI_CLOCK,
       .input_delay_ns=0,
       .spics_io_num=PIN_NUM_CS,
-      .flags = SPI_DEVICE_HALFDUPLEX,
+      .flags = 0,
+      // .flags = SPI_DEVICE_HALFDUPLEX,
       .queue_size=1,
       .pre_cb=NULL,
       .post_cb=&out_latch,
@@ -181,10 +183,11 @@ inline void initialize_modules() {
       .duty_cycle_pos=0,
       .cs_ena_pretrans=0,
       .cs_ena_posttrans=0,
-      .clock_speed_hz=8*1000*1000,
+      .clock_speed_hz=SPI_CLOCK,
       .input_delay_ns=0,
-      .spics_io_num=-1, //PIN_NUM_CS,
-      .flags = SPI_DEVICE_HALFDUPLEX,
+      .spics_io_num=-1,// PIN_NUM_CS,
+      .flags = 0,
+      // .flags = SPI_DEVICE_HALFDUPLEX,
       .queue_size=1,
       .pre_cb=&in_latch,
       .post_cb=NULL,
@@ -198,10 +201,10 @@ inline void initialize_modules() {
   tx_transaction.rx_buffer = NULL;
 
   memset(&rx_transaction, 0, sizeof(rx_transaction));
-  rx_transaction.length = 0;
+  rx_transaction.length = SENSOR_BUFFER_LENGTH*8;
   rx_transaction.rxlength = SENSOR_BUFFER_LENGTH*8;
+  rx_transaction.tx_buffer = &motor_buffer;
   rx_transaction.rx_buffer = &sensor_buffer;
-  rx_transaction.tx_buffer = NULL;
 
 #else
   SPI.begin();
@@ -231,6 +234,7 @@ inline void motor_sensor_io() {
   // using SPI to read byte-by-byte and shift the data accordingly.
   bool extra_bit = digitalRead(D6);
 #endif
+#error "Non-ESP32 support temporarily removed"
 //   for (uint8_t i = 0; i < MOTOR_BUFFER_LENGTH; i++) {
 //     int val = SPI.transfer(motor_buffer[MOTOR_BUFFER_LENGTH - 1 - i]);
 //     if (i < SENSOR_BUFFER_LENGTH) {

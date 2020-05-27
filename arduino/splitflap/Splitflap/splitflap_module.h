@@ -28,7 +28,7 @@
 // Enable for auto-calibration via home sensor feedback. Disable for basic open-loop control (useful when first
 // testing the split-flap, since home calibration can be tricky to fine tune)
 #define HOME_CALIBRATION_ENABLED true
-#define FAKE_HOME_SENSOR true
+#define FAKE_HOME_SENSOR false
 
 #define NUM_FLAPS (40)
 

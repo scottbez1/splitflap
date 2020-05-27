@@ -86,6 +86,10 @@ void setup() {
   initialize_modules();
   motor_sensor_io();
 
+  // Wait until after 1 motor_sensor_io to turn on shift register outputs
+  pinMode(OUTPUT_ENABLE_PIN, OUTPUT);
+  digitalWrite(OUTPUT_ENABLE_PIN, LOW);
+
   Serial.print(FAVR("{\"type\":\"init\", \"num_modules\":"));
   Serial.print(NUM_MODULES);
   Serial.print(FAVR("}\n"));
