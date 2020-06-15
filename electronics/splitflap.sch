@@ -15,7 +15,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L splitflap-rescue:CONN_01X05 P1
+L Connector_Generic:Conn_01x05 P1
 U 1 1 5649AA03
 P 6350 6050
 F 0 "P1" H 6350 6350 50  0000 C CNN
@@ -62,7 +62,7 @@ F 4 "SML-D12Y1WT86CT-ND" H 5400 3200 60  0001 C CNN "DK#"
 	-1   0    0    1   
 $EndComp
 $Comp
-L splitflap-rescue:R_Small R1
+L Device:R_Small R1
 U 1 1 57148460
 P 5000 3200
 F 0 "R1" V 4950 3150 50  0000 L CNN
@@ -91,7 +91,7 @@ U 1 1 59D16B96
 P 4350 4550
 F 0 "U4" H 4350 4300 60  0000 C CNN
 F 1 "WS2812B" H 4350 4600 60  0000 C CNN
-F 2 "LEDs:LED_WS2812B-PLCC4" H 4350 4550 60  0001 C CNN
+F 2 "LED_SMD:LED_WS2812B_PLCC4_5.0x5.0mm_P3.2mm" H 4350 4550 60  0001 C CNN
 F 3 "" H 4350 4550 60  0001 C CNN
 F 4 "1528-1104-ND" H 4350 4550 60  0001 C CNN "DK#"
 F 5 "DK part number is for 10. May be cheaper elsewhere (e.g. aliexpress)" H 4350 4550 60  0001 C CNN "BOM_Note"
@@ -104,7 +104,7 @@ U 1 1 59D16CF3
 P 4850 4550
 F 0 "U5" H 4850 4300 60  0000 C CNN
 F 1 "WS2812B" H 4850 4600 60  0000 C CNN
-F 2 "LEDs:LED_WS2812B-PLCC4" H 4850 4550 60  0001 C CNN
+F 2 "LED_SMD:LED_WS2812B_PLCC4_5.0x5.0mm_P3.2mm" H 4850 4550 60  0001 C CNN
 F 3 "" H 4850 4550 60  0001 C CNN
 F 4 "1528-1104-ND" H 4850 4550 60  0001 C CNN "DK#"
 F 5 "DK part number is for 10. May be cheaper elsewhere (e.g. aliexpress)" H 4850 4550 60  0001 C CNN "BOM_Note"
@@ -117,7 +117,7 @@ U 1 1 59D16EA0
 P 5350 4550
 F 0 "U9" H 5350 4300 60  0000 C CNN
 F 1 "WS2812B" H 5350 4600 60  0000 C CNN
-F 2 "LEDs:LED_WS2812B-PLCC4" H 5350 4550 60  0001 C CNN
+F 2 "LED_SMD:LED_WS2812B_PLCC4_5.0x5.0mm_P3.2mm" H 5350 4550 60  0001 C CNN
 F 3 "" H 5350 4550 60  0001 C CNN
 F 4 "1528-1104-ND" H 5350 4550 60  0001 C CNN "DK#"
 F 5 "DK part number is for 10. May be cheaper elsewhere (e.g. aliexpress)" H 5350 4550 60  0001 C CNN "BOM_Note"
@@ -130,7 +130,7 @@ U 1 1 59D16EF1
 P 5850 4550
 F 0 "U10" H 5850 4300 60  0000 C CNN
 F 1 "WS2812B" H 5850 4600 60  0000 C CNN
-F 2 "LEDs:LED_WS2812B-PLCC4" H 5850 4550 60  0001 C CNN
+F 2 "LED_SMD:LED_WS2812B_PLCC4_5.0x5.0mm_P3.2mm" H 5850 4550 60  0001 C CNN
 F 3 "" H 5850 4550 60  0001 C CNN
 F 4 "1528-1104-ND" H 5850 4550 60  0001 C CNN "DK#"
 F 5 "DK part number is for 10. May be cheaper elsewhere (e.g. aliexpress)" H 5850 4550 60  0001 C CNN "BOM_Note"
@@ -138,19 +138,19 @@ F 5 "DK part number is for 10. May be cheaper elsewhere (e.g. aliexpress)" H 585
 	0    -1   -1   0   
 $EndComp
 $Comp
-L splitflap-rescue:CONN_02X07 J2
+L Connector_Generic:Conn_02x07_Odd_Even J2
 U 1 1 59D7346F
-P 4350 1650
-F 0 "J2" H 4350 2050 50  0000 C CNN
+P 4300 1650
+F 0 "J2" H 4300 2050 50  0000 C CNN
 F 1 "OUT" V 4350 1650 50  0000 C CNN
-F 2 "Misc:IDC 3020-14-0300-00" H 4350 450 50  0001 C CNN
-F 3 "" H 4350 450 50  0001 C CNN
-F 4 "1175-1622-ND" H 4350 1650 60  0001 C CNN "DK#"
-	1    4350 1650
+F 2 "Misc:IDC 3020-14-0300-00" H 4300 450 50  0001 C CNN
+F 3 "" H 4300 450 50  0001 C CNN
+F 4 "1175-1622-ND" H 4300 1650 60  0001 C CNN "DK#"
+	1    4300 1650
 	1    0    0    -1  
 $EndComp
 $Comp
-L splitflap-rescue:CONN_01X05 P2
+L Connector_Generic:Conn_01x05 P2
 U 1 1 5641B40C
 P 6350 6950
 F 0 "P2" H 6350 7250 50  0000 C CNN
@@ -162,7 +162,7 @@ F 4 "455-2270-ND" H 6350 6950 60  0001 C CNN "DK#"
 	1    0    0    -1  
 $EndComp
 $Comp
-L splitflap-rescue:CONN_01X05 P3
+L Connector_Generic:Conn_01x05 P3
 U 1 1 59D19653
 P 6350 8550
 F 0 "P3" H 6350 8850 50  0000 C CNN
@@ -174,7 +174,7 @@ F 4 "455-2270-ND" H 6350 8550 60  0001 C CNN "DK#"
 	1    0    0    -1  
 $EndComp
 $Comp
-L splitflap-rescue:CONN_01X05 P4
+L Connector_Generic:Conn_01x05 P4
 U 1 1 59D1964C
 P 6350 9650
 F 0 "P4" H 6350 9950 50  0000 C CNN
@@ -198,7 +198,7 @@ F 4 "511-1578-1-ND" H 5400 3650 60  0001 C CNN "DK#"
 	-1   0    0    1   
 $EndComp
 $Comp
-L splitflap-rescue:R_Small R2
+L Device:R_Small R2
 U 1 1 59D78B1C
 P 5000 3650
 F 0 "R2" V 4950 3600 50  0000 L CNN
@@ -286,28 +286,26 @@ Connection ~ 6000 4050
 $Comp
 L power:GND #PWR038
 U 1 1 5B693709
-P 10550 10000
-F 0 "#PWR038" H 10550 9750 50  0001 C CNN
-F 1 "GND" H 10550 9850 50  0000 C CNN
-F 2 "" H 10550 10000 50  0001 C CNN
-F 3 "" H 10550 10000 50  0001 C CNN
-	1    10550 10000
+P 1200 4250
+F 0 "#PWR038" H 1200 4000 50  0001 C CNN
+F 1 "GND" H 1200 4100 50  0000 C CNN
+F 2 "" H 1200 4250 50  0001 C CNN
+F 3 "" H 1200 4250 50  0001 C CNN
+	1    1200 4250
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	10550 9700 10550 9750
-Wire Wire Line
-	10550 9950 10550 10000
+	1200 4200 1200 4250
 $Comp
-L splitflap-rescue:R_Small R9
+L Device:R_Small R9
 U 1 1 5B694203
-P 10550 9850
-F 0 "R9" V 10500 9850 50  0000 C CNN
-F 1 "100k" V 10600 9850 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" H 10550 9850 60  0001 C CNN
-F 3 "" H 10550 9850 60  0000 C CNN
-F 4 "RMCF0603JG100KCT-ND " V 10550 9850 60  0001 C CNN "DK#"
-	1    10550 9850
+P 1200 4100
+F 0 "R9" V 1150 4100 50  0000 C CNN
+F 1 "100k" V 1250 4100 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" H 1200 4100 60  0001 C CNN
+F 3 "" H 1200 4100 60  0000 C CNN
+F 4 "RMCF0603JG100KCT-ND " V 1200 4100 60  0001 C CNN "DK#"
+	1    1200 4100
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -316,7 +314,7 @@ U 1 1 5B992FE3
 P 5800 1650
 F 0 "Z1" H 5450 1800 60  0000 C CNN
 F 1 "ribbon cable (BOM only)" H 5800 1650 60  0000 C CNN
-F 2 "Oddities:Dummy_Empty" H 5800 1650 60  0001 C CNN
+F 2 "Misc:empty" H 5800 1650 60  0001 C CNN
 F 3 "" H 5800 1650 60  0001 C CNN
 F 4 "H3CCS-1418G-ND" H 5800 1650 60  0001 C CNN "DK#"
 F 5 "Cable connects *between* controller boards in chain, so 2 are needed per 3 boards." H 5800 1650 60  0001 C CNN "BOM_Note"
@@ -1061,12 +1059,9 @@ $EndComp
 Text Label 11650 9700 2    50   ~ 0
 SENSOR_DATA_IN_BUFFERED
 Wire Wire Line
-	10550 9700 10350 9700
-Wire Wire Line
 	10350 9700 10350 8850
 Wire Wire Line
 	10350 8850 10150 8850
-Connection ~ 10550 9700
 Text Label 7000 9450 0    50   ~ 0
 SENSOR_DATA_OUT
 Wire Wire Line
@@ -1142,7 +1137,7 @@ Wire Wire Line
 	15750 1350 16100 1350
 Connection ~ 15750 1350
 $Comp
-L splitflap-rescue:C_Small C4
+L Device:C_Small C4
 U 1 1 5FB3E58C
 P 10200 1150
 F 0 "C4" H 10100 1300 50  0000 L CNN
@@ -1238,22 +1233,18 @@ Wire Wire Line
 	2450 4000 3550 4000
 Text Label 3550 4000 2    50   ~ 0
 SENSOR_DATA_IN_BUFFERED
-Wire Wire Line
-	700  4000 1450 4000
 Text Label 700  4000 0    50   ~ 0
 SENSOR_DATA_IN
-Wire Wire Line
-	10550 9700 11650 9700
 $Comp
-L splitflap-rescue:CONN_02X07 J1
+L Connector_Generic:Conn_02x07_Odd_Even J1
 U 1 1 59D46D4B
-P 1900 1650
-F 0 "J1" H 1900 2050 50  0000 C CNN
+P 1850 1650
+F 0 "J1" H 1850 2050 50  0000 C CNN
 F 1 "IN" V 1900 1650 50  0000 C CNN
-F 2 "Misc:IDC 3020-14-0300-00" H 1900 450 50  0001 C CNN
-F 3 "" H 1900 450 50  0001 C CNN
-F 4 "1175-1622-ND" H 1900 1650 60  0001 C CNN "DK#"
-	1    1900 1650
+F 2 "Misc:IDC 3020-14-0300-00" H 1850 450 50  0001 C CNN
+F 3 "" H 1850 450 50  0001 C CNN
+F 4 "1175-1622-ND" H 1850 1650 60  0001 C CNN "DK#"
+	1    1850 1650
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -1494,7 +1485,7 @@ F 3 "" H 7800 2200 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L splitflap-rescue:R_Small R7
+L Device:R_Small R7
 U 1 1 60798C31
 P 8100 2350
 F 0 "R7" V 8050 2300 50  0000 L CNN
@@ -1538,7 +1529,7 @@ F 3 "" H 7600 2850 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L splitflap-rescue:R_Small R4
+L Device:R_Small R4
 U 1 1 60CDAB8A
 P 7300 3300
 F 0 "R4" V 7250 3250 50  0000 L CNN
@@ -1550,7 +1541,7 @@ F 4 " RMCF0603FT43K0CT-ND" V 7300 3300 50  0001 C CNN "DK#"
 	0    1    1    0   
 $EndComp
 $Comp
-L splitflap-rescue:R_Small R5
+L Device:R_Small R5
 U 1 1 60CFF7A2
 P 7300 3550
 F 0 "R5" V 7250 3500 50  0000 L CNN
@@ -1562,7 +1553,7 @@ F 4 " RMCF0603FT1K50CT-ND" V 7300 3550 50  0001 C CNN "DK#"
 	0    1    1    0   
 $EndComp
 $Comp
-L splitflap-rescue:R_Small R3
+L Device:R_Small R3
 U 1 1 60CFF8C5
 P 6900 3650
 F 0 "R3" H 6950 3600 50  0000 L CNN
@@ -1780,7 +1771,7 @@ HOME_SENSOR_C
 Text Label 9400 6950 2    50   ~ 0
 HOME_SENSOR_D
 Text Notes 6750 4550 0    50   ~ 0
-Home Sensor Inputs
+Sensor Inputs
 Wire Wire Line
 	10150 8750 10850 8750
 Wire Wire Line
@@ -1840,7 +1831,7 @@ F 4 "296-14609-1-ND" H 12850 3550 50  0001 C CNN "DK#"
 	1    0    0    -1  
 $EndComp
 $Comp
-L splitflap-rescue:R_Small R10
+L Device:R_Small R10
 U 1 1 62785239
 P 12200 2500
 F 0 "R10" H 12250 2450 50  0000 L CNN
@@ -1851,7 +1842,7 @@ F 3 "" H 12200 2500 60  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L splitflap-rescue:R_Small R11
+L Device:R_Small R11
 U 1 1 627856DE
 P 12200 2800
 F 0 "R11" H 12250 2750 50  0000 L CNN
@@ -2018,7 +2009,7 @@ Wire Wire Line
 Wire Wire Line
 	7800 2200 7800 2350
 $Comp
-L splitflap-rescue:R_Small R6
+L Device:R_Small R6
 U 1 1 63475A21
 P 8000 2500
 F 0 "R6" H 8050 2450 50  0000 L CNN
@@ -2032,7 +2023,7 @@ $EndComp
 Wire Wire Line
 	8000 2600 8000 2650
 $Comp
-L splitflap-rescue:R_Small R8
+L Device:R_Small R8
 U 1 1 63475B26
 P 8200 2500
 F 0 "R8" H 8250 2550 50  0000 L CNN
@@ -2046,14 +2037,14 @@ $EndComp
 Wire Wire Line
 	8200 2600 8200 2650
 $Comp
-L splitflap-rescue:C_Small C3
+L Device:C_Small C3
 U 1 1 63475CBF
 P 8100 2650
 F 0 "C3" V 8100 2800 50  0000 L CNN
 F 1 "DNP" V 8150 2800 50  0000 L CNN
-F 2 "Capacitors_ThroughHole:C_Rect_L7.0mm_W2.5mm_P5.00mm" H 8100 2650 50  0001 C CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.05x0.95mm_HandSolder" H 8100 2650 50  0001 C CNN
 F 3 "" H 8100 2650 50  0001 C CNN
-F 4 "BC2665CT-ND" H 8100 2650 60  0001 C CNN "DK#"
+F 4 "~" H 8100 2650 60  0001 C CNN "DK#"
 	1    8100 2650
 	0    1    1    0   
 $EndComp
@@ -2084,7 +2075,7 @@ Wire Wire Line
 Wire Wire Line
 	10200 1250 10400 1250
 $Comp
-L splitflap-rescue:C_Small C5
+L Device:C_Small C5
 U 1 1 5EEBC2B7
 P 10400 1150
 F 0 "C5" H 10300 1300 50  0000 L CNN
@@ -2102,7 +2093,7 @@ Connection ~ 10400 1250
 Wire Wire Line
 	10400 1250 10600 1250
 $Comp
-L splitflap-rescue:C_Small C6
+L Device:C_Small C6
 U 1 1 5EEBC33D
 P 10600 1150
 F 0 "C6" H 10500 1300 50  0000 L CNN
@@ -2120,7 +2111,7 @@ Connection ~ 10600 1250
 Wire Wire Line
 	10600 1250 10800 1250
 $Comp
-L splitflap-rescue:C_Small C7
+L Device:C_Small C7
 U 1 1 5EEBC3C5
 P 10800 1150
 F 0 "C7" H 10700 1300 50  0000 L CNN
@@ -2138,7 +2129,7 @@ Connection ~ 10800 1250
 Wire Wire Line
 	10800 1250 11000 1250
 $Comp
-L splitflap-rescue:C_Small C8
+L Device:C_Small C8
 U 1 1 5EEBC44F
 P 11000 1150
 F 0 "C8" H 10900 1300 50  0000 L CNN
@@ -2156,7 +2147,7 @@ Connection ~ 11000 1250
 Wire Wire Line
 	11000 1250 11200 1250
 $Comp
-L splitflap-rescue:C_Small C9
+L Device:C_Small C9
 U 1 1 5EEBC4DB
 P 11200 1150
 F 0 "C9" H 11100 1300 50  0000 L CNN
@@ -2174,7 +2165,7 @@ Connection ~ 11200 1250
 Wire Wire Line
 	11200 1250 11400 1250
 $Comp
-L splitflap-rescue:C_Small C10
+L Device:C_Small C10
 U 1 1 5EEBC569
 P 11400 1150
 F 0 "C10" H 11300 1300 50  0000 L CNN
@@ -2192,7 +2183,7 @@ Connection ~ 11400 1250
 Wire Wire Line
 	11400 1250 11600 1250
 $Comp
-L splitflap-rescue:C_Small C11
+L Device:C_Small C11
 U 1 1 5EEBC5F9
 P 11600 1150
 F 0 "C11" H 11500 1300 50  0000 L CNN
@@ -2210,7 +2201,7 @@ Connection ~ 11600 1250
 Wire Wire Line
 	11600 1250 11800 1250
 $Comp
-L splitflap-rescue:C_Small C12
+L Device:C_Small C12
 U 1 1 5EEBC68B
 P 11800 1150
 F 0 "C12" H 11700 1300 50  0000 L CNN
@@ -2228,7 +2219,7 @@ Connection ~ 11800 1250
 Wire Wire Line
 	11800 1250 12000 1250
 $Comp
-L splitflap-rescue:C_Small C13
+L Device:C_Small C13
 U 1 1 5EEBC71F
 P 12000 1150
 F 0 "C13" H 11900 1300 50  0000 L CNN
@@ -2428,4 +2419,11 @@ Wire Wire Line
 Connection ~ 7500 3550
 Wire Wire Line
 	7500 3550 7650 3550
+Connection ~ 1200 4000
+Wire Wire Line
+	1200 4000 1450 4000
+Wire Wire Line
+	700  4000 1200 4000
+Wire Wire Line
+	10350 9700 11650 9700
 $EndSCHEMATC

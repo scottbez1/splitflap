@@ -103,6 +103,31 @@ X QH' 9 400 -500 100 L 50 50 1 0 O
 ENDDRAW
 ENDDEF
 #
+# Connector_Generic_Conn_01x05
+#
+DEF Connector_Generic_Conn_01x05 J 0 40 Y N 1 F N
+F0 "J" 0 300 50 H V C CNN
+F1 "Connector_Generic_Conn_01x05" 0 -300 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+$FPLIST
+ Connector*:*_1x??_*
+$ENDFPLIST
+DRAW
+S -50 -195 0 -205 1 1 6 N
+S -50 -95 0 -105 1 1 6 N
+S -50 5 0 -5 1 1 6 N
+S -50 105 0 95 1 1 6 N
+S -50 205 0 195 1 1 6 N
+S -50 250 50 -250 1 1 10 f
+X Pin_1 1 -200 200 150 R 50 50 1 1 P
+X Pin_2 2 -200 100 150 R 50 50 1 1 P
+X Pin_3 3 -200 0 150 R 50 50 1 1 P
+X Pin_4 4 -200 -100 150 R 50 50 1 1 P
+X Pin_5 5 -200 -200 150 R 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
 # Connector_Generic_Conn_02x04_Counter_Clockwise
 #
 DEF Connector_Generic_Conn_02x04_Counter_Clockwise J 0 40 Y N 1 F N
@@ -131,6 +156,49 @@ X Pin_5 5 300 -200 150 L 50 50 1 1 P
 X Pin_6 6 300 -100 150 L 50 50 1 1 P
 X Pin_7 7 300 0 150 L 50 50 1 1 P
 X Pin_8 8 300 100 150 L 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
+# Connector_Generic_Conn_02x07_Odd_Even
+#
+DEF Connector_Generic_Conn_02x07_Odd_Even J 0 40 Y N 1 F N
+F0 "J" 50 400 50 H V C CNN
+F1 "Connector_Generic_Conn_02x07_Odd_Even" 50 -400 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+$FPLIST
+ Connector*:*_2x??_*
+$ENDFPLIST
+DRAW
+S -50 -295 0 -305 1 1 6 N
+S -50 -195 0 -205 1 1 6 N
+S -50 -95 0 -105 1 1 6 N
+S -50 5 0 -5 1 1 6 N
+S -50 105 0 95 1 1 6 N
+S -50 205 0 195 1 1 6 N
+S -50 305 0 295 1 1 6 N
+S -50 350 150 -350 1 1 10 f
+S 150 -295 100 -305 1 1 6 N
+S 150 -195 100 -205 1 1 6 N
+S 150 -95 100 -105 1 1 6 N
+S 150 5 100 -5 1 1 6 N
+S 150 105 100 95 1 1 6 N
+S 150 205 100 195 1 1 6 N
+S 150 305 100 295 1 1 6 N
+X Pin_1 1 -200 300 150 R 50 50 1 1 P
+X Pin_10 10 300 -100 150 L 50 50 1 1 P
+X Pin_11 11 -200 -200 150 R 50 50 1 1 P
+X Pin_12 12 300 -200 150 L 50 50 1 1 P
+X Pin_13 13 -200 -300 150 R 50 50 1 1 P
+X Pin_14 14 300 -300 150 L 50 50 1 1 P
+X Pin_2 2 300 300 150 L 50 50 1 1 P
+X Pin_3 3 -200 200 150 R 50 50 1 1 P
+X Pin_4 4 300 200 150 L 50 50 1 1 P
+X Pin_5 5 -200 100 150 R 50 50 1 1 P
+X Pin_6 6 300 100 150 L 50 50 1 1 P
+X Pin_7 7 -200 0 150 R 50 50 1 1 P
+X Pin_8 8 300 0 150 L 50 50 1 1 P
+X Pin_9 9 -200 -100 150 R 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
@@ -202,6 +270,24 @@ X ~ 2 0 -100 80 U 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
+# Device_C_Small
+#
+DEF Device_C_Small C 0 10 N N 1 F N
+F0 "C" 10 70 50 H V L CNN
+F1 "Device_C_Small" 10 -80 50 H V L CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+$FPLIST
+ C_*
+$ENDFPLIST
+DRAW
+P 2 0 1 13 -60 -20 60 -20 N
+P 2 0 1 12 -60 20 60 20 N
+X ~ 1 0 100 80 D 50 50 1 1 P
+X ~ 2 0 -100 80 U 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
 # Device_LED_Small
 #
 DEF Device_LED_Small D 0 10 N N 1 F N
@@ -258,6 +344,23 @@ X R4.2 5 100 200 100 D 50 50 1 1 P
 X R3.2 6 0 200 100 D 50 50 1 1 P
 X R2.2 7 -100 200 100 D 50 50 1 1 P
 X R1.2 8 -200 200 100 D 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
+# Device_R_Small
+#
+DEF Device_R_Small R 0 10 N N 1 F N
+F0 "R" 30 20 50 H V L CNN
+F1 "Device_R_Small" 30 -40 50 H V L CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+$FPLIST
+ R_*
+$ENDFPLIST
+DRAW
+S -30 70 30 -70 0 1 8 N
+X ~ 1 0 100 30 D 50 50 1 1 P
+X ~ 2 0 -100 30 U 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
@@ -459,116 +562,6 @@ X Pin_1 1 -200 100 150 R 50 50 1 1 w
 X Pin_2 2 -200 0 150 R 50 50 1 1 w
 X Pin_3 3 -200 -100 150 R 50 50 1 1 P
 X Pin_4 4 -200 -200 150 R 50 50 1 1 w
-ENDDRAW
-ENDDEF
-#
-# splitflap-rescue_CONN_01X05
-#
-DEF splitflap-rescue_CONN_01X05 J 0 40 Y N 1 F N
-F0 "J" 0 300 50 H V C CNN
-F1 "splitflap-rescue_CONN_01X05" 100 0 50 V V C CNN
-F2 "" 0 0 50 H I C CNN
-F3 "" 0 0 50 H I C CNN
-$FPLIST
- Pin_Header_Straight_1X*
- Pin_Header_Angled_1X*
- Socket_Strip_Straight_1X*
- Socket_Strip_Angled_1X*
-$ENDFPLIST
-DRAW
-S -50 -195 10 -205 0 1 0 N
-S -50 -95 10 -105 0 1 0 N
-S -50 5 10 -5 0 1 0 N
-S -50 105 10 95 0 1 0 N
-S -50 205 10 195 0 1 0 N
-S -50 250 50 -250 0 1 0 N
-X P1 1 -200 200 150 R 50 50 1 1 P
-X P2 2 -200 100 150 R 50 50 1 1 P
-X P3 3 -200 0 150 R 50 50 1 1 P
-X P4 4 -200 -100 150 R 50 50 1 1 P
-X P5 5 -200 -200 150 R 50 50 1 1 P
-ENDDRAW
-ENDDEF
-#
-# splitflap-rescue_CONN_02X07
-#
-DEF splitflap-rescue_CONN_02X07 J 0 1 Y N 1 F N
-F0 "J" 0 400 50 H V C CNN
-F1 "splitflap-rescue_CONN_02X07" 0 0 50 V V C CNN
-F2 "" 0 -1200 50 H I C CNN
-F3 "" 0 -1200 50 H I C CNN
-$FPLIST
- Pin_Header_Straight_2X*
- Pin_Header_Angled_2X*
- Socket_Strip_Straight_2X*
- Socket_Strip_Angled_2X*
- IDC_Header_Straight_*
-$ENDFPLIST
-DRAW
-S -100 -295 -50 -305 0 1 0 N
-S -100 -195 -50 -205 0 1 0 N
-S -100 -95 -50 -105 0 1 0 N
-S -100 5 -50 -5 0 1 0 N
-S -100 105 -50 95 0 1 0 N
-S -100 205 -50 195 0 1 0 N
-S -100 305 -50 295 0 1 0 N
-S -100 350 100 -350 0 1 0 N
-S 50 -295 100 -305 0 1 0 N
-S 50 -195 100 -205 0 1 0 N
-S 50 -95 100 -105 0 1 0 N
-S 50 5 100 -5 0 1 0 N
-S 50 105 100 95 0 1 0 N
-S 50 205 100 195 0 1 0 N
-S 50 305 100 295 0 1 0 N
-X P1 1 -250 300 150 R 50 50 1 1 P
-X P10 10 250 -100 150 L 50 50 1 1 P
-X P11 11 -250 -200 150 R 50 50 1 1 P
-X P12 12 250 -200 150 L 50 50 1 1 P
-X P13 13 -250 -300 150 R 50 50 1 1 P
-X P14 14 250 -300 150 L 50 50 1 1 P
-X P2 2 250 300 150 L 50 50 1 1 P
-X P3 3 -250 200 150 R 50 50 1 1 P
-X P4 4 250 200 150 L 50 50 1 1 P
-X P5 5 -250 100 150 R 50 50 1 1 P
-X P6 6 250 100 150 L 50 50 1 1 P
-X P7 7 -250 0 150 R 50 50 1 1 P
-X P8 8 250 0 150 L 50 50 1 1 P
-X P9 9 -250 -100 150 R 50 50 1 1 P
-ENDDRAW
-ENDDEF
-#
-# splitflap-rescue_C_Small
-#
-DEF splitflap-rescue_C_Small C 0 10 N N 1 F N
-F0 "C" 10 70 50 H V L CNN
-F1 "splitflap-rescue_C_Small" 10 -80 50 H V L CNN
-F2 "" 0 0 50 H I C CNN
-F3 "" 0 0 50 H I C CNN
-$FPLIST
- C_*
-$ENDFPLIST
-DRAW
-P 2 0 1 13 -60 -20 60 -20 N
-P 2 0 1 12 -60 20 60 20 N
-X ~ 1 0 100 80 D 50 50 1 1 P
-X ~ 2 0 -100 80 U 50 50 1 1 P
-ENDDRAW
-ENDDEF
-#
-# splitflap-rescue_R_Small
-#
-DEF splitflap-rescue_R_Small R 0 10 N N 1 F N
-F0 "R" 30 20 50 H V L CNN
-F1 "splitflap-rescue_R_Small" 30 -40 50 H V L CNN
-F2 "" 0 0 50 H I C CNN
-F3 "" 0 0 50 H I C CNN
-$FPLIST
- R_*
-$ENDFPLIST
-DRAW
-S -30 70 30 -70 0 1 8 N
-X ~ 1 0 100 30 D 50 50 1 1 P
-X ~ 2 0 -100 30 U 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
