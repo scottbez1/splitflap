@@ -1,0 +1,89 @@
+
+(module RESCAXE80P320X160-8N (layer F.Cu) (tedit 5EE6B085)
+  (descr "<b>BOURNS RESISTOR NETWORK</b>")
+  (fp_text reference REF** (at -0.1801725 -2.3322955 0) (layer F.SilkS)
+    (effects (font (size 0.472906299213 0.472906299213) (thickness 0.015)))
+  )
+  (fp_text value RESCAXE80P320X160-8N (at 4.26804 2.3544435 0) (layer F.Fab)
+    (effects (font (size 0.473333070866 0.473333070866) (thickness 0.015)))
+  )
+  (fp_poly
+    (pts
+      (xy -0.950887 -1.35)
+      (xy -0.45 -1.35)
+      (xy -0.45 -1.05098)
+      (xy -0.950887 -1.05098)
+    ) (layer F.Fab) (width 0.01)
+  )
+  (fp_poly
+    (pts
+      (xy -0.95173 -0.55)
+      (xy -0.45 -0.55)
+      (xy -0.45 -0.250456)
+      (xy -0.95173 -0.250456)
+    ) (layer F.Fab) (width 0.01)
+  )
+  (fp_poly
+    (pts
+      (xy -0.952811 0.25)
+      (xy -0.45 0.25)
+      (xy -0.45 0.551627)
+      (xy -0.952811 0.551627)
+    ) (layer F.Fab) (width 0.01)
+  )
+  (fp_poly
+    (pts
+      (xy -0.95324 1.05)
+      (xy -0.45 1.05)
+      (xy -0.45 1.35461)
+      (xy -0.95324 1.35461)
+    ) (layer F.Fab) (width 0.01)
+  )
+  (fp_line (start -0.8 -1.6) (end -0.8 1.6) (layer F.Fab) (width 0.127))
+  (fp_line (start 0.8 -1.6) (end 0.8 1.6) (layer F.Fab) (width 0.127))
+  (fp_poly
+    (pts
+      (xy 0.450946 1.05)
+      (xy 0.95 1.05)
+      (xy 0.95 1.35284)
+      (xy 0.450946 1.35284)
+    ) (layer F.Fab) (width 0.01)
+  )
+  (fp_poly
+    (pts
+      (xy 0.450318 0.25)
+      (xy 0.95 0.25)
+      (xy 0.95 0.550388)
+      (xy 0.450318 0.550388)
+    ) (layer F.Fab) (width 0.01)
+  )
+  (fp_poly
+    (pts
+      (xy 0.45115 -0.55)
+      (xy 0.95 -0.55)
+      (xy 0.95 -0.25064)
+      (xy 0.45115 -0.25064)
+    ) (layer F.Fab) (width 0.01)
+  )
+  (fp_poly
+    (pts
+      (xy 0.45123 -1.35)
+      (xy 0.95 -1.35)
+      (xy 0.95 -1.05287)
+      (xy 0.45123 -1.05287)
+    ) (layer F.Fab) (width 0.01)
+  )
+  (fp_circle (center -1.24 -1.68) (end -1.113 -1.68) (layer F.SilkS) (width 0.0))
+  (fp_line (start -1.7 -1.9) (end -1.7 1.9) (layer F.CrtYd) (width 0.127))
+  (fp_line (start -1.7 1.9) (end 1.7 1.9) (layer F.CrtYd) (width 0.127))
+  (fp_line (start 1.7 1.9) (end 1.7 -1.9) (layer F.CrtYd) (width 0.127))
+  (fp_line (start 1.7 -1.9) (end -1.7 -1.9) (layer F.CrtYd) (width 0.127))
+  (pad 1 smd rect (at -0.85 -1.2) (size 0.9 0.425) (layers F.Cu F.Mask F.Paste))
+  (pad 2 smd rect (at -0.85 -0.4) (size 0.9 0.425) (layers F.Cu F.Mask F.Paste))
+  (pad 3 smd rect (at -0.85 0.4) (size 0.9 0.425) (layers F.Cu F.Mask F.Paste))
+  (pad 4 smd rect (at -0.85 1.2) (size 0.9 0.425) (layers F.Cu F.Mask F.Paste))
+  (pad 5 smd rect (at 0.85 1.2) (size 0.9 0.425) (layers F.Cu F.Mask F.Paste))
+  (pad 6 smd rect (at 0.85 0.4) (size 0.9 0.425) (layers F.Cu F.Mask F.Paste))
+  (pad 7 smd rect (at 0.85 -0.4) (size 0.9 0.425) (layers F.Cu F.Mask F.Paste))
+  (pad 8 smd rect (at 0.85 -1.2) (size 0.9 0.425) (layers F.Cu F.Mask F.Paste))
+)
