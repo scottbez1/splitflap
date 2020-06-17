@@ -10,5 +10,5 @@
   (lib (name MAX4374)(type Legacy)(uri ${KIPRJMOD}/lib/MAX4374.lib)(options "")(descr ""))
   (lib (name LM339)(type Legacy)(uri ${KIPRJMOD}/lib/LM339.lib)(options "")(descr ""))
   (lib (name INA302)(type Legacy)(uri ${KIPRJMOD}/lib/INA302.lib)(options "")(descr ""))
-  (lib (name screw_terminal_01x04_power_output)(type Legacy)(uri ${KIPRJMOD}/lib/screw_terminal_01x04_power_output.lib)(options "")(descr ""))
+  (lib (name screw_terminal_01x06_power_output)(type Legacy)(uri ${KIPRJMOD}/lib/screw_terminal_01x06_power_output.lib)(options "")(descr ""))
 )
