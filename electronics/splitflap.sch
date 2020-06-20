@@ -1493,18 +1493,6 @@ F 4 " RMCF0603FT1K50CT-ND" V 7300 3550 50  0001 C CNN "DK#"
 	0    1    1    0   
 $EndComp
 $Comp
-L Device:R_Small R3
-U 1 1 60CFF8C5
-P 6900 3650
-F 0 "R3" H 6950 3600 50  0000 L CNN
-F 1 "100k" H 6950 3700 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" H 6900 3650 60  0001 C CNN
-F 3 "" H 6900 3650 60  0000 C CNN
-F 4 "RMCF0603JG100KCT-ND " H 6900 3650 50  0001 C CNN "DK#"
-	1    6900 3650
-	-1   0    0    1   
-$EndComp
-$Comp
 L power:GND #PWR030
 U 1 1 60E7BFCF
 P 8100 4150
@@ -1555,18 +1543,6 @@ F 1 "+5V" H 8265 5073 50  0000 C CNN
 F 2 "" H 8250 4900 50  0001 C CNN
 F 3 "" H 8250 4900 50  0001 C CNN
 	1    8250 4900
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Pack04 RN1
-U 1 1 6127703A
-P 8450 5200
-F 0 "RN1" H 8638 5246 50  0000 L CNN
-F 1 "47k" H 8638 5155 50  0000 L CNN
-F 2 "ResistorNetwork:RESCAXE80P320X160-8N" V 8725 5200 50  0001 C CNN
-F 3 "~" H 8450 5200 50  0001 C CNN
-F 4 "CAY16-473J4LFCT-ND" H 8450 5200 50  0001 C CNN "DK#"
-	1    8450 5200
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
@@ -1919,19 +1895,6 @@ Wire Wire Line
 Connection ~ 7100 3650
 Wire Wire Line
 	7100 3650 7100 3900
-$Comp
-L power:+5V #PWR023
-U 1 1 6309D832
-P 6900 3500
-F 0 "#PWR023" H 6900 3350 50  0001 C CNN
-F 1 "+5V" H 6915 3673 50  0000 C CNN
-F 2 "" H 6900 3500 50  0001 C CNN
-F 3 "" H 6900 3500 50  0001 C CNN
-	1    6900 3500
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	6900 3500 6900 3550
 Wire Wire Line
 	7100 3050 7100 3300
 Connection ~ 7100 3300
@@ -2186,25 +2149,9 @@ Wire Wire Line
 Wire Wire Line
 	7750 6150 7750 6350
 Wire Wire Line
-	8250 5400 8250 5450
-Wire Wire Line
-	8450 5400 8450 6250
-Wire Wire Line
 	7850 5550 7850 5450
 Wire Wire Line
-	7850 5450 8250 5450
-Wire Wire Line
-	8250 5450 9400 5450
-Wire Wire Line
 	7850 6050 7850 6150
-Wire Wire Line
-	7850 6150 8350 6150
-Wire Wire Line
-	8350 5400 8350 6150
-Wire Wire Line
-	7950 6050 9400 6050
-Wire Wire Line
-	8350 6150 9400 6150
 Wire Wire Line
 	7950 5550 9400 5550
 Text Label 9400 6050 2    50   ~ 0
@@ -2228,25 +2175,9 @@ $EndComp
 Wire Wire Line
 	7850 6350 7850 6250
 Wire Wire Line
-	7850 6250 8450 6250
-Wire Wire Line
-	8450 6250 9400 6250
-Wire Wire Line
-	7950 6350 9400 6350
-Wire Wire Line
 	7950 6850 9400 6850
 Wire Wire Line
 	7850 6850 7850 6950
-Wire Wire Line
-	7850 6950 8550 6950
-Wire Wire Line
-	8550 5400 8550 6950
-Wire Wire Line
-	8550 6950 9400 6950
-Connection ~ 8550 6950
-Connection ~ 8450 6250
-Connection ~ 8350 6150
-Connection ~ 8250 5450
 Text Label 10000 2300 0    50   ~ 0
 THERMISTOR_A
 Text Label 10000 2400 0    50   ~ 0
@@ -2319,8 +2250,6 @@ Wire Wire Line
 Wire Wire Line
 	7100 3650 7650 3650
 Wire Wire Line
-	6900 3750 7650 3750
-Wire Wire Line
 	7600 2850 7600 2900
 Wire Wire Line
 	7600 2900 7650 2900
@@ -2366,10 +2295,10 @@ Wire Wire Line
 Wire Wire Line
 	8250 1150 8250 1100
 $Comp
-L power:GND #PWR?
+L power:GND #PWR0101
 U 1 1 5FACC608
 P 8250 1400
-F 0 "#PWR?" H 8250 1150 50  0001 C CNN
+F 0 "#PWR0101" H 8250 1150 50  0001 C CNN
 F 1 "GND" H 8255 1227 50  0000 C CNN
 F 2 "" H 8250 1400 50  0001 C CNN
 F 3 "" H 8250 1400 50  0001 C CNN
@@ -2416,4 +2345,55 @@ Wire Wire Line
 Connection ~ 7800 1400
 Wire Wire Line
 	7800 1400 8250 1400
+NoConn ~ 7650 3750
+Text Notes 7250 3950 0    50   ~ 0
+leave unconnected\nfor no delay (p32)
+Text Notes 7200 3150 0    50   ~ 0
+1.43A trip
+Text Notes 7200 3400 0    50   ~ 0
+0.05A trip
+Wire Wire Line
+	7850 6150 8450 6150
+Wire Wire Line
+	7850 6250 8350 6250
+Wire Wire Line
+	7850 6950 8250 6950
+Wire Wire Line
+	8550 5400 8550 5450
+Connection ~ 8550 5450
+Wire Wire Line
+	8550 5450 9400 5450
+$Comp
+L Device:R_Pack04 RN1
+U 1 1 6127703A
+P 8450 5200
+F 0 "RN1" H 8638 5246 50  0000 L CNN
+F 1 "47k" H 8638 5155 50  0000 L CNN
+F 2 "ResistorNetwork:RESCAXE80P320X160-8N" V 8725 5200 50  0001 C CNN
+F 3 "~" H 8450 5200 50  0001 C CNN
+F 4 "CAY16-473J4LFCT-ND" H 8450 5200 50  0001 C CNN "DK#"
+	1    8450 5200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7850 5450 8550 5450
+Wire Wire Line
+	8250 5400 8250 6950
+Connection ~ 8250 6950
+Wire Wire Line
+	8250 6950 9400 6950
+Wire Wire Line
+	7950 6350 9400 6350
+Wire Wire Line
+	8350 6250 8350 5400
+Connection ~ 8350 6250
+Wire Wire Line
+	8350 6250 9400 6250
+Wire Wire Line
+	7950 6050 9400 6050
+Wire Wire Line
+	8450 6150 8450 5400
+Connection ~ 8450 6150
+Wire Wire Line
+	8450 6150 9400 6150
 $EndSCHEMATC
