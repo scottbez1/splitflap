@@ -39,6 +39,17 @@ const uint8_t flaps[] = {
 
 /*************************/
 
+// ESP32 Pinout:
+// 5  CS            (out) (debug only)
+// 12 Motor latch   (out)
+// 13 neopixel      (out)
+// 18 CLK           (out)
+// 19 MISO          (in)
+// 23 MOSI          (out)
+// 27 Sensor latch  (out)
+// 32 Output enable (out)
+
+
 #if NUM_MODULES < 1
 #error NUM_MODULES must be at least 1
 #endif
@@ -90,9 +101,6 @@ void setup() {
   pinMode(OUTPUT_ENABLE_PIN, OUTPUT);
   digitalWrite(OUTPUT_ENABLE_PIN, LOW);
 
-  Serial.print(FAVR("{\"type\":\"init\", \"num_modules\":"));
-  Serial.print(NUM_MODULES);
-  Serial.print(FAVR("}\n"));
 
 #if NEOPIXEL_DEBUGGING_ENABLED
   strip.begin();
@@ -122,6 +130,11 @@ void setup() {
     delay(100);
   }
 #endif
+
+  Serial.print("\n\n\n");
+  Serial.print(FAVR("{\"type\":\"init\", \"num_modules\":"));
+  Serial.print(NUM_MODULES);
+  Serial.print(FAVR("}\n"));
 
   for (uint8_t i = 0; i < NUM_MODULES; i++) {
     recv_buffer[i] = 0;
