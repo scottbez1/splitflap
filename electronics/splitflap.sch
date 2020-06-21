@@ -1098,22 +1098,6 @@ $EndComp
 Wire Wire Line
 	5500 3650 5600 3650
 $Comp
-L mount:MOUNT_1pin Z5
-U 1 1 5FB2932C
-P 16100 1150
-F 0 "Z5" H 16100 1300 60  0000 C CNN
-F 1 "MOUNT" H 16100 1200 60  0000 C CNN
-F 2 "MountingHoles:M4_mount" H 16100 1150 60  0001 C CNN
-F 3 "" H 16100 1150 60  0000 C CNN
-F 4 "N/A" H 16100 1150 60  0001 C CNN "DK#"
-F 5 "This is a mounting hole, not a component." H 16100 1150 60  0001 C CNN "BOM_Note"
-	1    16100 1150
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	15750 1350 16100 1350
-Connection ~ 15750 1350
-$Comp
 L Device:C_Small C4
 U 1 1 5FB3E58C
 P 10200 1150
