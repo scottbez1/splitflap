@@ -286,26 +286,24 @@ Connection ~ 6000 4050
 $Comp
 L power:GND #PWR038
 U 1 1 5B693709
-P 1200 4250
-F 0 "#PWR038" H 1200 4000 50  0001 C CNN
-F 1 "GND" H 1200 4100 50  0000 C CNN
-F 2 "" H 1200 4250 50  0001 C CNN
-F 3 "" H 1200 4250 50  0001 C CNN
-	1    1200 4250
+P 600 4250
+F 0 "#PWR038" H 600 4000 50  0001 C CNN
+F 1 "GND" H 600 4100 50  0000 C CNN
+F 2 "" H 600 4250 50  0001 C CNN
+F 3 "" H 600 4250 50  0001 C CNN
+	1    600  4250
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	1200 4200 1200 4250
 $Comp
 L Device:R_Small R9
 U 1 1 5B694203
-P 1200 4100
-F 0 "R9" V 1150 4100 50  0000 C CNN
-F 1 "100k" V 1250 4100 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" H 1200 4100 60  0001 C CNN
-F 3 "" H 1200 4100 60  0000 C CNN
-F 4 "RMCF0603JG100KCT-ND " V 1200 4100 60  0001 C CNN "DK#"
-	1    1200 4100
+P 600 4100
+F 0 "R9" V 550 4100 50  0000 C CNN
+F 1 "100k" V 650 4100 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" H 600 4100 60  0001 C CNN
+F 3 "" H 600 4100 60  0000 C CNN
+F 4 "RMCF0603JG100KCT-ND " V 600 4100 60  0001 C CNN "DK#"
+	1    600  4100
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -445,22 +443,20 @@ Text Label 700  3700 0    50   ~ 0
 MOTOR_LATCH_IN
 Text Label 3550 3700 2    50   ~ 0
 MOTOR_LATCH_BUFFERED
-Text Label 700  3800 0    50   ~ 0
+Text Label 700  4200 0    50   ~ 0
 SENSOR_LATCH_IN
-Text Label 3550 3800 2    50   ~ 0
+Text Label 3550 4200 2    50   ~ 0
 SENSOR_LATCH_BUFFERED
-Text Label 700  3900 0    50   ~ 0
+Text Label 700  3800 0    50   ~ 0
 nOUTPUT_ENABLE_IN
-Text Label 3550 3900 2    50   ~ 0
+Text Label 3550 3800 2    50   ~ 0
 nOUTPUT_ENABLE_BUFFERED
 NoConn ~ 2450 4100
-NoConn ~ 2450 4200
+NoConn ~ 2450 3900
 Wire Wire Line
 	700  3700 1450 3700
 Wire Wire Line
 	700  3800 1450 3800
-Wire Wire Line
-	700  3900 1450 3900
 $Comp
 L power:GND #PWR01
 U 1 1 5EEB26C5
@@ -472,25 +468,6 @@ F 3 "" H 1350 4600 50  0001 C CNN
 	1    1350 4600
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	1350 4600 1350 4500
-Wire Wire Line
-	1350 4500 1450 4500
-Wire Wire Line
-	1450 4400 1350 4400
-Wire Wire Line
-	1350 4400 1350 4500
-Connection ~ 1350 4500
-Wire Wire Line
-	1450 4200 1350 4200
-Wire Wire Line
-	1350 4200 1350 4400
-Connection ~ 1350 4400
-Wire Wire Line
-	1450 4100 1350 4100
-Wire Wire Line
-	1350 4100 1350 4200
-Connection ~ 1350 4200
 $Comp
 L power:GND #PWR08
 U 1 1 5EF5D99A
@@ -609,9 +586,9 @@ Wire Wire Line
 Wire Wire Line
 	2450 3700 3550 3700
 Wire Wire Line
-	2450 3800 3550 3800
+	2450 4200 3550 4200
 Wire Wire Line
-	2450 3900 3550 3900
+	2450 3800 3550 3800
 Wire Wire Line
 	3150 5900 3150 6050
 Wire Wire Line
@@ -1524,9 +1501,9 @@ Text Label 7350 8450 0    50   ~ 0
 THERMAL_LIMIT_AB
 Text Label 7350 8550 0    50   ~ 0
 THERMAL_LIMIT_CD
-Text Label 7350 8650 0    50   ~ 0
-CURRENT_LIMIT_1
 Text Label 7350 8750 0    50   ~ 0
+CURRENT_LIMIT_1
+Text Label 7350 8650 0    50   ~ 0
 CURRENT_LIMIT_2
 Wire Wire Line
 	7000 9450 10150 9450
@@ -2182,7 +2159,7 @@ U 1 1 5F66741C
 P 12350 2650
 F 0 "TP4" H 12408 2770 50  0000 L CNN
 F 1 "Temp Ref" H 12408 2679 50  0000 L CNN
-F 2 "TestPoint:TestPoint_Pad_D1.5mm" H 12550 2650 50  0001 C CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 12550 2650 50  0001 C CNN
 F 3 "~" H 12550 2650 50  0001 C CNN
 	1    12350 2650
 	1    0    0    -1  
@@ -2196,7 +2173,7 @@ U 1 1 5F697B55
 P 8700 2900
 F 0 "TP3" H 8758 3020 50  0000 L CNN
 F 1 "Current" H 8758 2929 50  0000 L CNN
-F 2 "TestPoint:TestPoint_Pad_D1.5mm" H 8900 2900 50  0001 C CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 8900 2900 50  0001 C CNN
 F 3 "~" H 8900 2900 50  0001 C CNN
 	1    8700 2900
 	1    0    0    -1  
@@ -2255,11 +2232,6 @@ Wire Wire Line
 Connection ~ 7500 3550
 Wire Wire Line
 	7500 3550 7650 3550
-Connection ~ 1200 4000
-Wire Wire Line
-	1200 4000 1450 4000
-Wire Wire Line
-	700  4000 1200 4000
 Wire Wire Line
 	10350 9700 11650 9700
 Wire Wire Line
@@ -2387,13 +2359,40 @@ Connection ~ 8350 8650
 Wire Wire Line
 	8350 8650 8650 8650
 Wire Wire Line
+	1450 4400 1350 4400
+Wire Wire Line
+	1450 4100 1350 4100
+Wire Wire Line
+	1350 4600 1350 4500
+Wire Wire Line
+	1350 4500 1450 4500
+Connection ~ 1350 4500
+Wire Wire Line
+	1350 4400 1350 4500
+Connection ~ 1350 4400
+Wire Wire Line
+	1350 4200 1350 4400
+Wire Wire Line
+	1350 4100 1350 4200
+Wire Wire Line
 	8450 8100 8450 8550
-Connection ~ 8450 8550
 Wire Wire Line
 	8450 8550 8650 8550
+Connection ~ 8450 8550
 Wire Wire Line
 	8550 8100 8550 8450
-Connection ~ 8550 8450
 Wire Wire Line
 	8550 8450 8650 8450
+Connection ~ 8550 8450
+Wire Wire Line
+	600  4000 1450 4000
+Wire Wire Line
+	600  4200 600  4250
+Wire Wire Line
+	700  4200 1450 4200
+Wire Wire Line
+	1350 4100 1350 3900
+Wire Wire Line
+	1350 3900 1450 3900
+Connection ~ 1350 4100
 $EndSCHEMATC
