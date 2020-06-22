@@ -7,15 +7,16 @@ install:
 - ./3d/scripts/dependencies.sh
 - travis_wait ./electronics/scripts/dependencies.sh
 script:
-- (cd 3d && xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python -u generate_2d.py --render-raster)
-- (cd 3d && xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python -u generate_gif.py)
-- python -u 3d/generate_stl.py
+#- (cd 3d && xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python -u generate_2d.py --render-raster)
+#- (cd 3d && xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python -u generate_gif.py)
+#- python -u 3d/generate_stl.py
 # Control board
 - (cd electronics && python -u scripts/generate_svg.py splitflap.kicad_pcb && python -u scripts/generate_pdf.py splitflap.kicad_pcb && python -u scripts/generate_gerber.py splitflap.kicad_pcb)
 # Panelized control board
 - (cd electronics && python -u scripts/panelize/generate_panelize_config.py scripts/panelize/splitflap_panel_metaconfig.json && python3 -u ../thirdparty/panelize.py build/panelized_splitflap_config.txt && python -u scripts/generate_svg.py build/panelized_splitflap.kicad_pcb && python -u scripts/generate_pdf.py build/panelized_splitflap.kicad_pcb && python -u scripts/generate_gerber.py build/panelized_splitflap.kicad_pcb)
 # Panelized sensor board
-- (cd electronics && python -u scripts/panelize/generate_panelize_config.py scripts/panelize/sensor_panel_metaconfig.json && python3 -u ../thirdparty/panelize.py build/panelized_sensor_config.txt && python -u scripts/generate_svg.py build/panelized_sensor.kicad_pcb && python -u scripts/generate_pdf.py build/panelized_sensor.kicad_pcb && python -u scripts/generate_gerber.py build/panelized_sensor.kicad_pcb)
+#- (cd electronics && python -u scripts/panelize/generate_panelize_config.py scripts/panelize/sensor_panel_metaconfig.json && python3 -u ../thirdparty/panelize.py build/panelized_sensor_config.txt && python -u scripts/generate_svg.py build/panelized_sensor.kicad_pcb && python -u scripts/generate_pdf.py build/panelized_sensor.kicad_pcb && python -u scripts/generate_gerber.py build/panelized_sensor.kicad_pcb)
+
 - python -u electronics/scripts/export_schematic.py
 
 # Note: include sensor.xml 4 times since there are 4 sensors per control board
