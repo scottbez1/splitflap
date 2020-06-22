@@ -53,6 +53,7 @@ def plot_to_directory(pcb_file, output_directory, temp_dir):
             LayerDef(pcbnew.B_Cu, True),
             LayerDef(pcbnew.F_SilkS, False),
             LayerDef(pcbnew.B_SilkS, True),
+            LayerDef(pcbnew.F_Paste, False),
         ]
 
         pdfs = []
