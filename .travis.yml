@@ -7,9 +7,10 @@ install:
 - ./3d/scripts/dependencies.sh
 - travis_wait ./electronics/scripts/dependencies.sh
 script:
-#- (cd 3d && xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python -u generate_2d.py --render-raster)
-#- (cd 3d && xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python -u generate_gif.py)
-#- python -u 3d/generate_stl.py
+- (cd 3d && xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python -u generate_2d.py --render-raster)
+- (cd 3d && xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python -u generate_gif.py)
+- python -u 3d/generate_stl.py
+
 # Control board
 - (cd electronics && python -u scripts/generate_svg.py splitflap.kicad_pcb && python -u scripts/generate_pdf.py splitflap.kicad_pcb && python -u scripts/generate_gerber.py splitflap.kicad_pcb)
 
@@ -25,7 +26,9 @@ script:
 
 # Note: include sensor.xml 4 times since there are 4 sensors per control board
 - (cd electronics && python -u scripts/export_bom.py splitflap.sch && python -u scripts/export_bom.py sensor.sch && python -u bom/generate_bom_csv.py build/bom.csv splitflap.xml sensor.xml sensor.xml sensor.xml sensor.xml)
+
 - ./scripts/collect_output.sh
+
 deploy:
   provider: s3
   access_key_id: AKIAJY6VAINVQICEC47Q
