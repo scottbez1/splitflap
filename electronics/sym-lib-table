@@ -11,4 +11,5 @@
   (lib (name LM339)(type Legacy)(uri ${KIPRJMOD}/lib/LM339.lib)(options "")(descr ""))
   (lib (name INA302)(type Legacy)(uri ${KIPRJMOD}/lib/INA302.lib)(options "")(descr ""))
   (lib (name screw_terminal_01x06_power_output)(type Legacy)(uri ${KIPRJMOD}/lib/screw_terminal_01x06_power_output.lib)(options "")(descr ""))
+  (lib (name hall_effect)(type Legacy)(uri ${KIPRJMOD}/lib/hall_effect.lib)(options "")(descr ""))
 )

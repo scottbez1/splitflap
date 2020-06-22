@@ -57,6 +57,8 @@ def eeschema_export_bom():
 
 
 def export_bom(schematic_file):
+    # Use absolute path - eeschema handles libraries differently with full path vs filename
+    schematic_file = os.path.abspath(schematic_file)
     output_dir = os.path.join(electronics_root, 'build')
     file_util.mkdir_p(output_dir)
 
