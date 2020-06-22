@@ -46,8 +46,7 @@ def eeschema_plot_schematic(output_directory):
 
     logger.info('Open File->Plot->Plot')
     xdotool(['key', 'alt+f'])
-    xdotool(['key', 'p'])
-    xdotool(['key', 'p'])
+    xdotool(['key', 'l'])
 
     wait_for_window('plot', 'Plot')
     xdotool(['search', '--name', 'Plot', 'windowfocus'])
@@ -58,9 +57,6 @@ def eeschema_plot_schematic(output_directory):
     logger.info('Select PDF plot format')
     xdotool([
         'key',
-        'Tab',
-        'Tab',
-        'Tab',
         'Tab',
         'Tab',
         'Up',
