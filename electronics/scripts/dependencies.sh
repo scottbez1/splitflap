@@ -7,4 +7,5 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y kicad inkscape poppler-ut
 mkdir -p ~/.config/kicad
 cp /usr/share/kicad/template/fp-lib-table ~/.config/kicad/
 cp /usr/share/kicad/template/sym-lib-table ~/.config/kicad/
+echo "canvas_type=1" > ~/.config/kicad/pcbnew
 
