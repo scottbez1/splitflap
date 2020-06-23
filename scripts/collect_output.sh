@@ -19,6 +19,10 @@ cp electronics/build/bom.csv deploy/bom.csv
 # Control board
 cp electronics/build/splitflap_merged.png deploy/pcb_raster.png
 ./scripts/annotate_image.sh deploy/pcb_raster.png
+
+cp electronics/build/3d.png deploy/pcb_3d.png
+./scripts/annotate_image.sh deploy/pcb_3d.png
+
 cp electronics/build/splitflap_packet.pdf deploy/pcb_packet.pdf
 cp electronics/build/splitflap_gerber.zip deploy/pcb_gerber.zip
 

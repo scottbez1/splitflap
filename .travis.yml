@@ -8,9 +8,9 @@ install:
 - travis_wait ./electronics/scripts/dependencies.sh
 
 script:
-#- (cd 3d && xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python -u generate_2d.py --render-raster)
-#- (cd 3d && xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python -u generate_gif.py)
-#- python -u 3d/generate_stl.py
+- (cd 3d && xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python -u generate_2d.py --render-raster)
+- (cd 3d && xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python -u generate_gif.py)
+- python -u 3d/generate_stl.py
 
 # Control board
 - (cd electronics && python -u scripts/generate_svg.py splitflap.kicad_pcb && python -u scripts/generate_pdf.py splitflap.kicad_pcb && python -u scripts/generate_gerber.py splitflap.kicad_pcb)
@@ -29,20 +29,20 @@ script:
 # Note: include sensor.xml 4 times since there are 4 sensors per control board
 - (cd electronics && python -u scripts/export_bom.py splitflap.sch && python -u scripts/export_bom.py sensor.sch && python -u bom/generate_bom_csv.py build/bom.csv splitflap.xml sensor.xml sensor.xml sensor.xml sensor.xml)
 
-#- ./scripts/collect_output.sh
+- ./scripts/collect_output.sh
 
-#deploy:
-#  provider: s3
-#  access_key_id: AKIAJY6VAINVQICEC47Q
-#  secret_access_key:
-#    secure: SYHsDA3WZfV6YlZiS5iSlbVSkULppZQ6Lqc+D6FuXcTy59mxlJykCRLZUXqI/iNIGoO+hUW/myasK31D0WbMAbJ2C4T93GIdbvpnzHsSvvfITmVZPdGwSoQAedagvNo2anIqX53iVFX0i13Y18Kjy6eyxc3jcYLfuZSmIpAuqlyGa7ywRmZmTc4x8SuPNAYTUAw8b6RhVrCd/tPvI4t1qaI9Q9/4oWPhFZdu5VUfWyTj3Y5d4yirzPJfZEccTbAZHyjoHsmKRpczH4J9HFywrjzr2BmJa6Mqw8JvASUWLumyUZDH2DuWS0F08Pu1GupRVjd//+V8kuGsEm6MPmpzfhjl87cv5E62v773lZGoRokhPI5bMcOP8ayFNZYyzdvMWDbIDE2itg+c/uwX6fl5EUufFLdwjHmnTcKFzR+vFIgPboZdSjZ60kYppzBEwp52mCdd7/aBETeEgJTJJwmt5plnn/D7tkg6sQZTdsS1NQLJoYZp96A18IT++YvHzZnPks9QsM+3oPngE1FVy3SKPm3MgRYy28kRLAyt5Igt9xlAum+MB9pYcklT7znIsC/puDsx1xKghZPXGSzD13L0PwLk1DURAde215uCbolhye2CjEpcoJ8Pbf/IMZrkJlgt8km4yGNAF1HBGxVqzCyqbNz1JiBr2mMlJ86zgf7NYVQ=
-#  bucket: splitflap-travis
-#  local-dir: deploy
-#  upload-dir: branches/$TRAVIS_BRANCH
-#  skip_cleanup: true
-#  acl: public_read
-#  cache_control: no-cache
-#  on:
-#    repo: scottbez1/splitflap
-#    all_branches: true
+deploy:
+  provider: s3
+  access_key_id: AKIAJY6VAINVQICEC47Q
+  secret_access_key:
+    secure: SYHsDA3WZfV6YlZiS5iSlbVSkULppZQ6Lqc+D6FuXcTy59mxlJykCRLZUXqI/iNIGoO+hUW/myasK31D0WbMAbJ2C4T93GIdbvpnzHsSvvfITmVZPdGwSoQAedagvNo2anIqX53iVFX0i13Y18Kjy6eyxc3jcYLfuZSmIpAuqlyGa7ywRmZmTc4x8SuPNAYTUAw8b6RhVrCd/tPvI4t1qaI9Q9/4oWPhFZdu5VUfWyTj3Y5d4yirzPJfZEccTbAZHyjoHsmKRpczH4J9HFywrjzr2BmJa6Mqw8JvASUWLumyUZDH2DuWS0F08Pu1GupRVjd//+V8kuGsEm6MPmpzfhjl87cv5E62v773lZGoRokhPI5bMcOP8ayFNZYyzdvMWDbIDE2itg+c/uwX6fl5EUufFLdwjHmnTcKFzR+vFIgPboZdSjZ60kYppzBEwp52mCdd7/aBETeEgJTJJwmt5plnn/D7tkg6sQZTdsS1NQLJoYZp96A18IT++YvHzZnPks9QsM+3oPngE1FVy3SKPm3MgRYy28kRLAyt5Igt9xlAum+MB9pYcklT7znIsC/puDsx1xKghZPXGSzD13L0PwLk1DURAde215uCbolhye2CjEpcoJ8Pbf/IMZrkJlgt8km4yGNAF1HBGxVqzCyqbNz1JiBr2mMlJ86zgf7NYVQ=
+  bucket: splitflap-travis
+  local-dir: deploy
+  upload-dir: branches/$TRAVIS_BRANCH
+  skip_cleanup: true
+  acl: public_read
+  cache_control: no-cache
+  on:
+    repo: scottbez1/splitflap
+    all_branches: true
 
