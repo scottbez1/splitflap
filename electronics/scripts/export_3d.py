@@ -50,7 +50,7 @@ def _wait_for_pcbnew_idle():
                 cpu = proc.cpu_percent(interval=1)
                 print(cpu)
                 if cpu < 5:
-                    print(f'Render took {time.time() - start} seconds')
+                    print('Render took %d seconds' % (time.time() - start))
                     return
         time.sleep(1)
     raise RuntimeError('Timeout waiting for pcbnew to go idle')

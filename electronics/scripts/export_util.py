@@ -82,6 +82,7 @@ def get_versioned_contents(filename):
         original_contents = f.read()
         date = rev_info.current_date()
         rev = rev_info.git_short_rev()
+        logger.info('Replacing placeholders with %s and %s' % (date, rev))
         return original_contents, original_contents \
             .replace('Date ""', 'Date "%s"' % date) \
             .replace('DATE: YYYY-MM-DD', 'DATE: %s' % date) \
