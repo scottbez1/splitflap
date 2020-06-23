@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #   Copyright 2015-2020 Scott Bezek and the splitflap contributors
 #
@@ -16,7 +16,7 @@
 
 import logging
 import os
-import subprocess
+import psutil
 import sys
 import time
 
@@ -37,6 +37,18 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
+def _wait_for_pcbnew_idle():
+    for i in range(120):
+        for proc in psutil.process_iter():
+            if proc.name() == 'pcbnew':
+                cpu = proc.cpu_percent(interval=1)
+                print(cpu)
+                if cpu < 5:
+                    return
+        time.sleep(1)
+    raise RuntimeError('Timeout waiting for pcbnew to go idle')
+
+
 def _pcbnew_export_3d(output_directory):
     wait_for_window('pcbnew', 'Pcbnew ')
 
@@ -49,6 +61,10 @@ def _pcbnew_export_3d(output_directory):
     wait_for_window('3D Viewer', '3D Viewer')
     xdotool(['search', '--name', '3D Viewer', 'windowfocus'])
 
+    time.sleep(3)
+
+    xdotool(['search', '--name', '3D Viewer', 'windowmove', '0', '0'])
+    xdotool(['search', '--name', '3D Viewer', 'windowsize', '3840', '2160'])
 
     logger.info('Zoom in')
     xdotool([
@@ -56,7 +72,7 @@ def _pcbnew_export_3d(output_directory):
         'alt+v',
         'i',
     ])
-    time.sleep(3)
+    time.sleep(5)
 
     for i in range(2):
         logger.info('Rotate X Clockwise')
@@ -69,7 +85,7 @@ def _pcbnew_export_3d(output_directory):
             'Down',
             'Return',
         ])
-        time.sleep(1)
+        time.sleep(2)
 
     for i in range(2):
         logger.info('Rotate Y counter-clockwise')
@@ -85,7 +101,7 @@ def _pcbnew_export_3d(output_directory):
             'Down',
             'Return',
         ])
-        time.sleep(1)
+        time.sleep(2)
 
     logger.info('Rotate Z counter-clockwise')
     xdotool([
@@ -102,35 +118,29 @@ def _pcbnew_export_3d(output_directory):
         'Down',
         'Return',
     ])
-    time.sleep(1)
+    time.sleep(2)
 
+    logger.info('Wait for rendering...')
 
-    # logger.info('Export current view')
-    # xdotool([
-    #     'key',
-    #     'alt+f',
-    #     'Return',
-    # ])
+    _wait_for_pcbnew_idle()
 
-    # logger.info('Enter build output directory')
-    # xdotool(['type', output_directory])
-    #
-    # logger.info('Select PDF plot format')
-    # xdotool([
-    #     'key',
-    #     'Tab',
-    #     'Tab',
-    #     'Up',
-    #     'Up',
-    #     'Up',
-    #     'space',
-    # ])
-    #
-    # logger.info('Plot')
-    # xdotool(['key', 'Return'])
+    time.sleep(5)
+
+    logger.info('Export current view')
+    xdotool([
+        'key',
+        'alt+f',
+        'Return',
+    ])
+
+    logger.info('Enter build output directory')
+    xdotool(['type', os.path.join(output_directory, '3d.png')])
+
+    logger.info('Output')
+    xdotool(['key', 'Return'])
 
     logger.info('Wait before shutdown')
-    time.sleep(10)
+    time.sleep(2)
 
 
 def export_schematic():
@@ -141,7 +151,7 @@ def export_schematic():
     screencast_output_file = os.path.join(output_dir, 'export_3d_screencast.ogv')
 
     with versioned_file(pcb_file):
-        with recorded_xvfb(screencast_output_file, width=3000, height=2000, colordepth=24):
+        with recorded_xvfb(screencast_output_file, width=3840, height=2160, colordepth=24):
             with PopenContext(['pcbnew', pcb_file], close_fds=True) as pcbnew_proc:
                 _pcbnew_export_3d(output_dir)
                 pcbnew_proc.terminate()

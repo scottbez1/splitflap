@@ -78,27 +78,27 @@ def recorded_xvfb(video_filename, **xvfb_args):
 
 
 def get_versioned_contents(filename):
-    with open(filename, 'rb') as f:
+    with open(filename, 'r') as f:
         original_contents = f.read()
         date = rev_info.current_date()
         rev = rev_info.git_short_rev()
         return original_contents, original_contents \
             .replace('Date ""', 'Date "%s"' % date) \
-            .replace('DATE: YYYY-MM-DD', 'DATE: ' + date) \
+            .replace('DATE: YYYY-MM-DD', 'DATE: %s' % date) \
             .replace('Rev ""', 'Rev "%s"' % rev) \
-            .replace('COMMIT: deadbeef', 'COMMIT: ' + rev)
+            .replace('COMMIT: deadbeef', 'COMMIT: %s' % rev)
 
 
 @contextmanager
 def versioned_file(filename):
     original_contents, versioned_contents = get_versioned_contents(filename)
-    with open(filename, 'wb') as temp_schematic:
+    with open(filename, 'w') as temp_schematic:
         logger.debug('Writing to %s', filename)
         temp_schematic.write(versioned_contents)
     try:
         yield
     finally:
-        with open(filename, 'wb') as temp_schematic:
+        with open(filename, 'w') as temp_schematic:
             logger.debug('Restoring %s', filename)
             temp_schematic.write(original_contents)
 
