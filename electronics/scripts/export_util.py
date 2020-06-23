@@ -76,16 +76,22 @@ def recorded_xvfb(video_filename, **xvfb_args):
             yield
             screencast_proc.terminate()
 
-def _get_versioned_contents(filename):
-    with open(filename, 'rb') as schematic:
-        original_contents = schematic.read()
+
+def get_versioned_contents(filename):
+    with open(filename, 'rb') as f:
+        original_contents = f.read()
+        date = rev_info.current_date()
+        rev = rev_info.git_short_rev()
         return original_contents, original_contents \
-            .replace('Date ""', 'Date "%s"' % rev_info.current_date()) \
-            .replace('Rev ""', 'Rev "%s"' % rev_info.git_short_rev())
+            .replace('Date ""', 'Date "%s"' % date) \
+            .replace('DATE: YYYY-MM-DD', 'DATE: ' + date) \
+            .replace('Rev ""', 'Rev "%s"' % rev) \
+            .replace('COMMIT: deadbeef', 'COMMIT: ' + rev)
+
 
 @contextmanager
-def versioned_schematic(filename):
-    original_contents, versioned_contents = _get_versioned_contents(filename)
+def versioned_file(filename):
+    original_contents, versioned_contents = get_versioned_contents(filename)
     with open(filename, 'wb') as temp_schematic:
         logger.debug('Writing to %s', filename)
         temp_schematic.write(versioned_contents)
