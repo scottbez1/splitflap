@@ -36,20 +36,31 @@ from export_util import (
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
+WIDTH = 2560
+HEIGHT = 1440
+
+RENDER_TIMEOUT = 4 * 60
+
 
 def _wait_for_pcbnew_idle():
-    for i in range(120):
+    start = time.time()
+    while time.time() < start + RENDER_TIMEOUT:
         for proc in psutil.process_iter():
             if proc.name() == 'pcbnew':
                 cpu = proc.cpu_percent(interval=1)
                 print(cpu)
                 if cpu < 5:
+                    print(f'Render took {time.time() - start} seconds')
                     return
         time.sleep(1)
     raise RuntimeError('Timeout waiting for pcbnew to go idle')
 
 
 def _pcbnew_export_3d(output_directory):
+    output_file = os.path.join(output_directory, '3d.png')
+    if os.path.exists(output_file):
+        os.remove(output_file)
+
     wait_for_window('pcbnew', 'Pcbnew ')
 
     logger.info('Focus main pcbnew window')
@@ -64,7 +75,7 @@ def _pcbnew_export_3d(output_directory):
     time.sleep(3)
 
     xdotool(['search', '--name', '3D Viewer', 'windowmove', '0', '0'])
-    xdotool(['search', '--name', '3D Viewer', 'windowsize', '3840', '2160'])
+    xdotool(['search', '--name', '3D Viewer', 'windowsize', str(WIDTH), str(HEIGHT)])
 
     logger.info('Zoom in')
     xdotool([
@@ -133,10 +144,10 @@ def _pcbnew_export_3d(output_directory):
         'Return',
     ])
 
-    logger.info('Enter build output directory')
-    xdotool(['type', os.path.join(output_directory, '3d.png')])
+    logger.info('Enter build output filename')
+    xdotool(['type', output_file])
 
-    logger.info('Output')
+    logger.info('Save')
     xdotool(['key', 'Return'])
 
     logger.info('Wait before shutdown')
