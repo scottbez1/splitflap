@@ -5,7 +5,7 @@ sudo add-apt-repository --yes ppa:js-reynaud/kicad-5
 sudo apt-get update -qq
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y kicad inkscape poppler-utils xdotool recordmydesktop python3-dev
 
-sudo pip3 install psutil
+sudo python3 -m pip install psutil
 
 mkdir -p ~/.config/kicad
 cp /usr/share/kicad/template/fp-lib-table ~/.config/kicad/
