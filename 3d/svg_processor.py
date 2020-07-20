@@ -65,7 +65,7 @@ class SvgProcessor(object):
                 SvgProcessor._apply_attributes(path, {
                     'fill': 'none',
                     'stroke': '#0000ff',
-                    'stroke-width': '0.01',
+                    'stroke-width': '0.1',
                 })
 
     def apply_laser_etch_style(self):

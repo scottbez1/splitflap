@@ -120,10 +120,10 @@ spool_width = flap_width - flap_notch_depth*2 + flap_width_slop + thickness*2;
 legacyAssert(spool_width >= flap_width, "Flap is wider than spool!");
 spool_strut_tabs = 3;
 spool_strut_tab_width=8;
+spool_strut_tab_width_narrow=6;
 spool_strut_tab_outset=8;
 spool_strut_width = (spool_strut_tab_outset + thickness/2) * 2;
-spool_strut_length_inset = 0;
-spool_strut_length = spool_width - (2 * spool_strut_length_inset);
+spool_strut_length = spool_width;
 spool_strut_inner_length = spool_width - 3 * thickness;
 
 spool_strut_exclusion_radius = sqrt((spool_strut_tab_outset+thickness/2)*(spool_strut_tab_outset+thickness/2) + (spool_strut_tab_width/2)*(spool_strut_tab_width/2));
@@ -244,23 +244,26 @@ module m4_captive_nut(bolt_length=m4_bolt_length) {
 
 
 // ##### Struts for bracing spool #####
-module spool_strut_tab_hole() {
-    square([thickness, spool_strut_tab_width], center=true);
+module spool_strut_tab_hole(narrow) {
+    square([thickness, narrow ? spool_strut_tab_width_narrow : spool_strut_tab_width], center=true);
 }
-module spool_strut_tab_holes() {
+module spool_strut_tab_holes(narrow=false) {
     for (i=[0:3]) {
         angle = 90*i;
         translate([cos(angle)*spool_strut_tab_outset, sin(angle)*spool_strut_tab_outset])
             rotate([0,0,angle])
-                spool_strut_tab_hole();
+                spool_strut_tab_hole(narrow);
     }
 }
 module spool_strut() {
     joint_tab_width = spool_strut_inner_length / spool_strut_tabs;
     linear_extrude(thickness, center=true) {
         union() {
-            translate([spool_strut_length_inset, -spool_strut_tab_width / 2]) {
-                square([spool_strut_length, spool_strut_tab_width]);
+            translate([0, -spool_strut_tab_width_narrow / 2]) {
+                square([thickness + eps, spool_strut_tab_width_narrow]);
+            }
+            translate([thickness, -spool_strut_tab_width / 2]) {
+                square([spool_strut_length - thickness, spool_strut_tab_width]);
             }
             translate([thickness*2, -spool_strut_width / 2]) {
                 difference() {
@@ -301,7 +304,7 @@ module flap_spool_complete(captive_nut=false, motor_shaft=false, magnet_hole=fal
             flap_spool(num_flaps, flap_hole_radius, flap_gap, flap_spool_outset,
                     height=0);
 
-            spool_strut_tab_holes();
+            spool_strut_tab_holes(narrow=captive_nut);
             if (captive_nut) {
                 circle(r=m4_nut_width_corners_padded/2, $fn=6);
             }
