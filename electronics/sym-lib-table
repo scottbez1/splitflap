@@ -1,0 +1,9 @@
+(sym_lib_table
+  (lib (name Mega2560Shield)(type Legacy)(uri ${KIPRJMOD}/lib/Mega2560Shield.lib)(options "")(descr ""))
+  (lib (name ULN2003AModule)(type Legacy)(uri ${KIPRJMOD}/lib/ULN2003AModule.lib)(options "")(descr ""))
+  (lib (name oled)(type Legacy)(uri ${KIPRJMOD}/lib/oled.lib)(options "")(descr ""))
+  (lib (name INA219_Breakout)(type Legacy)(uri ${KIPRJMOD}/lib/INA219_Breakout.lib)(options "")(descr ""))
+  (lib (name CustomPower)(type Legacy)(uri ${KIPRJMOD}/lib/CustomPower.lib)(options "")(descr ""))
+  (lib (name 74HC165)(type Legacy)(uri ${KIPRJMOD}/lib/74HC165.lib)(options "")(descr ""))
+  (lib (name ESP32Modules)(type Legacy)(uri ${KIPRJMOD}/lib/ESP32Modules.lib)(options "")(descr ""))
+)
