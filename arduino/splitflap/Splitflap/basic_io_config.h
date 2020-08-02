@@ -22,21 +22,9 @@
 #include "splitflap_module.h"
 
 #if defined(__AVR_ATmega168__) || defined(__AVR_ATmega328P__)
-  // Neopixel debugging isn't currently supported with basic IO mode on an Uno
-  #define NEOPIXEL_DEBUGGING_ENABLED false
-
   #if NUM_MODULES > 3
   #error "Basic IO mode only supports up to 3 modules on Atmega168/328-based boards. Set NUM_MODULES to 3 or fewer."
   #endif
-
-  // Pinout:
-  // Motor A: PD4-7 = pins 4-7
-  // Motor B: PB0-3 = pins 8-11
-  // Motor C: PC0-3 = pins A0-A3
-
-  // Sensor A: PB4 = pin 12
-  // Sensor B: PC4 = pin A4
-  // Sensor C: PC5 = pin A5
 
   SplitflapModule moduleA((uint8_t&)PORTD, 4, (uint8_t&)PINB, B00010000);
   SplitflapModule moduleB((uint8_t&)PORTB, 0, (uint8_t&)PINC, B00010000);
@@ -64,9 +52,6 @@
     // No-op (modules write directly to IO pins)
   }
 #elif defined(__AVR_ATmega2560__)
-  #define NEOPIXEL_DEBUGGING_ENABLED false
-  #define SSD1306_DISPLAY
-  #define INA219_POWER_SENSE
 
   SplitflapModule moduleA((uint8_t&)PORTF, 0, (uint8_t&)PING, 1 << 0); //A0-A3    41
   SplitflapModule moduleB((uint8_t&)PORTF, 4, (uint8_t&)PING, 1 << 1); //A4-A7    40

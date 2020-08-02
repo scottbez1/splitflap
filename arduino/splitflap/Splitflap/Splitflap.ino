@@ -17,21 +17,26 @@
 #include <Arduino.h>
 #include <Wire.h>
 
-#ifdef __AVR__
-#define FAVR(x) F(x)
-#else
-#define FAVR(x) x
-#endif
 
 /***** CONFIGURATION *****/
 
-#define NUM_MODULES (12)
+// 1) Mode
 #define SENSOR_TEST false
+
+// 2) Basic Settings
+#define NUM_MODULES (12)
 #define SPI_IO false
 #define REVERSE_MOTOR_DIRECTION false
 
 // Whether to force a full rotation when the same letter is specified again
 #define FORCE_FULL_ROTATION true
+
+// 3) Optional Features
+#define NEOPIXEL_DEBUGGING_ENABLED false
+#define SSD1306_DISPLAY true
+#define INA219_POWER_SENSE true
+
+// 4) Flap Contents & Order
 
 // This should match the order of flaps on the spool:
 const uint8_t flaps[] = {
@@ -44,18 +49,75 @@ const uint8_t flaps[] = {
   '\'',
 };
 
+// 5) Board-dependent Default Settings
+
+#if defined(__AVR_ATmega168__) || defined(__AVR_ATmega328P__)
+  #if SPI_IO
+  #define NEOPIXEL_PIN 6
+  #else
+  #define NEOPIXEL_PIN 3
+  #endif
+#elif defined(__AVR_ATmega2560__)
+  #define NEOPIXEL_PIN 4
+#elif defined(ARDUINO_ESP8266_WEMOS_D1MINI)
+  #define NEOPIXEL_PIN (D8)
+#elif defined(ESP32)
+  #define NEOPIXEL_PIN (13)
+#endif
+
 /*************************/
 
-// ESP32 Pinout:
-// 5  CS            (out) (debug only)
-// 12 Motor latch   (out)
-// 13 neopixel      (out)
-// 18 CLK           (out)
-// 19 MISO          (in)
-// 23 MOSI          (out)
-// 27 Sensor latch  (out)
-// 32 Output enable (out)
-
+/**
+ * Suggested Pinouts
+ * 
+ * Arduino Uno - Basic IO - Up to 3 modules
+ *    A: Motor: D4-7 = pins 4-7         Sensor: B4 = pin 12
+ *    B: Motor: B0-3 = pins 8-11        Sensor: C4 = pin A4
+ *    C: Motor: C0-3 = pins A0-A3       Sensor: C5 = pin A5
+ * 
+ *    Neopixel: 3
+ * 
+ * Arduino Uno - SPI IO (Shift Register) - Up to 12 modules
+ *    4   Motor latch
+ *    5   Sensor latch
+ *    6   neopixel
+ *    11  MOSI
+ *    12  MISO
+ *    13  CLK
+ * 
+ * Arduino Mega 2560 - Basic IO - Up to 12 modules)
+ *    Note the order of pins increases for some motors and decreases for others.
+ *    Modules whose motor phase pins are in the opposite order are marked with a * below.
+ * 
+ *    A: Motor: F0-3 = pins A0-A3       Sensor: G0 = pin 41
+ *    B: Motor: F4-7 = pins A4-A7       Sensor: G1 = pin 40
+ *    C: Motor: K0-3 = pins A8-A11      Sensor: G2 = pin 39
+ *    D: Motor: K4-7 = pins A12-A15     Sensor: D7 = pin 38
+ *    E: Motor: B0-3 = pins 53-50 *     Sensor: D2 = pin 19
+ *    F: Motor: L0-3 = pins 49-46 *     Sensor: D3 = pin 18
+ *    G: Motor: L4-7 = pins 45-42 *     Sensor: H0 = pin 17
+ *    H: Motor: C0-3 = pins 37-34 *     Sensor: H1 = pin 16
+ *    I: Motor: C4-7 = pins 33-30 *     Sensor: J0 = pin 15
+ *    J: Motor: A4-7 = pins 29-26 *     Sensor: J1 = pin 14
+ *    K: Motor: A0-3 = pins 25-22 *     Sensor: E4 = pin 2
+ *    L: Motor: B4-7 = pins 10-13       Sensor: E5 = pin 3
+ * 
+ *    Neopixel: 4
+ * 
+ *    INA219 & SSD1306 Oled:
+ *      SDA: 20
+ *      SCL: 21
+ * 
+ * ESP32 - SPI IO (Shift Register) - Up to 120+ modules:
+ *     5  CS            (out) (debug only)
+ *     12 Motor latch   (out)
+ *     13 neopixel      (out)
+ *     18 CLK           (out)
+ *     19 MISO          (in)
+ *     23 MOSI          (out)
+ *     27 Sensor latch  (out)
+ *     32 Output enable (out)
+*/
 
 #if NUM_MODULES < 1
 #error NUM_MODULES must be at least 1
@@ -73,16 +135,21 @@ const uint8_t flaps[] = {
 #include <Adafruit_NeoPixel.h>
 #endif
 
-#ifdef SSD1306_DISPLAY
+#if SSD1306_DISPLAY
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include <Fonts/FreeSans12pt7b.h>
 #endif
 
-#ifdef INA219_POWER_SENSE
+#if INA219_POWER_SENSE
 #include "Adafruit_INA219.h"
 #endif
 
+#ifdef __AVR__
+#define FAVR(x) F(x)
+#else
+#define FAVR(x) x
+#endif
 
 int recv_buffer[NUM_MODULES];
 
@@ -94,7 +161,7 @@ uint32_t color_purple = strip.Color(15, 0, 15);
 uint32_t color_orange = strip.Color(30, 7, 0);
 #endif
 
-#ifdef SSD1306_DISPLAY
+#if SSD1306_DISPLAY
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 32
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
@@ -104,7 +171,7 @@ char displayBuffer[200];
 char debugMessage[100];
 #endif
 
-#ifdef INA219_POWER_SENSE
+#if INA219_POWER_SENSE
 Adafruit_INA219 powerSense;
 // Latest current reading
 float currentmA;
@@ -156,7 +223,7 @@ void setup() {
   }
 #endif
 
-#ifdef SSD1306_DISPLAY
+#if SSD1306_DISPLAY
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
   if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3C for 128x32
     Serial.println(F("SSD1306 allocation failed"));
@@ -176,7 +243,7 @@ void setup() {
   labelString[NUM_MODULES] = '\0';
 #endif
 
-#if !NEOPIXEL_DEBUGGING_ENABLED && !defined(SSD1306_DISPLAY)
+#if !NEOPIXEL_DEBUGGING_ENABLED && !SSD1306_DISPLAY
   pinMode(LED_BUILTIN, OUTPUT);
 
   // Pulse the builtin LED - not as fun but indicates that we're running
@@ -199,7 +266,7 @@ void setup() {
 #endif
   }
 
-#ifdef INA219_POWER_SENSE
+#if INA219_POWER_SENSE
   powerSense.begin();
   Wire.setClock(400000);
 #endif
@@ -234,7 +301,7 @@ void disableAll(char* message) {
 
   Serial.println("#### DISABLED! ####");
   Serial.println(message);
-#ifdef SSD1306_DISPLAY
+#if SSD1306_DISPLAY
   snprintf(debugMessage, sizeof(debugMessage), "### DISABLED! ###\n%s", message);
 #endif
 }
@@ -270,7 +337,7 @@ inline void run_iteration() {
     was_stopped = all_stopped;
     motor_sensor_io();
 
-#ifdef INA219_POWER_SENSE
+#if INA219_POWER_SENSE
     if (iterationStartMillis - lastCurrentReadMillis > 100) {
       currentmA = powerSense.getCurrent_mA();
       if (currentmA > NUM_MODULES * 250) {
@@ -307,7 +374,7 @@ inline void run_iteration() {
       strip.show();
 #endif
 
-#ifdef SSD1306_DISPLAY
+#if SSD1306_DISPLAY
       if (all_stopped) {
         for (int i = 0; i < NUM_MODULES; i++) {
           uint32_t color;
@@ -343,7 +410,7 @@ inline void run_iteration() {
           display.println(statusString);
         }
 
-#ifdef INA219_POWER_SENSE
+#if INA219_POWER_SENSE
         float voltage = powerSense.getBusVoltage_V();
         if (voltage > 14) {
           disableAll("Over voltage");
@@ -386,7 +453,7 @@ inline void run_iteration() {
         int b = Serial.read();
         switch (b) {
           case '@':
-#ifdef SSD1306_DISPLAY
+#if SSD1306_DISPLAY
               if (all_stopped) {
                 display_large_text("calibrating");
               }
@@ -406,7 +473,7 @@ inline void run_iteration() {
               pending_move_response = true;
               Serial.print(FAVR("{\"type\":\"move_echo\", \"dest\":\""));
               Serial.flush();
-#ifdef SSD1306_DISPLAY
+#if SSD1306_DISPLAY
               if (all_stopped) {
                 display_large_text("moving...");
               }
@@ -520,7 +587,7 @@ void dump_status() {
   Serial.flush();
 }
 
-#ifdef SSD1306_DISPLAY
+#if SSD1306_DISPLAY
 void display_large_text(char* message) {
   display.clearDisplay();
   display.setFont(&FreeSans12pt7b);

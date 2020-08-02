@@ -19,11 +19,7 @@
 
 #include <SPI.h>
 
-#define NEOPIXEL_DEBUGGING_ENABLED true
-
 #if defined(__AVR_ATmega168__) || defined(__AVR_ATmega328P__)
-  #define NEOPIXEL_PIN 6
-
   #define OUT_LATCH_PIN (4)
   #define _OUT_LATCH_PORT PORTD
   #define _OUT_LATCH_BIT 4
@@ -47,7 +43,6 @@
 #endif
 
 #ifdef ARDUINO_ESP8266_WEMOS_D1MINI
-  #define NEOPIXEL_PIN (D8)
   #define OUT_LATCH_PIN (D1)
   #define IN_LATCH_PIN (D2)
 
@@ -63,7 +58,6 @@
   #include "driver/spi_master.h"
   #include "driver/spi_slave.h"
 
-  #define NEOPIXEL_PIN (13) //Any pin will work
   #define OUT_LATCH_PIN (12)//Any pin will work
   #define IN_LATCH_PIN (27) //Any pin will work
   #define OUTPUT_ENABLE_PIN (32) // Any pin will work
