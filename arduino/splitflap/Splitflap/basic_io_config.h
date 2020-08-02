@@ -17,50 +17,99 @@
 #ifndef IO_CONFIG_H
 #define IO_CONFIG_H
 
-#if NUM_MODULES > 3
-#error "Basic IO mode only supports up to 3 modules. Set NUM_MODULES to 3 or fewer."
+#include <Arduino.h>
+
+#include "splitflap_module.h"
+
+#if defined(__AVR_ATmega168__) || defined(__AVR_ATmega328P__)
+  #if NUM_MODULES > 3
+  #error "Basic IO mode only supports up to 3 modules on Atmega168/328-based boards. Set NUM_MODULES to 3 or fewer."
+  #endif
+
+  SplitflapModule moduleA((uint8_t&)PORTD, 4, (uint8_t&)PINB, B00010000);
+  SplitflapModule moduleB((uint8_t&)PORTB, 0, (uint8_t&)PINC, B00010000);
+  SplitflapModule moduleC((uint8_t&)PORTC, 0, (uint8_t&)PINC, B00100000);
+
+  SplitflapModule* modules[] = {
+    &moduleA,
+    &moduleB,
+    &moduleC,
+  };
+
+  void initialize_modules() {
+    // Initialize motor outputs
+    DDRD |= 0xF0; // Motor A
+    DDRB |= 0xF; // Motor B
+    DDRC |= 0xF; // Motor C
+
+    // Initialize sensor inputs with pullups
+    pinMode(12, INPUT_PULLUP); // Sensor A
+    pinMode(18, INPUT_PULLUP); // Sensor B
+    pinMode(19, INPUT_PULLUP); // Sensor C
+  }
+
+  inline void motor_sensor_io() {
+    // No-op (modules write directly to IO pins)
+  }
+#elif defined(__AVR_ATmega2560__)
+
+  SplitflapModule moduleA((uint8_t&)PORTF, 0, (uint8_t&)PING, 1 << 0); //A0-A3    41
+  SplitflapModule moduleB((uint8_t&)PORTF, 4, (uint8_t&)PING, 1 << 1); //A4-A7    40
+  SplitflapModule moduleC((uint8_t&)PORTK, 0, (uint8_t&)PING, 1 << 2); //A8-A11   39
+  SplitflapModule moduleD((uint8_t&)PORTK, 4, (uint8_t&)PIND, 1 << 7); //A12-A15  38
+  SplitflapModule moduleE((uint8_t&)PORTB, 0, (uint8_t&)PIND, 1 << 2); //53-50    19
+  SplitflapModule moduleF((uint8_t&)PORTL, 0, (uint8_t&)PIND, 1 << 3); //49-46    18
+  SplitflapModule moduleG((uint8_t&)PORTL, 4, (uint8_t&)PINH, 1 << 0); //45-42    17
+  SplitflapModule moduleH((uint8_t&)PORTC, 0, (uint8_t&)PINH, 1 << 1); //37-34    16
+  SplitflapModule moduleI((uint8_t&)PORTC, 4, (uint8_t&)PINJ, 1 << 0); //33-30    15
+  SplitflapModule moduleJ((uint8_t&)PORTA, 4, (uint8_t&)PINJ, 1 << 1); //29-26    14
+  SplitflapModule moduleK((uint8_t&)PORTA, 0, (uint8_t&)PINE, 1 << 4); //25-22    2
+  SplitflapModule moduleL((uint8_t&)PORTB, 4, (uint8_t&)PINE, 1 << 5); //10-13    3
+
+  SplitflapModule* modules[] = {
+    &moduleA,
+    &moduleB,
+    &moduleC,
+    &moduleD,
+    &moduleE,
+    &moduleF,
+    &moduleG,
+    &moduleH,
+    &moduleI,
+    &moduleJ,
+    &moduleK,
+    &moduleL,
+  };
+
+  void initialize_modules() {
+    // Initialize motor outputs
+    DDRF = 0xFF;
+    DDRK = 0xFF;
+    DDRB = 0xFF;
+    DDRL = 0xFF;
+    DDRC = 0xFF;
+    DDRA = 0xFF;
+
+    // Initialize sensor inputs with pullups
+    pinMode(41, INPUT_PULLUP);
+    pinMode(40, INPUT_PULLUP);
+    pinMode(39, INPUT_PULLUP);
+    pinMode(38, INPUT_PULLUP);
+    pinMode(19, INPUT_PULLUP);
+    pinMode(18, INPUT_PULLUP);
+    pinMode(17, INPUT_PULLUP);
+    pinMode(16, INPUT_PULLUP);
+    pinMode(15, INPUT_PULLUP);
+    pinMode(14, INPUT_PULLUP);
+    pinMode(2, INPUT_PULLUP);
+    pinMode(3, INPUT_PULLUP);
+  }
+
+  inline void motor_sensor_io() {
+    // No-op (modules write directly to IO pins)
+  }
+#else
+  #error "Basic IO configuration is not supported for this board type. Use SPI IO or modify basic_io_config.h to add support for this board."
 #endif
-
-// Neopixel debugging isn't currently supported with basic IO mode
-#define NEOPIXEL_DEBUGGING_ENABLED false
-
-#if !defined(__AVR_ATmega168__) && !defined(__AVR_ATmega328P__)
-#error "Basic IO configuration only works for ATmega168/328-based boards (Arduino Diecimila, Duemilanove, Uno)"  
-#endif
-
-// Pinout:
-// Motor A: PD4-7 = pins 4-7
-// Motor B: PB0-3 = pins 8-11
-// Motor C: PC0-3 = pins A0-A3
-
-// Sensor A: PB4 = pin 12
-// Sensor B: PC4 = pin A4
-// Sensor C: PC5 = pin A5
-
-SplitflapModule moduleA((uint8_t&)PORTD, 4, (uint8_t&)PINB, B00010000);
-SplitflapModule moduleB((uint8_t&)PORTB, 0, (uint8_t&)PINC, B00010000);
-SplitflapModule moduleC((uint8_t&)PORTC, 0, (uint8_t&)PINC, B00100000);
-
-SplitflapModule* modules[] = {
-  &moduleA,
-  &moduleB,
-  &moduleC,
-};
-
-void initialize_modules() {
-  // Initialize motor outputs
-  DDRD |= 0xF0; // Motor A
-  DDRB |= 0xF; // Motor B
-  DDRC |= 0xF; // Motor C
-
-  // Initialize sensor inputs with pullups
-  pinMode(12, INPUT_PULLUP); // Sensor A
-  pinMode(18, INPUT_PULLUP); // Sensor B
-  pinMode(19, INPUT_PULLUP); // Sensor C
-}
-
-inline void motor_sensor_io() {
-  // No-op (modules write directly to IO pins)
-}
 
 #endif

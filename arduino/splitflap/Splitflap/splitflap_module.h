@@ -28,6 +28,7 @@
 // Enable for auto-calibration via home sensor feedback. Disable for basic open-loop control (useful when first
 // testing the split-flap, since home calibration can be tricky to fine tune)
 #define HOME_CALIBRATION_ENABLED true
+#define FAKE_HOME_SENSOR false
 
 #define NUM_FLAPS (40)
 
@@ -60,7 +61,7 @@
 #define UNEXPECTED_HOME_START_BUFFER_STEPS (_ROUGH_STEPS_PER_FLAP * 5)
 
 // When recalibrating the home position, the number of steps to travel searching for home before giving up
-#define MAX_STEPS_LOOKING_FOR_HOME ((NUM_FLAPS + 5) * _ROUGH_STEPS_PER_FLAP)
+#define MAX_STEPS_LOOKING_FOR_HOME ((NUM_FLAPS + 2) * _ROUGH_STEPS_PER_FLAP)
 
 enum HomeState {
     // Ignore any home blips (e.g. if we've just seen the home position and haven't traveled past it yet)
@@ -75,6 +76,7 @@ enum HomeState {
 enum State {
   NORMAL,
   PANIC,
+  STATE_DISABLED,
 #if HOME_CALIBRATION_ENABLED
   LOOK_FOR_HOME,
   SENSOR_ERROR,
@@ -146,9 +148,10 @@ class SplitflapModule {
   uint8_t GetTargetFlapIndex();
   void GoHome();
   void ResetErrorCounters();
-  inline bool Update();
+  inline void Update();
   void Init();
   bool GetHomeState();
+  void Disable();
   
   uint8_t count_unexpected_home = 0;
   uint8_t count_missed_home = 0;
@@ -187,11 +190,16 @@ SplitflapModule::SplitflapModule(
 {
 }
 
+void SplitflapModule::Disable() {
+  SetMotor(0);
+  state = STATE_DISABLED;
+}
+
 void SplitflapModule::Panic(String message) {
-  Serial.print("#### PANIC! ####\n");
-  Serial.print(message);
   SetMotor(0);
   state = PANIC;
+  Serial.print("#### PANIC! ####\n");
+  Serial.print(message);
 }
 
 __attribute__((always_inline))
@@ -390,7 +398,7 @@ uint8_t SplitflapModule::GetTargetFlapIndex() {
 __attribute__((always_inline))
 inline void SplitflapModule::GoHome() {
 #if HOME_CALIBRATION_ENABLED
-    if (state == PANIC) {
+    if (state == PANIC || state == STATE_DISABLED) {
         return;
     }
 
@@ -400,7 +408,11 @@ inline void SplitflapModule::GoHome() {
 }
 
 __attribute__((always_inline))
-inline bool SplitflapModule::Update() {
+inline void SplitflapModule::Update() {
+    if (state == PANIC || state == STATE_DISABLED) {
+        return;
+    }
+
     unsigned long now = micros();
     unsigned long delta_time = now - last_update_micros;
     if (delta_time >= current_period) {
@@ -440,7 +452,7 @@ inline bool SplitflapModule::Update() {
                     home_state = EXPECTED;
                 }
             } else if (home_state == EXPECTED) {
-                if (found_home) {
+                if (FAKE_HOME_SENSOR || found_home) {
 #if VERBOSE_LOGGING
                     Serial.print("VERBOSE: Found expected home.");
 #endif
@@ -475,7 +487,7 @@ inline bool SplitflapModule::Update() {
 #if HOME_CALIBRATION_ENABLED
         } else if (state == LOOK_FOR_HOME) {
             bool found_home = CheckSensor();
-            if (found_home) {
+            if (FAKE_HOME_SENSOR || found_home) {
 #if VERBOSE_LOGGING
                 Serial.print("VERBOSE: Found home!\n");
 #endif
@@ -539,7 +551,7 @@ inline bool SplitflapModule::Update() {
         }
 #endif
     }
-    return false;
+    return;
 }
 
 void SplitflapModule::ResetErrorCounters() {
