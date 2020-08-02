@@ -25,15 +25,13 @@
 
 /***** CONFIGURATION *****/
 
-#define NUM_MODULES (12) //ON ESP32 you can control much more modules, but need to adapt SPI_IO_CONFIG accordingly
+#define NUM_MODULES (12)
 #define SENSOR_TEST false
 #define SPI_IO false
 #define REVERSE_MOTOR_DIRECTION false
 
 // Whether to force a full rotation when the same letter is specified again
 #define FORCE_FULL_ROTATION true
-
-#define BLUETOOTH true
 
 // This should match the order of flaps on the spool:
 const uint8_t flaps[] = {
@@ -47,6 +45,17 @@ const uint8_t flaps[] = {
 };
 
 /*************************/
+
+// ESP32 Pinout:
+// 5  CS            (out) (debug only)
+// 12 Motor latch   (out)
+// 13 neopixel      (out)
+// 18 CLK           (out)
+// 19 MISO          (in)
+// 23 MOSI          (out)
+// 27 Sensor latch  (out)
+// 32 Output enable (out)
+
 
 #if NUM_MODULES < 1
 #error NUM_MODULES must be at least 1
@@ -106,26 +115,25 @@ char voltageBuf[10];
 char currentBuf[10];
 #endif
 
-#if defined(ESP32) && BLUETOOTH
-#include "BluetoothSerial.h"
-#if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
-#error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
-#endif
-
-BluetoothSerial SerialBT;
+#if defined(ESP32)
+#define MONITOR_SPEED 921600
+#else
+#define MONITOR_SPEED 38400
 #endif
 
 void dump_status(void);
 
 void setup() {
-  Serial.begin(38400);
+  Serial.begin(MONITOR_SPEED);
 
   initialize_modules();
   motor_sensor_io();
 
-  Serial.print(FAVR("{\"type\":\"init\", \"num_modules\":"));
-  Serial.print(NUM_MODULES);
-  Serial.print(FAVR("}\n"));
+#ifdef OUTPUT_ENABLE_PIN
+  // Wait until after 1 motor_sensor_io to turn on shift register outputs
+  pinMode(OUTPUT_ENABLE_PIN, OUTPUT);
+  digitalWrite(OUTPUT_ENABLE_PIN, LOW);
+#endif
 
 #if NEOPIXEL_DEBUGGING_ENABLED
   strip.begin();
@@ -178,6 +186,11 @@ void setup() {
   }
 #endif
 
+  Serial.print("\n\n\n");
+  Serial.print(FAVR("{\"type\":\"init\", \"num_modules\":"));
+  Serial.print(NUM_MODULES);
+  Serial.print(FAVR("}\n"));
+
   for (uint8_t i = 0; i < NUM_MODULES; i++) {
     recv_buffer[i] = 0;
     modules[i]->Init();
@@ -189,11 +202,6 @@ void setup() {
 #ifdef INA219_POWER_SENSE
   powerSense.begin();
   Wire.setClock(400000);
-#endif
-
-#if defined(ESP32) && BLUETOOTH
-  SerialBT.begin("SplitFlap1"); //Bluetooth device name
-  Serial.println("The device started, now you can pair it with bluetooth!");
 #endif
 }
 
@@ -241,7 +249,7 @@ inline void run_iteration() {
     for (uint8_t i = 0; i < NUM_MODULES; i++) {
       modules[i]->Update();
       bool is_idle = modules[i]->state == PANIC
-        || modules[i]->state == DISABLED
+        || modules[i]->state == STATE_DISABLED
 #if HOME_CALIBRATION_ENABLED
         || modules[i]->state == LOOK_FOR_HOME
         || modules[i]->state == SENSOR_ERROR
@@ -249,12 +257,12 @@ inline void run_iteration() {
         || (modules[i]->state == NORMAL && modules[i]->current_accel_step == 0);
 
       bool is_stopped = modules[i]->state == PANIC
-        || modules[i]->state == DISABLED
+        || modules[i]->state == STATE_DISABLED
         || modules[i]->current_accel_step == 0;
 
       all_idle &= is_idle;
       all_stopped &= is_stopped;
-      if (i & 0b11) motor_sensor_io();
+      // if (i & 0b11) motor_sensor_io();
     }
     if (all_stopped && !was_stopped) {
       stopped_at_millis = iterationStartMillis;
@@ -315,7 +323,7 @@ inline void run_iteration() {
               statusString[i] = 'E';
               break;
   #endif
-            case DISABLED:
+            case STATE_DISABLED:
               statusString[i] = 'D';
               break;
             case PANIC:
@@ -427,52 +435,13 @@ inline void run_iteration() {
             break;
         }
       }
-
-#if defined(ESP32) && BLUETOOTH
-      while (SerialBT.available() > 0) {
-        int c = SerialBT.read();
-        switch (c) {
-          case '@':
-            for (uint8_t i = 0; i < NUM_MODULES; i++) {
-              modules[i]->ResetErrorCounters();
-              modules[i]->GoHome();
-            }
-            break;
-          case '#':
-            pending_no_op = true;
-            break;
-          case '=':
-            recv_count = 0;
-            break;
-          case '\n':
-              Serial.print(FAVR("{\"type\":\"move_echo\", \"dest\":\""));
-              for (uint8_t i = 0; i < recv_count; i++) {
-                int8_t index = FindFlapIndex(recv_buffer[i]);
-                if (index != -1) {
-                  modules[i]->GoToFlapIndex(index);
-                }
-                Serial.write(recv_buffer[i]);
-              }
-              Serial.print(FAVR("\"}\n"));
-              Serial.flush();
-              break;
-          default:
-            if (recv_count > NUM_MODULES - 1) {
-              break;
-            }
-            recv_buffer[recv_count] = c;
-            recv_count++;
-            break;
-        }
-      }
-#endif
-
     }
 }
 
 void sensor_test_iteration() {
     motor_sensor_io();
 
+    Serial.println();
 #if NEOPIXEL_DEBUGGING_ENABLED
     for (uint8_t i = 0; i < NUM_MODULES; i++) {
       uint32_t color;
@@ -481,6 +450,7 @@ void sensor_test_iteration() {
       } else {
         color = color_purple;
       }
+      Serial.print(modules[i]->GetHomeState() ? '0' : '1');
 
       // Make LEDs flash in sequence to indicate sensor test mode
       if ((millis() / 32) % NUM_MODULES == i) {
@@ -496,6 +466,7 @@ void sensor_test_iteration() {
     // We only have one LED - just show the first module's home state status
     digitalWrite(LED_BUILTIN, !modules[0]->GetHomeState() ? HIGH : LOW);
 #endif
+delay(100);
 }
 
 

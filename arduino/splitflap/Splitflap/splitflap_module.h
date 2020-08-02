@@ -76,7 +76,7 @@ enum HomeState {
 enum State {
   NORMAL,
   PANIC,
-  DISABLED,
+  STATE_DISABLED,
 #if HOME_CALIBRATION_ENABLED
   LOOK_FOR_HOME,
   SENSOR_ERROR,
@@ -192,7 +192,7 @@ SplitflapModule::SplitflapModule(
 
 void SplitflapModule::Disable() {
   SetMotor(0);
-  state = DISABLED;
+  state = STATE_DISABLED;
 }
 
 void SplitflapModule::Panic(String message) {
@@ -398,7 +398,7 @@ uint8_t SplitflapModule::GetTargetFlapIndex() {
 __attribute__((always_inline))
 inline void SplitflapModule::GoHome() {
 #if HOME_CALIBRATION_ENABLED
-    if (state == PANIC || state == DISABLED) {
+    if (state == PANIC || state == STATE_DISABLED) {
         return;
     }
 
@@ -409,7 +409,7 @@ inline void SplitflapModule::GoHome() {
 
 __attribute__((always_inline))
 inline void SplitflapModule::Update() {
-    if (state == PANIC || state == DISABLED) {
+    if (state == PANIC || state == STATE_DISABLED) {
         return;
     }
 
