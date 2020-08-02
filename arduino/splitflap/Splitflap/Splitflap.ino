@@ -15,31 +15,29 @@
 */
 
 #include <Arduino.h>
+#include <Wire.h>
 
-/***** CONFIGURATION *****/
+#include "config.h"
 
-#define NUM_MODULES (12) //ON ESP32 you can control much more modules, but need to adapt SPI_IO_CONFIG accordingly
-#define SENSOR_TEST false
-#define SPI_IO true
-#define REVERSE_MOTOR_DIRECTION false
 
-// Whether to force a full rotation when the same letter is specified again
-#define FORCE_FULL_ROTATION true
+//***** READ ME FIRST *****//
+//
+// Set up the configuration in config.h
+//
+// We highly recommend using PlatformIO (via Visual Studio Code) rather than
+// the Arduino IDE for this project.
+//
+// Although PlatformIO may be slightly more complicated to learn at first, it
+// pays for itself quickly by making library management and board management
+// automatic, and is generally a far more powerful development environment.
+//
+// While we strive to maintain Arduino IDE support for this project, all active
+// development is being done with PlatformIO, so Arduino IDE compatibility may
+// be inadvertantly broken from time to time. Please open an issue on Github
+// if you run into problems with the Arduino IDE.
+//
+//*************************//
 
-#define BLUETOOTH true
-
-// This should match the order of flaps on the spool:
-const uint8_t flaps[] = {
-  ' ',
-  'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-  'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '.',
-  ',',
-  '\'',
-};
-
-/*************************/
 
 #if NUM_MODULES < 1
 #error NUM_MODULES must be at least 1
@@ -57,6 +55,21 @@ const uint8_t flaps[] = {
 #include <Adafruit_NeoPixel.h>
 #endif
 
+#if SSD1306_DISPLAY
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+#include <Fonts/FreeSans12pt7b.h>
+#endif
+
+#if INA219_POWER_SENSE
+#include "Adafruit_INA219.h"
+#endif
+
+#ifdef __AVR__
+#define FAVR(x) F(x)
+#else
+#define FAVR(x) x
+#endif
 
 int recv_buffer[NUM_MODULES];
 
@@ -68,32 +81,46 @@ uint32_t color_purple = strip.Color(15, 0, 15);
 uint32_t color_orange = strip.Color(30, 7, 0);
 #endif
 
-#ifdef __AVR__
-#define FAVR(x) F(x)
+#if SSD1306_DISPLAY
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 32
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+char labelString[NUM_MODULES + 1];
+char statusString[NUM_MODULES + 1];
+char displayBuffer[200];
+char debugMessage[100];
+#endif
+
+#if INA219_POWER_SENSE
+Adafruit_INA219 powerSense;
+// Latest current reading
+float currentmA;
+uint32_t lastCurrentReadMillis = 0;
+
+// Char buffers for building voltage/current strings
+char voltageBuf[10];
+char currentBuf[10];
+#endif
+
+#if defined(ESP32)
+#define MONITOR_SPEED 921600
 #else
-#define FAVR(x) x
-#endif
-
-#if defined(ESP32) && BLUETOOTH
-#include "BluetoothSerial.h"
-#if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
-#error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
-#endif
-
-BluetoothSerial SerialBT;
+#define MONITOR_SPEED 38400
 #endif
 
 void dump_status(void);
 
 void setup() {
-  Serial.begin(38400);
+  Serial.begin(MONITOR_SPEED);
 
   initialize_modules();
   motor_sensor_io();
 
-  Serial.print(FAVR("{\"type\":\"init\", \"num_modules\":"));
-  Serial.print(NUM_MODULES);
-  Serial.print(FAVR("}\n"));
+#ifdef OUTPUT_ENABLE_PIN
+  // Wait until after 1 motor_sensor_io to turn on shift register outputs
+  pinMode(OUTPUT_ENABLE_PIN, OUTPUT);
+  digitalWrite(OUTPUT_ENABLE_PIN, LOW);
+#endif
 
 #if NEOPIXEL_DEBUGGING_ENABLED
   strip.begin();
@@ -114,7 +141,29 @@ void setup() {
     strip.show();
     delay(3);
   }
-#else
+#endif
+
+#if SSD1306_DISPLAY
+  // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
+  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3C for 128x32
+    Serial.println(F("SSD1306 allocation failed"));
+    for(;;); // Don't proceed, loop forever
+  }
+
+  display.setTextWrap(false);
+  display.setTextColor(SSD1306_WHITE);
+  display_large_text("Splitflap");
+  delay(500);
+  display_large_text("calibrating");
+
+  debugMessage[0] = '\0';
+  for (uint8_t i = 0; i < NUM_MODULES; i++) {
+    labelString[i] = 'A' + i;
+  }
+  labelString[NUM_MODULES] = '\0';
+#endif
+
+#if !NEOPIXEL_DEBUGGING_ENABLED && !SSD1306_DISPLAY
   pinMode(LED_BUILTIN, OUTPUT);
 
   // Pulse the builtin LED - not as fun but indicates that we're running
@@ -124,6 +173,11 @@ void setup() {
   }
 #endif
 
+  Serial.print("\n\n\n");
+  Serial.print(FAVR("{\"type\":\"init\", \"num_modules\":"));
+  Serial.print(NUM_MODULES);
+  Serial.print(FAVR("}\n"));
+
   for (uint8_t i = 0; i < NUM_MODULES; i++) {
     recv_buffer[i] = 0;
     modules[i]->Init();
@@ -132,9 +186,9 @@ void setup() {
 #endif
   }
 
-#if defined(ESP32) && BLUETOOTH
-  SerialBT.begin("SplitFlap1"); //Bluetooth device name
-  Serial.println("The device started, now you can pair it with bluetooth!");
+#if INA219_POWER_SENSE
+  powerSense.begin();
+  Wire.setClock(400000);
 #endif
 }
 
@@ -152,23 +206,68 @@ bool pending_move_response = true;
 bool pending_no_op = false;
 uint8_t recv_count = 0;
 
+bool disabled = false;
+
+void disableAll(char* message) {
+  for (uint8_t i = 0; i < NUM_MODULES; i++) {
+    modules[i]->Disable();
+  }
+  motor_sensor_io();
+
+  if (disabled) {
+    return;
+  }
+  disabled = true;
+
+  Serial.println("#### DISABLED! ####");
+  Serial.println(message);
+#if SSD1306_DISPLAY
+  snprintf(debugMessage, sizeof(debugMessage), "### DISABLED! ###\n%s", message);
+#endif
+}
+
+boolean was_stopped = false;
+uint32_t stopped_at_millis = 0;
+
 inline void run_iteration() {
+    uint32_t iterationStartMillis = millis();
     boolean all_idle = true;
     boolean all_stopped = true;
-    boolean any_bad_timing = false;
     for (uint8_t i = 0; i < NUM_MODULES; i++) {
-      any_bad_timing |= modules[i]->Update();
+      modules[i]->Update();
       bool is_idle = modules[i]->state == PANIC
+        || modules[i]->state == STATE_DISABLED
 #if HOME_CALIBRATION_ENABLED
         || modules[i]->state == LOOK_FOR_HOME
         || modules[i]->state == SENSOR_ERROR
 #endif
         || (modules[i]->state == NORMAL && modules[i]->current_accel_step == 0);
+
+      bool is_stopped = modules[i]->state == PANIC
+        || modules[i]->state == STATE_DISABLED
+        || modules[i]->current_accel_step == 0;
+
       all_idle &= is_idle;
-      all_stopped &= modules[i]->current_accel_step == 0;
-      if (i & 0b11) motor_sensor_io();
+      all_stopped &= is_stopped;
+      // if (i & 0b11) motor_sensor_io();
     }
+    if (all_stopped && !was_stopped) {
+      stopped_at_millis = iterationStartMillis;
+    }
+    was_stopped = all_stopped;
     motor_sensor_io();
+
+#if INA219_POWER_SENSE
+    if (iterationStartMillis - lastCurrentReadMillis > 100) {
+      currentmA = powerSense.getCurrent_mA();
+      if (currentmA > NUM_MODULES * 250) {
+        disableAll("Over current");
+      } else if (all_stopped && iterationStartMillis - stopped_at_millis > 100 && currentmA >= 3) {
+        disableAll("Unexpected current");
+      }
+      lastCurrentReadMillis = iterationStartMillis;
+    }
+#endif
 
     if (all_idle) {
 #if NEOPIXEL_DEBUGGING_ENABLED
@@ -195,6 +294,71 @@ inline void run_iteration() {
       strip.show();
 #endif
 
+#if SSD1306_DISPLAY
+      if (all_stopped) {
+        for (int i = 0; i < NUM_MODULES; i++) {
+          uint32_t color;
+          switch (modules[i]->state) {
+            case NORMAL:
+              statusString[i] = '_';
+              break;
+  #if HOME_CALIBRATION_ENABLED
+            case LOOK_FOR_HOME:
+              statusString[i] = 'H';
+              break;
+            case SENSOR_ERROR:
+              statusString[i] = 'E';
+              break;
+  #endif
+            case STATE_DISABLED:
+              statusString[i] = 'D';
+              break;
+            case PANIC:
+              statusString[i] = '!';
+              break;
+            default:
+              statusString[i] = '?';
+              break;
+          }
+        }
+        statusString[NUM_MODULES] = '\0';
+
+        display.clearDisplay();
+        if (!disabled) {
+          display.setCursor(0, 0);
+          display.println(labelString);
+          display.println(statusString);
+        }
+
+#if INA219_POWER_SENSE
+        float voltage = powerSense.getBusVoltage_V();
+        if (voltage > 14) {
+          disableAll("Over voltage");
+        } else if (voltage < 10) {
+          disableAll("Under voltage");
+        }
+        dtostrf(voltage, 6, 3, voltageBuf);
+        snprintf(displayBuffer, sizeof(displayBuffer), "%sV", voltageBuf);
+        display.setCursor(84, 0);
+        display.print(displayBuffer);
+
+        dtostrf(currentmA / 1000, 6, 3, currentBuf);
+        snprintf(displayBuffer, sizeof(displayBuffer), "%sA", currentBuf);
+        display.setCursor(84, 8);
+        display.print(displayBuffer);
+#endif
+
+        display.setCursor(0, 16);
+        display.print(debugMessage);
+
+        if ((millis() >> 7) & 1) {
+          display.drawPixel(127, 31, SSD1306_WHITE);
+        }
+
+        display.display();
+      }
+#endif
+
       if (pending_no_op && all_stopped) {
         Serial.print(FAVR("{\"type\":\"no_op\"}\n"));
         Serial.flush();
@@ -209,6 +373,11 @@ inline void run_iteration() {
         int b = Serial.read();
         switch (b) {
           case '@':
+#if SSD1306_DISPLAY
+              if (all_stopped) {
+                display_large_text("calibrating");
+              }
+#endif
             for (uint8_t i = 0; i < NUM_MODULES; i++) {
               modules[i]->ResetErrorCounters();
               modules[i]->GoHome();
@@ -223,6 +392,12 @@ inline void run_iteration() {
           case '\n':
               pending_move_response = true;
               Serial.print(FAVR("{\"type\":\"move_echo\", \"dest\":\""));
+              Serial.flush();
+#if SSD1306_DISPLAY
+              if (all_stopped) {
+                display_large_text("moving...");
+              }
+#endif
               for (uint8_t i = 0; i < recv_count; i++) {
                 int8_t index = FindFlapIndex(recv_buffer[i]);
                 if (index != -1) {
@@ -231,6 +406,9 @@ inline void run_iteration() {
                   }
                 }
                 Serial.write(recv_buffer[i]);
+                if (i % 8 == 0) {
+                  Serial.flush();
+                }
               }
               Serial.print(FAVR("\"}\n"));
               Serial.flush();
@@ -244,52 +422,13 @@ inline void run_iteration() {
             break;
         }
       }
-
-#if defined(ESP32) && BLUETOOTH
-      while (SerialBT.available() > 0) {
-        int c = SerialBT.read();
-        switch (c) {
-          case '@':
-            for (uint8_t i = 0; i < NUM_MODULES; i++) {
-              modules[i]->ResetErrorCounters();
-              modules[i]->GoHome();
-            }
-            break;
-          case '#':
-            pending_no_op = true;
-            break;
-          case '=':
-            recv_count = 0;
-            break;
-          case '\n':
-              Serial.print(FAVR("{\"type\":\"move_echo\", \"dest\":\""));
-              for (uint8_t i = 0; i < recv_count; i++) {
-                int8_t index = FindFlapIndex(recv_buffer[i]);
-                if (index != -1) {
-                  modules[i]->GoToFlapIndex(index);
-                }
-                Serial.write(recv_buffer[i]);
-              }
-              Serial.print(FAVR("\"}\n"));
-              Serial.flush();
-              break;
-          default:
-            if (recv_count > NUM_MODULES - 1) {
-              break;
-            }
-            recv_buffer[recv_count] = c;
-            recv_count++;
-            break;
-        }
-      }
-#endif
-
     }
 }
 
 void sensor_test_iteration() {
     motor_sensor_io();
 
+    Serial.println();
 #if NEOPIXEL_DEBUGGING_ENABLED
     for (uint8_t i = 0; i < NUM_MODULES; i++) {
       uint32_t color;
@@ -298,6 +437,7 @@ void sensor_test_iteration() {
       } else {
         color = color_purple;
       }
+      Serial.print(modules[i]->GetHomeState() ? '0' : '1');
 
       // Make LEDs flash in sequence to indicate sensor test mode
       if ((millis() / 32) % NUM_MODULES == i) {
@@ -313,6 +453,7 @@ void sensor_test_iteration() {
     // We only have one LED - just show the first module's home state status
     digitalWrite(LED_BUILTIN, !modules[0]->GetHomeState() ? HIGH : LOW);
 #endif
+delay(100);
 }
 
 
@@ -365,3 +506,21 @@ void dump_status() {
   Serial.print(FAVR("]}\n"));
   Serial.flush();
 }
+
+#if SSD1306_DISPLAY
+void display_large_text(char* message) {
+  display.clearDisplay();
+  display.setFont(&FreeSans12pt7b);
+
+  int16_t outX, outY;
+  uint16_t outW, outH;
+  display.getTextBounds(message, 0, 0, &outX, &outY, &outW, &outH);
+
+  display.setCursor(0, outH);
+  display.print(message);
+  display.display();
+
+  // Reset text size
+  display.setFont();
+}
+#endif
