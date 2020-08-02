@@ -68,18 +68,18 @@
   #define SSD1306_DISPLAY
   #define INA219_POWER_SENSE
 
-  SplitflapModule moduleA((uint8_t&)PORTF, 0, (uint8_t&)PING, 1 << 0); //A0-A3
-  SplitflapModule moduleB((uint8_t&)PORTF, 4, (uint8_t&)PING, 1 << 1); //A4-A7
-  SplitflapModule moduleC((uint8_t&)PORTK, 0, (uint8_t&)PING, 1 << 2); //A8-A11
-  SplitflapModule moduleD((uint8_t&)PORTK, 4, (uint8_t&)PIND, 1 << 7); //A12-A15
-  SplitflapModule moduleE((uint8_t&)PORTB, 0, (uint8_t&)PIND, 1 << 2); //53-50
-  SplitflapModule moduleF((uint8_t&)PORTL, 0, (uint8_t&)PIND, 1 << 3); //49-46
-  SplitflapModule moduleG((uint8_t&)PORTL, 4, (uint8_t&)PINH, 1 << 0); //45-42
-  SplitflapModule moduleH((uint8_t&)PORTC, 0, (uint8_t&)PINH, 1 << 1); //37-34
-  SplitflapModule moduleI((uint8_t&)PORTC, 4, (uint8_t&)PINJ, 1 << 0); //33-30
-  SplitflapModule moduleJ((uint8_t&)PORTA, 4, (uint8_t&)PINJ, 1 << 1); //29-26
-  SplitflapModule moduleK((uint8_t&)PORTA, 0, (uint8_t&)PINE, 1 << 4); //25-22
-  SplitflapModule moduleL((uint8_t&)PORTB, 4, (uint8_t&)PINE, 1 << 5); //10-13
+  SplitflapModule moduleA((uint8_t&)PORTF, 0, (uint8_t&)PING, 1 << 0); //A0-A3    41
+  SplitflapModule moduleB((uint8_t&)PORTF, 4, (uint8_t&)PING, 1 << 1); //A4-A7    40
+  SplitflapModule moduleC((uint8_t&)PORTK, 0, (uint8_t&)PING, 1 << 2); //A8-A11   39
+  SplitflapModule moduleD((uint8_t&)PORTK, 4, (uint8_t&)PIND, 1 << 7); //A12-A15  38
+  SplitflapModule moduleE((uint8_t&)PORTB, 0, (uint8_t&)PIND, 1 << 2); //53-50    19
+  SplitflapModule moduleF((uint8_t&)PORTL, 0, (uint8_t&)PIND, 1 << 3); //49-46    18
+  SplitflapModule moduleG((uint8_t&)PORTL, 4, (uint8_t&)PINH, 1 << 0); //45-42    17
+  SplitflapModule moduleH((uint8_t&)PORTC, 0, (uint8_t&)PINH, 1 << 1); //37-34    16
+  SplitflapModule moduleI((uint8_t&)PORTC, 4, (uint8_t&)PINJ, 1 << 0); //33-30    15
+  SplitflapModule moduleJ((uint8_t&)PORTA, 4, (uint8_t&)PINJ, 1 << 1); //29-26    14
+  SplitflapModule moduleK((uint8_t&)PORTA, 0, (uint8_t&)PINE, 1 << 4); //25-22    2
+  SplitflapModule moduleL((uint8_t&)PORTB, 4, (uint8_t&)PINE, 1 << 5); //10-13    3
 
   SplitflapModule* modules[] = {
     &moduleA,

@@ -6,4 +6,6 @@
   (lib (name CustomPower)(type Legacy)(uri ${KIPRJMOD}/lib/CustomPower.lib)(options "")(descr ""))
   (lib (name 74HC165)(type Legacy)(uri ${KIPRJMOD}/lib/74HC165.lib)(options "")(descr ""))
   (lib (name ESP32Modules)(type Legacy)(uri ${KIPRJMOD}/lib/ESP32Modules.lib)(options "")(descr ""))
+  (lib (name LM339)(type Legacy)(uri ${KIPRJMOD}/lib/LM339.lib)(options "")(descr ""))
+  (lib (name LCD)(type Legacy)(uri /home/scott/src/splitflap/electronics/lib/LCD.lib)(options "")(descr ""))
 )
