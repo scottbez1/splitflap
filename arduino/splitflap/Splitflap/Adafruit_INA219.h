@@ -1,4 +1,5 @@
-// Fork of Adafruit_INA219 that exposes the private raw-read functions
+// Fork of Adafruit_INA219 that exposes the private raw-read functions and
+// avoids setting calibration before every read for better performance.
 
 /*!
  * @file Adafruit_INA219.h
@@ -15,7 +16,8 @@
  * BSD license, all text here must be included in any redistribution.
  *
  */
-
+#include "config.h"
+#if INA219_POWER_SENSE
 #ifndef _LIB_ADAFRUIT_INA219_
 #define _LIB_ADAFRUIT_INA219_
 
@@ -180,4 +182,5 @@ private:
   void init();
 };
 
+#endif
 #endif

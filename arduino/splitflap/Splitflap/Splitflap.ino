@@ -17,55 +17,27 @@
 #include <Arduino.h>
 #include <Wire.h>
 
+#include "config.h"
 
-/***** CONFIGURATION *****/
 
-// 1) Mode
-#define SENSOR_TEST false
+//***** READ ME FIRST *****//
+//
+// Set up the configuration in config.h
+//
+// We highly recommend using PlatformIO (via Visual Studio Code) rather than
+// the Arduino IDE for this project.
+//
+// Although PlatformIO may be slightly more complicated to learn at first, it
+// pays for itself quickly by making library management and board management
+// automatic, and is generally a far more powerful development environment.
+//
+// While we strive to maintain Arduino IDE support for this project, all active
+// development is being done with PlatformIO, so Arduino IDE compatibility may
+// be inadvertantly broken from time to time. Please open an issue on Github
+// if you run into problems with the Arduino IDE.
+//
+//*************************//
 
-// 2) Basic Settings
-#define NUM_MODULES (12)
-#define SPI_IO false
-#define REVERSE_MOTOR_DIRECTION false
-
-// Whether to force a full rotation when the same letter is specified again
-#define FORCE_FULL_ROTATION true
-
-// 3) Optional Features
-#define NEOPIXEL_DEBUGGING_ENABLED false
-#define SSD1306_DISPLAY true
-#define INA219_POWER_SENSE true
-
-// 4) Flap Contents & Order
-
-// This should match the order of flaps on the spool:
-const uint8_t flaps[] = {
-  ' ',
-  'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-  'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '.',
-  ',',
-  '\'',
-};
-
-// 5) Board-dependent Default Settings
-
-#if defined(__AVR_ATmega168__) || defined(__AVR_ATmega328P__)
-  #if SPI_IO
-  #define NEOPIXEL_PIN 6
-  #else
-  #define NEOPIXEL_PIN 3
-  #endif
-#elif defined(__AVR_ATmega2560__)
-  #define NEOPIXEL_PIN 4
-#elif defined(ARDUINO_ESP8266_WEMOS_D1MINI)
-  #define NEOPIXEL_PIN (D8)
-#elif defined(ESP32)
-  #define NEOPIXEL_PIN (13)
-#endif
-
-/*************************/
 
 /**
  * Suggested Pinouts

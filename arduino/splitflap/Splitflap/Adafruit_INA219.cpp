@@ -24,6 +24,9 @@
  *
  */
 
+#include "config.h"
+#if INA219_POWER_SENSE
+
 #include "Arduino.h"
 
 #include <Wire.h>
@@ -467,3 +470,4 @@ void Adafruit_INA219::setCalibration_16V_400mA() {
       Adafruit_BusIO_Register(i2c_dev, INA219_REG_CONFIG, 2, MSBFIRST);
   config_reg.write(config, 2);
 }
+#endif
