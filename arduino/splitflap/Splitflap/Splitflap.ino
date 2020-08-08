@@ -14,12 +14,6 @@
    limitations under the License.
 */
 
-#include <Arduino.h>
-#include <Wire.h>
-
-#include "config.h"
-
-
 //***** READ ME FIRST *****//
 //
 // Set up the configuration in config.h
@@ -38,11 +32,10 @@
 //
 //*************************//
 
+#include <Arduino.h>
+#include <Wire.h>
 
-#if NUM_MODULES < 1
-#error NUM_MODULES must be at least 1
-#endif
-
+#include "config.h"
 #include "splitflap_module.h"
 
 #if SPI_IO
@@ -100,12 +93,6 @@ uint32_t lastCurrentReadMillis = 0;
 // Char buffers for building voltage/current strings
 char voltageBuf[10];
 char currentBuf[10];
-#endif
-
-#if defined(ESP32)
-#define MONITOR_SPEED 921600
-#else
-#define MONITOR_SPEED 38400
 #endif
 
 void dump_status(void);
@@ -237,10 +224,8 @@ inline void run_iteration() {
       modules[i]->Update();
       bool is_idle = modules[i]->state == PANIC
         || modules[i]->state == STATE_DISABLED
-#if HOME_CALIBRATION_ENABLED
         || modules[i]->state == LOOK_FOR_HOME
         || modules[i]->state == SENSOR_ERROR
-#endif
         || (modules[i]->state == NORMAL && modules[i]->current_accel_step == 0);
 
       bool is_stopped = modules[i]->state == PANIC
@@ -277,15 +262,14 @@ inline void run_iteration() {
           case NORMAL:
             color = color_green;
             break;
-#if HOME_CALIBRATION_ENABLED
           case LOOK_FOR_HOME:
             color = color_purple;
             break;
           case SENSOR_ERROR:
             color = color_orange;
             break;
-#endif
-          case PANIC:
+          case PANIC: // Intentional fall-through
+          case STATE_DISABLED:
             color = color_red;
             break;
         }
@@ -302,14 +286,12 @@ inline void run_iteration() {
             case NORMAL:
               statusString[i] = '_';
               break;
-  #if HOME_CALIBRATION_ENABLED
             case LOOK_FOR_HOME:
               statusString[i] = 'H';
               break;
             case SENSOR_ERROR:
               statusString[i] = 'E';
               break;
-  #endif
             case STATE_DISABLED:
               statusString[i] = 'D';
               break;
@@ -441,7 +423,7 @@ void sensor_test_iteration() {
 
       // Make LEDs flash in sequence to indicate sensor test mode
       if ((millis() / 32) % NUM_MODULES == i) {
-        color += 8 + (8 << 8) + (8 << 16);
+        color += 8 + (8 << 8) + ((uint32_t)8 << 16);
       }
       strip.setPixelColor(i, color);
     }
@@ -480,16 +462,17 @@ void dump_status() {
       case NORMAL:
         Serial.print(FAVR("normal"));
         break;
-#if HOME_CALIBRATION_ENABLED
       case LOOK_FOR_HOME:
         Serial.print(FAVR("look_for_home"));
         break;
       case SENSOR_ERROR:
         Serial.print(FAVR("sensor_error"));
         break;
-#endif
       case PANIC:
         Serial.print(FAVR("panic"));
+        break;
+      case STATE_DISABLED:
+        Serial.print(FAVR("disabled"));
         break;
     }
     Serial.print(FAVR("\", \"flap\":\""));

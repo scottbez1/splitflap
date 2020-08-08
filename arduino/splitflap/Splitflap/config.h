@@ -41,12 +41,16 @@ const uint8_t flaps[] = {
   #else
   #define NEOPIXEL_PIN 3
   #endif
+  #define MONITOR_SPEED 38400
 #elif defined(__AVR_ATmega2560__)
   #define NEOPIXEL_PIN 4
+  #define MONITOR_SPEED 38400
 #elif defined(ARDUINO_ESP8266_WEMOS_D1MINI)
   #define NEOPIXEL_PIN (D8)
+  #define MONITOR_SPEED 38400
 #elif defined(ESP32)
   #define NEOPIXEL_PIN (13)
+  #define MONITOR_SPEED 921600
 #endif
 
 /*************************/
@@ -104,3 +108,9 @@ const uint8_t flaps[] = {
  *     32 Output enable (out)
  *
  */
+
+
+// Configuration validation
+#if NUM_MODULES < 1
+#error NUM_MODULES must be at least 1
+#endif

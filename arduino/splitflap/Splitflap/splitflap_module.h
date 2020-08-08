@@ -77,10 +77,8 @@ enum State {
   NORMAL,
   PANIC,
   STATE_DISABLED,
-#if HOME_CALIBRATION_ENABLED
   LOOK_FOR_HOME,
   SENSOR_ERROR,
-#endif
 };
 
 class SplitflapModule {
@@ -203,7 +201,7 @@ void SplitflapModule::Panic(String message) {
 }
 
 __attribute__((always_inline))
-bool SplitflapModule::CheckSensor() {
+inline bool SplitflapModule::CheckSensor() {
     bool cur_home = (sensor_in & sensor_bitmask) != 0;
     bool shift = cur_home == true && last_home == false;
     last_home = cur_home;
