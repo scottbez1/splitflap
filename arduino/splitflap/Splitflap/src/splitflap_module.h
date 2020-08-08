@@ -18,19 +18,16 @@
 #define SPLITFLAP_MODULE_H
 
 #include <Arduino.h>
+
 #include "acceleration.h"
+#include "../config.h"
 
 // Logging and assertions are useful for debugging, but likely add too much time/space overhead to be used when
 // driving many SplitflapModules at once.
 #define VERBOSE_LOGGING false
 #define ASSERTIONS_ENABLED false
 
-// Enable for auto-calibration via home sensor feedback. Disable for basic open-loop control (useful when first
-// testing the split-flap, since home calibration can be tricky to fine tune)
-#define HOME_CALIBRATION_ENABLED true
 #define FAKE_HOME_SENSOR false
-
-#define NUM_FLAPS (40)
 
 #define STEPS_PER_MOTOR_REVOLUTION (32)
 

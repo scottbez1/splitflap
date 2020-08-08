@@ -36,12 +36,12 @@
 #include <Wire.h>
 
 #include "config.h"
-#include "splitflap_module.h"
+#include "src/splitflap_module.h"
 
 #if SPI_IO
-#include "spi_io_config.h"
+#include "src/spi_io_config.h"
 #else
-#include "basic_io_config.h"
+#include "src/basic_io_config.h"
 #endif
 
 #if NEOPIXEL_DEBUGGING_ENABLED
@@ -55,7 +55,7 @@
 #endif
 
 #if INA219_POWER_SENSE
-#include "Adafruit_INA219.h"
+#include "src/Adafruit_INA219.h"
 #endif
 
 #ifdef __AVR__
@@ -257,7 +257,7 @@ inline void run_iteration() {
     if (all_idle) {
 #if NEOPIXEL_DEBUGGING_ENABLED
       for (int i = 0; i < NUM_MODULES; i++) {
-        uint32_t color;
+        uint32_t color = 0;
         switch (modules[i]->state) {
           case NORMAL:
             color = color_green;
