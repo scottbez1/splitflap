@@ -24,7 +24,7 @@
  *
  */
 
-#include "config.h"
+#include "../config.h"
 #if INA219_POWER_SENSE
 
 #include "Arduino.h"

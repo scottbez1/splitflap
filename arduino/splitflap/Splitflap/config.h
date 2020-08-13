@@ -7,13 +7,18 @@
 // 1) Mode
 #define SENSOR_TEST false
 
-// 2) Basic Settings
+// 2) General Settings
 #define NUM_MODULES (12)
 #define SPI_IO false
 #define REVERSE_MOTOR_DIRECTION false
 
 // Whether to force a full rotation when the same letter is specified again
 #define FORCE_FULL_ROTATION true
+
+// Whether to use/expect a home sensor. Enable for auto-calibration via home
+// sensor feedback. Disable for basic open-loop control (useful when first
+// testing the split-flap, since home calibration can be tricky to fine tune)
+#define HOME_CALIBRATION_ENABLED true
 
 // 3) Optional Features
 #define NEOPIXEL_DEBUGGING_ENABLED false
@@ -22,8 +27,11 @@
 
 // 4) Flap Contents & Order
 
-// This should match the order of flaps on the spool:
-const uint8_t flaps[] = {
+#define NUM_FLAPS (40)
+
+// This should match the order of flaps on the spool, with the first being the
+// "home" flap.
+const uint8_t flaps[NUM_FLAPS] = {
   ' ',
   'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
   'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
@@ -41,12 +49,16 @@ const uint8_t flaps[] = {
   #else
   #define NEOPIXEL_PIN 3
   #endif
+  #define MONITOR_SPEED 38400
 #elif defined(__AVR_ATmega2560__)
   #define NEOPIXEL_PIN 4
+  #define MONITOR_SPEED 38400
 #elif defined(ARDUINO_ESP8266_WEMOS_D1MINI)
   #define NEOPIXEL_PIN (D8)
+  #define MONITOR_SPEED 38400
 #elif defined(ESP32)
   #define NEOPIXEL_PIN (13)
+  #define MONITOR_SPEED 921600
 #endif
 
 /*************************/
@@ -104,3 +116,9 @@ const uint8_t flaps[] = {
  *     32 Output enable (out)
  *
  */
+
+
+// Configuration validation
+#if NUM_MODULES < 1
+#error NUM_MODULES must be at least 1
+#endif

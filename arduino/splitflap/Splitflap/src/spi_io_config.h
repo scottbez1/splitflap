@@ -230,7 +230,7 @@ inline void motor_sensor_io() {
 #endif
 
   for (uint8_t i = 0; i < MOTOR_BUFFER_LENGTH; i++) {
-    int val = SPI.transfer(motor_buffer[MOTOR_BUFFER_LENGTH - 1 - i]);
+    int val = SPI.transfer(motor_buffer[i]);
     if (i < SENSOR_BUFFER_LENGTH) {
 #if defined(ARDUINO_ESP8266_WEMOS_D1MINI)
       sensor_buffer[i] = (extra_bit << 7) | (val >> 1);

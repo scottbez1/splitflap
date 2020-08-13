@@ -18,19 +18,16 @@
 #define SPLITFLAP_MODULE_H
 
 #include <Arduino.h>
+
 #include "acceleration.h"
+#include "../config.h"
 
 // Logging and assertions are useful for debugging, but likely add too much time/space overhead to be used when
 // driving many SplitflapModules at once.
 #define VERBOSE_LOGGING false
 #define ASSERTIONS_ENABLED false
 
-// Enable for auto-calibration via home sensor feedback. Disable for basic open-loop control (useful when first
-// testing the split-flap, since home calibration can be tricky to fine tune)
-#define HOME_CALIBRATION_ENABLED true
 #define FAKE_HOME_SENSOR false
-
-#define NUM_FLAPS (40)
 
 #define STEPS_PER_MOTOR_REVOLUTION (32)
 
@@ -77,10 +74,8 @@ enum State {
   NORMAL,
   PANIC,
   STATE_DISABLED,
-#if HOME_CALIBRATION_ENABLED
   LOOK_FOR_HOME,
   SENSOR_ERROR,
-#endif
 };
 
 class SplitflapModule {
@@ -203,7 +198,7 @@ void SplitflapModule::Panic(String message) {
 }
 
 __attribute__((always_inline))
-bool SplitflapModule::CheckSensor() {
+inline bool SplitflapModule::CheckSensor() {
     bool cur_home = (sensor_in & sensor_bitmask) != 0;
     bool shift = cur_home == true && last_home == false;
     last_home = cur_home;

@@ -14,12 +14,6 @@
    limitations under the License.
 */
 
-#include <Arduino.h>
-#include <Wire.h>
-
-#include "config.h"
-
-
 //***** READ ME FIRST *****//
 //
 // Set up the configuration in config.h
@@ -38,69 +32,16 @@
 //
 //*************************//
 
+#include <Arduino.h>
+#include <Wire.h>
 
-/**
- * Suggested Pinouts
- * 
- * Arduino Uno - Basic IO - Up to 3 modules
- *    A: Motor: D4-7 = pins 4-7         Sensor: B4 = pin 12
- *    B: Motor: B0-3 = pins 8-11        Sensor: C4 = pin A4
- *    C: Motor: C0-3 = pins A0-A3       Sensor: C5 = pin A5
- * 
- *    Neopixel: 3
- * 
- * Arduino Uno - SPI IO (Shift Register) - Up to 12 modules
- *    4   Motor latch
- *    5   Sensor latch
- *    6   neopixel
- *    11  MOSI
- *    12  MISO
- *    13  CLK
- * 
- * Arduino Mega 2560 - Basic IO - Up to 12 modules)
- *    Note the order of pins increases for some motors and decreases for others.
- *    Modules whose motor phase pins are in the opposite order are marked with a * below.
- * 
- *    A: Motor: F0-3 = pins A0-A3       Sensor: G0 = pin 41
- *    B: Motor: F4-7 = pins A4-A7       Sensor: G1 = pin 40
- *    C: Motor: K0-3 = pins A8-A11      Sensor: G2 = pin 39
- *    D: Motor: K4-7 = pins A12-A15     Sensor: D7 = pin 38
- *    E: Motor: B0-3 = pins 53-50 *     Sensor: D2 = pin 19
- *    F: Motor: L0-3 = pins 49-46 *     Sensor: D3 = pin 18
- *    G: Motor: L4-7 = pins 45-42 *     Sensor: H0 = pin 17
- *    H: Motor: C0-3 = pins 37-34 *     Sensor: H1 = pin 16
- *    I: Motor: C4-7 = pins 33-30 *     Sensor: J0 = pin 15
- *    J: Motor: A4-7 = pins 29-26 *     Sensor: J1 = pin 14
- *    K: Motor: A0-3 = pins 25-22 *     Sensor: E4 = pin 2
- *    L: Motor: B4-7 = pins 10-13       Sensor: E5 = pin 3
- * 
- *    Neopixel: 4
- * 
- *    INA219 & SSD1306 Oled:
- *      SDA: 20
- *      SCL: 21
- * 
- * ESP32 - SPI IO (Shift Register) - Up to 120+ modules:
- *     5  CS            (out) (debug only)
- *     12 Motor latch   (out)
- *     13 neopixel      (out)
- *     18 CLK           (out)
- *     19 MISO          (in)
- *     23 MOSI          (out)
- *     27 Sensor latch  (out)
- *     32 Output enable (out)
-*/
-
-#if NUM_MODULES < 1
-#error NUM_MODULES must be at least 1
-#endif
-
-#include "splitflap_module.h"
+#include "config.h"
+#include "src/splitflap_module.h"
 
 #if SPI_IO
-#include "spi_io_config.h"
+#include "src/spi_io_config.h"
 #else
-#include "basic_io_config.h"
+#include "src/basic_io_config.h"
 #endif
 
 #if NEOPIXEL_DEBUGGING_ENABLED
@@ -114,7 +55,7 @@
 #endif
 
 #if INA219_POWER_SENSE
-#include "Adafruit_INA219.h"
+#include "src/Adafruit_INA219.h"
 #endif
 
 #ifdef __AVR__
@@ -152,12 +93,6 @@ uint32_t lastCurrentReadMillis = 0;
 // Char buffers for building voltage/current strings
 char voltageBuf[10];
 char currentBuf[10];
-#endif
-
-#if defined(ESP32)
-#define MONITOR_SPEED 921600
-#else
-#define MONITOR_SPEED 38400
 #endif
 
 void dump_status(void);
@@ -289,10 +224,8 @@ inline void run_iteration() {
       modules[i]->Update();
       bool is_idle = modules[i]->state == PANIC
         || modules[i]->state == STATE_DISABLED
-#if HOME_CALIBRATION_ENABLED
         || modules[i]->state == LOOK_FOR_HOME
         || modules[i]->state == SENSOR_ERROR
-#endif
         || (modules[i]->state == NORMAL && modules[i]->current_accel_step == 0);
 
       bool is_stopped = modules[i]->state == PANIC
@@ -324,20 +257,19 @@ inline void run_iteration() {
     if (all_idle) {
 #if NEOPIXEL_DEBUGGING_ENABLED
       for (int i = 0; i < NUM_MODULES; i++) {
-        uint32_t color;
+        uint32_t color = 0;
         switch (modules[i]->state) {
           case NORMAL:
             color = color_green;
             break;
-#if HOME_CALIBRATION_ENABLED
           case LOOK_FOR_HOME:
             color = color_purple;
             break;
           case SENSOR_ERROR:
             color = color_orange;
             break;
-#endif
-          case PANIC:
+          case PANIC: // Intentional fall-through
+          case STATE_DISABLED:
             color = color_red;
             break;
         }
@@ -354,14 +286,12 @@ inline void run_iteration() {
             case NORMAL:
               statusString[i] = '_';
               break;
-  #if HOME_CALIBRATION_ENABLED
             case LOOK_FOR_HOME:
               statusString[i] = 'H';
               break;
             case SENSOR_ERROR:
               statusString[i] = 'E';
               break;
-  #endif
             case STATE_DISABLED:
               statusString[i] = 'D';
               break;
@@ -493,7 +423,7 @@ void sensor_test_iteration() {
 
       // Make LEDs flash in sequence to indicate sensor test mode
       if ((millis() / 32) % NUM_MODULES == i) {
-        color += 8 + (8 << 8) + (8 << 16);
+        color += 8 + (8 << 8) + ((uint32_t)8 << 16);
       }
       strip.setPixelColor(i, color);
     }
@@ -532,16 +462,17 @@ void dump_status() {
       case NORMAL:
         Serial.print(FAVR("normal"));
         break;
-#if HOME_CALIBRATION_ENABLED
       case LOOK_FOR_HOME:
         Serial.print(FAVR("look_for_home"));
         break;
       case SENSOR_ERROR:
         Serial.print(FAVR("sensor_error"));
         break;
-#endif
       case PANIC:
         Serial.print(FAVR("panic"));
+        break;
+      case STATE_DISABLED:
+        Serial.print(FAVR("disabled"));
         break;
     }
     Serial.print(FAVR("\", \"flap\":\""));
