@@ -8,9 +8,9 @@
 #define SENSOR_TEST false
 
 // 2) General Settings
+#ifndef NUM_MODULES
 #define NUM_MODULES (12)
-#define SPI_IO false
-#define REVERSE_MOTOR_DIRECTION false
+#endif
 
 // Whether to force a full rotation when the same letter is specified again
 #define FORCE_FULL_ROTATION true
@@ -20,13 +20,7 @@
 // testing the split-flap, since home calibration can be tricky to fine tune)
 #define HOME_CALIBRATION_ENABLED true
 
-// 3) Optional Features
-#define NEOPIXEL_DEBUGGING_ENABLED false
-#define SSD1306_DISPLAY true
-#define INA219_POWER_SENSE true
-
-// 4) Flap Contents & Order
-
+// 3) Flap Contents & Order
 #define NUM_FLAPS (40)
 
 // This should match the order of flaps on the spool, with the first being the
@@ -40,6 +34,17 @@ const uint8_t flaps[NUM_FLAPS] = {
   ',',
   '\'',
 };
+
+// 4) Hardware configuration and features
+#ifndef SPLITFLAP_PIO_HARDWARE_CONFIG
+  // Note: these values are only used in the Arduino IDE. For PlatformIO,
+  // hardware configuration is set by the environment, in platformio.ini.
+  #define SPI_IO false
+  #define REVERSE_MOTOR_DIRECTION false
+  #define NEOPIXEL_DEBUGGING_ENABLED true
+  #define SSD1306_DISPLAY false
+  #define INA219_POWER_SENSE false
+#endif
 
 // 5) Board-dependent Default Settings
 
