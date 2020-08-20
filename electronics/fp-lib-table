@@ -9,5 +9,4 @@
   (lib (name LED3mmBetterSilkScreen)(type KiCad)(uri "$(KIPRJMOD)/lib/LED3mmBetterSilkScreen.pretty")(options "")(descr ""))
   (lib (name hall_effect)(type KiCad)(uri "$(KIPRJMOD)/lib/hall_effect.pretty")(options "")(descr ""))
   (lib (name CustomSymbols)(type KiCad)(uri "$(KIPRJMOD)/lib/CustomSymbols.pretty")(options "")(descr ""))
-  (lib (name Mega2560Shield)(type KiCad)(uri ${KIPRJMOD}/lib/Mega2560Shield.pretty)(options "")(descr ""))
 )

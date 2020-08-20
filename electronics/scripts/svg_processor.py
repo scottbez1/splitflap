@@ -37,10 +37,6 @@ class SvgProcessor(object):
                 'stroke': transform_function,
             })
 
-    def apply_group_style_transforms(self, transform_dict):
-        for group in self.svg_node.getElementsByTagName('g'):
-            SvgProcessor._apply_transform(group, transform_dict)
-
     def import_groups(self, from_svg_processor):
         for child in from_svg_processor.svg_node.childNodes:
             if child.nodeType != child.ELEMENT_NODE or child.tagName != 'g':

@@ -100,24 +100,6 @@ def plot_to_directory(pcb_file, output_directory, temp_dir):
             processor.write(output_filename2)
             processed_svg_files.append((output_filename2, processor))
 
-        # Plot the paste layer to its own SVG
-        logger.info('Plotting paste SVG')
-        output_filename = plotter.plot(pcbnew.F_Paste, pcbnew.PLOT_FORMAT_SVG)
-        processor = SvgProcessor(output_filename)
-        def colorize(original):
-            if original.lower() == '#000000':
-                return '#FF0000'
-            return original
-        processor.apply_group_style_transforms({
-            'fill-opacity': lambda _: '0',
-            'stroke': lambda _: '#FF0000',
-            'stroke-opacity': lambda _: '1',
-            'stroke-width': lambda _: '20',
-        })
-        paste_filename = os.path.join(output_directory, '%s_paste.svg' % board_name)
-        processor.write(paste_filename)
-
-
         logger.info('Merging layers...')
         final_svg = os.path.join(output_directory, '%s_merged.svg' % board_name)
 

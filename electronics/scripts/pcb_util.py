@@ -14,23 +14,21 @@
 #   limitations under the License.
 
 import argparse
+import datetime
 import logging
 import os
 import pcbnew
+import subprocess
 import tempfile
 
 from contextlib import contextmanager
-
-from export_util import (
-    get_versioned_contents
-)
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 @contextmanager
 def versioned_board(filename):
-    _, versioned_contents = get_versioned_contents(filename)
+    versioned_contents = _get_versioned_contents(filename)
     with tempfile.NamedTemporaryFile(suffix='.kicad_pcb') as temp_pcb:
         logger.debug('Writing to %s', temp_pcb.name)
         temp_pcb.write(versioned_contents)
@@ -101,6 +99,28 @@ class Plotter(object):
         )
         return drill_file_name, map_file_name
 
+
+def _get_versioned_contents(filename):
+    with open(filename, 'rb') as pcb:
+        original_contents = pcb.read()
+        version_info = get_version_info()
+        return original_contents \
+            .replace('COMMIT: deadbeef', 'COMMIT: ' + version_info['revision']) \
+            .replace('DATE: YYYY-MM-DD', 'DATE: ' + version_info['date'])
+
+
+def get_version_info():
+    git_rev = subprocess.check_output([
+        'git',
+        'rev-parse',
+        '--short',
+        'HEAD',
+    ]).strip()
+
+    return {
+        'revision': git_rev,
+        'date': datetime.date.today().strftime('%Y-%m-%d'),
+    }
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Test pcb util')

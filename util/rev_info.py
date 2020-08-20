@@ -9,7 +9,7 @@ def git_short_rev():
         'rev-parse',
         '--short',
         'HEAD',
-    ]).decode('utf-8').strip()
+    ]).strip()
 
 def current_date():
     return datetime.date.today().strftime('%Y-%m-%d')
