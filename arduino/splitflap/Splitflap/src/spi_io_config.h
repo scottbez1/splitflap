@@ -58,20 +58,23 @@
   #include "driver/spi_master.h"
   #include "driver/spi_slave.h"
 
-  #define OUT_LATCH_PIN (12)//Any pin will work
-  #define IN_LATCH_PIN (27) //Any pin will work
-  #define OUTPUT_ENABLE_PIN (32) // Any pin will work
+  #define OUT_LATCH_PIN (25)
+  #define IN_LATCH_PIN (26)
+  #define OUTPUT_ENABLE_PIN (27)
+
+  #define PIN_NUM_MISO 22
+  #define PIN_NUM_MOSI 32
+  #define PIN_NUM_CLK  33
+  #define PIN_NUM_CS   21
 
   #define SPI_CLOCK 8000000
 
   #define BUFFER_ATTRS WORD_ALIGNED_ATTR
 
-  #define SPI_HOST VSPI_HOST
-  #define DMA_CHANNEL 2
-  #define PIN_NUM_MISO 19
-  #define PIN_NUM_MOSI 23
-  #define PIN_NUM_CLK  18
-  #define PIN_NUM_CS   5
+  // Note: must use HSPI to avoid conflict with ST7789 driver which uses VSPI
+  #define SPI_HOST HSPI_HOST
+  #define DMA_CHANNEL 1
+
 
   spi_device_handle_t spi_tx;
   spi_device_handle_t spi_rx;
@@ -121,7 +124,7 @@ SplitflapModule* modules[NUM_MODULES];
 inline void initialize_modules() {
   for (uint8_t i = 0; i < NUM_MODULES; i++) {
     // Create SplitflapModules in a statically allocated buffer using placement new
-    modules[i] = new (moduleBuffer[i]) SplitflapModule(motor_buffer[(NUM_MODULES - i - 1)/2], i % 2 == 0 ? 0 : 4, sensor_buffer[i/4], 1 << (i % 4));
+    modules[i] = new (moduleBuffer[i]) SplitflapModule(motor_buffer[MOTOR_BUFFER_LENGTH - 1 - i/2], i % 2 == 0 ? 0 : 4, sensor_buffer[i/4], 1 << (i % 4));
   }
   
   memset(motor_buffer, 0, MOTOR_BUFFER_LENGTH);
