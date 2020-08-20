@@ -71,9 +71,9 @@
 
   #define BUFFER_ATTRS WORD_ALIGNED_ATTR
 
-// Note: must use HSPI to avoid conflict with ST7789 driver which uses VSPI
-#define SPI_HOST HSPI_HOST
-#define DMA_CHANNEL 1 
+  // Note: must use HSPI to avoid conflict with ST7789 driver which uses VSPI
+  #define SPI_HOST HSPI_HOST
+  #define DMA_CHANNEL 1
 
 
   spi_device_handle_t spi_tx;

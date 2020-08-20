@@ -19,40 +19,18 @@
 #include <Wire.h>
 
 #include "config.h"
+#include "display.h"
 #include "src/splitflap_module.h"
 #include "src/spi_io_config.h"
 
 #define FAVR(x) x
 
-TFT_eSPI tft = TFT_eSPI();
-TFT_eSprite spr = TFT_eSprite(&tft);
-
-TaskHandle_t DisplayTask;
-
+Display display;
 
 int recv_buffer[NUM_MODULES];
 
-void displayTaskFunction(void * pvParameters) {
-  tft.begin();
-  tft.invertDisplay(1);
-  tft.setRotation(0);
-
-  spr.setColorDepth(16);
-  spr.createSprite(TFT_WIDTH, TFT_HEIGHT);
-  spr.setFreeFont(&FreeSans9pt7b);
-  spr.setTextColor(0xFFFF, TFT_BLACK);
-  while(1) {
-    static uint32_t i = 0;
-    i++;
-    spr.fillSprite(TFT_BLACK);
-    spr.setCursor(0, 15);
-    spr.printf("test: %u\nhello\nworld\n\n%u\nbye!", i, i);
-    spr.pushSprite(0, 0);
-    vTaskDelay(1);
-  }
-}
-
 void dump_status(void);
+
 void setup() {
   Serial.begin(MONITOR_SPEED);
 
@@ -76,14 +54,7 @@ void setup() {
 #endif
   }
 
-  xTaskCreatePinnedToCore(
-             displayTaskFunction,
-             "Display",
-             10000,
-             NULL,
-             1,
-             &DisplayTask,
-             0);
+  display.begin();
 }
 
 
