@@ -40,12 +40,5 @@ void setup() {
 
 void loop() {
   assert(false);
-  // vTaskDelay(portMAX_DELAY);
-  // while (1) {
-  //   splitflap.update();
-
-  //   // Yield to avoid triggering Soft WDT
-  //   yield();
-  // }
 }
 
