@@ -20,6 +20,7 @@
 #include <Arduino.h>
 
 #include "acceleration.h"
+#include "splitflap_module_data.h"
 #include "../config.h"
 
 // Logging and assertions are useful for debugging, but likely add too much time/space overhead to be used when
@@ -59,24 +60,7 @@
 
 // When recalibrating the home position, the number of steps to travel searching for home before giving up
 #define MAX_STEPS_LOOKING_FOR_HOME ((NUM_FLAPS + 2) * _ROUGH_STEPS_PER_FLAP)
-
-enum HomeState {
-    // Ignore any home blips (e.g. if we've just seen the home position and haven't traveled past it yet)
-    IGNORE,
-    // Home isn't expected; a home blip in this state/region indicates an error that requires recalibration
-    UNEXPECTED,
-    // Home position is expected in this state/region
-    EXPECTED,
-};
 #endif
-
-enum State {
-  NORMAL,
-  PANIC,
-  STATE_DISABLED,
-  LOOK_FOR_HOME,
-  SENSOR_ERROR,
-};
 
 class SplitflapModule {
  private:

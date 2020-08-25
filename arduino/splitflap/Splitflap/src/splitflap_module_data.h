@@ -13,26 +13,25 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "display.h"
+#pragma once
 
-Display::Display() : Task{"Display", 10000, 1, 0} {}
+#include "../config.h"
 
-void Display::run() {
-    tft.begin();
-    tft.invertDisplay(1);
-    tft.setRotation(0);
+#if HOME_CALIBRATION_ENABLED
+enum HomeState {
+    // Ignore any home blips (e.g. if we've just seen the home position and haven't traveled past it yet)
+    IGNORE,
+    // Home isn't expected; a home blip in this state/region indicates an error that requires recalibration
+    UNEXPECTED,
+    // Home position is expected in this state/region
+    EXPECTED,
+};
+#endif
 
-    spr.setColorDepth(16);
-    spr.createSprite(TFT_WIDTH, TFT_HEIGHT);
-    spr.setFreeFont(&FreeSans9pt7b);
-    spr.setTextColor(0xFFFF, TFT_BLACK);
-    while(1) {
-        static uint32_t i = 0;
-        i++;
-        spr.fillSprite(TFT_BLACK);
-        spr.setCursor(0, 15);
-        spr.printf("test: %u\nhello\nworld\n\n%u\nbye!", i, i);
-        spr.pushSprite(0, 0);
-        vTaskDelay(1);
-    }
-}
+enum State {
+  NORMAL,
+  PANIC,
+  STATE_DISABLED,
+  LOOK_FOR_HOME,
+  SENSOR_ERROR,
+};

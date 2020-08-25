@@ -18,18 +18,22 @@
 #include <Arduino.h>
 #include <TFT_eSPI.h>
 
+#include "splitflap_task.h"
 #include "task.h"
 
-class Display : public Task<Display> {
-    friend class Task<Display>; // Allow base Task to invoke protected run()
+class DisplayTask : public Task<DisplayTask> {
+    friend class Task<DisplayTask>; // Allow base Task to invoke protected run()
 
     public:
-        Display();
+        DisplayTask(SplitflapTask& splitflapTask, const uint8_t taskCore);
 
     protected:
         void run();
 
     private:
-        TFT_eSPI tft = TFT_eSPI();
-        TFT_eSprite spr = TFT_eSprite(&tft);
+        SplitflapTask& splitflap_task_;
+        TFT_eSPI tft_ = TFT_eSPI();
+
+        /** Full-size sprite used as a framebuffer */
+        TFT_eSprite spr_ = TFT_eSprite(&tft_);
 };
