@@ -15,21 +15,23 @@
 */
 #pragma once
 
-#include <Arduino.h>
-#include <TFT_eSPI.h>
+#include "../config.h"
 
-#include "task.h"
+#if HOME_CALIBRATION_ENABLED
+enum HomeState {
+    // Ignore any home blips (e.g. if we've just seen the home position and haven't traveled past it yet)
+    IGNORE,
+    // Home isn't expected; a home blip in this state/region indicates an error that requires recalibration
+    UNEXPECTED,
+    // Home position is expected in this state/region
+    EXPECTED,
+};
+#endif
 
-class Display : public Task<Display> {
-    friend class Task<Display>; // Allow base Task to invoke protected run()
-
-    public:
-        Display();
-
-    protected:
-        void run();
-
-    private:
-        TFT_eSPI tft = TFT_eSPI();
-        TFT_eSprite spr = TFT_eSprite(&tft);
+enum State {
+  NORMAL,
+  PANIC,
+  STATE_DISABLED,
+  LOOK_FOR_HOME,
+  SENSOR_ERROR,
 };

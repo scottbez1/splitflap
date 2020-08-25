@@ -13,26 +13,21 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "display.h"
+#pragma once
 
-Display::Display() : Task{"Display", 10000, 1, 0} {}
+#include <Arduino.h>
 
-void Display::run() {
-    tft.begin();
-    tft.invertDisplay(1);
-    tft.setRotation(0);
+class SemaphoreGuard {
+    public:
+        SemaphoreGuard(SemaphoreHandle_t handle) : handle_{handle} {
+            xSemaphoreTake(handle_, portMAX_DELAY);
+        }
+        ~SemaphoreGuard() {
+            xSemaphoreGive(handle_);
+        }
+        SemaphoreGuard(SemaphoreGuard const&)=delete;
+        SemaphoreGuard& operator=(SemaphoreGuard const&)=delete;
 
-    spr.setColorDepth(16);
-    spr.createSprite(TFT_WIDTH, TFT_HEIGHT);
-    spr.setFreeFont(&FreeSans9pt7b);
-    spr.setTextColor(0xFFFF, TFT_BLACK);
-    while(1) {
-        static uint32_t i = 0;
-        i++;
-        spr.fillSprite(TFT_BLACK);
-        spr.setCursor(0, 15);
-        spr.printf("test: %u\nhello\nworld\n\n%u\nbye!", i, i);
-        spr.pushSprite(0, 0);
-        vTaskDelay(1);
-    }
-}
+    private:
+        SemaphoreHandle_t handle_;
+};
