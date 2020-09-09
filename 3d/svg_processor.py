@@ -11,6 +11,8 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
+
+from __future__ import print_function
 from collections import defaultdict
 
 from svg.path import (
@@ -119,7 +121,7 @@ class SvgProcessor(object):
         for slope_intersect, lines in lines_bucketed_by_slope_intersect.items():
             for i in range(20):
                 if SvgProcessor._pairwise_overlap_check(lines, to_update, to_remove):
-                    print 'Re-running pairwise overlap check because of updated/merged line'
+                    print('Re-running pairwise overlap check because of updated/merged line')
                     continue
                 break
             else:
@@ -162,12 +164,12 @@ class SvgProcessor(object):
             # Update the path data with the filtered path data
             path.attributes['d'] = filtered_path.d()
 
-        print 'Removed {} lines ({} length) and kept {} lines ({} length)'.format(
+        print('Removed {} lines ({} length) and kept {} lines ({} length)'.format(
             removed,
             removed_length,
             kept,
             kept_length,
-        )
+        ))
 
         return [to_remove[k][2] for k in to_remove], [to_update[k][2] for k in to_update]
 
@@ -222,7 +224,7 @@ class SvgProcessor(object):
                         (l1x1 <= l2x2 + eps and l2x2 <= l1x2 + eps and l1y1 + eps < l2y2 and l2y2 + eps < l1y2) or
                         (l1x1 + eps < l2x2 and l2x2 + eps < l1x2 and l1y1 <= l2y2 + eps and l2y2 <= l1y2 + eps)
                     ):
-                        print 'Partial overlap of these lines:\n  {!r}\n  {!r}'.format(line1, line2)
+                        print('Partial overlap of these lines:\n  {!r}\n  {!r}'.format(line1, line2))
 
                         # Arbitrarily pick line1 to remove, and update line2 to cover the full length
                         to_remove[lines[i]['overall_index']] = (
@@ -266,7 +268,7 @@ class SvgProcessor(object):
                             lines[j]['line_index'],
                             line2,
                         )
-                        print '  -- merged into a single line: {!r}'.format(line2)
+                        print('  -- merged into a single line: {!r}'.format(line2))
                         return True
         return False
 
@@ -283,7 +285,7 @@ class SvgProcessor(object):
             self.svg_node.appendChild(new_path_node)
 
     def write(self, filename):
-        with open(filename, 'wb') as output_file:
+        with open(filename, 'w') as output_file:
             self.svg_node.writexml(output_file)
 
     @staticmethod
