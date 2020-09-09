@@ -1024,7 +1024,6 @@ if (render_3d) {
             split_flap_3d(render_letters[render_units - 1 - i], include_connector=(i != render_units - 1));
     }
 } else {
-    sp = 5;
     panel_height = enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width + kerf_width + spool_strut_width + kerf_width;
     projection_renderer(render_index=render_index, render_etch=render_etch, kerf_width=kerf_width, panel_height=panel_height, panel_horizontal=panel_horizontal, panel_vertical=panel_vertical) {
         translate([0, 0])
