@@ -42,6 +42,7 @@ if __name__ == '__main__':
     parser.add_argument('--kerf', type=float, help='Override kerf_width value')
     parser.add_argument('--render-raster', action='store_true', help='Render raster PNG from the output SVG (requires '
                                                                      'Inkscape)')
+    parser.add_argument('--thickness', type=float, help='Override panel thickness value')
 
     args = parser.parse_args()
 
@@ -53,6 +54,8 @@ if __name__ == '__main__':
     }
     if args.kerf is not None:
         extra_variables['kerf_width'] = args.kerf
+    if args.thickness is not None:
+        extra_variables['thickness'] = args.thickness
 
     renderer = Renderer(os.path.join(script_dir, 'splitflap.scad'), laser_parts_directory, extra_variables)
     renderer.clean()
