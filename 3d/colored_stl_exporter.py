@@ -219,5 +219,12 @@ def mkdir_p(path):
             raise
 
 if __name__ == '__main__':
-    import sys
-    ColoredStlExporter(sys.argv[1], sys.argv[2]).run()
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('input_file', type=str, help='OpenSCAD file to parse into STLs')
+    parser.add_argument('output_folder', type=str, help='directory to place the colored STL files')
+
+    args = parser.parse_args()
+
+    ColoredStlExporter(args.input_file, args.output_folder).run()
