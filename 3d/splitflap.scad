@@ -1026,6 +1026,7 @@ if (render_3d) {
 } else {
     panel_height = enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width + kerf_width + spool_strut_width + kerf_width;
     projection_renderer(render_index=render_index, render_etch=render_etch, kerf_width=kerf_width, panel_height=panel_height, panel_horizontal=panel_horizontal, panel_vertical=panel_vertical) {
+        // Main enclosure (left, right, front)
         translate([0, 0])
             enclosure_left();
         translate([0, enclosure_length + kerf_width])
@@ -1034,6 +1035,7 @@ if (render_3d) {
             rotate([0, 0, -90])
                 enclosure_front();
 
+        // Top and bottom
         translate([enclosure_height + kerf_width + enclosure_length_right, enclosure_length + kerf_width + enclosure_length_right + kerf_width + 2])
             rotate([0, 0, 90])
             enclosure_top();
@@ -1042,6 +1044,7 @@ if (render_3d) {
             rotate([0, 0, -90])
                 enclosure_bottom();
 
+        // Bottom laser etching
         laser_etch()
             translate([enclosure_height + kerf_width, enclosure_length + kerf_width + enclosure_length_right + 2, thickness])
                 rotate([0, 0, -90])
@@ -1070,7 +1073,7 @@ if (render_3d) {
             rotate([0, 0, 180])
                 connector_bracket();
 
-        // Flap spools in window
+        // Flap spools in flap window
         flap_spool_y_off = enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width - front_window_right_inset - enclosure_horizontal_inset - front_window_width/2;
         flap_spool_x_off = spool_outer_radius + enclosure_height_lower - front_window_lower + kerf_width + 2;
         translate([flap_spool_x_off, flap_spool_y_off])
@@ -1078,6 +1081,7 @@ if (render_3d) {
         translate([flap_spool_x_off + spool_outer_radius*2 + 2, flap_spool_y_off])
             flap_spool_complete(captive_nut=true);
 
+        // Spool retaining wall in motor window
         translate([enclosure_height_lower + 28byj48_shaft_offset - 28byj48_chassis_radius + (28byj48_chassis_radius + motor_backpack_extent)/2, enclosure_length - front_forward_offset - 28byj48_chassis_radius - motor_hole_slop/2 + spool_strut_width/2 + kerf_width])
             spool_retaining_wall(m4_bolt_hole=true);
     }
