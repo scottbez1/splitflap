@@ -28,7 +28,8 @@ from svg_processor import SvgProcessor
 from projection_renderer import Renderer
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
-repo_root = os.path.dirname(script_dir)
+source_parts_dir = os.path.dirname(script_dir)
+repo_root = os.path.dirname(source_parts_dir)
 sys.path.append(repo_root)
 
 from util import rev_info
@@ -46,7 +47,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    laser_parts_directory = os.path.join(script_dir, 'build', 'laser_parts')
+    laser_parts_directory = os.path.join(source_parts_dir, 'build', 'laser_parts')
 
     extra_variables = {
         'render_revision': rev_info.git_short_rev(),
@@ -57,7 +58,7 @@ if __name__ == '__main__':
     if args.thickness is not None:
         extra_variables['thickness'] = args.thickness
 
-    renderer = Renderer(os.path.join(script_dir, 'splitflap.scad'), laser_parts_directory, extra_variables)
+    renderer = Renderer(os.path.join(source_parts_dir, 'splitflap.scad'), laser_parts_directory, extra_variables)
     renderer.clean()
     svg_output = renderer.render_svgs(panelize_quantity=args.panelize)
 

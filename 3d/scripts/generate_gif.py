@@ -41,11 +41,11 @@ def generate_gif(output_folder):
     logging.debug(command)
     subprocess.check_call(command)
 
-def render_rotation(output_folder, num_frames, start_frame, variables):
+def render_rotation(input_file, output_folder, num_frames, start_frame, variables):
     def render_frame(i):
         angle = 135 + i * 360 / num_frames
         openscad.run(
-            'splitflap.scad',
+            input_file,
             os.path.join(output_folder, 'frame_%05d.png' % (start_frame + i)),
             output_size = [320, 240],
             camera_translation = [0, 0, 0],
@@ -61,21 +61,25 @@ def render_rotation(output_folder, num_frames, start_frame, variables):
     pool.close()
     pool.join()
 
-output_folder = os.path.join('build', 'animation')
+script_dir = os.path.dirname(os.path.abspath(__file__))
+source_parts_dir = os.path.dirname(script_dir)
+
+input_file = os.path.join(source_parts_dir, 'splitflap.scad')
+output_folder = os.path.join(source_parts_dir, 'build', 'animation')
 
 shutil.rmtree(output_folder, ignore_errors=True)
 os.makedirs(output_folder)
 
 num_frames = 50
-render_rotation(output_folder, num_frames, 0, {
+render_rotation(input_file, output_folder, num_frames, 0, {
     'render_enclosure': 2,
     'render_flaps': 2,
 })
-render_rotation(output_folder, num_frames, num_frames, {
+render_rotation(input_file, output_folder, num_frames, num_frames, {
     'render_enclosure': 1,
     'render_flaps': 2,
 })
-render_rotation(output_folder, num_frames, num_frames*2, {
+render_rotation(input_file, output_folder, num_frames, num_frames*2, {
     'render_enclosure': 0,
     'render_flaps': 0,
 })
