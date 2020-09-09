@@ -1070,7 +1070,7 @@ if (render_3d) {
         translate([enclosure_height + kerf_width, 2 * enclosure_wall_to_wall_width + 2 * kerf_width - thickness, 0])
             connector_bracket();
 
-        translate([enclosure_height + kerf_width + enclosure_length_right + thickness - connector_bracket_length_outer, spool_strut_y_offset + spool_strut_width/2, 0])
+        translate([enclosure_height + kerf_width + connector_bracket_width - connector_bracket_length_outer, 2 * enclosure_wall_to_wall_width + 3 * kerf_width - thickness + connector_bracket_width + connector_bracket_length_outer, 0])
             rotate([0,0,-90])
                 connector_bracket();
 
