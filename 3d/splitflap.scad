@@ -1066,11 +1066,12 @@ if (render_3d) {
             rotate([0, 0, 180])
                 spool_strut();
 
-        // Connector brackets cut out of left side
-        translate([12, (enclosure_length - connector_bracket_length_outer*2)/2, thickness])
+        // Connector brackets on the top right
+        translate([enclosure_height + kerf_width, 2 * enclosure_wall_to_wall_width + 2 * kerf_width - thickness, 0])
             connector_bracket();
-        translate([12 + connector_bracket_width, (enclosure_length - connector_bracket_length_outer*2)/2 + 2 * connector_bracket_length_outer + kerf_width, thickness])
-            rotate([0, 0, 180])
+
+        translate([enclosure_height + kerf_width + enclosure_length_right + thickness - connector_bracket_length_outer, spool_strut_y_offset + spool_strut_width/2, 0])
+            rotate([0,0,-90])
                 connector_bracket();
 
         // Flap spools in flap window
