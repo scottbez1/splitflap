@@ -178,6 +178,7 @@ backstop_bolt_forward_range = 14;
 motor_mount_hole_radius = m4_hole_diameter/2;
 motor_backpack_extent = 28byj48_backpack_extent + 2; // Add 2mm to make sure there's room for the wires
 motor_hole_slop = 1;
+motor_window_radius = 5;
 
 connector_bracket_length_outer = 14;
 connector_bracket_length_inner = side_tab_width * 2 - m4_button_head_diameter/2;
@@ -440,9 +441,16 @@ module motor_mount() {
     translate([28byj48_mount_center_offset, -8]) {
         circle(r=motor_mount_hole_radius, center=true, $fn=30);
     }
-    translate([-28byj48_chassis_radius - motor_hole_slop/2, -28byj48_shaft_offset - motor_backpack_extent - motor_hole_slop/2, 0]) {
-        square([28byj48_chassis_radius*2 + motor_hole_slop, 28byj48_chassis_radius + motor_backpack_extent + motor_hole_slop]);
-    }
+	
+	hull() {
+		x = -28byj48_chassis_radius - motor_hole_slop/2 + motor_window_radius;
+		y = [-28byj48_shaft_offset - motor_backpack_extent - motor_hole_slop/2 + motor_window_radius,
+			-28byj48_shaft_offset + 28byj48_chassis_radius + motor_hole_slop/2 - motor_window_radius];
+		
+		for (i = [0 : 3]) {
+			translate([x * (i%3 ? -1 : 1), y[i%2], 0]) circle(r=motor_window_radius, $fn=40);
+		}
+	}
 }
 
 module side_tabs_negative(hole_sizes=[], extend_last_tab=false) {
@@ -1071,7 +1079,7 @@ if (render_3d) {
         translate([flap_spool_x_off + spool_outer_radius*2 + 2, flap_spool_y_off])
             flap_spool_complete(captive_nut=true);
 
-        translate([enclosure_height_lower + 28byj48_shaft_offset - 28byj48_chassis_radius - motor_hole_slop/2 + spool_strut_width/2 + kerf_width, enclosure_length - front_forward_offset - 28byj48_chassis_radius - motor_hole_slop/2 + spool_strut_width/2 + kerf_width])
+        translate([enclosure_height_lower + 28byj48_shaft_offset - 28byj48_chassis_radius + (28byj48_chassis_radius + motor_backpack_extent)/2, enclosure_length - front_forward_offset - 28byj48_chassis_radius - motor_hole_slop/2 + spool_strut_width/2 + kerf_width])
             spool_retaining_wall(m4_bolt_hole=true);
     }
 }
