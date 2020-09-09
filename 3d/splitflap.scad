@@ -434,12 +434,12 @@ module enclosure_front() {
 
 // holes for 28byj-48 motor, centered around motor shaft
 module motor_mount() {
-    circle(r=28byj48_shaft_radius+motor_slop_radius, center=true, $fn=30);
+    circle(r=28byj48_shaft_radius+motor_slop_radius, $fn=30);
     translate([-28byj48_mount_center_offset, -8]) {
-        circle(r=motor_mount_hole_radius, center=true, $fn=30);
+        circle(r=motor_mount_hole_radius, $fn=30);
     }
     translate([28byj48_mount_center_offset, -8]) {
-        circle(r=motor_mount_hole_radius, center=true, $fn=30);
+        circle(r=motor_mount_hole_radius, $fn=30);
     }
 	
 	hull() {
@@ -490,7 +490,7 @@ module enclosure_left() {
         difference() {
             square([enclosure_height, enclosure_length]);
             translate([enclosure_height_lower, enclosure_length - front_forward_offset, 0])
-                circle(r=m4_hole_diameter/2, center=true, $fn=30);
+                circle(r=m4_hole_diameter/2, $fn=30);
 
             translate([enclosure_height_lower, enclosure_length - front_forward_offset]) {
                 rotate([0, 0, 90]) {
@@ -545,7 +545,7 @@ module enclosure_right() {
         difference() {
             square([enclosure_height, enclosure_length_right]);
             translate([enclosure_height_upper, enclosure_length_right - front_forward_offset, 0])
-                circle(r=m4_hole_diameter/2, center=true, $fn=30);
+                circle(r=m4_hole_diameter/2, $fn=30);
 
             // backstop bolt slot
             translate([enclosure_height_upper - backstop_bolt_vertical_offset, enclosure_length_right - front_forward_offset, 0]) {
