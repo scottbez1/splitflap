@@ -81,7 +81,7 @@ class ColoredStlExporter(object):
         pool.close()
         pool.join()
 
-        with open(os.path.join(self.output_folder, 'manifest.json'), 'wb') as f:
+        with open(os.path.join(self.output_folder, 'manifest.json'), 'w') as f:
             f.write(json.dumps(manifest, indent=4))
 
     def _extract_colors(self):
@@ -112,7 +112,7 @@ module color_extractor(c) {
 
         # Parse the color values from the output
         color_values = set()
-        with open(echo_file, 'rb') as f:
+        with open(echo_file, 'r') as f:
             for line in f:
                 match = EXTRACTED_COLOR_REGEX.search(line)
                 if match:
@@ -133,7 +133,7 @@ module color_extractor(c) {
         }}
                     '''.format(color)
 
-        color_hash = hashlib.sha256(color).hexdigest()
+        color_hash = hashlib.sha256(color.encode('utf-8')).hexdigest()
 
         intermediate_subfolder = os.path.join(self.intermediate_folder, 'color_' + color_hash)
         self.walk_and_mutate_scad_files(replace_with_color_selector, intermediate_subfolder)
@@ -165,6 +165,7 @@ module color_extractor(c) {
 
             # Only process .scad files; copy any other file types (e.g. fonts) over as-is
             if current_file.lower().endswith('.scad'):
+                contents = contents.decode('utf-8')
                 current_folder = os.path.dirname(current_file)
                 for include in USE_INCLUDE_REGEX.finditer(contents):
                     next_filename = os.path.realpath(
@@ -178,7 +179,7 @@ module color_extractor(c) {
                                              ColoredStlExporter.get_transformed_file_path(
                                                  os.path.join(current_folder, match.group('filename'))))
 
-                contents = mutate_function(USE_INCLUDE_REGEX.sub(replace, contents))
+                contents = mutate_function(USE_INCLUDE_REGEX.sub(replace, contents)).encode('utf-8')
 
             with open(os.path.join(intermediate_subfolder,
                                    ColoredStlExporter.get_transformed_file_path(current_file)), 'wb') as out_file:
@@ -187,7 +188,7 @@ module color_extractor(c) {
     @staticmethod
     def get_transformed_file_path(original_path):
         extension = os.path.splitext(original_path)[1]
-        return hashlib.sha256(os.path.realpath(original_path)).hexdigest() + extension
+        return hashlib.sha256(os.path.realpath(original_path).encode('utf-8')).hexdigest() + extension
 
     @staticmethod
     def parse_openscad_color(color):
@@ -218,5 +219,12 @@ def mkdir_p(path):
             raise
 
 if __name__ == '__main__':
-    import sys
-    ColoredStlExporter(sys.argv[1], sys.argv[2]).run()
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('input_file', type=str, help='OpenSCAD file to parse into STLs')
+    parser.add_argument('output_folder', type=str, help='directory to place the colored STL files')
+
+    args = parser.parse_args()
+
+    ColoredStlExporter(args.input_file, args.output_folder).run()
