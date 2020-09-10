@@ -441,16 +441,17 @@ module motor_mount() {
     translate([28byj48_mount_center_offset, -8]) {
         circle(r=motor_mount_hole_radius, $fn=30);
     }
-	
-	hull() {
-		x = -28byj48_chassis_radius - motor_hole_slop/2 + motor_window_radius;
-		y = [-28byj48_shaft_offset - motor_backpack_extent - motor_hole_slop/2 + motor_window_radius,
-			-28byj48_shaft_offset + 28byj48_chassis_radius + motor_hole_slop/2 - motor_window_radius];
-		
-		for (i = [0 : 3]) {
-			translate([x * (i%3 ? -1 : 1), y[i%2], 0]) circle(r=motor_window_radius, $fn=40);
-		}
-	}
+
+    hull() {
+        x = -28byj48_chassis_radius - motor_hole_slop/2 + motor_window_radius;
+        y = [-28byj48_shaft_offset - motor_backpack_extent - motor_hole_slop/2 + motor_window_radius,
+            -28byj48_shaft_offset + 28byj48_chassis_radius + motor_hole_slop/2 - motor_window_radius];
+
+        translate([ x, y[0], 0]) circle(r=motor_window_radius, $fn=40);
+        translate([-x, y[1], 0]) circle(r=motor_window_radius, $fn=40);
+        translate([-x, y[0], 0]) circle(r=motor_window_radius, $fn=40);
+        translate([ x, y[1], 0]) circle(r=motor_window_radius, $fn=40);
+    }
 }
 
 module side_tabs_negative(hole_sizes=[], extend_last_tab=false) {
