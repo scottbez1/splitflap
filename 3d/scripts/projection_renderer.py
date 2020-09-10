@@ -81,7 +81,6 @@ class Renderer(object):
                     raise
 
             processor = SvgProcessor(output_file)
-            processor.fix_dimens()
             if style == 'cut':
                 processor.apply_laser_cut_style()
             elif style == 'etch':

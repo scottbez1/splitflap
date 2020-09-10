@@ -56,11 +56,6 @@ class SvgProcessor(object):
         self.dom = minidom.parse(input_file)
         self.svg_node = self.dom.documentElement
 
-    def fix_dimens(self):
-        # Add mm units to the document dimensions
-        self.svg_node.attributes['width'].value += 'mm'
-        self.svg_node.attributes['height'].value += 'mm'
-
     def apply_laser_cut_style(self):
         # Set fill and stroke for laser cutting
         for path in self.svg_node.getElementsByTagName('path'):
