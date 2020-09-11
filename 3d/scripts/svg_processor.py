@@ -61,7 +61,7 @@ class SvgProcessor(object):
         self.svg_node.attributes['height'].value = height
 
     def set_viewbox(self, min_x, min_y, width, height):
-        view_str = "{:.0f}, {:.0f}, {:.0f}, {:.0f}".format(min_x, min_y, width, height)
+        view_str = "{:.0f} {:.0f} {:.0f} {:.0f}".format(min_x, min_y, width, height)
         self.svg_node.attributes['viewBox'].value = view_str
 
     def get_viewbox(self):
