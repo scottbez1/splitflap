@@ -14,7 +14,6 @@
 
 from __future__ import print_function
 from collections import defaultdict
-from math import ceil
 
 from svg.path import (
     Path,
