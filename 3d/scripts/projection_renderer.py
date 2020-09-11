@@ -106,7 +106,6 @@ class Renderer(object):
                         svg_output = svg_processor
                     else:
                         svg_output.import_paths(svg_processor)
-        svg_output.fix_dimensions()
         output_file_path = os.path.join(self.output_folder, 'combined.svg')
         svg_output.write(output_file_path)
         return output_file_path

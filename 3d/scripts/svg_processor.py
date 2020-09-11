@@ -65,12 +65,10 @@ class SvgProcessor(object):
         view_str = "{:.1f}, {:.1f}, {:.1f}, {:.1f}".format(min_x, min_y, width, height)
         self.svg_node.attributes['viewBox'].value = view_str
 
-    def fix_dimensions(self):
-        # Recalculate document dimensions/viewbox, and add units (mm)
-        vb = self.calculate_viewbox()  # tuple: [0]min-x, [1]min-y, [2]width, [3]height
-        self.set_viewbox(*vb)
-        dimm = "{:.1f}mm"
-        self.set_dimensions(dimm.format(vb[2]), dimm.format(vb[3]))
+    def get_viewbox(self):
+        vb = self.svg_node.attributes['viewBox'].value.replace(',', '').split(' ')
+        vb = [float(x) for x in vb]
+        return tuple(vb)
 
     def apply_laser_cut_style(self):
         # Set fill and stroke for laser cutting
@@ -103,42 +101,33 @@ class SvgProcessor(object):
             output_node = self.dom.importNode(path, True)
             self.svg_node.appendChild(output_node)
 
-    def calculate_viewbox(self):
+        vb = self.merge_viewbox(from_svg_processor.get_viewbox())
+        self.set_viewbox(*vb)
+        dimm = "{:.1f}mm"
+        self.set_dimensions(dimm.format(vb[2]), dimm.format(vb[3]))
+
+
+    def merge_viewbox(self, vb1):
         """
-        Iterates through all of the available paths to calculate the total
-        bounding box / viewbox for the SVG. Naive implementation, only
-        accounts for straight 'line' elements.
+        Takes a new SVG viewbox and combines it with the existing viewbox
+        to create a new viewbox enclosing both of them.
 
         Returns a tuple with the min-x, min-y, width, and height
         """
-        limits = None
+
+        def get_max(vb, ax):
+            return vb[ax] + vb[ax+2]  # min + size
+
+        vb2 = self.get_viewbox()
+
+        mins, maxes = [], []
+        for xy in range(2):
+            ax_max = [get_max(vb1, xy), get_max(vb2, xy)]
+            mins.append(vb1[xy] if vb1[xy] < vb2[xy] else vb2[xy])
+            maxes.append(ax_max[0] if ax_max[0] > ax_max[1] else ax_max[1])
+
         X, Y = 0, 1
-        MIN, MAX = 0, 1
-
-        for path in self.svg_node.getElementsByTagName('path'):
-            path_text = path.attributes['d'].value
-            path_obj = parse_path(path_text)
-
-            for line in path_obj:
-                # Where 'real' = x and 'imag' = y, in the form [[x1, x2] [y1, y2]]
-                coordinates = [[line.start.real, line.end.real], \
-                               [line.start.imag, line.end.imag]]
-                if limits is None:
-                    limits = coordinates
-
-                for a, axis in enumerate(coordinates):
-                    for pos in axis:
-                        if pos < limits[a][MIN]:
-                            limits[a][MIN] = pos
-                        if pos > limits[a][MAX]:
-                            limits[a][MAX] = pos
-
-        x_min = round(limits[X][MIN], 1)
-        y_min = round(limits[Y][MIN], 1)
-        width  = ceil(abs(limits[X][MAX]) - x_min)
-        height = ceil(abs(limits[Y][MAX]) - y_min)
-
-        return ( x_min, y_min, width, height )
+        return (mins[X], mins[Y], maxes[X] - mins[X], maxes[Y] - mins[Y])
 
     def remove_redundant_lines(self):
         lines_bucketed_by_slope_intersect = defaultdict(list)
