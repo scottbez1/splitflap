@@ -62,7 +62,7 @@ class SvgProcessor(object):
         self.svg_node.attributes['height'].value = height
 
     def set_viewbox(self, min_x, min_y, width, height):
-        view_str = "{:.1f}, {:.1f}, {:.1f}, {:.1f}".format(min_x, min_y, width, height)
+        view_str = "{:.0f}, {:.0f}, {:.0f}, {:.0f}".format(min_x, min_y, width, height)
         self.svg_node.attributes['viewBox'].value = view_str
 
     def get_viewbox(self):
@@ -103,7 +103,7 @@ class SvgProcessor(object):
 
         vb = self.merge_viewbox(from_svg_processor.get_viewbox())
         self.set_viewbox(*vb)
-        dimm = "{:.1f}mm"
+        dimm = "{:.0f}mm"
         self.set_dimensions(dimm.format(vb[2]), dimm.format(vb[3]))
 
 
