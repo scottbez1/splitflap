@@ -37,6 +37,7 @@ render_flap_area = 0; // 0=invisible; 1=collapsed flap exclusion; 2=collapsed+ex
 render_letters = "44";
 render_units = len(render_letters);
 render_unit_separation = 0;
+render_spool = true;
 render_pcb = true;
 render_bolts = true;
 render_motor = true;
@@ -953,33 +954,35 @@ module split_flap_3d(letter, include_connector) {
             }
         }
 
-        spool_struts();
+        if(render_spool) {
+            spool_struts();
 
-        // motor spool
-        color(assembly_color) {
-            translate([spool_width - thickness + 5*spool_horizontal_explosion, 0, 0]) {
-                rotate([0, 90, 0]) {
-                    flap_spool_complete(motor_shaft=true, magnet_hole=true);
+            // motor spool
+            color(assembly_color) {
+                translate([spool_width - thickness + 5*spool_horizontal_explosion, 0, 0]) {
+                    rotate([0, 90, 0]) {
+                        flap_spool_complete(motor_shaft=true, magnet_hole=true);
+                    }
                 }
             }
-        }
-        color(assembly_color1) {
-            translate([thickness - 3*spool_horizontal_explosion, 0, 0]) {
-                rotate([0, 90, 0]) {
-                    spool_retaining_wall(m4_bolt_hole=true);
+            color(assembly_color1) {
+                translate([thickness - 3*spool_horizontal_explosion, 0, 0]) {
+                    rotate([0, 90, 0]) {
+                        spool_retaining_wall(m4_bolt_hole=true);
+                    }
                 }
             }
-        }
-        color(assembly_color) {
-            translate([-5*spool_horizontal_explosion, 0, 0]) {
-                rotate([0, 90, 0]) {
-                    flap_spool_complete(captive_nut=true);
+            color(assembly_color) {
+                translate([-5*spool_horizontal_explosion, 0, 0]) {
+                    rotate([0, 90, 0]) {
+                        flap_spool_complete(captive_nut=true);
+                    }
                 }
             }
-        }
-        translate([thickness * 2, 0, 0]) {
-            rotate([0, -90, 0]) {
-                standard_m4_bolt(nut_distance=thickness + 7*spool_horizontal_explosion);
+            translate([thickness * 2, 0, 0]) {
+                rotate([0, -90, 0]) {
+                    standard_m4_bolt(nut_distance=thickness + 7*spool_horizontal_explosion);
+                }
             }
         }
     }
