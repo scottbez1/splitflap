@@ -46,7 +46,7 @@ This is an incomplete list of supplies needed to build a split-flap display modu
 
 #### Housing ####
 
-* $2.00		/unit -- MDF 3.2mm P1 [on Ponoko](http://www.ponoko.com/make-and-sell/show-material/64-mdf-natural)
+* $2.00		/unit -- MDF 3.2mm P1 [on Ponoko](https://www.ponoko.com/materials/mdf-fiberboard)
 * $8.67		/unit -- laser cutting on Ponoko (can save ~$0.70 by skipping engraved label)
 * ~$9		/unit -- shipping
 
@@ -174,14 +174,14 @@ Latest (experimental!) rough bill of materials: [csv](https://s3.amazonaws.com/s
 
 #### Rendering ####
 The PCB layout can be rendered to an svg or png (seen above) by running [`electronics/scripts/generate_svg.py file.kicad_pcb`](electronics/scripts/generate_svg.py).
-This uses KiCad's [python scripting API](https://github.com/blairbonnett-mirrors/kicad/blob/master/demos/python_scripts_examples/plot_board.py)
+This uses KiCad's [Python scripting API](https://docs.kicad-pcb.org/doxygen/md_Documentation_development_pcbnew-plugins.html)
 to render several layers to individual svg files, manipulates them to apply color and opacity settings, and then merges them to a single svg.
 For additional details, see this blog post: [Scripting KiCad Pcbnew exports](http://scottbezek.blogspot.com/2016/04/scripting-kicad-pcbnew-exports.html).
 
 For reviewing the design, a pdf packet with copper, silkscreen, and drill info can be produced by running [`electronics/scripts/generate_pdf.py file.kicad_pcb`](electronics/scripts/generate_pdf.py).
 
 Gerber files for fabrication can be exported by running [`electronics/scripts/generate_gerber.py file.kicad_pcb`](electronics/scripts/generate_gerber.py).
-This generates gerber files and an Excellon drill file with Seeed Studio's [naming conventions](http://support.seeedstudio.com/knowledgebase/articles/422482-fusion-pcb-order-submission-guidelines) and produces a `.zip` which can be sent for fabrication.
+This generates gerber files and an Excellon drill file with Seeed Studio's [naming conventions](http://support.seeedstudio.com/knowledgebase/articles/1176532-how-to-generate-the-gerber-manufacturing-files) and produces a `.zip` which can be sent for fabrication.
 
 EESchema isn't easily scriptable, so to export the schematic and bill of materials [`electronics/scripts/export_schematic.py`](electronics/scripts/export_schematic.py) and [`export_bom.py`](electronics/scripts/export_bom.py) start an X Virtual Frame Buffer (Xvfb) and open the `eeschema` GUI within that virtual display, and then send a series of hardcoded key presses via `xdotool` to interact with the GUI and click through the dialogs. This is very fragile but seems to work ok for now. For additional details, see this blog post: [Using UI automation to export KiCad schematics](http://scottbezek.blogspot.com/2016/04/automated-kicad-schematic-export.html).
 
