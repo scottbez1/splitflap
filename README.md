@@ -156,19 +156,12 @@ and is optimized for production at SeeedStudio.
 These are automatically updated on every commit with the latest rendering from the `master` branch.
 See this blog post for more details on how that works: [Automated KiCad, OpenSCAD rendering using Travis CI](http://scottbezek.blogspot.com/2016/04/automated-kicad-openscad-rendering.html).
 
-For Stable PCB designs, make sure to check out the [Releases](https://github.com/scottbez1/splitflap/releases) instead of using these experimental files.
+These are *experimental* files based off of the latest commmit. For Stable PCB designs, make sure to check out the [Releases](https://github.com/scottbez1/splitflap/releases) instead.
 
-Latest (experimental!) Controller PCB Gerbers: [zip](https://s3.amazonaws.com/splitflap-travis/branches/master/pcb_gerber.zip)
-
-Latest (experimental!) Controller PCB Packet: [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/pcb_packet.pdf)
-
-Latest (experimental!) Controller PCB (Panelized) Gerbers: [zip](https://s3.amazonaws.com/splitflap-travis/branches/master/panelized_pcb_gerber.zip)
-
-Latest (experimental!) Controller PCB (Panelized) Packet: [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/panelized_pcb_packet.pdf)
-
-Latest (experimental!) Sensor PCB (Panelized) Gerbers: [zip](https://s3.amazonaws.com/splitflap-travis/branches/master/sensor_pcb_gerber.zip)
-
-Latest (experimental!) Sensor PCB (Panelized) Packet: [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/sensor_pcb_packet.pdf)
+| **EXPERIMENTAL!** | Gerbers                                                                         | Packet                                                                          | Gerbers (Panelized)                                                                       | Packet (Panelized)                                                                        |
+|-------------------|---------------------------------------------------------------------------------|---------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|
+| Controller PCB    | [zip](https://s3.amazonaws.com/splitflap-travis/branches/master/pcb_gerber.zip) | [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/pcb_packet.pdf) | [zip](https://s3.amazonaws.com/splitflap-travis/branches/master/panelized_pcb_gerber.zip) | [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/panelized_pcb_packet.pdf) |
+| Sensor PCB        |                                                                                 |                                                                                 | [zip](https://s3.amazonaws.com/splitflap-travis/branches/master/sensor_pcb_gerber.zip)    | [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/sensor_pcb_packet.pdf)    |
 
 Latest (experimental!) rough bill of materials: [csv](https://s3.amazonaws.com/splitflap-travis/branches/master/bom.csv)
 
