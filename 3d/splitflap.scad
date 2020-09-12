@@ -363,24 +363,25 @@ module flap() {
 }
 
 module draw_letter(letter, half = 0) {
-    translate([flap_width/2, -flap_pin_width/2, flap_thickness/2]) {
-        rotation = (half == 2) ? -180 : 0;  // flip upside-down for bottom
-        color([0,0,0])
-        rotate([0,0,rotation])
-        linear_extrude(height=0.1, center=true) {
-            difference() {
-                text(text=letter, size=letter_height, font="RobotoCondensed", halign="center", valign="center");
-
-                // 0 = render both (no clearing), 1 = render top, 2 = render bottom
-                if(half == 1) {
-                    translate([-flap_width/2, -flap_height + eps])
-                        square([flap_width, flap_height]);
-                }
-                else if(half == 2) {
-                    translate([-flap_width/2, eps])
-                        square([flap_width, flap_height]);
+    translate([0, 0, flap_thickness/2 + eps]) {
+        if(half != 0) {  // trimming to top (1) or bottom (2)
+            intersection() {
+                flap();  // limit to bounds of flap
+                translate([flap_width/2, -flap_pin_width/2, 0]) {
+                    rotation = (half == 2) ? -180 : 0;  // flip upside-down for bottom
+                    rotate([0,0,rotation]) {
+                        color([0,0,0])
+                        linear_extrude(height=0.1, center=true)
+                            text(text=letter, size=letter_height, font="RobotoCondensed", halign="center", valign="center");
+                    }
                 }
             }
+        }
+        else {
+            translate([flap_width/2, -flap_pin_width/2, 0])
+                color([0,0,0])
+                linear_extrude(height=0.1, center=true)
+                    text(text=letter, size=letter_height, font="RobotoCondensed", halign="center", valign="center");
         }
     }
 }
