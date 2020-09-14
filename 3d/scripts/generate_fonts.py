@@ -37,9 +37,22 @@ from util import rev_info
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
 
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(add_help=False)  # avoid conflict with '-h' for height
+    parser.add_argument('-f', '--font', type=str, help='Name of font to use (no spaces)')
+    parser.add_argument('-t', '--text', type=str, help='String of text to generate')
+
+    parser.add_argument('-h', '--height', type=float, help='Font height, as scalar of total flap height')
+    parser.add_argument('-w', '--width', type=float, help='Font width, as scalar of total flap width')
+    parser.add_argument('-x', '--offset-x', type=float, help='Character offset from center, X-axis')
+    parser.add_argument('-y', '--offset-y', type=float, help='Character offset from center, Y-axis')
+
+    parser.add_argument('-nc', '--num-columns', type=int, help='Number of characters per row')
+    parser.add_argument('-gc', '--gap-comp', action='store_true', help='Compensate for the gap between top and bottom flaps')
+
     parser.add_argument('--kerf', type=float, help='Override kerf_width value')
     parser.add_argument('--skip-optimize', action='store_true', help='Don\'t remove redundant/overlapping cut lines')
+
+    parser.add_argument("--help", action="help", help="show this help message and exit")
 
     args = parser.parse_args()
 
@@ -49,6 +62,25 @@ if __name__ == '__main__':
         'render_revision': rev_info.git_short_rev(),
         'render_date': rev_info.current_date(),
     }
+    if args.font is not None:
+        extra_variables['letter_font'] = args.font
+    if args.text is not None:
+        extra_variables['character_list'] = args.text
+
+    if args.height is not None:
+        extra_variables['letter_height'] = args.height
+    if args.width is not None:
+        extra_variables['letter_width'] = args.width
+    if args.offset_x is not None:
+        extra_variables['letter_offset_x'] = args.offset_x
+    if args.offset_y is not None:
+        extra_variables['letter_offset_y'] = args.offset_y
+
+    if args.num_columns is not None:
+        extra_variables['num_columns'] = args.num_columns
+    if args.gap_comp is True:
+        extra_variables['letter_gap_comp'] = args.gap_comp
+
     if args.kerf is not None:
         extra_variables['kerf_width'] = args.kerf
 
