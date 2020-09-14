@@ -378,13 +378,15 @@ module flap_letter(letter, half = 0) {
                 flap();  // limit to bounds of flap
                 translate([flap_width/2, -flap_pin_width/2, 0]) {
                     rotation = (half == 2) ? -180 : 0;  // flip upside-down for bottom
-                    rotate([0,0,rotation])
-                        draw_letter(letter);
+                    gap_comp = (letter_gap_comp == true) ? -flap_gap : 0;
+                    translate([0, gap_comp, 0])
+                        rotate([0,0,rotation])
+                            draw_letter(letter);
                 }
             }
         }
         else {
-            translate([flap_width/2, -flap_pin_width/2, 0])
+            translate([flap_width/2, -flap_pin_width/2 - flap_gap, 0])
                 draw_letter(letter);
         }
     }
