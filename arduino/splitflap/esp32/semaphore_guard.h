@@ -13,30 +13,21 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+#pragma once
 
 #include <Arduino.h>
-#include <TFT_eSPI.h>
-#include <Wire.h>
 
-#include "config.h"
+class SemaphoreGuard {
+    public:
+        SemaphoreGuard(SemaphoreHandle_t handle) : handle_{handle} {
+            xSemaphoreTake(handle_, portMAX_DELAY);
+        }
+        ~SemaphoreGuard() {
+            xSemaphoreGive(handle_);
+        }
+        SemaphoreGuard(SemaphoreGuard const&)=delete;
+        SemaphoreGuard& operator=(SemaphoreGuard const&)=delete;
 
-#include "display_task.h"
-#include "splitflap_task.h"
-
-SplitflapTask splitflapTask(1);
-DisplayTask displayTask(splitflapTask, 0);
-
-void setup() {
-  Serial.begin(MONITOR_SPEED);
-
-  splitflapTask.begin();
-  displayTask.begin();
-
-  // Delete the default Arduino loopTask to free up Core 1
-  vTaskDelete(NULL);
-}
-
-
-void loop() {
-  assert(false);
-}
+    private:
+        SemaphoreHandle_t handle_;
+};

@@ -73,7 +73,7 @@ class Renderer(object):
                         capture_output=True,
                     )
             except openscad.OpenSCADException as e:
-                if 'Current top level object is not a 2D object.' in e.stderr:
+                if b'Current top level object is not a 2D object.' in e.stderr:
                     # This is expected if we try rendering an etch layer as a
                     # cut, since there will be nothing to export
                     continue

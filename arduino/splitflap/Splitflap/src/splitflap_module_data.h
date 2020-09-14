@@ -13,30 +13,25 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+#pragma once
 
-#include <Arduino.h>
-#include <TFT_eSPI.h>
-#include <Wire.h>
+#include "../config.h"
 
-#include "config.h"
+#if HOME_CALIBRATION_ENABLED
+enum HomeState {
+    // Ignore any home blips (e.g. if we've just seen the home position and haven't traveled past it yet)
+    IGNORE,
+    // Home isn't expected; a home blip in this state/region indicates an error that requires recalibration
+    UNEXPECTED,
+    // Home position is expected in this state/region
+    EXPECTED,
+};
+#endif
 
-#include "display_task.h"
-#include "splitflap_task.h"
-
-SplitflapTask splitflapTask(1);
-DisplayTask displayTask(splitflapTask, 0);
-
-void setup() {
-  Serial.begin(MONITOR_SPEED);
-
-  splitflapTask.begin();
-  displayTask.begin();
-
-  // Delete the default Arduino loopTask to free up Core 1
-  vTaskDelete(NULL);
-}
-
-
-void loop() {
-  assert(false);
-}
+enum State {
+  NORMAL,
+  PANIC,
+  STATE_DISABLED,
+  LOOK_FOR_HOME,
+  SENSOR_ERROR,
+};

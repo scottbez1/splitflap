@@ -23,7 +23,10 @@ import sys
 
 from colored_stl_exporter import ColoredStlExporter
 
-repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+script_dir = os.path.dirname(os.path.abspath(__file__))
+source_parts_dir = os.path.dirname(script_dir)
+repo_root = os.path.dirname(source_parts_dir)
+
 sys.path.append(repo_root)
 
 from util import rev_info
@@ -31,7 +34,6 @@ from util import rev_info
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
-    folder = os.path.dirname(__file__)
 
     openscad_variables = {
         'render_3d': True,
@@ -44,7 +46,7 @@ if __name__ == '__main__':
     }
 
     exporter = ColoredStlExporter(
-        os.path.join(folder, 'splitflap.scad'),
-        os.path.join(folder, 'build'),
+        os.path.join(source_parts_dir, 'splitflap.scad'),
+        os.path.join(source_parts_dir, 'build'),
         openscad_variables)
     exporter.run()
