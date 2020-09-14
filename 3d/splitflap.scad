@@ -367,7 +367,7 @@ module draw_letter(letter) {
     linear_extrude(height=0.1, center=true)
         translate([0, -flap_height * letter_height, 0])  // valign compensation
             scale([letter_width, 1, 1])
-                translate(letter_offsets)
+                translate([letter_offset_x, letter_offset_y])
                     text(text=letter, size=flap_height * letter_height * 2, font=letter_font, halign="center");
 }
 
