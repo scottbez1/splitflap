@@ -19,3 +19,5 @@ include<flap_dimensions.scad>;
 
 letter_font = "RobotoCondensed";
 letter_height = 0.75;  // aspect, 0-1
+
+letter_offsets = [-0.78, 0.5];  // X-Y offsets from center (mm)
