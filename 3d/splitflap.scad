@@ -371,6 +371,7 @@ module draw_letter(letter, half = 0) {
                     rotate([0,0,rotation]) {
                         color([0,0,0])
                         linear_extrude(height=0.1, center=true)
+                            scale([letter_width, 1, 1])
                             translate(letter_offsets)
                                 text(text=letter, size=flap_height * letter_height * 2, font=letter_font, halign="center", valign="center");
                     }
@@ -381,6 +382,7 @@ module draw_letter(letter, half = 0) {
             translate([flap_width/2, -flap_pin_width/2, 0])
                 color([0,0,0])
                 linear_extrude(height=0.1, center=true)
+                    scale([letter_width, 1, 1])
                     translate(letter_offsets)
                         text(text=letter, size=flap_height * letter_height * 2, font=letter_font, halign="center", valign="center");
         }
