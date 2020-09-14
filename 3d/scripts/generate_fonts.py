@@ -52,7 +52,7 @@ if __name__ == '__main__':
     if args.kerf is not None:
         extra_variables['kerf_width'] = args.kerf
 
-    renderer = Renderer(os.path.join(source_parts_dir, 'flap_fonts.scad'), output_directory, extra_variables)
+    renderer = Renderer(os.path.join(source_parts_dir, 'font_generator.scad'), output_directory, extra_variables)
     renderer.clean()
     svg_output = renderer.render_svgs(panelize_quantity = 1)
 
