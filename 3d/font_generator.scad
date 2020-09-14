@@ -21,13 +21,13 @@ use<splitflap.scad>;
 character_list = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 '.?";
 num_columns = 10;  // 0 for infinite
 
-flap_gap = 2;
 spacing_x = 10;
 spacing_y = 5;
 
 kerf_width = 0;
 
 num_characters = len(character_list) - 1;
+flap_gap = get_flap_gap();
 
 module flap_pos(i) {
     x_pos = (flap_width + spacing_x) * ((num_columns == 0) ? i : (i % num_columns));
@@ -38,7 +38,7 @@ module flap_pos(i) {
 
 module top_flap(i) {
     flap_pos(i)
-    translate([0, flap_pin_width/2, 0])
+    translate([0, flap_pin_width/2 + flap_gap, 0])
         children();
 }
 

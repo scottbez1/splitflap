@@ -100,6 +100,7 @@ num_flaps = 40;
 
 flap_hole_radius = (flap_pin_width + 1) / 2;
 flap_gap = 1;
+function get_flap_gap() = flap_gap;
 
 flap_spool_outset = flap_hole_radius;
 flap_pitch_radius = flap_spool_pitch_radius(num_flaps, flap_hole_radius, flap_gap); //num_flaps * (flap_hole_radius*2 + flap_gap) / (2*PI);
