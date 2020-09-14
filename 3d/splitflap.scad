@@ -364,9 +364,10 @@ module flap() {
 module draw_letter(letter) {
     color([0,0,0])
     linear_extrude(height=0.1, center=true)
-        scale([letter_width, 1, 1])
-            translate(letter_offsets)
-                text(text=letter, size=flap_height * letter_height * 2, font=letter_font, halign="center", valign="center");
+        translate([0, -flap_height * letter_height, 0])  // valign compensation
+            scale([letter_width, 1, 1])
+                translate(letter_offsets)
+                    text(text=letter, size=flap_height * letter_height * 2, font=letter_font, halign="center");
 }
 
 module flap_letter(letter, half = 0) {
