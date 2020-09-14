@@ -15,11 +15,13 @@
 */
 
 include<flap_dimensions.scad>;
-use <splitflap.scad>;
+use<projection_renderer.scad>;
+use<splitflap.scad>;
 
 character_list = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 '.?";
 spacing_x = 10;
 spacing_y = 2;
+kerf_width = 0;
 
 num_characters = len(character_list) - 1;
 
@@ -42,17 +44,22 @@ module bottom_flap(i) {
             children();
 }
 
+render_index = -1;
 
-for(i = [0 : num_characters]) {
-    top_flap(i)
-        flap();
-    bottom_flap(i)
-        flap();
+projection_renderer(render_index = render_index, render_etch=false, kerf_width=kerf_width, panel_height = 0, panel_horizontal = 0, panel_vertical = 0) {
+    for(i = [0 : num_characters]) {
+        top_flap(i)
+            flap();
+        bottom_flap(i)
+            flap();
+    }
+
+    for(i = [0 : num_characters]) {
+        top_flap(i)
+            draw_letter(character_list[i], 1);
+        bottom_flap(i)
+            draw_letter(character_list[i], 2);
+    }
 }
 
-for(i = [0 : num_characters]) {
-    top_flap(i)
-        draw_letter(character_list[i], 1);
-    bottom_flap(i)
-        draw_letter(character_list[i], 2);
-}
+
