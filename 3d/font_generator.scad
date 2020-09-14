@@ -56,9 +56,9 @@ projection_renderer(render_index = render_index, render_etch=false, kerf_width=k
 
     for(i = [0 : num_characters]) {
         top_flap(i)
-            draw_letter(character_list[i], 1);
+            flap_letter(character_list[i], 1);
         bottom_flap(i)
-            draw_letter(character_list[i], 2);
+            flap_letter(character_list[i], 2);
     }
 }
 
