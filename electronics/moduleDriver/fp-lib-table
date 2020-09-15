@@ -1,0 +1,6 @@
+(fp_lib_table
+  (lib (name JST_XH_Connectors)(type KiCad)(uri "$(KIPRJMOD)/../lib/JST_XH_Connectors.pretty")(options "")(descr ""))
+  (lib (name MountingHoles)(type KiCad)(uri "$(KIPRJMOD)/../lib/MountingHoles.pretty")(options "")(descr ""))
+  (lib (name PinHeaders)(type KiCad)(uri "$(KIPRJMOD)/../lib/PinHeaders.pretty")(options "")(descr ""))
+  (lib (name Mega2560Shield)(type KiCad)(uri ${KIPRJMOD}/lib/Mega2560Shield.pretty)(options "")(descr ""))
+)
