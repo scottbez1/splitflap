@@ -46,7 +46,7 @@ if __name__ == '__main__':
     parser.add_argument('-x', '--offset-x', type=float, help='Character offset from center, X-axis')
     parser.add_argument('-y', '--offset-y', type=float, help='Character offset from center, Y-axis')
 
-    parser.add_argument('-nc', '--num-columns', type=int, help='Number of characters per row')
+    parser.add_argument('--ncolumns', type=int, help='Number of columns / characters per row')
     parser.add_argument('--no-comp', action='store_false', default=True, help='Don\'t compensate for the gap between top and bottom flaps')
 
     parser.add_argument('--kerf', type=float, help='Override kerf_width value')
@@ -78,8 +78,8 @@ if __name__ == '__main__':
     if args.offset_y is not None:
         extra_variables['letter_offset_y'] = args.offset_y
 
-    if args.num_columns is not None:
-        extra_variables['num_columns'] = args.num_columns
+    if args.ncolumns is not None:
+        extra_variables['num_columns'] = args.ncolumns
 
     if args.kerf is not None:
         extra_variables['kerf_width'] = args.kerf
