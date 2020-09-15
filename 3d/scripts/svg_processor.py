@@ -56,10 +56,18 @@ class SvgProcessor(object):
         self.dom = minidom.parse(input_file)
         self.svg_node = self.dom.documentElement
 
-    def fix_dimens(self):
-        # Add mm units to the document dimensions
-        self.svg_node.attributes['width'].value += 'mm'
-        self.svg_node.attributes['height'].value += 'mm'
+    def set_dimensions(self, width, height):
+        self.svg_node.attributes['width'].value = width
+        self.svg_node.attributes['height'].value = height
+
+    def set_viewbox(self, min_x, min_y, width, height):
+        view_str = "{:.0f} {:.0f} {:.0f} {:.0f}".format(min_x, min_y, width, height)
+        self.svg_node.attributes['viewBox'].value = view_str
+
+    def get_viewbox(self):
+        vb = self.svg_node.attributes['viewBox'].value.replace(',', '').split(' ')
+        vb = [float(x) for x in vb]
+        return tuple(vb)
 
     def apply_laser_cut_style(self):
         # Set fill and stroke for laser cutting
@@ -91,6 +99,34 @@ class SvgProcessor(object):
         for path in from_svg_processor.svg_node.getElementsByTagName('path'):
             output_node = self.dom.importNode(path, True)
             self.svg_node.appendChild(output_node)
+
+        vb = self.merge_viewbox(from_svg_processor.get_viewbox())
+        self.set_viewbox(*vb)
+        dimm = "{:.0f}mm"
+        self.set_dimensions(dimm.format(vb[2]), dimm.format(vb[3]))
+
+
+    def merge_viewbox(self, vb1):
+        """
+        Takes a new SVG viewbox and combines it with the existing viewbox
+        to create a new viewbox enclosing both of them.
+
+        Returns a tuple with the min-x, min-y, width, and height
+        """
+
+        def get_max(vb, ax):
+            return vb[ax] + vb[ax+2]  # min + size
+
+        vb2 = self.get_viewbox()
+
+        mins, maxes = [], []
+        for xy in range(2):
+            ax_max = [get_max(vb1, xy), get_max(vb2, xy)]
+            mins.append(vb1[xy] if vb1[xy] < vb2[xy] else vb2[xy])
+            maxes.append(ax_max[0] if ax_max[0] > ax_max[1] else ax_max[1])
+
+        X, Y = 0, 1
+        return (mins[X], mins[Y], maxes[X] - mins[X], maxes[Y] - mins[Y])
 
     def remove_redundant_lines(self):
         lines_bucketed_by_slope_intersect = defaultdict(list)
