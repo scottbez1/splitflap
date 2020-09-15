@@ -50,6 +50,7 @@ if __name__ == '__main__':
     parser.add_argument('-gc', '--gap-comp', action='store_true', help='Compensate for the gap between top and bottom flaps')
 
     parser.add_argument('--kerf', type=float, help='Override kerf_width value')
+    parser.add_argument('--fill', action='store_true', help='Fill the text solid (disables optimization)')
     parser.add_argument('--skip-optimize', action='store_true', help='Don\'t remove redundant/overlapping cut lines')
 
     parser.add_argument("--help", action="help", help="show this help message and exit")
@@ -83,6 +84,9 @@ if __name__ == '__main__':
 
     if args.kerf is not None:
         extra_variables['kerf_width'] = args.kerf
+    if args.fill is True:
+        extra_variables['render_fill'] = True
+        args.skip_optimize = True
 
     renderer = Renderer(os.path.join(source_parts_dir, 'font_generator.scad'), output_directory, extra_variables)
     renderer.clean()

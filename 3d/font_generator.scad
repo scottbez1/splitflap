@@ -25,6 +25,7 @@ spacing_x = 10;
 spacing_y = 5;
 
 kerf_width = 0;
+render_fill = false;
 
 num_characters = len(character_list) - 1;
 flap_gap = get_flap_gap();
@@ -49,9 +50,17 @@ module bottom_flap(i) {
             children();
 }
 
-render_index = -1;
+module fill_text() {
+    // If 'render_fill' is 'true', only continue if 'render_etch' is also set by the script
+    if (!render_fill || render_fill && render_etch) {
+        children();
+    }
+}
 
-projection_renderer(render_index = render_index, render_etch=false, kerf_width=kerf_width, panel_height = 0, panel_horizontal = 0, panel_vertical = 0) {
+render_index = -1;
+render_etch = false;
+
+projection_renderer(render_index = render_index, render_etch = render_etch, kerf_width = kerf_width, panel_height = 0, panel_horizontal = 0, panel_vertical = 0) {
     for(i = [0 : num_characters]) {
         top_flap(i)
             flap();
@@ -59,6 +68,7 @@ projection_renderer(render_index = render_index, render_etch=false, kerf_width=k
             flap();
     }
 
+    fill_text()
     for(i = [0 : num_characters]) {
         top_flap(i)
             flap_letter(character_list[i], 1);
@@ -66,5 +76,3 @@ projection_renderer(render_index = render_index, render_etch=false, kerf_width=k
             flap_letter(character_list[i], 2);
     }
 }
-
-
