@@ -47,7 +47,7 @@ if __name__ == '__main__':
     parser.add_argument('-y', '--offset-y', type=float, help='Character offset from center, Y-axis')
 
     parser.add_argument('-nc', '--num-columns', type=int, help='Number of characters per row')
-    parser.add_argument('-gc', '--gap-comp', action='store_true', help='Compensate for the gap between top and bottom flaps')
+    parser.add_argument('--no-comp', action='store_false', default=True, help='Don\'t compensate for the gap between top and bottom flaps')
 
     parser.add_argument('--kerf', type=float, help='Override kerf_width value')
     parser.add_argument('--fill', action='store_true', help='Fill the text solid (disables optimization)')
@@ -62,6 +62,7 @@ if __name__ == '__main__':
     extra_variables = {
         'render_revision': rev_info.git_short_rev(),
         'render_date': rev_info.current_date(),
+        'letter_gap_comp' : args.no_comp,
     }
     if args.font is not None:
         extra_variables['letter_font'] = args.font
@@ -79,8 +80,6 @@ if __name__ == '__main__':
 
     if args.num_columns is not None:
         extra_variables['num_columns'] = args.num_columns
-    if args.gap_comp is True:
-        extra_variables['letter_gap_comp'] = args.gap_comp
 
     if args.kerf is not None:
         extra_variables['kerf_width'] = args.kerf
