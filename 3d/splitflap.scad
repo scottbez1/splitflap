@@ -114,8 +114,10 @@ front_forward_offset = flap_pitch_radius + flap_thickness/2;
 
 flap_notch_height = (flap_notch_height_auto == true) ? sqrt(spool_outer_radius*spool_outer_radius - flap_pitch_radius*flap_pitch_radius) : flap_notch_height_default;
 
-spool_width = flap_width - flap_notch_depth*2 + flap_width_slop + thickness*2;
-legacyAssert(spool_width >= flap_width, "Flap is wider than spool!");
+spool_width = flap_width - flap_notch_depth*2 + flap_width_slop + thickness*2;  // spool width, outside face (spool to spool)
+spool_width_clearance = max(spool_width, flap_width + flap_width_slop);  // width clearance for the spool, either for the spool itself or the flaps
+
+//legacyAssert(spool_width >= flap_width, "Flap is wider than spool!");
 spool_strut_tabs = 3;
 spool_strut_tab_width=8;
 spool_strut_tab_width_narrow=6;
@@ -137,7 +139,7 @@ motor_slop_radius = 3;
 
 
 // Width measured from the outside of the walls
-enclosure_wall_to_wall_width = thickness + spool_width_slop/2 + spool_width + spool_width_slop/2 + max(28byj48_mount_bracket_height + m4_button_head_length, 4 + 28byj48_mount_bracket_height - spool_width_slop/2) + thickness;
+enclosure_wall_to_wall_width = thickness + spool_width_slop/2 + spool_width_clearance + spool_width_slop/2 + max(28byj48_mount_bracket_height + m4_button_head_length, 4 + 28byj48_mount_bracket_height - spool_width_slop/2) + thickness;
 
 // Width of the front panel
 enclosure_width = enclosure_wall_to_wall_width + 28byj48_chassis_height + 28byj48_chassis_height_slop - thickness - 28byj48_mount_bracket_height;
@@ -147,7 +149,7 @@ front_window_overhang = 3;
 front_window_upper = front_window_upper_base - front_window_overhang;
 front_window_lower = sqrt(outer_exclusion_radius*outer_exclusion_radius - front_forward_offset*front_forward_offset);
 front_window_slop = 0;
-front_window_width = spool_width_slop + spool_width + front_window_slop;
+front_window_width = spool_width_slop + spool_width_clearance + front_window_slop;
 front_window_right_inset = thickness - front_window_slop/2;
 enclosure_vertical_margin = 10; // gap between top/bottom of flaps and top/bottom of enclosure
 enclosure_vertical_inset = max(thickness*1.5, m4_nut_width_corners_padded/2); // distance from top of sides to top of the top piece
@@ -916,7 +918,8 @@ module split_flap_3d(letter, include_connector) {
                 }
             }
 
-            translate([-flap_notch_depth + thickness + flap_width_slop/2, 0, 0]) {
+            flap_offset = thickness > flap_notch_depth ? -flap_notch_depth + thickness + flap_width_slop/2 : flap_width_slop/2;
+            translate([flap_offset, 0, 0]) {
                 // Collapsed flaps on the top
                 for (i=[0:num_flaps/2 - 1]) {
                     if (i == 0 || render_flaps == 2) {
@@ -950,7 +953,9 @@ module split_flap_3d(letter, include_connector) {
                 }
             }
         }
+    }
 
+    translate([(spool_width_clearance - spool_width + spool_width_slop) / 2 + thickness, 0, 0]) {
         spool_struts();
 
         // motor spool
