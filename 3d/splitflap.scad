@@ -763,14 +763,14 @@ module split_flap_3d(letter, include_connector) {
 
     module positioned_left_bolts() {
         // Top
-        translate([enclosure_wall_to_wall_width, front_forward_offset - side_tab_width * 2, enclosure_height_upper - enclosure_vertical_inset - thickness/2]) {
+        translate([enclosure_wall_to_wall_width, front_forward_offset - (thickness + 1.5 * side_tab_width), enclosure_height_upper - enclosure_vertical_inset - thickness/2]) {
             rotate([0, -90, 0]) {
                 standard_m4_bolt(nut_distance=captive_nut_inset);
             }
         }
 
         // Bottom
-        translate([enclosure_wall_to_wall_width, front_forward_offset - side_tab_width * 2, -enclosure_height_lower + enclosure_vertical_inset + thickness/2]) {
+        translate([enclosure_wall_to_wall_width, front_forward_offset - (thickness + 1.5 * side_tab_width), -enclosure_height_lower + enclosure_vertical_inset + thickness/2]) {
             rotate([0, -90, 0]) {
                 standard_m4_bolt(nut_distance=captive_nut_inset);
             }
@@ -779,14 +779,14 @@ module split_flap_3d(letter, include_connector) {
 
     module positioned_right_bolts() {
         // Top
-        translate([0, front_forward_offset - side_tab_width * 2, enclosure_height_upper - enclosure_vertical_inset - thickness/2]) {
+        translate([0, front_forward_offset - (thickness + 1.5 * side_tab_width), enclosure_height_upper - enclosure_vertical_inset - thickness/2]) {
             rotate([0, 90, 0]) {
                 standard_m4_bolt(nut_distance=captive_nut_inset);
             }
         }
 
         // Bottom
-        translate([0, front_forward_offset - side_tab_width * 2, -enclosure_height_lower + enclosure_vertical_inset + thickness/2]) {
+        translate([0, front_forward_offset - (thickness + 1.5 * side_tab_width), -enclosure_height_lower + enclosure_vertical_inset + thickness/2]) {
             rotate([0, 90, 0]) {
                 standard_m4_bolt(nut_distance=captive_nut_inset);
             }
