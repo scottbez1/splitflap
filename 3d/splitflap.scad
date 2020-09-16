@@ -112,9 +112,7 @@ outer_exclusion_radius = flap_pitch_radius + flap_height + 2;
 
 front_forward_offset = flap_pitch_radius + flap_thickness/2;
 
-flap_notch = sqrt(spool_outer_radius*spool_outer_radius - flap_pitch_radius*flap_pitch_radius);
-flap_notch_depth = 3;
-
+flap_notch_height = (flap_notch_height_auto == true) ? sqrt(spool_outer_radius*spool_outer_radius - flap_pitch_radius*flap_pitch_radius) : flap_notch_height_default;
 
 spool_width = flap_width - flap_notch_depth*2 + flap_width_slop + thickness*2;
 legacyAssert(spool_width >= flap_width, "Flap is wider than spool!");
@@ -206,7 +204,7 @@ echo(front_window_height=front_window_lower+front_window_upper);
 echo(front_forward_offset=front_forward_offset);
 echo(flap_exclusion_radius=exclusion_radius);
 echo(flap_hole_radius=flap_hole_radius);
-echo(flap_notch=flap_notch);
+echo(flap_notch_height=flap_notch_height);
 
 
 module standard_m4_bolt(nut_distance=-1) {
@@ -354,9 +352,9 @@ module flap() {
                 }
             }
             translate([-eps, flap_pin_width])
-                square([eps + flap_notch_depth, flap_notch]);
+                square([eps + flap_notch_depth, flap_notch_height]);
             translate([flap_width - flap_notch_depth, flap_pin_width])
-                square([eps + flap_notch_depth, flap_notch]);
+                square([eps + flap_notch_depth, flap_notch_height]);
         }
     }
 }
