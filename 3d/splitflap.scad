@@ -69,9 +69,9 @@ spool_horizontal_explosion = lookup(spool_explosion, [
 // It's better to underestimate (looser fit) than overestimate (no fit)
 kerf_width = 0.19 - 0.02;
 
-// MDF, .125in nominal
-// http://www.ponoko.com/make-and-sell/show-material/64-mdf-natural
-thickness = 3.2;
+// MDF, .120in nominal
+// https://www.ponoko.com/materials/mdf-fiberboard
+thickness = 3.0;
 
 eps=.01;
 
