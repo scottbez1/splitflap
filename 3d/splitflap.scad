@@ -494,7 +494,7 @@ module enclosure_left() {
                 circle(r=m4_hole_diameter/2, $fn=30);
 
             translate([enclosure_height_lower, enclosure_length - front_forward_offset]) {
-                rotate([0, 0, 90]) {
+                rotate([0, 0, -90]) {
                     motor_mount();
                 }
             }
@@ -987,7 +987,7 @@ module split_flap_3d(letter, include_connector) {
     if (render_motor) {
         translate([enclosure_wall_to_wall_width - thickness - 28byj48_mount_bracket_height, 0, 0]) {
 
-            rotate([-90, 0, 0]) {
+            rotate([90, 0, 0]) {
 
                 rotate([0, -90, 0]) {
                     Stepper28BYJ48();
