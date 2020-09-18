@@ -90,7 +90,7 @@ flap_rendered_angle = 90;
 letter_height = flap_height * 0.75 * 2;
 
 // Amount of slop of the flap side to side between the 2 spools
-flap_width_slop = 0.1;
+flap_width_slop = 0.5;
 
 // Amount of slop for the spool assembly side-to-side inside the enclosure
 spool_width_slop = 1;
