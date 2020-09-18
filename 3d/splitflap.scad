@@ -316,7 +316,7 @@ module flap_spool_complete(captive_nut=false, motor_shaft=false, magnet_hole=fal
             }
             if (magnet_hole) {
                 // Hole for press fit magnet
-                translate([magnet_hole_offset, 0]) {
+                translate([-magnet_hole_offset, 0]) {
                     circle(r=magnet_hole_radius, $fn=15);
                 }
             }
@@ -521,9 +521,9 @@ module enclosure_left() {
 
 
             // PCB mounting holes
-            translate([enclosure_height_lower - magnet_hole_offset - pcb_hole_to_sensor_y, enclosure_length - front_forward_offset - pcb_hole_to_sensor_x]) {
+            translate([enclosure_height_lower + magnet_hole_offset + pcb_hole_to_sensor_y, enclosure_length - front_forward_offset + pcb_hole_to_sensor_x]) {
                 rotate([180, 0, 0]) {
-                    rotate([0, 0, -90]) {
+                    rotate([0, 0, 90]) {
                         pcb_cutouts();
                     }
                 }
@@ -856,9 +856,9 @@ module split_flap_3d(letter, include_connector) {
 
     positioned_enclosure();
     if (render_pcb) {
-        translate([enclosure_wall_to_wall_width + eps, -pcb_hole_to_sensor_x, -magnet_hole_offset - pcb_hole_to_sensor_y]) {
+        translate([enclosure_wall_to_wall_width + eps, pcb_hole_to_sensor_x, magnet_hole_offset + pcb_hole_to_sensor_y]) {
             rotate([0, 90, 0]) {
-                rotate([0, 0, 90]) {
+                rotate([0, 0, -90]) {
                     pcb();
                     translate([0, 0, -thickness - 2 * eps]) {
                         standard_m4_bolt(nut_distance=thickness + pcb_thickness + 4*eps);
