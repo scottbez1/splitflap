@@ -122,7 +122,7 @@ module pcb_cutouts() {
                 circle(r=m4_hole_diameter/2, $fn=30);
         }
         // Pin header slot
-        translate([pcb_hole_to_connector_pin_1_x - connector_pin_pitch, -pcb_hole_to_connector_pin_1_x]) {
+        translate([pcb_hole_to_connector_pin_1_x - connector_pin_pitch, -pcb_hole_to_connector_pin_1_y]) {
             hull() {
                 pin_slot_height = pcb_connector_pin_width + pcb_connector_pin_slop;
                 pin_slot_width = connector_pin_pitch * 4 - pin_slot_height;
