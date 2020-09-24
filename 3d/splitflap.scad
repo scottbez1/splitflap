@@ -99,12 +99,12 @@ spool_width_slop = 1;
 num_flaps = 40;
 
 flap_hole_radius = (flap_pin_width + 1) / 2;
-flap_gap = 1;
-function get_flap_gap() = flap_gap;  // for exposing this value when this file is 'used' in other modules
+flap_hole_separation = 1;  // additional spacing between hole edges
+function get_flap_gap() = flap_hole_separation;  // for exposing this value when this file is 'used' in other modules
 
 flap_spool_outset = flap_hole_radius;
-flap_pitch_radius = flap_spool_pitch_radius(num_flaps, flap_hole_radius, flap_gap); //num_flaps * (flap_hole_radius*2 + flap_gap) / (2*PI);
-spool_outer_radius = flap_spool_outer_radius(num_flaps, flap_hole_radius, flap_gap, flap_spool_outset); //flap_pitch_radius + 2*flap_hole_radius;
+flap_pitch_radius = flap_spool_pitch_radius(num_flaps, flap_hole_radius, flap_hole_separation); //num_flaps * (flap_hole_radius*2 + flap_hole_separation) / (2*PI);
+spool_outer_radius = flap_spool_outer_radius(num_flaps, flap_hole_radius, flap_hole_separation, flap_spool_outset); //flap_pitch_radius + 2*flap_hole_radius;
 
 // Radius where flaps are expected to flap in their *most collapsed* (90 degree) state
 exclusion_radius = sqrt(flap_height*flap_height + flap_pitch_radius*flap_pitch_radius);
@@ -303,7 +303,7 @@ module spool_struts() {
 module flap_spool_complete(captive_nut=false, motor_shaft=false, magnet_hole=false) {
     linear_extrude(thickness) {
         difference() {
-            flap_spool(num_flaps, flap_hole_radius, flap_gap, flap_spool_outset,
+            flap_spool(num_flaps, flap_hole_radius, flap_hole_separation, flap_spool_outset,
                     height=0);
 
             spool_strut_tab_holes(narrow=captive_nut);
@@ -378,14 +378,14 @@ module flap_letter(letter, half = 0) {
                 flap();  // limit to bounds of flap
                 translate([flap_width/2, -flap_pin_width/2, 0]) {
                     rotation = (half == 2) ? -180 : 0;  // flip upside-down for bottom
-                    gap_comp = (letter_gap_comp == true) ? -flap_gap : 0;
+                    gap_comp = (letter_gap_comp == true) ? -flap_hole_separation : 0;
                     translate([0, gap_comp, 0])
                         rotate([0,0,rotation])
                             draw_letter(letter);
                 }
             }
         } else {
-            translate([flap_width/2, -flap_pin_width/2 - flap_gap, 0])
+            translate([flap_width/2, -flap_pin_width/2 - flap_hole_separation, 0])
                 draw_letter(letter);
         }
     }
