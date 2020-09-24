@@ -373,7 +373,7 @@ module draw_letter(letter) {
 
 module flap_letter(letter, half = 0) {
     translate([0, 0, flap_thickness/2 + eps]) {
-        if(half != 0) {  // trimming to top (1) or bottom (2)
+        if (half != 0) {  // trimming to top (1) or bottom (2)
             intersection() {
                 flap();  // limit to bounds of flap
                 translate([flap_width/2, -flap_pin_width/2, 0]) {
@@ -384,8 +384,7 @@ module flap_letter(letter, half = 0) {
                             draw_letter(letter);
                 }
             }
-        }
-        else {
+        } else {
             translate([flap_width/2, -flap_pin_width/2 - flap_gap, 0])
                 draw_letter(letter);
         }
@@ -915,7 +914,9 @@ module split_flap_3d(letter, include_connector) {
                             translate([flap_width, flap_pitch_radius, 0]) {
                                 rotate([flap_rendered_angle, 0, 180]) {
                                     flap();
-                                    if(i == 0) { flap_letter(letter, 1); }  // 1 = top
+                                    if (i == 0) { 
+                                        flap_letter(letter, 1);  // 1 = top
+                                    }
                                 }
                             }
                         }
@@ -929,7 +930,9 @@ module split_flap_3d(letter, include_connector) {
                         if (i == 1 || render_flaps == 2) {
                             rotate([-90, 0, 0]) {
                                 flap();
-                                if(i == 1) { flap_letter(letter, 2); }  // 2 = bottom
+                                if (i == 1) {
+                                    flap_letter(letter, 2);  // 2 = bottom
+                                }
                             }
                         }
                     }
