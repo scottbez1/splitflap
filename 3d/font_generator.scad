@@ -18,7 +18,7 @@ include<flap_dimensions.scad>;
 use<projection_renderer.scad>;
 use<splitflap.scad>;
 
-character_list = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 '.?";
+character_list = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.? ";
 num_columns = 10;  // 0 for infinite
 
 spacing_x = 10;
