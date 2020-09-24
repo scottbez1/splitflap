@@ -101,7 +101,7 @@ num_flaps = 40;
 flap_hole_radius = (flap_pin_width + 1) / 2;
 flap_hole_separation = 1;  // additional spacing between hole edges
 flap_gap = (flap_hole_radius * 2 - flap_pin_width) + flap_hole_separation;
-function get_flap_gap() = flap_gap;  // for exposing this value when this file is 'used' in other modules
+function get_flap_gap() = flap_gap;  // for exposing this value when this file is 'used' and not 'included' in other files
 
 flap_spool_outset = flap_hole_radius;
 flap_pitch_radius = flap_spool_pitch_radius(num_flaps, flap_hole_radius, flap_hole_separation); //num_flaps * (flap_hole_radius*2 + flap_hole_separation) / (2*PI);
