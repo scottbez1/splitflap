@@ -20,7 +20,7 @@ include<flap_dimensions.scad>;
 letter_font = "RobotoCondensed";
 letter_height = 0.75;  // aspect, 0-1
 letter_width  =  0.8;  // aspect, 0-1
-letter_gap_comp = false;  // shifts letter positions to compensate for gap between flaps
+letter_gap_comp = true;  // shifts letter positions to compensate for gap between flaps
 
 letter_offset_x = -0.78;  // offset from center (mm)
 letter_offset_y = 0.5;
