@@ -339,27 +339,32 @@ module spool_retaining_wall(m4_bolt_hole=false) {
 }
 
 
+module flap_2d() {
+    translate([0, -flap_pin_width/2, 0])
+    difference() {
+        union() {
+            square([flap_width, flap_height - flap_corner_radius + eps]);
+
+            // rounded corners
+            hull() {
+                translate([flap_corner_radius, flap_height - flap_corner_radius])
+                    circle(r=flap_corner_radius, $fn=40);
+                translate([flap_width - flap_corner_radius, flap_height - flap_corner_radius])
+                    circle(r=flap_corner_radius, $fn=40);
+            }
+        }
+        translate([-eps, flap_pin_width])
+            square([eps + flap_notch_depth, flap_notch]);
+        translate([flap_width - flap_notch_depth, flap_pin_width])
+            square([eps + flap_notch_depth, flap_notch]);
+    }
+}
+
 module flap() {
     color([1, 1, 1])
-    translate([0, -flap_pin_width/2, -flap_thickness/2])
+    translate([0, 0, -flap_thickness/2])
     linear_extrude(height=flap_thickness) {
-        difference() {
-            union() {
-                square([flap_width, flap_height - flap_corner_radius + eps]);
-
-                // rounded corners
-                hull() {
-                    translate([flap_corner_radius, flap_height - flap_corner_radius])
-                        circle(r=flap_corner_radius, $fn=40);
-                    translate([flap_width - flap_corner_radius, flap_height - flap_corner_radius])
-                        circle(r=flap_corner_radius, $fn=40);
-                }
-            }
-            translate([-eps, flap_pin_width])
-                square([eps + flap_notch_depth, flap_notch]);
-            translate([flap_width - flap_notch_depth, flap_pin_width])
-                square([eps + flap_notch_depth, flap_notch]);
-        }
+        flap_2d();
     }
 }
 
