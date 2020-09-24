@@ -32,20 +32,20 @@ flap_gap = get_flap_gap();
 
 module flap_pos(i) {
     x_pos = (flap_width + spacing_x) * ((num_columns == 0) ? i : (i % num_columns));
-    y_pos = (flap_height * 2 + spacing_y + flap_gap) * ((num_columns == 0) ? 0 : floor((i / num_columns)));
+    y_pos = (flap_height * 2 + spacing_y + flap_gap/2) * ((num_columns == 0) ? 0 : floor((i / num_columns)));
     translate([x_pos, -y_pos, 0])
         children();
 }
 
 module top_flap(i) {
     flap_pos(i)
-    translate([0, flap_pin_width/2 + flap_gap, 0])
+    translate([0, flap_pin_width/2 + flap_gap/2, 0])
         children();
 }
 
 module bottom_flap(i) {
     flap_pos(i)
-    translate([flap_width, -flap_pin_width/2 - flap_gap, 0])
+    translate([flap_width, -flap_pin_width/2 - flap_gap/2, 0])
         rotate([0, 0, 180])
             children();
 }

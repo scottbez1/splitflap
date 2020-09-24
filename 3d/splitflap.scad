@@ -100,7 +100,8 @@ num_flaps = 40;
 
 flap_hole_radius = (flap_pin_width + 1) / 2;
 flap_hole_separation = 1;  // additional spacing between hole edges
-function get_flap_gap() = flap_hole_separation;  // for exposing this value when this file is 'used' in other modules
+flap_gap = (flap_hole_radius * 2 - flap_pin_width) + flap_hole_separation;
+function get_flap_gap() = flap_gap;  // for exposing this value when this file is 'used' in other modules
 
 flap_spool_outset = flap_hole_radius;
 flap_pitch_radius = flap_spool_pitch_radius(num_flaps, flap_hole_radius, flap_hole_separation); //num_flaps * (flap_hole_radius*2 + flap_hole_separation) / (2*PI);
@@ -378,14 +379,14 @@ module flap_letter(letter, half = 0) {
                 flap();  // limit to bounds of flap
                 translate([flap_width/2, -flap_pin_width/2, 0]) {
                     rotation = (half == 2) ? -180 : 0;  // flip upside-down for bottom
-                    gap_comp = (letter_gap_comp == true) ? -flap_hole_separation : 0;
+                    gap_comp = (letter_gap_comp == true) ? -flap_gap/2 : 0;
                     translate([0, gap_comp, 0])
                         rotate([0,0,rotation])
                             draw_letter(letter);
                 }
             }
         } else {
-            translate([flap_width/2, -flap_pin_width/2 - flap_hole_separation, 0])
+            translate([flap_width/2, -flap_pin_width/2 - flap_gap/2, 0])
                 draw_letter(letter);
         }
     }
