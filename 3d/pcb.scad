@@ -115,11 +115,22 @@ module pcb() {
 // 2D cutouts needed to mount the PCB module, origin at the center of the mounting hole
 module pcb_cutouts() {
     hull_slide() {
-        translate([-m4_hole_diameter/2, -m4_hole_diameter/2]) {
-            square([m4_hole_diameter/2 + pcb_hole_to_sensor_pin_1_x + sensor_pin_pitch, m4_hole_diameter]);
+        // Bolt slot
+        hull() {
+            circle(r=m4_hole_diameter/2, $fn=30);
+            translate([pcb_hole_to_sensor_pin_1_x + sensor_pin_pitch - m4_hole_diameter/2, 0, 0])
+                circle(r=m4_hole_diameter/2, $fn=30);
         }
-        translate([pcb_hole_to_connector_pin_1_x - connector_pin_pitch, -pcb_hole_to_connector_pin_1_x]) {
-            square([connector_pin_pitch * 4, pcb_connector_pin_width + pcb_connector_pin_slop], center=true);
+        // Pin header slot
+        translate([pcb_hole_to_connector_pin_1_x - connector_pin_pitch, -pcb_hole_to_connector_pin_1_y]) {
+            hull() {
+                pin_slot_height = pcb_connector_pin_width + pcb_connector_pin_slop;
+                pin_slot_width = connector_pin_pitch * 4 - pin_slot_height;
+                translate([pin_slot_width/2, 0, 0])
+                    circle(pin_slot_height/2, $fn=15);
+                translate([-pin_slot_width/2, 0, 0])
+                    circle(pin_slot_height/2, $fn=15);
+            }
         }
     }
 }
