@@ -23,6 +23,7 @@ use<spool.scad>;
 
 include<28byj-48.scad>;
 include<flap_dimensions.scad>;
+include<flap_fonts.scad>;
 include<m4_dimensions.scad>;
 include<pcb.scad>;
 
@@ -37,6 +38,7 @@ render_flap_area = 0; // 0=invisible; 1=collapsed flap exclusion; 2=collapsed+ex
 render_letters = "44";
 render_units = len(render_letters);
 render_unit_separation = 0;
+render_spool = true;
 render_pcb = true;
 render_bolts = true;
 render_motor = true;
@@ -87,8 +89,6 @@ assembly_color4 = [.204, .161, .114]; //"34291D";
 
 flap_rendered_angle = 90;
 
-letter_height = flap_height * 0.75 * 2;
-
 // Amount of slop of the flap side to side between the 2 spools
 flap_width_slop = 0.1;
 
@@ -99,11 +99,13 @@ spool_width_slop = 1;
 num_flaps = 40;
 
 flap_hole_radius = (flap_pin_width + 1) / 2;
-flap_gap = 1;
+flap_hole_separation = 1;  // additional spacing between hole edges
+flap_gap = (flap_hole_radius * 2 - flap_pin_width) + flap_hole_separation;
+function get_flap_gap() = flap_gap;  // for exposing this value when this file is 'used' and not 'included' in other files
 
 flap_spool_outset = flap_hole_radius;
-flap_pitch_radius = flap_spool_pitch_radius(num_flaps, flap_hole_radius, flap_gap); //num_flaps * (flap_hole_radius*2 + flap_gap) / (2*PI);
-spool_outer_radius = flap_spool_outer_radius(num_flaps, flap_hole_radius, flap_gap, flap_spool_outset); //flap_pitch_radius + 2*flap_hole_radius;
+flap_pitch_radius = flap_spool_pitch_radius(num_flaps, flap_hole_radius, flap_hole_separation); //num_flaps * (flap_hole_radius*2 + flap_hole_separation) / (2*PI);
+spool_outer_radius = flap_spool_outer_radius(num_flaps, flap_hole_radius, flap_hole_separation, flap_spool_outset); //flap_pitch_radius + 2*flap_hole_radius;
 
 // Radius where flaps are expected to flap in their *most collapsed* (90 degree) state
 exclusion_radius = sqrt(flap_height*flap_height + flap_pitch_radius*flap_pitch_radius);
@@ -302,7 +304,7 @@ module spool_struts() {
 module flap_spool_complete(captive_nut=false, motor_shaft=false, magnet_hole=false) {
     linear_extrude(thickness) {
         difference() {
-            flap_spool(num_flaps, flap_hole_radius, flap_gap, flap_spool_outset,
+            flap_spool(num_flaps, flap_hole_radius, flap_hole_separation, flap_spool_outset,
                     height=0);
 
             spool_strut_tab_holes(narrow=captive_nut);
@@ -337,38 +339,63 @@ module spool_retaining_wall(m4_bolt_hole=false) {
 }
 
 
+module flap_2d() {
+    translate([0, -flap_pin_width/2, 0])
+    difference() {
+        union() {
+            square([flap_width, flap_height - flap_corner_radius + eps]);
+
+            // rounded corners
+            hull() {
+                translate([flap_corner_radius, flap_height - flap_corner_radius])
+                    circle(r=flap_corner_radius, $fn=40);
+                translate([flap_width - flap_corner_radius, flap_height - flap_corner_radius])
+                    circle(r=flap_corner_radius, $fn=40);
+            }
+        }
+        translate([-eps, flap_pin_width])
+            square([eps + flap_notch_depth, flap_notch]);
+        translate([flap_width - flap_notch_depth, flap_pin_width])
+            square([eps + flap_notch_depth, flap_notch]);
+    }
+}
+
 module flap() {
     color([1, 1, 1])
-    translate([0, -flap_pin_width/2, -flap_thickness/2])
+    translate([0, 0, -flap_thickness/2])
     linear_extrude(height=flap_thickness) {
-        difference() {
-            union() {
-                square([flap_width, flap_height - flap_corner_radius + eps]);
+        flap_2d();
+    }
+}
 
-                // rounded corners
-                hull() {
-                    translate([flap_corner_radius, flap_height - flap_corner_radius])
-                        circle(r=flap_corner_radius, $fn=40);
-                    translate([flap_width - flap_corner_radius, flap_height - flap_corner_radius])
-                        circle(r=flap_corner_radius, $fn=40);
+module draw_letter(letter) {
+    translate([0, -flap_height * letter_height, 0])  // valign compensation
+        scale([letter_width, 1, 1])
+            translate([letter_offset_x, letter_offset_y])
+                text(text=letter, size=flap_height * letter_height * 2, font=letter_font, halign="center");
+}
+
+module flap_letter(letter, half = 0) {
+    color([0, 0, 0])
+    translate([0, 0, flap_thickness/2 + eps])
+    linear_extrude(height=0.1, center=true) {
+        if (half != 0) {  // trimming to top (1) or bottom (2)
+            intersection() {
+                flap_2d();  // limit to bounds of flap
+                translate([flap_width/2, -flap_pin_width/2, 0]) {
+                    rotation = (half == 2) ? -180 : 0;  // flip upside-down for bottom
+                    gap_comp = (letter_gap_comp == true) ? -flap_gap/2 : 0;
+                    translate([0, gap_comp, 0])
+                        rotate([0,0,rotation])
+                            draw_letter(letter);
                 }
             }
-            translate([-eps, flap_pin_width])
-                square([eps + flap_notch_depth, flap_notch]);
-            translate([flap_width - flap_notch_depth, flap_pin_width])
-                square([eps + flap_notch_depth, flap_notch]);
+        } else {
+            translate([flap_width/2, -flap_pin_width/2 - flap_gap/2, 0])
+                draw_letter(letter);
         }
     }
 }
-
-module translated_flap() {
-    translate([0, flap_pitch_radius, 0]) {
-        rotate([flap_rendered_angle, 0, 0]) {
-            flap();
-        }
-    }
-}
-
 
 
 // double-flatted motor shaft of 28byj-48 motor (2D)
@@ -868,40 +895,6 @@ module split_flap_3d(letter, include_connector) {
         }
     }
 
-    module letter_top_half() {
-        rotate([-90, 0, 0]) {
-            rotate([0, 0, 180]) {
-                linear_extrude(height=0.1, center=true) {
-                    translate([-flap_width / 2, -flap_pin_width/2]) {
-                        difference() {
-                            text(text=letter, size=letter_height, font="RobotoCondensed", halign="center", valign="center");
-                            translate([-flap_width, -flap_height - eps]) {
-                                square([2 * flap_width, flap_height]);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    module letter_bottom_half() {
-        rotate([-90, 0, 0]) {
-            rotate([0, 0, 180]) {
-                linear_extrude(height=0.1, center=true) {
-                    translate([-flap_width / 2, flap_pin_width/2]) {
-                        difference() {
-                            text(text=letter, size=letter_height, font="RobotoCondensed", halign="center", valign="center");
-                            translate([-flap_width, eps]) {
-                                square([2 * flap_width, flap_height]);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     translate([spool_width_slop/2 + thickness, 0, 0]) {
         // Flap area
         if (render_flaps > 0) {
@@ -922,29 +915,28 @@ module split_flap_3d(letter, include_connector) {
                 // Collapsed flaps on the top
                 for (i=[0:num_flaps/2 - 1]) {
                     if (i == 0 || render_flaps == 2) {
-                        rotate([360/num_flaps * i, 0, 0]) translated_flap();
-                    }
-                    if (i == 0) {
-                        color([0,0,0]) {
-                            translate([0, flap_pitch_radius + flap_thickness/2, 0]) {
-                                letter_top_half();
+                        rotate([360/num_flaps * i, 0, 0]) {
+                            translate([flap_width, flap_pitch_radius, 0]) {
+                                rotate([flap_rendered_angle, 0, 180]) {
+                                    flap();
+                                    if (i == 0) { 
+                                        flap_letter(letter, 1);  // 1 = top
+                                    }
+                                }
                             }
                         }
                     }
                 }
 
+                // Hanging flaps on the bottom
                 for (i=[1:num_flaps/2]) {
                     angle = -360/num_flaps*i;
                     translate([0, flap_pitch_radius*cos(angle), flap_pitch_radius * sin(angle)]) {
                         if (i == 1 || render_flaps == 2) {
                             rotate([-90, 0, 0]) {
                                 flap();
-                            }
-                        }
-                        if (i == 1) {
-                            color([0,0,0]) {
-                                translate([0, flap_thickness/2, 0]) {
-                                    letter_bottom_half();
+                                if (i == 1) {
+                                    flap_letter(letter, 2);  // 2 = bottom
                                 }
                             }
                         }
@@ -953,33 +945,35 @@ module split_flap_3d(letter, include_connector) {
             }
         }
 
-        spool_struts();
+        if(render_spool) {
+            spool_struts();
 
-        // motor spool
-        color(assembly_color) {
-            translate([spool_width - thickness + 5*spool_horizontal_explosion, 0, 0]) {
-                rotate([0, 90, 0]) {
-                    flap_spool_complete(motor_shaft=true, magnet_hole=true);
+            // motor spool
+            color(assembly_color) {
+                translate([spool_width - thickness + 5*spool_horizontal_explosion, 0, 0]) {
+                    rotate([0, 90, 0]) {
+                        flap_spool_complete(motor_shaft=true, magnet_hole=true);
+                    }
                 }
             }
-        }
-        color(assembly_color1) {
-            translate([thickness - 3*spool_horizontal_explosion, 0, 0]) {
-                rotate([0, 90, 0]) {
-                    spool_retaining_wall(m4_bolt_hole=true);
+            color(assembly_color1) {
+                translate([thickness - 3*spool_horizontal_explosion, 0, 0]) {
+                    rotate([0, 90, 0]) {
+                        spool_retaining_wall(m4_bolt_hole=true);
+                    }
                 }
             }
-        }
-        color(assembly_color) {
-            translate([-5*spool_horizontal_explosion, 0, 0]) {
-                rotate([0, 90, 0]) {
-                    flap_spool_complete(captive_nut=true);
+            color(assembly_color) {
+                translate([-5*spool_horizontal_explosion, 0, 0]) {
+                    rotate([0, 90, 0]) {
+                        flap_spool_complete(captive_nut=true);
+                    }
                 }
             }
-        }
-        translate([thickness * 2, 0, 0]) {
-            rotate([0, -90, 0]) {
-                standard_m4_bolt(nut_distance=thickness + 7*spool_horizontal_explosion);
+            translate([thickness * 2, 0, 0]) {
+                rotate([0, -90, 0]) {
+                    standard_m4_bolt(nut_distance=thickness + 7*spool_horizontal_explosion);
+                }
             }
         }
     }

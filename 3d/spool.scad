@@ -14,9 +14,9 @@
    limitations under the License.
 */
 
-module flap_spool(flaps, flap_hole_radius, flap_gap, outset, height) {
-    pitch_radius = flap_spool_pitch_radius(flaps, flap_hole_radius, flap_gap);
-    outer_radius = flap_spool_outer_radius(flaps, flap_hole_radius, flap_gap, outset);
+module flap_spool(flaps, flap_hole_radius, flap_hole_separation, outset, height) {
+    pitch_radius = flap_spool_pitch_radius(flaps, flap_hole_radius, flap_hole_separation);
+    outer_radius = flap_spool_outer_radius(flaps, flap_hole_radius, flap_hole_separation, outset);
 
 
     module flap_spool_2d() {
