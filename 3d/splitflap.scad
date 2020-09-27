@@ -165,6 +165,8 @@ enclosure_length = front_forward_offset + 28byj48_mount_center_offset + m4_hole_
 
 
 // Enclosure tabs: front/back
+enclosure_tab_clearance = 0.10;
+
 num_front_tabs = 2;
 front_tab_width = (enclosure_wall_to_wall_width - 2*thickness) / (num_front_tabs*2 - 1);
 
@@ -412,7 +414,7 @@ module motor_shaft() {
 module front_tabs_negative() {
     for (i = [0 : num_front_tabs-1]) {
         translate([thickness + (i*2+0.5) * front_tab_width, 0, 0])
-            square([front_tab_width, thickness], center=true);
+            square([front_tab_width + enclosure_tab_clearance, thickness + enclosure_tab_clearance], center=true);
     }
     for (i = [0 : num_front_tabs-2]) {
         translate([thickness + (i*2+1.5) * front_tab_width, 0, 0])
@@ -484,8 +486,8 @@ module motor_mount() {
 module side_tabs_negative(hole_sizes=[], extend_last_tab=false) {
     for (i = [0 : len(hole_sizes)]) {
         length = (extend_last_tab && i == len(hole_sizes)) ? side_tab_width * side_tab_width_fraction + eps : side_tab_width * side_tab_width_fraction;
-        translate([-thickness / 2, thickness + (i*2) * side_tab_width + side_tab_width * (1 - side_tab_width_fraction)/2, 0])
-            square([thickness, length]);
+        translate([0,  thickness + (i*2) * side_tab_width + side_tab_width * (1 - side_tab_width_fraction)/2 + length/2, 0])
+            square([thickness + enclosure_tab_clearance, length + enclosure_tab_clearance], center=true);
     }
     for (i = [0 : len(hole_sizes) - 1]) {
         hole_size = hole_sizes[i];
