@@ -53,6 +53,18 @@ If you are interested in building a display without digging into the design deta
 
 ![2d laser cut rendering](https://s3.amazonaws.com/splitflap-travis/branches/master/3d_laser_raster.png)
 
+## Build Your Own  ##
+<a href="https://github.com/scottbez1/splitflap/wiki">
+<img height="320" src="https://github.com/scottbez1/splitflap/wiki/images/assembly/laserPieces.jpg"/>
+<img height="320" src="https://github.com/scottbez1/splitflap/wiki/images/flaps/punchedCard.jpg"/>
+</a>
+
+This design is still a work in progress; a build log/instructions for building a prototype split-flap display of your own is posted in [the wiki](https://github.com/scottbez1/splitflap/wiki).
+
+* [**Latest stable release**](https://github.com/scottbez1/splitflap/releases/latest)
+* [**Ordering guide (v0.5)**](https://paper.dropbox.com/doc/Ordering-Splitflap-v0.5--AS8OCZ~75DLuHBGHhxn94YAMAg-iCwwMo0hRkkAlwdutccWf)
+* [**Assembly instructions (v0.5)**](https://paper.dropbox.com/doc/Splitflap-Kit-v0.5v1.0-Instructions--ASQDu1uoa6n4_t1pva1bM1MgAg-bxXJlke5ROmamcx4OH44r)
+
 ### Rough Cost Breakdown ###
 
 This is an incomplete list of supplies needed to build a split-flap display module, to get a rough sense of the overall cost, as of May 2018.
@@ -138,16 +150,6 @@ Circuit boards are available either in small quantities from Tindie, or in bulk 
 **Total:** $5.00 per unit (motor + sensor comp.) + $14.00 per 4 units (motor driver), + $11.00 per display (up to 12 units)
 
 You can find a more detailed breakout of electronics' bill of materials (BOM) in [the ordering instructions](https://paper.dropbox.com/doc/Ordering-Splitflap-v0.5--ATdB3cgS5GyvwTWq1kpunkD4Ag-iCwwMo0hRkkAlwdutccWf).
-
-## Build Your Own: Instructions ##
-This design is still a work in progress; a build log/instructions for building a prototype split-flap display of your own is posted in [the wiki](https://github.com/scottbez1/splitflap/wiki).
-
-<a href="https://github.com/scottbez1/splitflap/wiki">
-<img height="320" src="https://github.com/scottbez1/splitflap/wiki/images/assembly/laserPieces.jpg"/>
-<img height="320" src="https://github.com/scottbez1/splitflap/wiki/images/flaps/punchedCard.jpg"/>
-</a>
-
-Important: most of the diagrams and downloadable files on this README page are auto-generated from the latest *experimental* code, which may be untested or broken. If you are interested in building one without digging into the design details much, I recommend using a stable design, as described in [the wiki](https://github.com/scottbez1/splitflap/wiki).
 
 ## Design & Modification Guide ##
 
