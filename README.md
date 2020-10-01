@@ -40,6 +40,17 @@ I'd love to hear your thoughts and questions about this project, and happy to in
 
 ![2d laser cut rendering](https://s3.amazonaws.com/splitflap-travis/branches/master/3d_laser_raster.png)
 
+### Latest Files ###
+
+* Lasercut Vector File ([svg](https://s3.amazonaws.com/splitflap-travis/branches/master/3d_laser_vector.svg))
+* Electronics Bill of Materials ([csv](https://s3.amazonaws.com/splitflap-travis/branches/master/bom.csv))
+* Controller PCB ([gerbers](https://s3.amazonaws.com/splitflap-travis/branches/master/pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/pcb_packet.pdf)), panelized ([gerbers](https://s3.amazonaws.com/splitflap-travis/branches/master/panelized_pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/panelized_pcb_packet.pdf))
+* Sensor PCB, panelized ([gerbers](https://s3.amazonaws.com/splitflap-travis/branches/master/sensor_pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/sensor_pcb_packet.pdf))
+
+**Important:** these files have been auto-generated from the latest commit on the `master` branch, and may contain changes that are untested or outright broken. Use at your own risk.
+
+If you are interested in building a display without digging into the design details, I recommend using [one of the stable releases instead](https://github.com/scottbez1/splitflap/releases/).
+
 ### Rough Cost Breakdown ###
 
 This is an incomplete list of supplies needed to build a split-flap display module, to get a rough sense of the overall cost, as of May 2018.
@@ -112,9 +123,6 @@ The [`generate_2d.py`](3d/scripts/generate_2d.py) script interacts with the `pro
 
 Once the `combined.svg` file is generated, you'll want to double-check there aren't any redundant cut lines that are shared by multiple adjacent pieces, to save time/cost when cutting. They should be detected automatically (and highlighted in red in the rendering above), but it doesn't hurt to double-check. In Inkscape, select the "Edit paths by nodes" tool and select an edge to delete - the endpoints should turn blue. Then click "Delete segment between two non-endpoint nodes", and repeat this for all other redundant cut lines.
 
-Latest (Experimental!) Laser Cut Vector File: [svg](https://s3.amazonaws.com/splitflap-travis/branches/master/3d_laser_vector.svg)
-(In order to get the design laser-cut from Ponoko, you'll need to copy all of the shapes from that file into one of [Ponoko's templates](http://www.ponoko.com/starter-kits/inkscape))
-
 ##### Animated gif #####
 The design can be rendered to a rotating 3d animated gif (seen above) by running [`3d/scripts/generate_gif.py`](3d/scripts/generate_gif.py), which outputs to `3d/build/animation/animation.gif`
 
@@ -152,18 +160,7 @@ and is optimized for production at SeeedStudio.
 <img width="640" src="https://s3.amazonaws.com/splitflap-travis/branches/master/sensor_pcb_raster.png"/>
 </a>
 
-##### Latest PCB Renderings #####
-These are automatically updated on every commit with the latest rendering from the `master` branch.
-See this blog post for more details on how that works: [Automated KiCad, OpenSCAD rendering using Travis CI](http://scottbezek.blogspot.com/2016/04/automated-kicad-openscad-rendering.html).
-
-These are *experimental* files based off of the latest commmit. For Stable PCB designs, make sure to check out the [Releases](https://github.com/scottbez1/splitflap/releases) instead.
-
-| **EXPERIMENTAL!** | Gerbers                                                                         | Packet                                                                          | Gerbers (Panelized)                                                                       | Packet (Panelized)                                                                        |
-|-------------------|---------------------------------------------------------------------------------|---------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|
-| Controller PCB    | [zip](https://s3.amazonaws.com/splitflap-travis/branches/master/pcb_gerber.zip) | [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/pcb_packet.pdf) | [zip](https://s3.amazonaws.com/splitflap-travis/branches/master/panelized_pcb_gerber.zip) | [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/panelized_pcb_packet.pdf) |
-| Sensor PCB        |                                                                                 |                                                                                 | [zip](https://s3.amazonaws.com/splitflap-travis/branches/master/sensor_pcb_gerber.zip)    | [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/sensor_pcb_packet.pdf)    |
-
-Latest (experimental!) rough bill of materials: [csv](https://s3.amazonaws.com/splitflap-travis/branches/master/bom.csv)
+These are automatically updated on every commit with the latest rendering from the `master` branch. See this blog post for more details on how that works: [Automated KiCad, OpenSCAD rendering using Travis CI](http://scottbezek.blogspot.com/2016/04/automated-kicad-openscad-rendering.html).
 
 #### Rendering ####
 The PCB layout can be rendered to an svg or png (seen above) by running [`electronics/scripts/generate_svg.py file.kicad_pcb`](electronics/scripts/generate_svg.py).
