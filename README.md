@@ -59,39 +59,85 @@ This is an incomplete list of supplies needed to build a split-flap display modu
 
 #### Housing ####
 
-* $2.00		/unit -- MDF 3.2mm P1 [on Ponoko](https://www.ponoko.com/materials/mdf-fiberboard)
-* $8.67		/unit -- laser cutting on Ponoko (can save ~$0.70 by skipping engraved label)
-* ~$9		/unit -- shipping
+| Price | Name          | Supplier | Notes |
+|-------|---------------|----------|-------|
+| $2.00 | MDF 3.2 mm    | Ponoko   |       |
+| $8.67 | Laser cutting | Ponoko   |       |
+| $9    | Shipping      | Ponoko   |       |
 
-* ~$20  	/unit -- Total (can be cheaper if ordering multiple units at the same time)
+**Total:** $19.67 per unit
 
 #### Hardware & Consumables ####
 
-* $2.40		/unit -- Qty 12 -- M4-10mm button head screw, hex drive, ISO7380, (e.g. Fastenal A2-70 stainless steel MB2530010A20000)
-* $0.67		/unit -- Qty 12 -- M4 hex nut, (e.g. Fastenal A2-70 stainless steel MN2530000A20000)
+| Price | Name                        | Quantity | Supplier   | Notes |
+|-------|-----------------------------|----------|------------|-------|
+| $2.40 | M4-10 Button-Head Hex Screw | 12       | AliExpress |       |
+| $0.67 | M4 Hex Nut                  | 12       | AliExpress |       |
+
+**Total:** $3.07 per unit
 
 #### Flaps ####
 
-* $6.39		/2 units -- vinyl letter stickers (minimum letter duplication per pack is 2) [on Amazon](http://www.amazon.com/Duro-Decal-Permanent-Adhesive-Letters/dp/B0027601CM)
-* $14		/4 units -- blank white CR80 cards (each CR80 card becomes 2 flaps, each unit requires 40 flaps = 20 cards. 100 cards is enough for 5 units in theory, but 4 in practice because there are no spares for mistakes) on [Amazon](http://www.amazon.com/Plastic-printers-DataCard-Evolis-Magicard/dp/B007M413BC)
-  * or $50 /4 units -- Professional pre-cut high quality flaps (no manual cutting/punching needed), custom made for this project, on [Tindie](https://www.tindie.com/products/14844/). Proceeds help support continued development and prototyping.
+There are two options for flaps: hand-cut and die-cut.
+
+##### Hand-Cut (Option 1) #####
+
+| Price | Name                   | Supplier                                                                                | Notes                            |
+|-------|------------------------|-----------------------------------------------------------------------------------------|----------------------------------|
+| $3.50 | Blank white CR80 cards | [Amazon](http://www.amazon.com/Plastic-printers-DataCard-Evolis-Magicard/dp/B007M413BC) | One package ($14) covers 4 units |
+| $9.17 | Badge slot punch tool  | [Amazon](http://www.amazon.com/gp/product/B009YDRRB4)                                   | One-time, up front cost          |
+| $3.50 | Vinyl letter stickers  | [Amazon](http://www.amazon.com/Duro-Decal-Permanent-Adhesive-Letters/dp/B0027601CM)     | One package ($7) covers 2 units  |
+
+**Total:** $7.00 per unit, + $9.17 upfront for the punch tool
+
+Each card needs to be cut in half and then have two pieces punched out of either side. Each display unit requires 40 flaps, or 20 cards per unit. 100 cards is enough for 5 units in theory, but 4 in practice because there are no spares for mistakes.
+
+##### Die-Cut (Option 2) #####
+
+| Price  | Name                  | Supplier                                                                            | Notes                            |
+|--------|-----------------------|-------------------------------------------------------------------------------------|----------------------------------|
+| $12.50 | Die-cut flaps         | [Tindie](https://www.tindie.com/products/14844/)                                    | One package ($50) covers 4 units |
+| $3.50  | Vinyl letter stickers | [Amazon](http://www.amazon.com/Duro-Decal-Permanent-Adhesive-Letters/dp/B0027601CM) | One package ($7) covers 2 units  |
+
+These professional die-cut flaps are pre-cut with the exact dimensions needed for this project (no manual cutting/punching required) and come in both white and matte black. Proceeds help support continued development and prototyping.
+
+**Total:** $16.00 per unit
 
 #### PCB ####
 
-* $4 /4 units -- PCB for controller [on Tindie](https://www.tindie.com/products/15608/)
-  * or ~$25		/40 units -- PCB for controller [on seeedstudio](http://www.seeedstudio.com/service/index.php?r=pcb)
-* $3		/4 units -- PCB for hall-effect sensor [on Tindie](https://www.tindie.com/products/14793/)
-  * or ~$25		/200 units -- PCB for hall-effect sensor [on seeedstudio](http://www.seeedstudio.com/service/index.php?r=pcb)
+Circuit boards are available either in small quantities from Tindie, or in bulk from PCB manufacturers such as SeeedStudio.
+
+##### Tindie #####
+
+| Price | Name           | Quantity | Supplier                                         | Notes                    |
+|-------|----------------|----------|--------------------------------------------------|--------------------------|
+| $3.49 | Controller PCB | 1        | [Tindie](https://www.tindie.com/products/15608/) | One PCB supports 4 units |
+| $2.49 | Sensor PCB     | 4        | [Tindie](https://www.tindie.com/products/14793/) | 4 PCBs per package       |
+
+**Total:** $5.98 per 4 units ($1.49 each)
+
+##### SeeedStudio (Bulk) #####
+
+| Price | Name           | Quantity | Supplier                                                          | Notes                    |
+|-------|----------------|----------|-------------------------------------------------------------------|--------------------------|
+| $25   | Controller PCB | 40       | [SeeedStudio](http://www.seeedstudio.com/service/index.php?r=pcb) | One PCB supports 4 units |
+| $25   | Sensor PCB     | 200      | [SeeedStudio](http://www.seeedstudio.com/service/index.php?r=pcb) |                          |
+
+**Total:** $50.00 per 40 units ($0.80 each)
 
 #### Electronics & Motor ####
 
-* ~$2		/unit -- 28byj-48 motor (12V preferred!) Ebay or AliExpress are good places to find these motors. (see [motor notes](https://github.com/scottbez1/splitflap/wiki/Motor-info) for specific details)
-* ~$10		/10 units -- male-to-male 3-pin servo cable (for sensors) e.g. on [Amazon](https://www.amazon.com/VIMVIP-10pcs-300mm-Extension-Futaba/dp/B00N8OX7VO)
-* ~$16		/unit -- Digikey electrionic component purchases. ~$14/controller and ~$2/sensor board. More detailed breakout of BOM in [Ordering instructions](https://paper.dropbox.com/doc/Ordering-Splitflap-v0.5--ATdB3cgS5GyvwTWq1kpunkD4Ag-iCwwMo0hRkkAlwdutccWf)
-* $8-15 /4 units -- 12V power supply
+| Price  | Name                             | Supplier                                                                           | Notes                                                                                  |
+|--------|----------------------------------|------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------|
+| $14.00 | Motor driver components          | DigiKey                                                                            | One PCB supports 4 units                                                               |
+| $2.00  | Sensor board components          | DigiKey                                                                            |                                                                                        |
+| $2.00  | 28byj-48 motor (12V preferred)   | AliExpress                                                                         | See [motor notes](https://github.com/scottbez1/splitflap/wiki/Motor-info) for details  |
+| $1.00  | 3-pin servo cable (male to male) | [Amazon](https://www.amazon.com/VIMVIP-10pcs-300mm-Extension-Futaba/dp/B00N8OX7VO) |                                                                                        |
+| $11.00 | 12V power supply                 | Amazon                                                                             | One supports up to 12 displays                                                         |
 
-Tools (one-time, up front cost):
-* $9.17 -- badge slot punch for cutting notches out of cards to make flaps (not needed if using die-cut flaps from Tindie) [on Amazon](http://www.amazon.com/gp/product/B009YDRRB4)
+**Total:** $5.00 per unit (motor + sensor comp.) + $14.00 per 4 units (motor driver), + $11.00 per display (up to 12 units)
+
+You can find a more detailed breakout of BOM in [the ordering instructions](https://paper.dropbox.com/doc/Ordering-Splitflap-v0.5--ATdB3cgS5GyvwTWq1kpunkD4Ag-iCwwMo0hRkkAlwdutccWf).
 
 ## Build Your Own: Instructions ##
 This design is still a work in progress; a build log/instructions for building a prototype split-flap display of your own is posted in [the wiki](https://github.com/scottbez1/splitflap/wiki).
