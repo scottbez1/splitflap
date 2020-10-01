@@ -20,7 +20,7 @@ Want to help support prototyping and development?
 <a href="https://www.buymeacoffee.com/scottbez1" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" height="22" ></a>
 
 ### Current Status ###
-This design is currently nearly stable. The source files provided here have been used to produce multiple working prototypes, but may still have some minor issues and/or incomplete documentation (for more reliable design files, make sure to use files from the official [Releases](https://github.com/scottbez1/splitflap/releases) rather than the bleeding edge designs linked on this page).
+This design is currently nearly stable. The source files provided here have been used to produce multiple working prototypes, but may still have some minor issues and/or incomplete documentation.
 
 | Component | Status | Notes |
 | --- | --- | --- |
@@ -29,7 +29,20 @@ This design is currently nearly stable. The source files provided here have been
 | Firmware | *Stable* | |
 | Control Software | *Beta* | Example python code for driving the display is in the [software](software) directory|
 
+[You can download the **latest stable release** from the official 'releases' page.](https://github.com/scottbez1/splitflap/releases/latest)
+
 I'd love to hear your thoughts and questions about this project, and happy to incorporate any feedback you might have into these designs! Please feel free (and encouraged) to [open GitHub issues](https://github.com/scottbez1/splitflap/issues/new), email me directly, reach out [on Twitter](https://twitter.com/scottbez1), and [get involved](https://github.com/scottbez1/splitflap/pulls) in the open source development and let's keep chatting and building together!
+
+#### :warning: Latest Experimental Files: ####
+
+* Lasercut Vector File ([svg](https://s3.amazonaws.com/splitflap-travis/branches/master/3d_laser_vector.svg))
+* Electronics Bill of Materials ([csv](https://s3.amazonaws.com/splitflap-travis/branches/master/bom.csv))
+* Controller PCB ([gerbers](https://s3.amazonaws.com/splitflap-travis/branches/master/pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/pcb_packet.pdf)), panelized ([gerbers](https://s3.amazonaws.com/splitflap-travis/branches/master/panelized_pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/panelized_pcb_packet.pdf))
+* Sensor PCB, panelized ([gerbers](https://s3.amazonaws.com/splitflap-travis/branches/master/sensor_pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/sensor_pcb_packet.pdf))
+
+**Important:** these files have been auto-generated from the latest commit on the `master` branch, and may contain changes that are untested or outright broken. Use at your own risk.
+
+If you are interested in building a display without digging into the design details, I recommend using [one of the stable releases instead](https://github.com/scottbez1/splitflap/releases).
 
 ### Design Highlights ###
 * laser cut enclosure and mechanisms from a single material
@@ -39,17 +52,6 @@ I'd love to hear your thoughts and questions about this project, and happy to in
 * control up to 12 modules from a single Arduino
 
 ![2d laser cut rendering](https://s3.amazonaws.com/splitflap-travis/branches/master/3d_laser_raster.png)
-
-### Latest Files ###
-
-* Lasercut Vector File ([svg](https://s3.amazonaws.com/splitflap-travis/branches/master/3d_laser_vector.svg))
-* Electronics Bill of Materials ([csv](https://s3.amazonaws.com/splitflap-travis/branches/master/bom.csv))
-* Controller PCB ([gerbers](https://s3.amazonaws.com/splitflap-travis/branches/master/pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/pcb_packet.pdf)), panelized ([gerbers](https://s3.amazonaws.com/splitflap-travis/branches/master/panelized_pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/panelized_pcb_packet.pdf))
-* Sensor PCB, panelized ([gerbers](https://s3.amazonaws.com/splitflap-travis/branches/master/sensor_pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/sensor_pcb_packet.pdf))
-
-**Important:** these files have been auto-generated from the latest commit on the `master` branch, and may contain changes that are untested or outright broken. Use at your own risk.
-
-If you are interested in building a display without digging into the design details, I recommend using [one of the stable releases instead](https://github.com/scottbez1/splitflap/releases/).
 
 ### Rough Cost Breakdown ###
 
