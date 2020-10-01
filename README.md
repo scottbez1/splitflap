@@ -133,11 +133,11 @@ Circuit boards are available either in small quantities from Tindie, or in bulk 
 | $2.00  | Sensor board components          | DigiKey                                                                            |                                                                                        |
 | $2.00  | 28byj-48 motor (12V preferred)   | AliExpress                                                                         | See [motor notes](https://github.com/scottbez1/splitflap/wiki/Motor-info) for details  |
 | $1.00  | 3-pin servo cable (male to male) | [Amazon](https://www.amazon.com/VIMVIP-10pcs-300mm-Extension-Futaba/dp/B00N8OX7VO) |                                                                                        |
-| $11.00 | 12V power supply                 | Amazon                                                                             | One supports up to 12 displays                                                         |
+| $11.00 | 12V power supply                 | Amazon                                                                             | One per display (up to 12 units)                                                       |
 
 **Total:** $5.00 per unit (motor + sensor comp.) + $14.00 per 4 units (motor driver), + $11.00 per display (up to 12 units)
 
-You can find a more detailed breakout of BOM in [the ordering instructions](https://paper.dropbox.com/doc/Ordering-Splitflap-v0.5--ATdB3cgS5GyvwTWq1kpunkD4Ag-iCwwMo0hRkkAlwdutccWf).
+You can find a more detailed breakout of electronics' bill of materials (BOM) in [the ordering instructions](https://paper.dropbox.com/doc/Ordering-Splitflap-v0.5--ATdB3cgS5GyvwTWq1kpunkD4Ag-iCwwMo0hRkkAlwdutccWf).
 
 ## Build Your Own: Instructions ##
 This design is still a work in progress; a build log/instructions for building a prototype split-flap display of your own is posted in [the wiki](https://github.com/scottbez1/splitflap/wiki).
