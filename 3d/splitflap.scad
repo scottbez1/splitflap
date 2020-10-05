@@ -191,6 +191,7 @@ connector_bracket_length_inner = side_tab_width * 2 - m4_button_head_diameter/2;
 connector_bracket_thickness = captive_nut_inset - thickness - 0.2;
 connector_bracket_width = enclosure_width - enclosure_wall_to_wall_width + thickness*2 + connector_bracket_thickness*2;
 connector_bracket_overlap = 4;
+connector_bracket_clearance = 0.10;
 
 
 mounting_hole_inset = m4_button_head_diameter/2 + 2;
@@ -431,11 +432,11 @@ module connector_bracket() {
             translate([connector_bracket_thickness, -eps]) {
                 square([connector_bracket_width - connector_bracket_thickness*2, connector_bracket_length_outer - connector_bracket_length_inner + eps]);
             }
-            translate([connector_bracket_thickness, -eps]) {
-                square([thickness, connector_bracket_length_outer - connector_bracket_overlap + eps]);
+            translate([connector_bracket_thickness - connector_bracket_clearance/2, -eps]) {
+                square([thickness + connector_bracket_clearance, connector_bracket_length_outer - connector_bracket_overlap + eps]);
             }
-            translate([connector_bracket_width - connector_bracket_thickness - thickness, -eps]) {
-                square([thickness, connector_bracket_length_outer - connector_bracket_overlap + eps]);
+            translate([connector_bracket_width - connector_bracket_thickness - thickness - connector_bracket_clearance/2, -eps]) {
+                square([thickness + connector_bracket_clearance, connector_bracket_length_outer - connector_bracket_overlap + eps]);
             }
         }
     }
@@ -512,8 +513,8 @@ module backstop_bolt_slot(radius) {
 
 module connector_bracket_side_holes() {
     // overlap slot
-    translate([enclosure_vertical_inset - thickness, -connector_bracket_overlap]) {
-        square([thickness, connector_bracket_overlap + eps]);
+    translate([enclosure_vertical_inset - thickness - connector_bracket_clearance/2, -connector_bracket_overlap]) {
+        square([thickness + connector_bracket_clearance, connector_bracket_overlap + eps]);
     }
 }
 
