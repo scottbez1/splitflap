@@ -95,6 +95,7 @@ flap_width_slop = 0.5;
 // Amount of slop for the spool assembly side-to-side inside the enclosure
 spool_width_slop = 1;
 spool_tab_clearance = 0.10;
+spool_joint_clearance = 0.10;
 
 
 num_flaps = 40;
@@ -278,12 +279,12 @@ module spool_strut() {
                     // subtract out joints
                     union() {
                         for (i = [0:2:spool_strut_num_joints-1]) {
-                            translate([i*joint_tab_width, -eps])
-                                square([joint_tab_width, thickness+eps]);
+                            translate([i*joint_tab_width - spool_joint_clearance/2, -eps])
+                                square([joint_tab_width + spool_joint_clearance, thickness + spool_joint_clearance/2 + eps]);
                         }
                         for (i = [1:2:spool_strut_num_joints-1]) {
-                            translate([i*joint_tab_width, spool_strut_width - thickness])
-                                square([joint_tab_width, thickness+eps]);
+                            translate([i*joint_tab_width, spool_strut_width - thickness - spool_joint_clearance/2])
+                                square([joint_tab_width, thickness + spool_joint_clearance + eps]);
                         }
                     }
                 }
