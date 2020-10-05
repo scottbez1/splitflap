@@ -121,7 +121,7 @@ spool_width = flap_width - flap_notch_depth*2 + flap_width_slop + thickness*2;  
 spool_width_clearance = max(spool_width, flap_width + flap_width_slop);  // width clearance for the spool, either for the spool itself or the flaps
 
 //legacyAssert(spool_width >= flap_width, "Flap is wider than spool!");
-spool_strut_tabs = 3;
+spool_strut_num_joints = 3;
 spool_strut_tab_width=8;
 spool_strut_tab_width_narrow=6;
 spool_strut_tab_outset=8;
@@ -262,7 +262,7 @@ module spool_strut_tab_holes(narrow=false) {
     }
 }
 module spool_strut() {
-    joint_tab_width = spool_strut_inner_length / spool_strut_tabs;
+    joint_tab_width = spool_strut_inner_length / spool_strut_num_joints;
     linear_extrude(thickness, center=true) {
         union() {
             translate([0, -spool_strut_tab_width_narrow / 2]) {
@@ -275,13 +275,13 @@ module spool_strut() {
                 difference() {
                     square([spool_strut_inner_length, spool_strut_width]);
 
-                    // subtract out tabs
+                    // subtract out joints
                     union() {
-                        for (i = [0:2:spool_strut_tabs-1]) {
+                        for (i = [0:2:spool_strut_num_joints-1]) {
                             translate([i*joint_tab_width, -eps])
                                 square([joint_tab_width, thickness+eps]);
                         }
-                        for (i = [1:2:spool_strut_tabs-1]) {
+                        for (i = [1:2:spool_strut_num_joints-1]) {
                             translate([i*joint_tab_width, spool_strut_width - thickness])
                                 square([joint_tab_width, thickness+eps]);
                         }
