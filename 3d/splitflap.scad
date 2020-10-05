@@ -94,6 +94,7 @@ flap_width_slop = 0.5;
 
 // Amount of slop for the spool assembly side-to-side inside the enclosure
 spool_width_slop = 1;
+spool_tab_clearance = 0.10;
 
 
 num_flaps = 40;
@@ -250,7 +251,7 @@ module m4_captive_nut(bolt_length=m4_bolt_length) {
 
 // ##### Struts for bracing spool #####
 module spool_strut_tab_hole(narrow) {
-    square([thickness, narrow ? spool_strut_tab_width_narrow : spool_strut_tab_width], center=true);
+    square([thickness + spool_tab_clearance, narrow ? spool_strut_tab_width_narrow + spool_tab_clearance : spool_strut_tab_width + spool_tab_clearance], center=true);
 }
 module spool_strut_tab_holes(narrow=false) {
     for (i=[0:3]) {
