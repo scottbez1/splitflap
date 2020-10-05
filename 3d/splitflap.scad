@@ -67,9 +67,9 @@ spool_horizontal_explosion = lookup(spool_explosion, [
 ]);
 
 
-// Kerf based off http://blog.ponoko.com/2011/07/12/figuring-out-kerf-for-precision-parts/
-// It's better to underestimate (looser fit) than overestimate (no fit)
-kerf_width = 0.19 - 0.02;
+// Ponoko kerf values are 0.2 mm for MDF and acrylic (all thicknesses)
+// Remember: it's better to underestimate (looser fit) than overestimate (no fit)
+kerf_width = 0.2 - 0.02;
 
 // MDF, .120in nominal
 // https://www.ponoko.com/materials/mdf-fiberboard
