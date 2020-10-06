@@ -9,4 +9,5 @@
   (lib (name LED3mmBetterSilkScreen)(type KiCad)(uri "$(KIPRJMOD)/lib/LED3mmBetterSilkScreen.pretty")(options "")(descr ""))
   (lib (name hall_effect)(type KiCad)(uri "$(KIPRJMOD)/lib/hall_effect.pretty")(options "")(descr ""))
   (lib (name CustomSymbols)(type KiCad)(uri "$(KIPRJMOD)/lib/CustomSymbols.pretty")(options "")(descr ""))
+  (lib (name 74HC165-DIP)(type KiCad)(uri "$(KIPRJMOD)/lib/74HC165-DIP.pretty")(options "")(descr ""))
 )
