@@ -234,7 +234,7 @@
     (arrow2a (pts (xy 24.572 18.476) (xy 25.698504 19.062421)))
     (arrow2b (pts (xy 24.572 18.476) (xy 25.698504 17.889579)))
   )
-  (gr_text "COMMIT: deadbeef\nDATE: YYYY-MM-DD" (at 35.494 31.684) (layer B.SilkS)
+  (gr_text "COMMIT: deadbeef\nDATE: YYYY-MM-DD" (at 35.494 30.25) (layer B.SilkS)
     (effects (font (size 1 0.9) (thickness 0.2)) (justify left mirror))
   )
   (dimension 8.636 (width 0.3) (layer Cmts.User)
