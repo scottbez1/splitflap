@@ -1,9 +1,9 @@
-(kicad_pcb (version 4) (host pcbnew 4.0.7-e2-6376~58~ubuntu16.04.1)
+(kicad_pcb (version 4) (host pcbnew 4.0.7)
 
   (general
     (links 3)
     (no_connects 0)
-    (area 19.924999 19.924999 36.331001 36.331001)
+    (area 1.514287 7.37 46.613715 43.194001)
     (thickness 1.6)
     (drawings 18)
     (tracks 6)
@@ -70,7 +70,7 @@
     (pad_to_mask_clearance 0.2)
     (aux_axis_origin 0 0)
     (grid_origin 20 20)
-    (visible_elements FFFFFF7F)
+    (visible_elements 7FFFFFFF)
     (pcbplotparams
       (layerselection 0x010f0_80000001)
       (usegerberextensions false)
