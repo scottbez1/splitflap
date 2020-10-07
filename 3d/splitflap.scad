@@ -192,6 +192,7 @@ connector_bracket_thickness = captive_nut_inset - thickness - 0.2;
 connector_bracket_width = enclosure_width - enclosure_wall_to_wall_width + thickness*2 + connector_bracket_thickness*2;
 connector_bracket_overlap = 4;
 connector_bracket_clearance = 0.10;
+connector_bracket_depth_clearance = 0.20;
 
 
 mounting_hole_inset = m4_button_head_diameter/2 + 2;
@@ -433,10 +434,10 @@ module connector_bracket() {
                 square([connector_bracket_width - connector_bracket_thickness*2, connector_bracket_length_outer - connector_bracket_length_inner + eps]);
             }
             translate([connector_bracket_thickness - connector_bracket_clearance/2, -eps]) {
-                square([thickness + connector_bracket_clearance, connector_bracket_length_outer - connector_bracket_overlap + eps]);
+                square([thickness + connector_bracket_clearance, connector_bracket_length_outer - connector_bracket_overlap + connector_bracket_depth_clearance + eps]);
             }
             translate([connector_bracket_width - connector_bracket_thickness - thickness - connector_bracket_clearance/2, -eps]) {
-                square([thickness + connector_bracket_clearance, connector_bracket_length_outer - connector_bracket_overlap + eps]);
+                square([thickness + connector_bracket_clearance, connector_bracket_length_outer - connector_bracket_overlap + connector_bracket_depth_clearance + eps]);
             }
         }
     }
