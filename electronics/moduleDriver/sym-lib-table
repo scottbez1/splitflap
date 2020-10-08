@@ -10,4 +10,5 @@
   (lib (name LCD)(type Legacy)(uri ${KIPRJMOD}/lib/LCD.lib)(options "")(descr ""))
   (lib (name LevelShifterModule)(type Legacy)(uri ${KIPRJMOD}/lib/LevelShifterModule.lib)(options "")(descr ""))
   (lib (name RS485Module)(type Legacy)(uri ${KIPRJMOD}/lib/RS485Module.lib)(options "")(descr ""))
+  (lib (name screw_terminal_01x03_power_output)(type Legacy)(uri ${KIPRJMOD}/lib/screw_terminal_01x03_power_output.lib)(options "")(descr ""))
 )

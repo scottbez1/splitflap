@@ -1,0 +1,32 @@
+EESchema-LIBRARY Version 2.4
+#encoding utf-8
+#
+# Screw_Terminal_01x03
+#
+DEF Screw_Terminal_01x03 J 0 40 Y N 1 F N
+F0 "J" 0 200 50 H V C CNN
+F1 "Screw_Terminal_01x03" 0 -200 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+$FPLIST
+ TerminalBlock*:*
+$ENDFPLIST
+DRAW
+C 0 -100 25 1 1 6 N
+C 0 0 25 1 1 6 N
+C 0 100 25 1 1 6 N
+T 900 100 0 50 0 0 0 POWER Normal 0 C C
+S -50 150 50 -150 1 1 10 f
+P 2 1 1 6 -21 -87 13 -120 N
+P 2 1 1 6 -21 13 13 -20 N
+P 2 1 1 6 -21 113 13 80 N
+P 2 1 1 6 -14 -80 20 -113 N
+P 2 1 1 6 -14 20 20 -13 N
+P 2 1 1 6 -14 120 20 87 N
+X Pin_1 1 -200 100 150 R 50 50 1 1 w
+X Pin_2 2 -200 0 150 R 50 50 1 1 w
+X Pin_3 3 -200 -100 150 R 50 50 1 1 w
+ENDDRAW
+ENDDEF
+#
+#End Library
