@@ -1022,8 +1022,9 @@ if (render_3d) {
     panel_height = enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width + kerf_width + spool_strut_width + kerf_width;
     projection_renderer(render_index=render_index, render_etch=render_etch, kerf_width=kerf_width, panel_height=panel_height, panel_horizontal=panel_horizontal, panel_vertical=panel_vertical) {
         // Main enclosure (left, right, front)
-        translate([0, 0])
-            enclosure_left();
+        mirror([1, 0, 0])
+            translate([-enclosure_height, 0])
+                enclosure_left();
         translate([0, enclosure_length + kerf_width])
             enclosure_right();
         translate([0, enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width - enclosure_horizontal_inset])
@@ -1078,7 +1079,9 @@ if (render_3d) {
             flap_spool_complete(captive_nut=true);
 
         // Spool retaining wall in motor window
-        translate([enclosure_height_lower + 28byj48_shaft_offset - 28byj48_chassis_radius + (28byj48_chassis_radius + motor_backpack_extent)/2, enclosure_length - front_forward_offset - 28byj48_chassis_radius - motor_hole_slop/2 + spool_strut_width/2 + kerf_width])
-            spool_retaining_wall(m4_bolt_hole=true);
+        mirror([1, 0, 0])
+            translate([-enclosure_height, 0])
+                translate([enclosure_height_lower + 28byj48_shaft_offset - 28byj48_chassis_radius + (28byj48_chassis_radius + motor_backpack_extent)/2, enclosure_length - front_forward_offset - 28byj48_chassis_radius - motor_hole_slop/2 + spool_strut_width/2 + kerf_width])
+                    spool_retaining_wall(m4_bolt_hole=true);
     }
 }
