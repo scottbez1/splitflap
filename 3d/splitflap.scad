@@ -1025,8 +1025,9 @@ if (render_3d) {
         mirror([1, 0, 0])
             translate([-enclosure_height, 0])
                 enclosure_left();
-        translate([0, enclosure_length + kerf_width])
-            enclosure_right();
+        mirror([1, 0, 0])
+            translate([-enclosure_height, enclosure_length + kerf_width])
+                enclosure_right();
         translate([0, enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width - enclosure_horizontal_inset])
             rotate([0, 0, -90])
                 enclosure_front();
@@ -1047,8 +1048,10 @@ if (render_3d) {
                     enclosure_bottom_etch();
 
         // Spool struts cut out of right side
-        translate([thickness*2 + 5, enclosure_length + kerf_width + enclosure_length_right - spool_strut_width/2 - 3, thickness])
-            spool_strut();
+        mirror([1, 0, 0])
+            translate([-enclosure_height, 0])
+                translate([thickness*2 + 5, enclosure_length + kerf_width + enclosure_length_right - spool_strut_width/2 - 3, thickness])
+                    spool_strut();
 
         // Spool struts at the top
         spool_strut_y_offset = enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width + kerf_width + spool_strut_width/2;
