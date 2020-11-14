@@ -1028,9 +1028,10 @@ if (render_3d) {
         mirror([1, 0, 0])
             translate([-enclosure_height, enclosure_length + kerf_width])
                 enclosure_right();
-        translate([0, enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width - enclosure_horizontal_inset])
-            rotate([0, 0, -90])
-                enclosure_front();
+        mirror([1, 0, 0])
+            translate([-enclosure_height, enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width - enclosure_horizontal_inset])
+                rotate([0, 0, -90])
+                    enclosure_front();
 
         // Top and bottom
         translate([enclosure_height + kerf_width + enclosure_length_right, enclosure_wall_to_wall_width + kerf_width])
@@ -1075,7 +1076,7 @@ if (render_3d) {
 
         // Flap spools in flap window
         flap_spool_y_off = enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width - front_window_right_inset - enclosure_horizontal_inset - front_window_width/2;
-        flap_spool_x_off = spool_outer_radius + enclosure_height_lower - front_window_lower + kerf_width + 2;
+        flap_spool_x_off = spool_outer_radius + enclosure_height_upper - front_window_upper + kerf_width + 2;
         translate([flap_spool_x_off, flap_spool_y_off])
             flap_spool_complete(motor_shaft=true, magnet_hole=true);
         translate([flap_spool_x_off + spool_outer_radius*2 + 2, flap_spool_y_off])
