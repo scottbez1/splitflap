@@ -163,6 +163,9 @@ enclosure_horizontal_rear_margin = thickness; // minumum distance between the fa
 
 enclosure_length = front_forward_offset + 28byj48_mount_center_offset + m4_hole_diameter/2 + enclosure_horizontal_rear_margin;
 
+// distance from the outside spool face to the inside of the left enclosure
+pcb_to_spool = enclosure_wall_to_wall_width - front_window_width - thickness + spool_width_slop/2;
+
 
 // Enclosure tabs: front/back
 num_front_tabs = 2;
@@ -886,7 +889,7 @@ module split_flap_3d(letter, include_connector) {
         translate([enclosure_wall_to_wall_width + eps, -pcb_hole_to_sensor_x, -magnet_hole_offset - pcb_hole_to_sensor_y]) {
             rotate([0, 90, 0]) {
                 rotate([0, 0, 90]) {
-                    pcb();
+                    pcb(pcb_to_spool);
                     translate([0, 0, -thickness - 2 * eps]) {
                         standard_m4_bolt(nut_distance=thickness + pcb_thickness + 4*eps);
                     }
