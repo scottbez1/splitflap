@@ -40,6 +40,11 @@ pcb_edge_to_hole_y = 4.572;
 pcb_adjustment_range = 4;
 pcb_hole_radius = m4_hole_diameter/2;
 
+// Jig dimensions
+pcb_jig_align_thickness = 2;
+pcb_jig_align_length = 0;  // past the PCB thickness
+pcb_jig_align_clearance = 0.25;  // on x, around the PCB
+
 
 // Computed dimensions
 pcb_hole_to_sensor_x = pcb_hole_to_sensor_pin_1_x - sensor_pin_pitch;
@@ -58,7 +63,7 @@ pcb_sensor_pin_width = 0.43;
 
 
 // 3D PCB module, origin at the center of the mounting hole on the bottom surface of the PCB
-module pcb(pcb_to_spool) {
+module pcb(pcb_to_spool, render_jig=false) {
     color([0, 0.5, 0]) {
         linear_extrude(height=pcb_thickness) {
             difference() {
@@ -114,6 +119,14 @@ module pcb(pcb_to_spool) {
             cube([hall_effect_width, hall_effect_height, hall_effect_thickness]);
         }
     }
+
+    // Jig
+    if(render_jig) {
+        color([1, 1, 0])
+        translate([-pcb_edge_to_hole_x - pcb_jig_align_thickness - pcb_jig_align_clearance, pcb_hole_to_sensor_pin_1_y + pcb_sensor_pin_width/2 + thickness, -pcb_to_sensor(pcb_to_spool)])
+        rotate([90, 0, 0])
+            sensor_jig(pcb_to_spool);
+    }
 }
 
 // 2D cutouts needed to mount the PCB module, origin at the center of the mounting hole
@@ -152,3 +165,17 @@ module hull_slide() {
     }
 }
 
+function pcb_to_sensor(pcb_to_spool) = pcb_to_spool - sensor_spool_distance - hall_effect_thickness;  // using sensor rear face
+function sensor_jig_height(pcb_to_spool) = pcb_to_sensor(pcb_to_spool) + pcb_jig_align_length + pcb_thickness;
+function sensor_jig_width(pcb_to_spool) = pcb_length + (pcb_jig_align_thickness + pcb_jig_align_clearance) * 2;
+
+module sensor_jig(pcb_to_spool) {
+    linear_extrude(thickness) {
+        union() {
+            square([sensor_jig_width(pcb_to_spool), pcb_to_sensor(pcb_to_spool)]);  // main body
+            square([pcb_jig_align_thickness, sensor_jig_height(pcb_to_spool)]);  // alignment edge, left
+            translate([sensor_jig_width(pcb_to_spool) - pcb_jig_align_thickness, 0])
+            square([pcb_jig_align_thickness, sensor_jig_height(pcb_to_spool)]);  // alignment edge, right
+        }
+    }
+}

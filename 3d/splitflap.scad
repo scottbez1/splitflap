@@ -40,6 +40,7 @@ render_units = len(render_letters);
 render_unit_separation = 0;
 render_spool = true;
 render_pcb = true;
+render_sensor_jig = false;
 render_bolts = true;
 render_motor = true;
 
@@ -889,7 +890,7 @@ module split_flap_3d(letter, include_connector) {
         translate([enclosure_wall_to_wall_width + eps, -pcb_hole_to_sensor_x, -magnet_hole_offset - pcb_hole_to_sensor_y]) {
             rotate([0, 90, 0]) {
                 rotate([0, 0, 90]) {
-                    pcb(pcb_to_spool);
+                    pcb(pcb_to_spool, render_sensor_jig);
                     translate([0, 0, -thickness - 2 * eps]) {
                         standard_m4_bolt(nut_distance=thickness + pcb_thickness + 4*eps);
                     }
@@ -1083,5 +1084,10 @@ if (render_3d) {
         // Spool retaining wall in motor window
         translate([enclosure_height_lower + 28byj48_shaft_offset - 28byj48_chassis_radius + (28byj48_chassis_radius + motor_backpack_extent)/2, enclosure_length - front_forward_offset - 28byj48_chassis_radius - motor_hole_slop/2 + spool_strut_width/2 + kerf_width])
             spool_retaining_wall(m4_bolt_hole=true);
+
+        // Sensor soldering jig
+        translate([enclosure_height_lower + 28byj48_shaft_offset - 28byj48_chassis_radius + (28byj48_chassis_radius + motor_backpack_extent)/2 + sensor_jig_width(pcb_to_spool)/2, enclosure_length - front_forward_offset + 28byj48_chassis_radius + motor_hole_slop/2 - kerf_width])
+            rotate([0, 0, 180])
+                sensor_jig(pcb_to_spool);
     }
 }
