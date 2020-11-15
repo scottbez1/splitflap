@@ -213,6 +213,7 @@ echo(front_forward_offset=front_forward_offset);
 echo(flap_exclusion_radius=exclusion_radius);
 echo(flap_hole_radius=flap_hole_radius);
 echo(flap_notch=flap_notch);
+echo(pcb_to_sensor=pcb_to_sensor(pcb_to_spool));
 
 
 module standard_m4_bolt(nut_distance=-1) {
