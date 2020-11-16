@@ -3,4 +3,8 @@
   (lib (name MountingHoles)(type KiCad)(uri "$(KIPRJMOD)/../lib/MountingHoles.pretty")(options "")(descr ""))
   (lib (name PinHeaders)(type KiCad)(uri "$(KIPRJMOD)/../lib/PinHeaders.pretty")(options "")(descr ""))
   (lib (name Mega2560Shield)(type KiCad)(uri ${KIPRJMOD}/lib/Mega2560Shield.pretty)(options "")(descr ""))
+  (lib (name ULN2003AModule)(type KiCad)(uri ${KIPRJMOD}/lib/ULN2003AModule.pretty)(options "")(descr ""))
+  (lib (name ST7789)(type KiCad)(uri ${KIPRJMOD}/lib/ST7789.pretty)(options "")(descr ""))
+  (lib (name INA219)(type KiCad)(uri ${KIPRJMOD}/lib/INA219.pretty)(options "")(descr ""))
+  (lib (name ESP32)(type KiCad)(uri ${KIPRJMOD}/lib/ESP32.pretty)(options "")(descr ""))
 )
