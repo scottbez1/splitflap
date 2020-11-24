@@ -35,7 +35,30 @@ module flap_spool(flaps, flap_hole_radius, flap_hole_separation, outset, height)
     } else {
         flap_spool_2d();
     }
+}
 
+module flap_spool_home_indicator(flaps, flap_hole_radius, flap_hole_separation, outset, height) {
+    pitch_radius = flap_spool_pitch_radius(flaps, flap_hole_radius, flap_hole_separation);
+    outer_radius = flap_spool_outer_radius(flaps, flap_hole_radius, flap_hole_separation, outset);
+
+    module flap_spool_home_indicator_2d() {
+        rotate([0, 0, 90])
+        translate([cos(0) * pitch_radius, sin(0) * pitch_radius])  // pitch_radius, 0
+        translate([-flap_hole_radius * 2, 0])
+        hull() {
+            circle(r=flap_hole_radius/2, $fn=30);
+            translate([-flap_hole_radius * 1.25, 0])
+            circle(r=flap_hole_radius/2, $fn=30);
+        }
+    }
+
+    if (height > 0) {
+        // convexity parameter fixes 'difference()' face polarity in preview mode... somehow
+        linear_extrude(height, convexity=2)
+            flap_spool_home_indicator_2d();
+    } else {
+        flap_spool_home_indicator_2d();
+    }
 }
 
 function flap_spool_pitch_radius(flaps, flap_hole_radius, separation) = 

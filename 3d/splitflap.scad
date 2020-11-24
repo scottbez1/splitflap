@@ -127,6 +127,7 @@ spool_strut_tab_outset=8;
 spool_strut_width = (spool_strut_tab_outset + thickness/2) * 2;
 spool_strut_length = spool_width;
 spool_strut_inner_length = spool_width - 3 * thickness;
+spool_etch_depth = 0.1;  // for 3D render
 
 spool_strut_exclusion_radius = sqrt((spool_strut_tab_outset+thickness/2)*(spool_strut_tab_outset+thickness/2) + (spool_strut_tab_width/2)*(spool_strut_tab_width/2));
 
@@ -302,7 +303,7 @@ module spool_struts() {
 
 
 module flap_spool_complete(captive_nut=false, motor_shaft=false, magnet_hole=false) {
-    linear_extrude(thickness) {
+    linear_extrude(thickness, convexity=10) {  // 'convexity' to fix rendering errors with etch 'difference()' result
         difference() {
             flap_spool(num_flaps, flap_hole_radius, flap_hole_separation, flap_spool_outset,
                     height=0);
@@ -324,6 +325,11 @@ module flap_spool_complete(captive_nut=false, motor_shaft=false, magnet_hole=fal
             }
         }
     }
+}
+
+module flap_spool_etch() {
+    color([0, 0, 0])
+    flap_spool_home_indicator(num_flaps, flap_hole_radius, flap_hole_separation, flap_spool_outset, spool_etch_depth);
 }
 
 module spool_retaining_wall(m4_bolt_hole=false) {
@@ -949,10 +955,13 @@ module split_flap_3d(letter, include_connector) {
             spool_struts();
 
             // motor spool
-            color(assembly_color) {
-                translate([spool_width - thickness + 5*spool_horizontal_explosion, 0, 0]) {
-                    rotate([0, 90, 0]) {
-                        flap_spool_complete(motor_shaft=true, magnet_hole=true);
+            translate([spool_width - thickness + 5*spool_horizontal_explosion, 0, 0]) {
+                rotate([0, 90, 0]) {
+                    difference() {
+                        color(assembly_color)
+                            flap_spool_complete(motor_shaft=true, magnet_hole=true);
+                        translate([0, 0, -eps])
+                            flap_spool_etch();
                     }
                 }
             }
@@ -963,10 +972,13 @@ module split_flap_3d(letter, include_connector) {
                     }
                 }
             }
-            color(assembly_color) {
-                translate([-5*spool_horizontal_explosion, 0, 0]) {
-                    rotate([0, 90, 0]) {
-                        flap_spool_complete(captive_nut=true);
+            translate([-5*spool_horizontal_explosion, 0, 0]) {
+                rotate([0, 90, 0]) {
+                    difference() {
+                        color(assembly_color)
+                            flap_spool_complete(captive_nut=true);
+                        translate([0, 0, -spool_etch_depth + thickness + eps])
+                            flap_spool_etch();
                     }
                 }
             }
@@ -1076,6 +1088,16 @@ if (render_3d) {
             flap_spool_complete(motor_shaft=true, magnet_hole=true);
         translate([flap_spool_x_off + spool_outer_radius*2 + 2, flap_spool_y_off])
             flap_spool_complete(captive_nut=true);
+
+        // Flap spool etching
+        laser_etch() {
+            translate([flap_spool_x_off, flap_spool_y_off, thickness])
+                rotate([0, 0, 180])
+                    flap_spool_etch();
+            translate([flap_spool_x_off + spool_outer_radius*2 + 2, flap_spool_y_off, thickness])
+                rotate([0, 0, 180])
+                    flap_spool_etch();
+        }
 
         // Spool retaining wall in motor window
         translate([enclosure_height_lower + 28byj48_shaft_offset - 28byj48_chassis_radius + (28byj48_chassis_radius + motor_backpack_extent)/2, enclosure_length - front_forward_offset - 28byj48_chassis_radius - motor_hole_slop/2 + spool_strut_width/2 + kerf_width])
