@@ -41,6 +41,7 @@ pcb_adjustment_range = 4;
 pcb_hole_radius = m4_hole_diameter/2;
 
 // Jig dimensions
+pcb_jig_corner_fillet = 2;
 pcb_jig_align_thickness = 2;
 pcb_jig_align_length = 0;  // past the PCB thickness
 pcb_jig_align_clearance = 0.25;  // on x, around the PCB
@@ -171,12 +172,28 @@ function sensor_jig_height(pcb_to_spool) = pcb_to_sensor(pcb_to_spool) - pcb_jig
 function sensor_jig_width(pcb_to_spool) = pcb_length + (pcb_jig_align_thickness + pcb_jig_align_clearance) * 2;
 
 module sensor_jig(pcb_to_spool) {
+    module fillet() {
+        eps = 0.01;
+        difference() {
+            translate([-eps, -eps, 0])
+                square(pcb_jig_corner_fillet + eps);
+            translate([pcb_jig_corner_fillet, pcb_jig_corner_fillet, 0])
+                circle(r=pcb_jig_corner_fillet, $fn=20);
+        }
+    }
+
     linear_extrude(thickness) {
+        difference() {
         union() {
             square([sensor_jig_width(pcb_to_spool), pcb_to_sensor(pcb_to_spool) - pcb_jig_depth_clearance]);  // main body
             square([pcb_jig_align_thickness, sensor_jig_height(pcb_to_spool)]);  // alignment edge, left
             translate([sensor_jig_width(pcb_to_spool) - pcb_jig_align_thickness, 0])
             square([pcb_jig_align_thickness, sensor_jig_height(pcb_to_spool)]);  // alignment edge, right
+        }
+        fillet();
+        mirror([1, 0, 0])
+            translate([-sensor_jig_width(pcb_to_spool), 0, 0])
+                fillet();
         }
     }
 }
