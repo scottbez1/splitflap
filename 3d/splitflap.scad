@@ -1092,7 +1092,7 @@ if (render_3d) {
         // Flap spool etching
         laser_etch() {
             translate([flap_spool_x_off, flap_spool_y_off, thickness])
-                rotate([180, 0, 0])
+                mirror([0, 1, 0])
                 flap_spool_etch();
             translate([flap_spool_x_off + spool_outer_radius*2 + 2, flap_spool_y_off, thickness])
                 flap_spool_etch();
