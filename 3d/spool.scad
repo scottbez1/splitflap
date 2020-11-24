@@ -42,8 +42,10 @@ module flap_spool_home_indicator(flaps, flap_hole_radius, flap_hole_separation, 
     outer_radius = flap_spool_outer_radius(flaps, flap_hole_radius, flap_hole_separation, outset);
 
     module flap_spool_home_indicator_2d() {
-        rotate([0, 0, 90])
-        translate([cos(0) * pitch_radius, sin(0) * pitch_radius])  // pitch_radius, 0
+        angle = (360 / flaps) * round(0.25 * flaps);  // always point directly to a flap hole
+
+        translate([cos(angle) * pitch_radius, sin(angle) * pitch_radius])
+        rotate([0, 0, angle])
         translate([-flap_hole_radius * 2, 0])
         hull() {
             circle(r=flap_hole_radius/2, $fn=30);

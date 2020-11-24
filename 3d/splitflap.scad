@@ -1092,11 +1092,10 @@ if (render_3d) {
         // Flap spool etching
         laser_etch() {
             translate([flap_spool_x_off, flap_spool_y_off, thickness])
-                rotate([0, 0, 180])
-                    flap_spool_etch();
+                rotate([180, 0, 0])
+                flap_spool_etch();
             translate([flap_spool_x_off + spool_outer_radius*2 + 2, flap_spool_y_off, thickness])
-                rotate([0, 0, 180])
-                    flap_spool_etch();
+                flap_spool_etch();
         }
 
         // Spool retaining wall in motor window
