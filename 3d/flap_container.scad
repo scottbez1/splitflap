@@ -30,6 +30,9 @@ thumb_hole_diameter = 20.0;  // diameter for the thumb hole at the bottom of the
 pinch_cutout_width = 25.0;  // width of the 'pinch' opening for grabbing flaps
 pinch_cutout_offset = 12.5;  // offset from the bottom of the pinch hole to the bottom of the cavity
 
+band_slot_diameter = 10.0;  // diameter of the slot for the retaining band
+band_slot_depth = 2.5;  // depth of the retaining band slot, measured from the base to the peak
+
 fillet_case_corners = 3.0;  // bottom outside corner fillet
 fillet_flap_notch = 1.0;  // inside of flap notches, in cavity
 fillet_pinch_top = 5.0;  // at the top of the case, where the pinch cutout starts
@@ -155,10 +158,18 @@ module pinch_hole() {
     }
 }
 
+module band_slot() {
+    rotate([90, 0, 0])
+    translate([0, band_slot_depth - band_slot_diameter/2, -case_length/2 - eps])
+    linear_extrude(height=case_length + eps*2)
+    circle(r=band_slot_diameter/2, $fn=60);
+}
+
 
 difference() {
     case_body();
     flap_cavity();
     thumb_hole();
     pinch_hole();
+    band_slot();
 }
