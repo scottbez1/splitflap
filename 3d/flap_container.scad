@@ -31,6 +31,7 @@ pinch_cutout_width = 25.0;  // width of the 'pinch' opening for grabbing flaps
 pinch_cutout_offset = 12.5;  // offset from the bottom of the pinch hole to the bottom of the cavity
 
 fillet_case_corners = 3.0;  // bottom outside corner fillet
+fillet_flap_notch = 1.0;  // inside of flap notches, in cavity
 
 
 // Calculated Values
@@ -82,11 +83,48 @@ module case_body() {
 }
 
 module flap_cavity() {
+    module notch_fillet() {
+        mirror([1,0,0])
+        translate([flap_clearance - flap_notch_depth, flap_clearance + flap_pin_width/2])
+        intersection() {
+            square([flap_notch_depth, flap_notch_height_default]);  // limit to size of notch
+            fillet_tool(fillet_flap_notch);
+        }
+    }
+
+    module notch_top() {
+        mirror([0, 1, 0])
+        translate([0, -flap_pin_width - flap_notch_height_default])
+        children();
+    }
+
+    module notch_right() {
+        translate([flap_width, 0, 0])
+        mirror([1, 0, 0])
+        children();
+    }
+ 
     translate([0, 0, case_height - cavity_height])
     linear_extrude(height = cavity_height + eps)
-    flap_position()
-    offset(delta = flap_clearance)
-    flap_2d();
+    flap_position() {
+        offset(delta = flap_clearance)
+            flap_2d();
+
+        // left, notch bottom
+        notch_fillet();
+
+        // left, notch top
+        notch_top()
+            notch_fillet();
+
+        // right, notch bottom
+        notch_right()
+            notch_fillet();
+
+        notch_right()
+            notch_top()
+                notch_fillet();
+    }
 }
 
 module thumb_hole() {
