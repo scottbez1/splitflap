@@ -355,7 +355,7 @@ module flap_2d() {
     translate([0, -flap_pin_width/2, 0])
     difference() {
         union() {
-            square([flap_width, flap_height - flap_corner_radius + eps]);
+            square([flap_width, flap_height - flap_corner_radius]);
 
             // rounded corners
             hull() {
