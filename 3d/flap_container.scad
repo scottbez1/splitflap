@@ -36,6 +36,7 @@ band_slot_depth = 2.5;  // depth of the retaining band slot, measured from the b
 fillet_case_corners = 3.0;  // bottom outside corner fillet
 fillet_flap_notch = 1.0;  // inside of flap notches, in cavity
 fillet_pinch_top = 5.0;  // at the top of the case, where the pinch cutout starts
+fillet_thumb_hole = 1.0;  // 3D fillet on the top inside of the thumb hole
 
 
 // Calculated Values
@@ -134,7 +135,16 @@ module flap_cavity() {
 module thumb_hole() {
     translate([0, 0, -eps])
     linear_extrude(bottom_thickness + eps*2)
-    circle(r=thumb_hole_diameter/2, $fn=100);
+        circle(r=thumb_hole_diameter/2, $fn=100);
+}
+
+module thumb_hole_fillet() {
+    translate([0, 0, bottom_thickness]) {
+        rotate_extrude($fn = 100)
+            translate([thumb_hole_diameter/2, 0, 0])
+                rotate([180, 0, 0])
+                fillet_tool(fillet_thumb_hole);
+    }
 }
 
 module pinch_hole() {
@@ -170,6 +180,7 @@ difference() {
     case_body();
     flap_cavity();
     thumb_hole();
+        thumb_hole_fillet();
     pinch_hole();
     band_slot();
 }
