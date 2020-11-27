@@ -30,6 +30,8 @@ thumb_hole_diameter = 20.0;  // diameter for the thumb hole at the bottom of the
 pinch_cutout_width = 25.0;  // width of the 'pinch' opening for grabbing flaps
 pinch_cutout_offset = 12.5;  // offset from the bottom of the pinch hole to the bottom of the cavity
 
+fillet_case_corners = 3.0;  // bottom outside corner fillet
+
 
 // Calculated Values
 eps = 0.01;  // extra distance for through geometry
@@ -43,6 +45,15 @@ case_length = flap_height + flap_clearance * 2 + wall_thickness * 2;
 pinch_cutout_height = cavity_height - pinch_cutout_offset;  // total height of the cutout
 pinch_cutout_top_offset = case_height - cavity_height + pinch_cutout_offset + pinch_cutout_width/2;  // top of the case to the center of the pinch cutout circle
 
+module fillet_tool(radius) {
+    difference() {
+        translate([-eps, -eps])
+            square(radius + eps);
+        translate([radius, radius, 0])
+            circle(r=radius, $fn=100);
+    }
+}
+
 module flap_position() {
     translate([-flap_width/2, -(flap_height - flap_pin_width)/2, 0])
     children();
@@ -50,9 +61,24 @@ module flap_position() {
 
 module case_body() {
     linear_extrude(height = case_height)
-    flap_position()
-    offset(delta = wall_thickness + flap_clearance)
-    flap_2d(cut_tabs = false);
+    flap_position() {
+        difference() {
+            diff = wall_thickness + flap_clearance;
+            offset(delta = diff)
+                flap_2d(cut_tabs = false);
+
+            translate([0, -flap_pin_width/2]) {  // re-centering on bottom edge
+                 // bottom left corner fillet
+                translate([-diff, -diff])
+                    fillet_tool(fillet_case_corners);
+
+                // bottom right corner fillet
+                translate([-diff + case_width, -diff])
+                    mirror([1, 0, 0])
+                    fillet_tool(fillet_case_corners);
+            }
+        }
+    }
 }
 
 module flap_cavity() {
