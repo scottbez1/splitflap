@@ -32,6 +32,7 @@ pinch_cutout_offset = 12.5;  // offset from the bottom of the pinch hole to the 
 
 fillet_case_corners = 3.0;  // bottom outside corner fillet
 fillet_flap_notch = 1.0;  // inside of flap notches, in cavity
+fillet_pinch_top = 5.0;  // at the top of the case, where the pinch cutout starts
 
 
 // Calculated Values
@@ -139,8 +140,18 @@ module pinch_hole() {
     linear_extrude(height=case_length + eps*2)
     union() {
         translate([-pinch_cutout_width/2, 0, 0])
-        square([pinch_cutout_width, pinch_cutout_height - pinch_cutout_width/2 + eps]);
+            square([pinch_cutout_width, pinch_cutout_height - pinch_cutout_width/2 + eps]);
         circle(r=pinch_cutout_width/2, $fn=100);
+        
+        // left top fillet
+        translate([-pinch_cutout_width/2, pinch_cutout_height - pinch_cutout_width/2,0])
+            mirror([1, 1, 0])
+                fillet_tool(fillet_pinch_top);
+
+        // right top fillet
+        translate([pinch_cutout_width/2, pinch_cutout_height - pinch_cutout_width/2,0])
+            mirror([0, 1, 0])
+                fillet_tool(fillet_pinch_top);
     }
 }
 
