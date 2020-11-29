@@ -18,6 +18,8 @@ include <flap_dimensions.scad>
 use <splitflap.scad>
 
 num_flaps = 40;
+containers_x = 1;
+containers_y = 1;
 
 flap_thickness_allowance = 1 - flap_thickness;  // fudged, so all flaps are considered 1 mm thick
 cavity_top_allowance = 2;  // extra case height above the flaps
@@ -175,12 +177,23 @@ module band_slot() {
     circle(r=band_slot_diameter/2, $fn=60);
 }
 
+module flap_container() {
+    difference() {
+        case_body();
+        flap_cavity();
+        thumb_hole();
+            thumb_hole_fillet();
+        pinch_hole();
+        band_slot();
+    }
+}
 
-difference() {
-    case_body();
-    flap_cavity();
-    thumb_hole();
-        thumb_hole_fillet();
-    pinch_hole();
-    band_slot();
+union() {
+    for(x = [0 : containers_x - 1]) {
+        translate([x * (case_width - wall_thickness), 0])
+        for(y = [0 : containers_y - 1]) {
+            translate([0, y * (case_length - wall_thickness), 0])
+            flap_container();
+        }
+    }
 }
