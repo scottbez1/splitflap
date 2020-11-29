@@ -7,4 +7,5 @@
   (lib (name ST7789)(type KiCad)(uri ${KIPRJMOD}/lib/ST7789.pretty)(options "")(descr ""))
   (lib (name INA219)(type KiCad)(uri ${KIPRJMOD}/lib/INA219.pretty)(options "")(descr ""))
   (lib (name ESP32)(type KiCad)(uri ${KIPRJMOD}/lib/ESP32.pretty)(options "")(descr ""))
+  (lib (name RS485)(type KiCad)(uri ${KIPRJMOD}/lib/RS485.pretty)(options "")(descr ""))
 )
