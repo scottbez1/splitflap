@@ -238,7 +238,7 @@ module pcb_case_complete(columns=1, dual=false) {
         union() {
             pcb_case_multi(columns);
             if(dual) {
-                translate([case_width*columns - case_wall_thickness * (columns - 1), case_length * 2, 0])
+                translate([multi_case_width, multi_case_length, 0])
                 rotate([0, 0, 180])
                 pcb_case_multi(columns);
             }
