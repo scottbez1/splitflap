@@ -26,6 +26,7 @@ case_fillet_radius = 3;  // radius for the corner fillets on the outside of the 
 
 pcb_edge_clearance = 0.5;  // distance between the PCB and the case, XY
 pcb_depth_clearance = 2;  // distance above the PCB in the case (including the connector)
+pcb_hole_clearance = 0;  // clearance between the hole boss and the PCB hole edge, XY
 
 hall_effect_x_clearance = 1;  // distance between the hall effect sensor and the pocket walls, along X (less variability)
 hall_effect_y_clearance = 2;  // distance between the hall effect sensor and the pocket walls, along Y (more variability)
@@ -55,7 +56,8 @@ case_x_offset = pcb_edge_to_hole_x + combined_clearance;  // x offset from the o
 case_y_offset = case_width - pcb_edge_to_hole_y - combined_clearance;  // y offset from the origin to the left corner
 
 pcb_cutout_plane = case_height - pcb_cutout_depth;  // PCB cutout Z position, from bottom (origin)
-mounting_sphere_z = pcb_cutout_plane + pcb_thickness + mounting_boss_height - m4_hole_diameter/2;  // Z position of the mounting sphere boss
+mounting_boss_radius = m4_hole_diameter/2 - pcb_hole_clearance;  // radius for the extruded feature through the mounting hole
+mounting_sphere_z = pcb_cutout_plane + pcb_thickness + mounting_boss_height - mounting_boss_radius;  // Z position of the mounting sphere boss
 connector_cutout_depth = pcb_cutout_depth - connector_body_z_offset;  // cutout depth of the connector, from top
 
 
@@ -96,13 +98,13 @@ module fillet_case(w, h) {
 module mounting_boss() {
     union() {
         translate([0, 0, mounting_sphere_z])
-            sphere(r=m4_hole_diameter/2, $fn=30);
+            sphere(r=mounting_boss_radius, $fn=30);
 
         // if we need to make a column to extend it out
         if(mounting_sphere_z > pcb_cutout_plane) {
             translate([0, 0, pcb_cutout_plane])
                 linear_extrude(height=mounting_sphere_z - pcb_cutout_plane)
-                    circle(r=m4_hole_diameter/2, $fn=30);
+                    circle(r=mounting_boss_radius, $fn=30);
         }
     }
 }
