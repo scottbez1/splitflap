@@ -83,6 +83,7 @@ assembly_inner_radius = m4_hole_diameter/2;
 
 
 assembly_color = [.76, .60, .42];  // MDF, "c1996b"
+etch_color = [0, 0, 0];  // black, "000000"
 
 hardware_color = [0.75, 0.75, 0.8];  // steel, "bfbfcc"
 
@@ -348,7 +349,7 @@ module flap_spool_complete(captive_nut=false, motor_shaft=false, magnet_hole=fal
 }
 
 module flap_spool_etch() {
-    color([0, 0, 0])
+    color(etch_color)
     flap_spool_home_indicator(num_flaps, flap_hole_radius, flap_hole_separation, flap_spool_outset, spool_etch_depth);
 }
 
@@ -757,7 +758,7 @@ module enclosure_bottom() {
 }
 
 module enclosure_bottom_etch() {
-    color([0, 0, 0])
+    color(etch_color)
     linear_extrude(height=2, center=true) {
         translate([captive_nut_inset + m4_nut_length + 1, 1, thickness]) {
             text_label([str("rev. ", render_revision), render_date, "github.com/scottbez1/splitflap"]);
