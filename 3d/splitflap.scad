@@ -81,11 +81,19 @@ captive_nut_inset=6;
 
 assembly_inner_radius = m4_hole_diameter/2;
 
-assembly_color = [.76, .60, .42];
-assembly_color1 = [.882, .694, .486]; //"e1b17c";
-assembly_color2 = [.682, .537, .376]; //"ae8960";
-assembly_color3 = [.416, .325, .227]; //"6A533A";
-assembly_color4 = [.204, .161, .114]; //"34291D";
+
+assembly_color = [.76, .60, .42];  // MDF, "c1996b"
+
+
+// multiply two equal matricies by each element, limiting to a max of 1.0
+function color_multiply(x, y) = 
+  [ for(j=[0:len(x) - 1]) min(x[j] * y[j], 1.0) ];
+
+assembly_color1 = color_multiply(assembly_color, [1.161, 1.157, 1.157]);  // "e1b17c" with MDF
+assembly_color2 = color_multiply(assembly_color, [0.897, 0.895, 0.895]);  // "ae8960" with MDF
+assembly_color3 = color_multiply(assembly_color, [0.547, 0.542, 0.540]);  // "6a533a" with MDF
+assembly_color4 = color_multiply(assembly_color, [0.268, 0.268, 0.271]);  // "34291d" with MDF
+
 
 flap_rendered_angle = 90;
 
