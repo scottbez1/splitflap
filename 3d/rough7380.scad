@@ -26,27 +26,26 @@ module roughM4_7380(length) {
     sphere_offset = 1.2;  // Just a guess
     sphere_radius = sqrt(sphere_offset*sphere_offset + (head_diameter/2)*(head_diameter/2));
 
-    color([0.75, 0.75, 0.8]) {
-        difference() {
-            union() {
-                translate([0, 0, -eps]) {
-                    cylinder(h=length+eps, d=thread_diameter, $fn=30);
+
+    difference() {
+        union() {
+            translate([0, 0, -eps]) {
+                cylinder(h=length+eps, d=thread_diameter, $fn=30);
+            }
+            difference() {
+                translate([0, 0, sphere_offset]) {
+                    sphere(sphere_radius, $fn=30);
                 }
-                difference() {
-                    translate([0, 0, sphere_offset]) {
-                        sphere(sphere_radius, $fn=30);
-                    }
-                    translate([0, 0, sphere_radius]) {
-                        cube([sphere_radius*2 + eps, sphere_radius*2 + eps, sphere_radius*2 + eps], center=true);
-                    }
-                    translate([0, 0, -sphere_radius - head_length]) {
-                        cube([sphere_radius*2 + eps, sphere_radius*2 + eps, sphere_radius*2 + eps], center=true);
-                    }
+                translate([0, 0, sphere_radius]) {
+                    cube([sphere_radius*2 + eps, sphere_radius*2 + eps, sphere_radius*2 + eps], center=true);
+                }
+                translate([0, 0, -sphere_radius - head_length]) {
+                    cube([sphere_radius*2 + eps, sphere_radius*2 + eps, sphere_radius*2 + eps], center=true);
                 }
             }
-            translate([0, 0, -head_length-eps]) {
-                cylinder(h=driving_depth+eps, r=driving_radius, $fn=6);
-            }
+        }
+        translate([0, 0, -head_length-eps]) {
+            cylinder(h=driving_depth+eps, r=driving_radius, $fn=6);
         }
     }
 }

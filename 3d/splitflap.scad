@@ -84,6 +84,9 @@ assembly_inner_radius = m4_hole_diameter/2;
 
 assembly_color = [.76, .60, .42];  // MDF, "c1996b"
 
+bolt_color = [0.75, 0.75, 0.8];  // steel, "bfbfcc"
+nut_color = [0.70, 0.70, 0.72];  // steel, "b2b2b7"
+
 
 // multiply two equal matricies by each element, limiting to a max of 1.0
 function color_multiply(x, y) = 
@@ -228,9 +231,10 @@ echo(flap_notch_height=flap_notch_height);
 
 module standard_m4_bolt(nut_distance=-1) {
     if (render_bolts) {
-        roughM4_7380(10);
+        color(bolt_color)
+            roughM4_7380(10);
         if (nut_distance >= 0) {
-            color([0.70, 0.70, 0.72]) {
+            color(nut_color) {
                 translate([0, 0, nut_distance]) {
                     linear_extrude(m4_nut_length) {
                         difference() {
