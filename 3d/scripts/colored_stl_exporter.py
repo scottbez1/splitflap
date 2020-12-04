@@ -47,7 +47,8 @@ USE_INCLUDE_REGEX = re.compile(r'\b(?P<statement>use|include)\s*<\s*(?P<filename
 COLOR_REGEX = re.compile(r'\bcolor\s*\(')
 EXTRACTED_COLOR_REGEX = re.compile(r'ECHO: extracted_color = (?P<color>.*)')
 
-RGB_COLOR_REGEX = re.compile(r'\[(?P<r>.*?),(?P<g>.*?),(?P<b>.*?)\]')
+# RGB_COLOR_REGEX = re.compile(r'\[(?P<r>.*?),(?P<g>.*?),(?P<b>.*?)\]')
+RGBA_COLOR_REGEX = re.compile(r'\[(?P<r>[0-9.]*), *?(?P<g>[0-9.]*), *?(?P<b>[0-9.]*)(?:, *)?(?P<a>[0-9.]*)?\]')
 
 
 class ColoredStlExporter(object):
@@ -200,13 +201,18 @@ module color_extractor(c) {
 
     @staticmethod
     def parse_openscad_color(color):
-        match = RGB_COLOR_REGEX.search(color)
+        match = RGBA_COLOR_REGEX.search(color)
         if match:
-            return [
+            color_out = [
                 float(match.group('r')),
                 float(match.group('g')),
                 float(match.group('b')),
             ]
+            if(match.group('a')):
+               color_out.append(float(match.group('a')))
+
+            return color_out
+
         if '"' in color and webcolors:
             try:
                 c = webcolors.name_to_rgb(color[1:-1]) # skip the ""
