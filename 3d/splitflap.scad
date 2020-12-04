@@ -84,8 +84,7 @@ assembly_inner_radius = m4_hole_diameter/2;
 
 assembly_color = [.76, .60, .42];  // MDF, "c1996b"
 
-bolt_color = [0.75, 0.75, 0.8];  // steel, "bfbfcc"
-nut_color = [0.70, 0.70, 0.72];  // steel, "b2b2b7"
+hardware_color = [0.75, 0.75, 0.8];  // steel, "bfbfcc"
 
 
 // multiply two equal matricies by each element, limiting to a max of 1.0
@@ -96,6 +95,9 @@ assembly_color1 = color_multiply(assembly_color, [1.161, 1.157, 1.157, 1.0]);  /
 assembly_color2 = color_multiply(assembly_color, [0.897, 0.895, 0.895, 1.0]);  // "ae8960" with MDF
 assembly_color3 = color_multiply(assembly_color, [0.547, 0.542, 0.540, 1.0]);  // "6a533a" with MDF
 assembly_color4 = color_multiply(assembly_color, [0.268, 0.268, 0.271, 1.0]);  // "34291d" with MDF
+
+bolt_color = hardware_color;
+nut_color = color_multiply(hardware_color, [0.933, 0.933, 0.9, 1.0]);  // "b2b2b7" with steel
 
 
 flap_rendered_angle = 90;
