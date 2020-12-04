@@ -89,10 +89,10 @@ assembly_color = [.76, .60, .42];  // MDF, "c1996b"
 function color_multiply(x, y) = 
   [ for(j=[0:len(x) - 1]) min(x[j] * y[j], 1.0) ];
 
-assembly_color1 = color_multiply(assembly_color, [1.161, 1.157, 1.157]);  // "e1b17c" with MDF
-assembly_color2 = color_multiply(assembly_color, [0.897, 0.895, 0.895]);  // "ae8960" with MDF
-assembly_color3 = color_multiply(assembly_color, [0.547, 0.542, 0.540]);  // "6a533a" with MDF
-assembly_color4 = color_multiply(assembly_color, [0.268, 0.268, 0.271]);  // "34291d" with MDF
+assembly_color1 = color_multiply(assembly_color, [1.161, 1.157, 1.157, 1.0]);  // "e1b17c" with MDF
+assembly_color2 = color_multiply(assembly_color, [0.897, 0.895, 0.895, 1.0]);  // "ae8960" with MDF
+assembly_color3 = color_multiply(assembly_color, [0.547, 0.542, 0.540, 1.0]);  // "6a533a" with MDF
+assembly_color4 = color_multiply(assembly_color, [0.268, 0.268, 0.271, 1.0]);  // "34291d" with MDF
 
 
 flap_rendered_angle = 90;
