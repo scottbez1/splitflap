@@ -88,12 +88,15 @@ etch_color = [0, 0, 0];  // black, "000000"
 hardware_color = [0.75, 0.75, 0.8];  // steel, "bfbfcc"
 
 flap_color = [1, 1, 1];  // white, "ffffff"
-letter_color = [0, 0, 0];  // black, "000000"
 
 
 // multiply two equal matricies by each element, limiting to a max of 1.0
 function color_multiply(x, y) = 
   [ for(j=[0:len(x) - 1]) min(x[j] * y[j], 1.0) ];
+
+// inverts a color matrix by subtracting the input channel values from 1.0
+function color_invert(x) = 
+  [ for(j=[0:len(x) - 1]) (1 - x[j]) ];
 
 assembly_color1 = color_multiply(assembly_color, [1.161, 1.157, 1.157, 1.0]);  // "e1b17c" with MDF
 assembly_color2 = color_multiply(assembly_color, [0.897, 0.895, 0.895, 1.0]);  // "ae8960" with MDF
@@ -102,6 +105,8 @@ assembly_color4 = color_multiply(assembly_color, [0.268, 0.268, 0.271, 1.0]);  /
 
 bolt_color = hardware_color;
 nut_color = color_multiply(hardware_color, [0.933, 0.933, 0.9, 1.0]);  // "b2b2b7" with steel
+
+letter_color = color_invert(flap_color);  // inverse of the flap color, for contrast
 
 
 flap_rendered_angle = 90;
