@@ -87,6 +87,9 @@ etch_color = [0, 0, 0];  // black, "000000"
 
 hardware_color = [0.75, 0.75, 0.8];  // steel, "bfbfcc"
 
+flap_color = [1, 1, 1];  // white, "ffffff"
+letter_color = [0, 0, 0];  // black, "000000"
+
 
 // multiply two equal matricies by each element, limiting to a max of 1.0
 function color_multiply(x, y) = 
@@ -388,7 +391,7 @@ module flap_2d() {
 }
 
 module flap() {
-    color([1, 1, 1])
+    color(flap_color)
     translate([0, 0, -flap_thickness/2])
     linear_extrude(height=flap_thickness) {
         flap_2d();
@@ -403,7 +406,7 @@ module draw_letter(letter) {
 }
 
 module flap_letter(letter, half = 0) {
-    color([0, 0, 0])
+    color(letter_color)
     translate([0, 0, flap_thickness/2 + eps])
     linear_extrude(height=0.1, center=true) {
         if (half != 0) {  // trimming to top (1) or bottom (2)
