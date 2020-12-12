@@ -81,11 +81,34 @@ captive_nut_inset=6;
 
 assembly_inner_radius = m4_hole_diameter/2;
 
-assembly_color = [.76, .60, .42];
-assembly_color1 = [.882, .694, .486]; //"e1b17c";
-assembly_color2 = [.682, .537, .376]; //"ae8960";
-assembly_color3 = [.416, .325, .227]; //"6A533A";
-assembly_color4 = [.204, .161, .114]; //"34291D";
+
+// Rendering Colors
+assembly_color = [0.76, 0.60, 0.42];  // MDF, "c1996b"
+etch_color = [0, 0, 0];  // black, "000000"
+
+hardware_color = [0.75, 0.75, 0.8];  // steel, "bfbfcc"
+
+flap_color = [1, 1, 1];  // white, "ffffff"
+
+
+// multiply two equal matricies by each element, limiting to a max of 1.0
+function color_multiply(x, y) =
+    [ for(j=[0:len(x) - 1]) min(x[j] * y[j], 1.0) ];
+
+// inverts a color matrix by subtracting the input channel values from 1.0
+function color_invert(x) =
+    [ for(j=[0:len(x) - 1]) (1.0 - x[j]) ];
+
+assembly_color1 = color_multiply(assembly_color, [1.161, 1.157, 1.157, 1.0]);  // "e1b17c" with MDF
+assembly_color2 = color_multiply(assembly_color, [0.897, 0.895, 0.895, 1.0]);  // "ae8960" with MDF
+assembly_color3 = color_multiply(assembly_color, [0.547, 0.542, 0.540, 1.0]);  // "6a533a" with MDF
+assembly_color4 = color_multiply(assembly_color, [0.268, 0.268, 0.271, 1.0]);  // "34291d" with MDF
+
+bolt_color = hardware_color;
+nut_color = color_multiply(hardware_color, [0.933, 0.933, 0.9, 1.0]);  // "b2b2b7" with steel
+
+letter_color = color_invert(flap_color);  // inverse of the flap color, for contrast
+
 
 flap_rendered_angle = 90;
 
@@ -220,9 +243,10 @@ echo(flap_notch_height=flap_notch_height);
 
 module standard_m4_bolt(nut_distance=-1) {
     if (render_bolts) {
-        roughM4_7380(10);
+        color(bolt_color)
+            roughM4_7380(10);
         if (nut_distance >= 0) {
-            color([0.70, 0.70, 0.72]) {
+            color(nut_color) {
                 translate([0, 0, nut_distance]) {
                     linear_extrude(m4_nut_length) {
                         difference() {
@@ -334,7 +358,7 @@ module flap_spool_complete(captive_nut=false, motor_shaft=false, magnet_hole=fal
 }
 
 module flap_spool_etch() {
-    color([0, 0, 0])
+    color(etch_color)
     flap_spool_home_indicator(num_flaps, flap_hole_radius, flap_hole_separation, flap_spool_outset, spool_etch_depth);
 }
 
@@ -373,7 +397,7 @@ module flap_2d() {
 }
 
 module flap() {
-    color([1, 1, 1])
+    color(flap_color)
     translate([0, 0, -flap_thickness/2])
     linear_extrude(height=flap_thickness) {
         flap_2d();
@@ -388,7 +412,7 @@ module draw_letter(letter) {
 }
 
 module flap_letter(letter, half = 0) {
-    color([0, 0, 0])
+    color(letter_color)
     translate([0, 0, flap_thickness/2 + eps])
     linear_extrude(height=0.1, center=true) {
         if (half != 0) {  // trimming to top (1) or bottom (2)
@@ -743,7 +767,7 @@ module enclosure_bottom() {
 }
 
 module enclosure_bottom_etch() {
-    color([0, 0, 0])
+    color(etch_color)
     linear_extrude(height=2, center=true) {
         translate([captive_nut_inset + m4_nut_length + 1, 1, thickness]) {
             text_label([str("rev. ", render_revision), render_date, "github.com/scottbez1/splitflap"]);
