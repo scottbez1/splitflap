@@ -119,6 +119,7 @@ flap_width_slop = 0.5;  // amount of slop of the flap side to side between the 2
 spool_width_slop = 1;  // amount of slop for the spool assembly side-to-side inside the enclosure
 
 spool_tab_clearance = 0.10;  // for the tabs connecting the struts to the spool ends
+spool_retaining_clearance = 0.10;  // for the notches in the spool retaining wall
 spool_joint_clearance = 0.10;  // for the notched joints on the spool struts
 
 
@@ -371,7 +372,7 @@ module spool_retaining_wall(m4_bolt_hole=false) {
     linear_extrude(thickness) {
         difference() {
             square([spool_strut_width, spool_strut_width], center=true);
-            spool_strut_tab_holes();
+            spool_strut_tab_holes(clearance=spool_retaining_clearance);
             if (m4_bolt_hole) {
                 circle(r=m4_hole_diameter/2, $fn=30);
             }
