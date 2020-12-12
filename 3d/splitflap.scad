@@ -775,9 +775,21 @@ module enclosure_bottom() {
     }
 }
 
-module enclosure_bottom_etch() {
+module enclosure_bottom_etch_mirror(mirror_text) {
+    if(mirror_text) {
+        mirror([1, 0, 0])
+            translate([-enclosure_wall_to_wall_width, 0, 0])
+                children();
+    }
+    else {
+        children();
+    }
+}
+
+module enclosure_bottom_etch(mirror_text=false) {
     color(etch_color)
     linear_extrude(height=2, center=true) {
+        enclosure_bottom_etch_mirror(mirror_text)
         translate([captive_nut_inset + m4_nut_length + 1, 1, thickness]) {
             text_label([str("rev. ", render_revision), render_date, "github.com/scottbez1/splitflap"]);
         }
@@ -1115,7 +1127,7 @@ if (render_3d) {
         laser_etch()
             translate([enclosure_height + kerf_width, enclosure_wall_to_wall_width, thickness])
                 rotate([0, 0, -90])
-                    enclosure_bottom_etch();
+                    enclosure_bottom_etch(render_2d_mirror);
 
         // Spool struts cut out of right side
         laser_setup()
