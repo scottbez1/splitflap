@@ -47,6 +47,7 @@ render_motor = true;
 // 2d parameters:
 render_index = -1;
 render_etch = false;
+render_2d_mirror = false;
 
 // Panelization:
 panel_vertical = 0;
@@ -1066,6 +1067,16 @@ module laser_etch() {
     }
 }
 
+module laser_setup() {
+    if (render_2d_mirror) {
+        mirror([1, 0, 0])
+            children();
+    }
+    else {
+        children();
+    }
+}
+
 if (render_3d) {
     for (i = [0 : render_units - 1]) {
         translate([-enclosure_width/2 + (-(render_units-1) / 2 + i)*(enclosure_width + render_unit_separation), 0, 0])
@@ -1075,49 +1086,66 @@ if (render_3d) {
     panel_height = enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width + kerf_width + spool_strut_width + kerf_width;
     projection_renderer(render_index=render_index, render_etch=render_etch, kerf_width=kerf_width, panel_height=panel_height, panel_horizontal=panel_horizontal, panel_vertical=panel_vertical) {
         // Main enclosure (left, right, front)
+        laser_setup()
         translate([0, 0])
             enclosure_left();
+
+        laser_setup()
         translate([0, enclosure_length + kerf_width])
             enclosure_right();
+
+        laser_setup()
         translate([0, enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width - enclosure_horizontal_inset])
             rotate([0, 0, -90])
                 enclosure_front();
 
         // Top and bottom
+        laser_setup()
         translate([enclosure_height + kerf_width + enclosure_length_right, enclosure_wall_to_wall_width + kerf_width])
             rotate([0, 0, 90])
                 enclosure_top();
 
+        laser_setup()
         translate([enclosure_height + kerf_width, enclosure_wall_to_wall_width])
             rotate([0, 0, -90])
                 enclosure_bottom();
 
         // Bottom laser etching
+        laser_setup()
         laser_etch()
             translate([enclosure_height + kerf_width, enclosure_wall_to_wall_width, thickness])
                 rotate([0, 0, -90])
                     enclosure_bottom_etch();
 
         // Spool struts cut out of right side
+        laser_setup()
         translate([thickness*2 + 5, enclosure_length + kerf_width + enclosure_length_right - spool_strut_width/2 - 3, thickness])
             spool_strut();
 
         // Spool struts at the top
         spool_strut_y_offset = enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width + kerf_width + spool_strut_width/2;
+
+        laser_setup()
         translate([spool_strut_length, spool_strut_y_offset, thickness/2])
             rotate([0, 0, 180])
                 spool_strut();
+
+        laser_setup()
         translate([spool_strut_length*2 + kerf_width, spool_strut_y_offset, thickness/2])
             rotate([0, 0, 180])
                 spool_strut();
+
+        laser_setup()
         translate([spool_strut_length*3 + kerf_width*2, spool_strut_y_offset, thickness/2])
             rotate([0, 0, 180])
                 spool_strut();
 
         // Connector brackets on the top right
+        laser_setup()
         translate([enclosure_height + kerf_width, 2 * enclosure_wall_to_wall_width + 2 * kerf_width - thickness, 0])
             connector_bracket();
 
+        laser_setup()
         translate([enclosure_height + kerf_width + connector_bracket_width - connector_bracket_length_outer, 2 * enclosure_wall_to_wall_width + 3 * kerf_width - thickness + connector_bracket_width + connector_bracket_length_outer, 0])
             rotate([0,0,-90])
                 connector_bracket();
@@ -1125,12 +1153,17 @@ if (render_3d) {
         // Flap spools in flap window
         flap_spool_y_off = enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width - front_window_right_inset - enclosure_horizontal_inset - front_window_width/2;
         flap_spool_x_off = spool_outer_radius + enclosure_height_lower - front_window_lower + kerf_width + 2;
+
+        laser_setup()
         translate([flap_spool_x_off, flap_spool_y_off])
             flap_spool_complete(motor_shaft=true, magnet_hole=true);
+
+        laser_setup()
         translate([flap_spool_x_off + spool_outer_radius*2 + 2, flap_spool_y_off])
             flap_spool_complete(captive_nut=true);
 
         // Flap spool etching
+        laser_setup()
         laser_etch() {
             translate([flap_spool_x_off, flap_spool_y_off, thickness])
                 mirror([0, 1, 0])
@@ -1140,10 +1173,12 @@ if (render_3d) {
         }
 
         // Spool retaining wall in motor window
+        laser_setup()
         translate([enclosure_height_lower + 28byj48_shaft_offset - 28byj48_chassis_radius + (28byj48_chassis_radius + motor_backpack_extent)/2, enclosure_length - front_forward_offset - 28byj48_chassis_radius - motor_hole_slop/2 + spool_strut_width/2 + kerf_width])
             spool_retaining_wall(m4_bolt_hole=true);
 
         // Sensor soldering jig
+        laser_setup()
         translate([enclosure_height_lower + 28byj48_shaft_offset - 28byj48_chassis_radius + (28byj48_chassis_radius + motor_backpack_extent)/2 + sensor_jig_width(pcb_to_spool)/2, enclosure_length - front_forward_offset + 28byj48_chassis_radius + motor_hole_slop/2 - kerf_width])
             rotate([0, 0, 180])
                 sensor_jig(pcb_to_spool);
