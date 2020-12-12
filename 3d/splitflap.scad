@@ -164,7 +164,7 @@ magnet_hole_offset = (spool_strut_exclusion_radius + flap_pitch_radius)/2;
 
 28byj48_chassis_height_slop = 1;
 
-motor_shaft_under_radius = 0.1;
+motor_shaft_under_radius = 0.08;  // interference fit
 motor_slop_radius = 3;
 
 
