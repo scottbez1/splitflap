@@ -283,15 +283,15 @@ module m4_captive_nut(bolt_length=m4_bolt_length) {
 
 
 // ##### Struts for bracing spool #####
-module spool_strut_tab_hole(narrow) {
-    square([thickness + spool_tab_clearance, narrow ? spool_strut_tab_width_narrow + spool_tab_clearance : spool_strut_tab_width + spool_tab_clearance], center=true);
+module spool_strut_tab_hole(narrow, clearance) {
+    square([thickness + clearance, narrow ? spool_strut_tab_width_narrow + clearance : spool_strut_tab_width + clearance], center=true);
 }
-module spool_strut_tab_holes(narrow=false) {
+module spool_strut_tab_holes(narrow=false, clearance=spool_tab_clearance) {
     for (i=[0:3]) {
         angle = 90*i;
         translate([cos(angle)*spool_strut_tab_outset, sin(angle)*spool_strut_tab_outset])
             rotate([0,0,angle])
-                spool_strut_tab_hole(narrow);
+                spool_strut_tab_hole(narrow, clearance);
     }
 }
 module spool_strut() {
