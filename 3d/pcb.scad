@@ -64,16 +64,22 @@ pcb_connector_pin_tail_length = 3.05 + 2.5/2;
 pcb_sensor_pin_width = 0.43;
 
 
+module pcb_outline_2d(hole=true) {
+    difference() {
+        translate([-pcb_edge_to_hole_x, -pcb_height + pcb_edge_to_hole_y]) {
+            square([pcb_length, pcb_height]);
+        }
+        if(hole) {
+            circle(r=m4_hole_diameter/2, $fn=30);
+        }
+    }
+}
+
 // 3D PCB module, origin at the center of the mounting hole on the bottom surface of the PCB
 module pcb(pcb_to_spool, render_jig=false) {
     color([0, 0.5, 0]) {
         linear_extrude(height=pcb_thickness) {
-            difference() {
-                translate([-pcb_edge_to_hole_x, -pcb_height + pcb_edge_to_hole_y]) {
-                    square([pcb_length, pcb_height]);
-                }
-                circle(r=m4_hole_diameter/2, $fn=30);
-            }
+            pcb_outline_2d();
         }
     }
 
