@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-include<pcb.scad>;
+include<../pcb.scad>;
 
 render_pcb = false;  // draw PCB in position in case
 cases_per_row = 1;  // number of cases per each row
