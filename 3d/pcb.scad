@@ -16,12 +16,14 @@
 include <m4_dimensions.scad>;
 
 pcb_thickness = 1.6;
+sensor_spool_distance = 0.70;  // distance from the sensor to the face of the spool
 
 // From datasheet:
 hall_effect_height = (2.8 + 3.2) / 2;
 hall_effect_width = (3.9 + 4.3) / 2;
 hall_effect_thickness = (1.40 + 1.60) / 2;
 hall_effect_sensor_offset_y = hall_effect_height - 1.25;
+hall_effect_pin_length_max = 14.5;
 
 // From sensor.kicad_pcb:
 pcb_height = 16.256;
@@ -29,7 +31,6 @@ pcb_length = 16.256;
 pcb_hole_to_sensor_pin_1_x = 8.636;
 pcb_hole_to_sensor_pin_1_y = 1.27;
 sensor_pin_pitch = 1.27;
-sensor_pin_length = 8;
 pcb_hole_to_connector_pin_1_x = 8.636;
 pcb_hole_to_connector_pin_1_y = 8.636;
 connector_pin_pitch = 2.54;
@@ -38,6 +39,13 @@ pcb_edge_to_hole_y = 4.572;
 
 pcb_adjustment_range = 4;
 pcb_hole_radius = m4_hole_diameter/2;
+
+// Jig dimensions
+pcb_jig_corner_fillet = 2;
+pcb_jig_align_thickness = 2;
+pcb_jig_align_length = 0;  // past the PCB thickness
+pcb_jig_align_clearance = 0.25;  // on x, around the PCB
+pcb_jig_depth_clearance = 0.1;  // on y, from sensor to jig
 
 
 // Computed dimensions
@@ -57,7 +65,7 @@ pcb_sensor_pin_width = 0.43;
 
 
 // 3D PCB module, origin at the center of the mounting hole on the bottom surface of the PCB
-module pcb() {
+module pcb(pcb_to_spool, render_jig=false) {
     color([0, 0.5, 0]) {
         linear_extrude(height=pcb_thickness) {
             difference() {
@@ -89,11 +97,14 @@ module pcb() {
         }
     }
 
-
-
     // Sensor pins
     color([0.5, 0.5, 0.5]) {
-        translate([pcb_hole_to_sensor_pin_1_x - pcb_sensor_pin_width/2, pcb_hole_to_sensor_pin_1_y - pcb_sensor_pin_width/2, -sensor_pin_length + pcb_thickness + 0.1]) {
+        pin_extra_length = 0.1;  // pins excess sticking out from the back of the PCB
+        sensor_z_offset = pcb_to_spool - sensor_spool_distance - hall_effect_thickness/2 - 0.1;
+        sensor_pin_length = sensor_z_offset + pcb_thickness + pin_extra_length;
+        assert(sensor_pin_length < hall_effect_pin_length_max, "Warning: design is too thick to fit sensor");
+
+        translate([pcb_hole_to_sensor_pin_1_x - pcb_sensor_pin_width/2, pcb_hole_to_sensor_pin_1_y - pcb_sensor_pin_width/2, -sensor_z_offset]) {
             cube([pcb_sensor_pin_width, pcb_sensor_pin_width, sensor_pin_length]);
             translate([-sensor_pin_pitch, 0, 0]) {
                 cube([pcb_sensor_pin_width, pcb_sensor_pin_width, sensor_pin_length]);
@@ -106,9 +117,17 @@ module pcb() {
 
     // Sensor body
     color([0, 0, 0]) {
-        translate([pcb_hole_to_sensor_pin_1_x - sensor_pin_pitch - hall_effect_width/2, pcb_hole_to_sensor_pin_1_y, -sensor_pin_length - hall_effect_thickness/2 + pcb_thickness]) {
+        translate([pcb_hole_to_sensor_pin_1_x - sensor_pin_pitch - hall_effect_width/2, pcb_hole_to_sensor_pin_1_y, -pcb_to_spool + sensor_spool_distance]) {
             cube([hall_effect_width, hall_effect_height, hall_effect_thickness]);
         }
+    }
+
+    // Jig
+    if(render_jig) {
+        color([1, 1, 0])
+        translate([-pcb_edge_to_hole_x - pcb_jig_align_thickness - pcb_jig_align_clearance, pcb_hole_to_sensor_pin_1_y + pcb_sensor_pin_width/2 + thickness, -pcb_to_sensor(pcb_to_spool) + pcb_jig_depth_clearance])
+        rotate([90, 0, 0])
+            sensor_jig(pcb_to_spool);
     }
 }
 
@@ -148,3 +167,33 @@ module hull_slide() {
     }
 }
 
+function pcb_to_sensor(pcb_to_spool) = pcb_to_spool - sensor_spool_distance - hall_effect_thickness;  // using sensor rear face
+function sensor_jig_height(pcb_to_spool) = pcb_to_sensor(pcb_to_spool) - pcb_jig_depth_clearance + pcb_jig_align_length + pcb_thickness;
+function sensor_jig_width(pcb_to_spool) = pcb_length + (pcb_jig_align_thickness + pcb_jig_align_clearance) * 2;
+
+module sensor_jig(pcb_to_spool) {
+    module fillet() {
+        eps = 0.01;
+        difference() {
+            translate([-eps, -eps, 0])
+                square(pcb_jig_corner_fillet + eps);
+            translate([pcb_jig_corner_fillet, pcb_jig_corner_fillet, 0])
+                circle(r=pcb_jig_corner_fillet, $fn=20);
+        }
+    }
+
+    linear_extrude(thickness) {
+        difference() {
+        union() {
+            square([sensor_jig_width(pcb_to_spool), pcb_to_sensor(pcb_to_spool) - pcb_jig_depth_clearance]);  // main body
+            square([pcb_jig_align_thickness, sensor_jig_height(pcb_to_spool)]);  // alignment edge, left
+            translate([sensor_jig_width(pcb_to_spool) - pcb_jig_align_thickness, 0])
+            square([pcb_jig_align_thickness, sensor_jig_height(pcb_to_spool)]);  // alignment edge, right
+        }
+        fillet();
+        mirror([1, 0, 0])
+            translate([-sensor_jig_width(pcb_to_spool), 0, 0])
+                fillet();
+        }
+    }
+}
