@@ -375,11 +375,11 @@ module spool_retaining_wall(m4_bolt_hole=false) {
 }
 
 
-module flap_2d() {
+module flap_2d(cut_tabs = true) {
     translate([0, -flap_pin_width/2, 0])
     difference() {
         union() {
-            square([flap_width, flap_height - flap_corner_radius + eps]);
+            square([flap_width, flap_height - flap_corner_radius]);
 
             // rounded corners
             hull() {
@@ -389,10 +389,13 @@ module flap_2d() {
                     circle(r=flap_corner_radius, $fn=40);
             }
         }
-        translate([-eps, flap_pin_width])
-            square([eps + flap_notch_depth, flap_notch_height]);
-        translate([flap_width - flap_notch_depth, flap_pin_width])
-            square([eps + flap_notch_depth, flap_notch_height]);
+        // spool tabs
+        if(cut_tabs) {
+            translate([-eps, flap_pin_width])
+                square([eps + flap_notch_depth, flap_notch_height]);
+            translate([flap_width - flap_notch_depth, flap_pin_width])
+                square([eps + flap_notch_depth, flap_notch_height]);
+        }
     }
 }
 
