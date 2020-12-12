@@ -113,13 +113,13 @@ letter_color = color_invert(flap_color);  // inverse of the flap color, for cont
 
 flap_rendered_angle = 90;
 
-// Amount of slop of the flap side to side between the 2 spools
-flap_width_slop = 0.5;
 
-// Amount of slop for the spool assembly side-to-side inside the enclosure
-spool_width_slop = 1;
-spool_tab_clearance = 0.10;
-spool_joint_clearance = 0.10;
+flap_width_slop = 0.5;  // amount of slop of the flap side to side between the 2 spools
+
+spool_width_slop = 1;  // amount of slop for the spool assembly side-to-side inside the enclosure
+
+spool_tab_clearance = 0.10;  // for the tabs connecting the struts to the spool ends
+spool_joint_clearance = 0.10;  // for the notched joints on the spool struts
 
 
 num_flaps = 40;
