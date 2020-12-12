@@ -226,6 +226,10 @@ connector_bracket_depth_clearance = 0.20;
 
 mounting_hole_inset = m4_button_head_diameter/2 + 2;
 
+enclosure_indicator_inset = 3.0;  // inset on both X and Y
+enclosure_indicator_size = 1.75;  // symbol size
+enclosure_indicator_position_y = (enclosure_height - enclosure_vertical_inset - thickness) - enclosure_indicator_inset;
+
 echo(kerf_width=kerf_width);
 echo(enclosure_height=enclosure_height);
 echo(enclosure_height_upper=enclosure_height_upper);
@@ -482,6 +486,13 @@ module connector_bracket() {
     }
 }
 
+module enclosure_etch_style() {
+    color(etch_color)
+        translate([0, 0, thickness])
+            linear_extrude(height=0.1)
+                children();
+}
+
 module enclosure_front() {
     linear_extrude(height=thickness) {
         difference() {
@@ -502,6 +513,18 @@ module enclosure_front() {
                 front_tabs_negative();
         }
     }
+}
+
+module enclosure_front_etch() {
+    // alignment indicator, left side (circle)
+    enclosure_etch_style()
+        translate([enclosure_wall_to_wall_width - thickness - enclosure_indicator_inset, enclosure_indicator_position_y])
+            circle(r=enclosure_indicator_size/2, $fn=60);
+
+    // alignment indicator, right side (square)
+    enclosure_etch_style()
+        translate([thickness + enclosure_indicator_inset, enclosure_indicator_position_y])
+            square(enclosure_indicator_size, center=true);
 }
 
 // holes for 28byj-48 motor, centered around motor shaft
@@ -604,6 +627,13 @@ module enclosure_left() {
     }
 }
 
+module enclosure_left_etch() {
+    // alignment indicator (circle)
+    enclosure_etch_style()
+        translate([enclosure_indicator_position_y, enclosure_length - enclosure_indicator_inset])
+            circle(r=enclosure_indicator_size/2, $fn=60);
+}
+
 module shaft_centered_motor_hole() {
     margin = 5;
     width = 28byj48_mount_center_offset*2 + 3.5*2 + margin*2;
@@ -646,6 +676,13 @@ module enclosure_right() {
             }
         }
     }
+}
+
+module enclosure_right_etch() {
+    // alignment indicator (square)
+    enclosure_etch_style()
+        translate([enclosure_vertical_inset + thickness + enclosure_indicator_inset, enclosure_length_right - enclosure_indicator_inset])
+            square(enclosure_indicator_size, center=true);
 }
 
 module front_back_tabs() {
@@ -785,22 +822,52 @@ module enclosure_bottom_etch() {
 }
 
 module split_flap_3d(letter, include_connector) {
-    module positioned_front() {
+    module position_front() {
         translate([0, front_forward_offset + thickness, -enclosure_height_lower])
             rotate([90, 0, 0])
-                enclosure_front();
+                children();
+    }
+
+    module positioned_front() {
+        position_front()
+            enclosure_front();
+    }
+
+    module positioned_front_etch() {
+        position_front()
+            enclosure_front_etch();
+    }
+
+    module position_left() {
+        translate([enclosure_wall_to_wall_width, -enclosure_length + front_forward_offset, -enclosure_height_lower])
+            rotate([0, -90, 0])
+                children();
     }
 
     module positioned_left() {
-        translate([enclosure_wall_to_wall_width, -enclosure_length + front_forward_offset, -enclosure_height_lower])
-            rotate([0, -90, 0])
-                enclosure_left();
+        position_left()
+            enclosure_left();
+    }
+
+    module positioned_left_etch() {
+        position_left()
+            enclosure_left_etch();
+    }
+
+    module position_right() {
+        translate([0, -enclosure_length_right + front_forward_offset, enclosure_height_upper])
+            rotate([0, 90, 0])
+                children();
     }
 
     module positioned_right() {
-        translate([0, -enclosure_length_right + front_forward_offset, enclosure_height_upper])
-            rotate([0, 90, 0])
-                enclosure_right();
+        position_right()
+            enclosure_right();
+    }
+
+    module positioned_right_etch() {
+        position_right()
+            enclosure_right_etch();
     }
 
     module positioned_top() {
@@ -895,6 +962,9 @@ module split_flap_3d(letter, include_connector) {
                 positioned_top();
             color(assembly_color3)
                 positioned_bottom();
+            positioned_front_etch();
+            positioned_left_etch();
+            positioned_right_etch();
             positioned_bottom_etch();
             if (include_connector) {
                 color(assembly_color4)
@@ -913,6 +983,9 @@ module split_flap_3d(letter, include_connector) {
             %positioned_right();
             %positioned_top();
             %positioned_bottom();
+            %positioned_front_etch();
+            %positioned_left_etch();
+            %positioned_right_etch();
             %positioned_bottom_etch();
             if (include_connector) {
                 %positioned_top_connector();
@@ -1078,11 +1151,26 @@ if (render_3d) {
         // Main enclosure (left, right, front)
         translate([0, 0])
             enclosure_left();
+
+        laser_etch()
+        translate([0, 0])
+            enclosure_left_etch();
+
         translate([0, enclosure_length + kerf_width])
             enclosure_right();
+
+        laser_etch()
+        translate([0, enclosure_length + kerf_width])
+            enclosure_right_etch();
+
         translate([0, enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width - enclosure_horizontal_inset])
             rotate([0, 0, -90])
                 enclosure_front();
+
+        laser_etch()
+        translate([0, enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width - enclosure_horizontal_inset])
+            rotate([0, 0, -90])
+                enclosure_front_etch();
 
         // Top and bottom
         translate([enclosure_height + kerf_width + enclosure_length_right, enclosure_wall_to_wall_width + kerf_width])
