@@ -113,13 +113,14 @@ letter_color = color_invert(flap_color);  // inverse of the flap color, for cont
 
 flap_rendered_angle = 90;
 
-// Amount of slop of the flap side to side between the 2 spools
-flap_width_slop = 0.5;
 
-// Amount of slop for the spool assembly side-to-side inside the enclosure
-spool_width_slop = 1;
-spool_tab_clearance = 0.10;
-spool_joint_clearance = 0.10;
+flap_width_slop = 0.5;  // amount of slop of the flap side to side between the 2 spools
+
+spool_width_slop = 1;  // amount of slop for the spool assembly side-to-side inside the enclosure
+
+spool_tab_clearance = -0.02;  // for the tabs connecting the struts to the spool ends (interference fit)
+spool_retaining_clearance = 0.10;  // for the notches in the spool retaining wall
+spool_joint_clearance = 0.10;  // for the notched joints on the spool struts
 
 
 num_flaps = 40;
@@ -163,7 +164,7 @@ magnet_hole_offset = (spool_strut_exclusion_radius + flap_pitch_radius)/2;
 
 28byj48_chassis_height_slop = 1;
 
-motor_shaft_under_radius = 0.1;
+motor_shaft_under_radius = 0.08;  // interference fit
 motor_slop_radius = 3;
 
 
@@ -283,15 +284,15 @@ module m4_captive_nut(bolt_length=m4_bolt_length) {
 
 
 // ##### Struts for bracing spool #####
-module spool_strut_tab_hole(narrow) {
-    square([thickness + spool_tab_clearance, narrow ? spool_strut_tab_width_narrow + spool_tab_clearance : spool_strut_tab_width + spool_tab_clearance], center=true);
+module spool_strut_tab_hole(narrow, clearance) {
+    square([thickness + clearance, narrow ? spool_strut_tab_width_narrow + clearance : spool_strut_tab_width + clearance], center=true);
 }
-module spool_strut_tab_holes(narrow=false) {
+module spool_strut_tab_holes(narrow=false, clearance=spool_tab_clearance) {
     for (i=[0:3]) {
         angle = 90*i;
         translate([cos(angle)*spool_strut_tab_outset, sin(angle)*spool_strut_tab_outset])
             rotate([0,0,angle])
-                spool_strut_tab_hole(narrow);
+                spool_strut_tab_hole(narrow, clearance);
     }
 }
 module spool_strut() {
@@ -371,7 +372,7 @@ module spool_retaining_wall(m4_bolt_hole=false) {
     linear_extrude(thickness) {
         difference() {
             square([spool_strut_width, spool_strut_width], center=true);
-            spool_strut_tab_holes();
+            spool_strut_tab_holes(clearance=spool_retaining_clearance);
             if (m4_bolt_hole) {
                 circle(r=m4_hole_diameter/2, $fn=30);
             }
