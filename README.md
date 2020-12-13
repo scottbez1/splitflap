@@ -181,6 +181,15 @@ The `generate_gif.py` script runs multiple OpenSCAD instances in parallel to ren
 ##### STL models/web viewer #####
 The design can be rendered to a series of STL files (one per color used in the model) in order to be displayed in an [interactive web-based 3d viewer](https://scottbez1.github.io/splitflap/). Similar to the `projection_renderer` used to render individual components for laser-cutting, the [ColoredStlExporter](3d/scripts/colored_stl_exporter.py) detects all the colors used in the model and renders them one-by-one to separate STL files, along with a manifest that maps each STL file to its RGB color. The STL files and manifest are loaded using three.js to display an interactive model on a web site using WebGL. See this blog post for more details on how the export and three.js renderer work: [OpenSCAD Rendering Tricks, Part 3: Web viewer](http://scottbezek.blogspot.com/2016/08/openscad-rendering-tricks-part-3-web.html).
 
+#### 3D Printed Tools ####
+The project also includes a number of optional 3D printed designs to make assembly easier. These include:
+
+* [a flap scoring jig](3d/tools/scoring_jig.scad) for precisely marking the cut point when splitting CR80 cards
+* [a flap punch jig](3d/tools/punch_jig.scad) for aligning the punch when making the pin cutouts on either side of a flap
+* [a flap container](3d/tools/flap_container.scad) for storing and organizing stacks of completed flaps
+* [a sensor PCB holder](3d/tools/pcb_case.scad) for storing and protecting soldered sensor boards
+
+All of these designs are parametric and customizable within OpenSCAD. To print them, open up the relevant file in OpenSCAD and use `File -> Export -> Export as STL` to render the design as an STL file for your slicer.
 
 ### Driver Electronics ###
 The driver board is designed to plug into an Arduino like a shield, and can control 4 stepper motors.
