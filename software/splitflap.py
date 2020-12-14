@@ -80,6 +80,7 @@ class Splitflap(object):
         return self.character_list
 
     def set_text(self, text):
+        text = text[0:self.num_modules]  # trim to number of modules available
         for letter in text:
             assert self.in_character_list(letter), 'Unexpected letter: {!r}. Must be one of {!r}'.format(
                 letter,
