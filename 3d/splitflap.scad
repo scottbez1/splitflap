@@ -265,7 +265,7 @@ module rounded_square(size, center=false, r=0.0, $fn=$fn) {
     if(r <= 0.0) {
         square([width, height], center=center);
     } else {
-        radius = min(min(r, width/2), height/2);  // radius cannot be larger than hole
+        radius = min(min(r, width/2), height/2);  // radius cannot be larger than rectangle
         center_x = center ? 0 : width/2;
         center_y = center ? 0 : height/2;
 
