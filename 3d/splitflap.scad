@@ -231,6 +231,10 @@ zip_tie_width = 2.0;  // width of the zip-tie holes
 zip_tie_spacing = 6.5;  // spacing between each zip-tie hole, inside edges
 zip_tie_fillet = 0.5;  // radius of the rounded zip-tie hole corners
 
+enclosure_left_zip_side_inset = 5.0;  // inset from left for the bottom zip tie holes, edge to outside edge
+enclosure_left_zip_bottom_inset = 22.5;  // inset from bottom for the bottom zip tie holes, edge to group center
+
+
 echo(kerf_width=kerf_width);
 echo(enclosure_height=enclosure_height);
 echo(enclosure_height_upper=enclosure_height_upper);
@@ -641,6 +645,10 @@ module enclosure_left() {
                     }
                 }
             }
+
+            // Zip tie holes, sensor (leading to bottom)            
+            translate([enclosure_left_zip_bottom_inset, zip_tie_height/2 + enclosure_left_zip_side_inset, 0])
+                zip_tie_holes();
         }
     }
 }
