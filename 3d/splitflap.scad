@@ -258,7 +258,7 @@ echo(flap_notch_height=flap_notch_height);
 echo(pcb_to_sensor=pcb_to_sensor(pcb_to_spool));
 
 
-module rounded_square(size, center=false, r=0.0) {
+module rounded_square(size, center=false, r=0.0, $fn=$fn) {
     width  = size[0] == undef ? size : size[0];  // unpack vector if present
     height = size[1] == undef ? size : size[1];
 
@@ -268,17 +268,16 @@ module rounded_square(size, center=false, r=0.0) {
         radius = min(min(r, width/2), height/2);  // radius cannot be larger than hole
         center_x = center ? 0 : width/2;
         center_y = center ? 0 : height/2;
-        fn = 30;
 
         translate([center_x, center_y])
             hull() {
                 x =  width/2 - radius;
                 y = height/2 - radius;
 
-                translate([ x,  y]) circle(r=radius, $fn=fn);
-                translate([ x, -y]) circle(r=radius, $fn=fn);
-                translate([-x, -y]) circle(r=radius, $fn=fn);
-                translate([-x,  y]) circle(r=radius, $fn=fn);
+                translate([ x,  y]) circle(r=radius, $fn=$fn);
+                translate([ x, -y]) circle(r=radius, $fn=$fn);
+                translate([-x, -y]) circle(r=radius, $fn=$fn);
+                translate([-x,  y]) circle(r=radius, $fn=$fn);
             }
     }
 }
@@ -324,9 +323,9 @@ module zip_tie_holes() {
     spacing = (zip_tie_spacing + zip_tie_width)/2;
 
     translate([-spacing, 0, 0])
-        rounded_square([zip_tie_width, zip_tie_height], center=true, r=zip_tie_fillet);
+        rounded_square([zip_tie_width, zip_tie_height], center=true, r=zip_tie_fillet, $fn=30);
     translate([spacing, 0, 0])
-        rounded_square([zip_tie_width, zip_tie_height], center=true, r=zip_tie_fillet);
+        rounded_square([zip_tie_width, zip_tie_height], center=true, r=zip_tie_fillet, $fn=30);
 }
 
 
