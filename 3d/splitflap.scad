@@ -234,6 +234,8 @@ zip_tie_fillet = 0.5;  // radius of the rounded zip-tie hole corners
 enclosure_left_zip_side_inset = 5.0;  // inset from left for the bottom zip tie holes, edge to outside edge
 enclosure_left_zip_bottom_inset = 22.5;  // inset from bottom for the bottom zip tie holes, edge to group center
 
+enclosure_left_zip_top_inset = 22.5;  // inset from top for the top zip tie holes, edge to group center
+
 
 echo(kerf_width=kerf_width);
 echo(enclosure_height=enclosure_height);
@@ -649,6 +651,11 @@ module enclosure_left() {
             // Zip tie holes, sensor (leading to bottom)            
             translate([enclosure_left_zip_bottom_inset, zip_tie_height/2 + enclosure_left_zip_side_inset, 0])
                 zip_tie_holes();
+
+            // Zip tie holes, motor (leading to top)
+            translate([enclosure_height - enclosure_left_zip_top_inset, enclosure_length/2])
+                rotate([0, 0, 90])  // cable channel facing 'up'
+                    zip_tie_holes();
         }
     }
 }
