@@ -21,6 +21,8 @@ class Splitflap(object):
 
         self.has_inited = False
         self.num_modules = 0
+        self.character_list = ""
+
         self.last_command = None
         self.last_status = None
         self.exception = None
@@ -41,6 +43,11 @@ class Splitflap(object):
                     raise RuntimeError('Unexpected re-init!')
                 self.has_inited = True
                 self.num_modules = data['num_modules']
+                try:
+                    self.character_list = data['character_list']
+                except KeyError:
+                    self.character_list = _ALPHABET  # for compatibility
+
             elif t == 'move_echo':
                 if not self.has_inited:
                     raise RuntimeError('Got move_echo before init!')
@@ -66,14 +73,14 @@ class Splitflap(object):
             else:
                 raise RuntimeError('Unexpected message: {!r}'.format(data))
 
-    def is_in_alphabet(self, letter):
-        return letter in _ALPHABET
+    def in_character_list(self, letter):
+        return letter in self.character_list
 
     def set_text(self, text):
         for letter in text:
-            assert self.is_in_alphabet(letter), 'Unexpected letter: {!r}. Must be one of {!r}'.format(
+            assert self.in_character_list(letter), 'Unexpected letter: {!r}. Must be one of {!r}'.format(
                 letter,
-                list(_ALPHABET),
+                list(self.character_list),
             )
         self.last_command = text[0:self.num_modules]
         self.serial.write(b'=' + text.encode() + b'\n')
