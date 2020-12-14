@@ -76,6 +76,9 @@ class Splitflap(object):
     def in_character_list(self, letter):
         return letter in self.character_list
 
+    def get_character_list(self):
+        return self.character_list
+
     def set_text(self, text):
         for letter in text:
             assert self.in_character_list(letter), 'Unexpected letter: {!r}. Must be one of {!r}'.format(
