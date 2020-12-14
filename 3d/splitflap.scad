@@ -226,6 +226,11 @@ connector_bracket_depth_clearance = 0.20;
 
 mounting_hole_inset = m4_button_head_diameter/2 + 2;
 
+zip_tie_height = 3.0;  // height of the zip-tie hole
+zip_tie_width = 2.0;  // width of the zip-tie holes
+zip_tie_spacing = 6.5;  // spacing between each zip-tie hole, inside edges
+zip_tie_fillet = 0.5;  // radius of the rounded zip-tie hole corners
+
 echo(kerf_width=kerf_width);
 echo(enclosure_height=enclosure_height);
 echo(enclosure_height_upper=enclosure_height_upper);
@@ -306,6 +311,16 @@ module captive_nut(bolt_diameter, bolt_length, nut_width, nut_length, nut_inset)
 }
 module m4_captive_nut(bolt_length=m4_bolt_length) {
     captive_nut(m4_hole_diameter, bolt_length + 1, m4_nut_width_flats, m4_nut_length_padded, captive_nut_inset);
+}
+
+
+module zip_tie_holes() {
+    spacing = (zip_tie_spacing + zip_tie_width)/2;
+
+    translate([-spacing, 0, 0])
+        rounded_square([zip_tie_width, zip_tie_height], center=true, r=zip_tie_fillet);
+    translate([spacing, 0, 0])
+        rounded_square([zip_tie_width, zip_tie_height], center=true, r=zip_tie_fillet);
 }
 
 
