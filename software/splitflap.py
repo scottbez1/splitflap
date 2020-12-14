@@ -85,7 +85,7 @@ class Splitflap(object):
                 letter,
                 list(self.character_list),
             )
-        self.last_command = text[0:self.num_modules]
+        self.last_command = text
         self.serial.write(b'=' + text.encode() + b'\n')
         return self._loop_for_status()
 
