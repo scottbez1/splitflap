@@ -20,6 +20,7 @@ use<projection_renderer.scad>;
 use<roboto/RobotoCondensed-Regular.ttf>;
 use<rough7380.scad>;
 use<spool.scad>;
+use<shapes.scad>;
 
 include<28byj-48.scad>;
 include<flap_dimensions.scad>;
@@ -516,15 +517,15 @@ module enclosure_front() {
 }
 
 module enclosure_front_etch() {
-    // alignment indicator, left side (circle)
+    // alignment indicator, left side (triangle)
     enclosure_etch_style()
         translate([enclosure_wall_to_wall_width - thickness - enclosure_indicator_inset, enclosure_indicator_position_y])
-            circle(r=enclosure_indicator_size/2, $fn=60);
+            triangle(enclosure_indicator_size, center=true);
 
-    // alignment indicator, right side (square)
+    // alignment indicator, right side (circle)
     enclosure_etch_style()
         translate([thickness + enclosure_indicator_inset, enclosure_indicator_position_y])
-            square(enclosure_indicator_size, center=true);
+            circle(r=enclosure_indicator_size/2, $fn=60);
 }
 
 // holes for 28byj-48 motor, centered around motor shaft
@@ -628,10 +629,11 @@ module enclosure_left() {
 }
 
 module enclosure_left_etch() {
-    // alignment indicator (circle)
+    // alignment indicator (triangle)
     enclosure_etch_style()
         translate([enclosure_indicator_position_y, enclosure_length - enclosure_indicator_inset])
-            circle(r=enclosure_indicator_size/2, $fn=60);
+            rotate([0, 0, -90])
+                triangle(enclosure_indicator_size, center=true);
 }
 
 module shaft_centered_motor_hole() {
@@ -679,10 +681,10 @@ module enclosure_right() {
 }
 
 module enclosure_right_etch() {
-    // alignment indicator (square)
+    // alignment indicator (circle)
     enclosure_etch_style()
         translate([enclosure_vertical_inset + thickness + enclosure_indicator_inset, enclosure_length_right - enclosure_indicator_inset])
-            square(enclosure_indicator_size, center=true);
+            circle(r=enclosure_indicator_size/2, $fn=60);
 }
 
 module front_back_tabs() {
