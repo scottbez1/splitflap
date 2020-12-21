@@ -368,8 +368,8 @@ module flap_spool_complete(captive_nut=false, motor_shaft=false, magnet_hole=fal
 }
 
 module flap_spool_etch() {
-    color(etch_color)
-    flap_spool_home_indicator(num_flaps, flap_hole_radius, flap_hole_separation, flap_spool_outset, etch_depth);
+    enclosure_etch_style()
+        flap_spool_home_indicator(num_flaps, flap_hole_radius, flap_hole_separation, flap_spool_outset);
 }
 
 module spool_retaining_wall(m4_bolt_hole=false) {
@@ -1071,12 +1071,10 @@ module split_flap_3d(letter, include_connector) {
             // motor spool
             translate([spool_width - thickness + 5*spool_horizontal_explosion, 0, 0]) {
                 rotate([0, 90, 0]) {
-                    difference() {
-                        color(assembly_color)
-                            flap_spool_complete(motor_shaft=true, magnet_hole=true);
-                        translate([0, 0, -eps])
-                            flap_spool_etch();
-                    }
+                    color(assembly_color)
+                        flap_spool_complete(motor_shaft=true, magnet_hole=true);
+                    translate([0, 0, -eps - thickness])
+                        flap_spool_etch();
                 }
             }
             color(assembly_color1) {
@@ -1088,12 +1086,9 @@ module split_flap_3d(letter, include_connector) {
             }
             translate([-5*spool_horizontal_explosion, 0, 0]) {
                 rotate([0, 90, 0]) {
-                    difference() {
-                        color(assembly_color)
-                            flap_spool_complete(captive_nut=true);
-                        translate([0, 0, -etch_depth + thickness + eps])
-                            flap_spool_etch();
-                    }
+                    color(assembly_color)
+                        flap_spool_complete(captive_nut=true);
+                    flap_spool_etch();
                 }
             }
             translate([thickness * 2, 0, 0]) {
@@ -1220,10 +1215,10 @@ if (render_3d) {
 
         // Flap spool etching
         laser_etch() {
-            translate([flap_spool_x_off, flap_spool_y_off, thickness])
+            translate([flap_spool_x_off, flap_spool_y_off])
                 mirror([0, 1, 0])
                 flap_spool_etch();
-            translate([flap_spool_x_off + spool_outer_radius*2 + 2, flap_spool_y_off, thickness])
+            translate([flap_spool_x_off + spool_outer_radius*2 + 2, flap_spool_y_off])
                 flap_spool_etch();
         }
 
