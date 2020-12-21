@@ -39,11 +39,8 @@ module rounded_square(size, center=false, r=0.0, $fn=$fn) {
 }
 
 module triangle(size, center=false) {
-    function tri_height(a, c) = sqrt(c*c - a*a);  // pythagoras
-
     width  = size[0] == undef ? size : size[0];  // unpack vector if present
-    height = size[1] == undef ? tri_height(width/2, width) : size[1];  // calculate height with trig if only width provided
-    angle = atan(height/(width/2));  // angle in left corner, degrees
+    height = size[1] == undef ? size : size[1];
 
     pts = [
         [      0,      0],
@@ -52,7 +49,7 @@ module triangle(size, center=false) {
     ];
 
     x_offset = center ?  -width/2 : 0;
-    y_offset = center ? -tan(angle/2) * width/2 : 0;  // opposite edge of right triangle using bisected angle from left corner
+    y_offset = center ? -height/2 : 0;
     translate([x_offset, y_offset])
         polygon(points=pts, convexity=1);
 }
