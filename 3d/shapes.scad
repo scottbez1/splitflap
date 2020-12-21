@@ -56,3 +56,21 @@ module triangle(size, center=false) {
     translate([x_offset, y_offset])
         polygon(points=pts, convexity=1);
 }
+
+module arrow(size, aspect=[0.5, 0.3], center=false) {
+    function unpack(val, pos) = val[pos] == undef ? val : val[pos];  // use vector if possible, value otherwise
+    function recenter(vect, pos) = center ? -vect[pos]/2 : 0;  // if 'center', return negative vector position/2
+
+    size  = [   unpack(size, 0),   unpack(size, 1) ];  // overall bounding box
+    ratio = [ unpack(aspect, 0), unpack(aspect, 1) ];  // ratio between head and body, 1.0 max
+
+    head = [                  size[0], size[1] * ratio[1] ];  // head bounding box
+    base = [ size[0] * (1 - ratio[0]), size[1] - head[1]  ];  // base bounding box
+
+    translate([recenter(size, 0), recenter(size, 1)]) {
+        translate([(size[0] - base[0]) / 2, 0])
+            square(base);
+        translate([0, base[1]])
+            triangle(head);
+    }
+}
