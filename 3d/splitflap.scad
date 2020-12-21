@@ -647,12 +647,12 @@ module enclosure_left() {
                 }
             }
 
-            // Zip tie holes, sensor (leading to bottom)            
+            // Zip tie holes, sensor (leading to bottom)
             translate([enclosure_left_zip_bottom_inset, zip_tie_height/2 + enclosure_left_zip_side_inset, 0])
                 zip_tie_holes();
 
             // Zip tie holes, motor (leading to top)
-            translate([enclosure_height - enclosure_left_zip_top_inset, enclosure_length/2])
+            translate([enclosure_height - enclosure_left_zip_top_inset, enclosure_length - front_forward_offset])
                 rotate([0, 0, 90])  // cable channel facing 'up'
                     zip_tie_holes();
         }
