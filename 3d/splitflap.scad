@@ -813,12 +813,10 @@ module enclosure_bottom() {
 }
 
 module enclosure_bottom_etch() {
-    color(etch_color)
-    linear_extrude(height=2, center=true) {
+    enclosure_etch_style()
         translate([captive_nut_inset + m4_nut_length + 1, 1, thickness]) {
             text_label([str("rev. ", render_revision), render_date, "github.com/scottbez1/splitflap"]);
         }
-    }
 }
 
 module split_flap_3d(letter, include_connector) {
@@ -876,18 +874,19 @@ module split_flap_3d(letter, include_connector) {
                 enclosure_top();
     }
 
+    module position_bottom() {
+        translate([0, front_forward_offset - enclosure_length_right, -enclosure_height_lower + enclosure_vertical_inset])
+            children();
+    }
+
     module positioned_bottom() {
-        translate([0, front_forward_offset - enclosure_length_right, -enclosure_height_lower + enclosure_vertical_inset]) {
+        position_bottom()
             enclosure_bottom();
-        }
     }
 
     module positioned_bottom_etch() {
-        translate([0, front_forward_offset - enclosure_length_right, -enclosure_height_lower + enclosure_vertical_inset]) {
-            translate([0, 0, thickness]) {
-                enclosure_bottom_etch();
-            }
-        }
+        position_bottom()
+            enclosure_bottom_etch();
     }
 
     module positioned_top_connector() {
@@ -1183,7 +1182,7 @@ if (render_3d) {
 
         // Bottom laser etching
         laser_etch()
-            translate([enclosure_height + kerf_width, enclosure_wall_to_wall_width, thickness])
+            translate([enclosure_height + kerf_width, enclosure_wall_to_wall_width])
                 rotate([0, 0, -90])
                     enclosure_bottom_etch();
 
