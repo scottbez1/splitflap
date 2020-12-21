@@ -76,6 +76,7 @@ kerf_width = 0.2 - 0.02;
 // https://www.ponoko.com/materials/mdf-fiberboard
 thickness = 3.0;
 
+etch_depth = 0.1;  // for render
 eps=.01;
 
 captive_nut_inset=6;
@@ -154,7 +155,6 @@ spool_strut_tab_outset=8;
 spool_strut_width = (spool_strut_tab_outset + thickness/2) * 2;
 spool_strut_length = spool_width;
 spool_strut_inner_length = spool_width - 3 * thickness;
-spool_etch_depth = 0.1;  // for 3D render
 
 spool_strut_exclusion_radius = sqrt((spool_strut_tab_outset+thickness/2)*(spool_strut_tab_outset+thickness/2) + (spool_strut_tab_width/2)*(spool_strut_tab_width/2));
 
@@ -369,7 +369,7 @@ module flap_spool_complete(captive_nut=false, motor_shaft=false, magnet_hole=fal
 
 module flap_spool_etch() {
     color(etch_color)
-    flap_spool_home_indicator(num_flaps, flap_hole_radius, flap_hole_separation, flap_spool_outset, spool_etch_depth);
+    flap_spool_home_indicator(num_flaps, flap_hole_radius, flap_hole_separation, flap_spool_outset, etch_depth);
 }
 
 module spool_retaining_wall(m4_bolt_hole=false) {
@@ -489,7 +489,7 @@ module connector_bracket() {
 module enclosure_etch_style() {
     color(etch_color)
         translate([0, 0, thickness])
-            linear_extrude(height=0.1)
+            linear_extrude(height=etch_depth)
                 children();
 }
 
@@ -1091,7 +1091,7 @@ module split_flap_3d(letter, include_connector) {
                     difference() {
                         color(assembly_color)
                             flap_spool_complete(captive_nut=true);
-                        translate([0, 0, -spool_etch_depth + thickness + eps])
+                        translate([0, 0, -etch_depth + thickness + eps])
                             flap_spool_etch();
                     }
                 }
