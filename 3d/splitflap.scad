@@ -1068,7 +1068,9 @@ module split_flap_3d(letter, include_connector) {
                             translate([flap_width, flap_pitch_radius, 0]) {
                                 rotate([flap_rendered_angle, 0, 180]) {
                                     flap();
-                                    if((i == 0 && render_letters == 1) || render_letters == 2)
+                                    if(i == 0 && render_letters >= 1)  // for first flap, do not use character list (always match string)
+                                        flap_letter(letter, 1);  // flap on front (top)
+                                    if(i != 0 && render_letters == 2)
                                         flap_letter(get_flap_character(letter, i), 1);  // flap on front (top)
                                     if(render_letters == 2) {
                                         translate([flap_width, 0, -flap_thickness + eps])
@@ -1088,7 +1090,9 @@ module split_flap_3d(letter, include_connector) {
                         if (i == 1 || render_flaps == 2) {
                             rotate([-90, 0, 0]) {
                                 flap();
-                                if((i == 1 && render_letters == 1) || render_letters == 2)
+                                if(i == 1 && render_letters >= 1)  // for first flap, do not use character list (always match string)
+                                    flap_letter(letter, 2);  // flap on front (bottom)
+                                if(i != 1 && render_letters == 2)
                                     flap_letter(get_flap_character(letter, len(character_list) - i + 1), 2);  // flap on front (bottom)
                                 if(render_letters == 2) {
                                     translate([flap_width, 0, -flap_thickness + eps])
