@@ -226,6 +226,26 @@ connector_bracket_depth_clearance = 0.20;
 
 mounting_hole_inset = m4_button_head_diameter/2 + 2;
 
+
+character_list = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,\\";
+
+// returns character position in an array
+function character_position(c, i=0, list=character_list) =
+    len(list) == i ? undef
+    : list[i] == c ? i
+    : character_position(c, i+1, list);
+
+// returns character in array position, assuming it loops
+function character_loop(pos, list=character_list) =
+    pos >= len(list) ? character_loop(pos - len(list), list)
+    : pos == undef ? " "  // invalid character, return space
+    : list[pos];
+
+// for the display number and flap position, returns the relevant character in the spool
+function get_flap_character(letter, flap, list=character_list) =
+    character_loop(character_position(letter) + flap, list);
+
+
 echo(kerf_width=kerf_width);
 echo(enclosure_height=enclosure_height);
 echo(enclosure_height_upper=enclosure_height_upper);
@@ -965,9 +985,10 @@ module split_flap_3d(letter, include_connector) {
                             translate([flap_width, flap_pitch_radius, 0]) {
                                 rotate([flap_rendered_angle, 0, 180]) {
                                     flap();
-                                    if (i == 0) { 
-                                        flap_letter(letter, 1);  // 1 = top
-                                    }
+                                    flap_letter(get_flap_character(letter, i), 1);  // flap on front (top)
+                                    translate([flap_width, 0, -flap_thickness + eps])
+                                        mirror([1, 0, 0])
+                                            flap_letter(get_flap_character(letter, i+1), 2);  // flap on back (bottom)
                                 }
                             }
                         }
@@ -981,9 +1002,10 @@ module split_flap_3d(letter, include_connector) {
                         if (i == 1 || render_flaps == 2) {
                             rotate([-90, 0, 0]) {
                                 flap();
-                                if (i == 1) {
-                                    flap_letter(letter, 2);  // 2 = bottom
-                                }
+                                flap_letter(get_flap_character(letter, num_flaps - i + 1), 2);  // flap on front (top)
+                                translate([flap_width, 0, -flap_thickness + eps])
+                                    mirror([1, 0, 0])
+                                        flap_letter(get_flap_character(letter, num_flaps - i), 1);  // flap on back (bottom)
                             }
                         }
                     }
