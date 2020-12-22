@@ -1156,24 +1156,24 @@ if (render_3d) {
             enclosure_left();
 
         laser_etch()
-        translate([0, 0])
-            enclosure_left_etch();
+            translate([0, 0])
+                enclosure_left_etch();
 
         translate([0, enclosure_length + kerf_width])
             enclosure_right();
 
         laser_etch()
-        translate([0, enclosure_length + kerf_width])
-            enclosure_right_etch();
+            translate([0, enclosure_length + kerf_width])
+                enclosure_right_etch();
 
         translate([0, enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width - enclosure_horizontal_inset])
             rotate([0, 0, -90])
                 enclosure_front();
 
         laser_etch()
-        translate([0, enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width - enclosure_horizontal_inset])
-            rotate([0, 0, -90])
-                enclosure_front_etch();
+            translate([0, enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width - enclosure_horizontal_inset])
+                rotate([0, 0, -90])
+                    enclosure_front_etch();
 
         // Top and bottom
         translate([enclosure_height + kerf_width + enclosure_length_right, enclosure_wall_to_wall_width + kerf_width])
