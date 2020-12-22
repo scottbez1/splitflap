@@ -265,31 +265,6 @@ echo(flap_notch_height=flap_notch_height);
 echo(pcb_to_sensor=pcb_to_sensor(pcb_to_spool));
 
 
-module rounded_square(size, center=false, r=0.0, $fn=$fn) {
-    width  = size[0] == undef ? size : size[0];  // unpack vector if present
-    height = size[1] == undef ? size : size[1];
-
-    if(r <= 0.0) {
-        square([width, height], center=center);
-    } else {
-        radius = min(min(r, width/2), height/2);  // radius cannot be larger than rectangle
-        center_x = center ? 0 : width/2;
-        center_y = center ? 0 : height/2;
-
-        translate([center_x, center_y])
-            hull() {
-                x =  width/2 - radius;
-                y = height/2 - radius;
-
-                translate([ x,  y]) circle(r=radius, $fn=$fn);
-                translate([ x, -y]) circle(r=radius, $fn=$fn);
-                translate([-x, -y]) circle(r=radius, $fn=$fn);
-                translate([-x,  y]) circle(r=radius, $fn=$fn);
-            }
-    }
-}
-
-
 module standard_m4_bolt(nut_distance=-1) {
     if (render_bolts) {
         color(bolt_color)
