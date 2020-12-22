@@ -163,7 +163,11 @@ void setup() {
   Serial.print("\n\n\n");
   Serial.print(FAVR("{\"type\":\"init\", \"num_modules\":"));
   Serial.print(NUM_MODULES);
-  Serial.print(FAVR("}\n"));
+  Serial.print(FAVR(", \"character_list\":\""));
+  for(uint8_t i = 0; i < NUM_FLAPS; i++) {
+    Serial.print((char)flaps[i]);
+  }
+  Serial.print(FAVR("\"}\n"));
 
   for (uint8_t i = 0; i < NUM_MODULES; i++) {
     recv_buffer[i] = 0;
