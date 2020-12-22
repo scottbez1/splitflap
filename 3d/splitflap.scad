@@ -244,13 +244,13 @@ function character_position(c, i=0, list=character_list) =
     : list[i] == c ? i
     : character_position(c, i+1, list);
 
-// returns character in array position, assuming it loops
+// returns character in array position, assuming the array loops around
 function character_loop(pos, list=character_list) =
     pos >= len(list) ? character_loop(pos - len(list), list)
     : pos == undef ? " "  // invalid character, return space
     : list[pos];
 
-// for the display number and flap position, returns the relevant character in the spool
+// for the starting letter and flap position, returns the relevant character in the spool
 function get_flap_character(letter, flap, list=character_list) =
     character_loop(character_position(letter) + flap, list);
 
@@ -1089,11 +1089,11 @@ module split_flap_3d(letter, include_connector) {
                             rotate([-90, 0, 0]) {
                                 flap();
                                 if((i == 1 && render_letters == 1) || render_letters == 2)
-                                    flap_letter(get_flap_character(letter, len(character_list) - i + 1), 2);  // flap on front (top)
+                                    flap_letter(get_flap_character(letter, len(character_list) - i + 1), 2);  // flap on front (bottom)
                                 if(render_letters == 2) {
                                     translate([flap_width, 0, -flap_thickness + eps])
                                         mirror([1, 0, 0])
-                                            flap_letter(get_flap_character(letter, len(character_list) - i), 1);  // flap on back (bottom)
+                                            flap_letter(get_flap_character(letter, len(character_list) - i), 1);  // flap on back (top)
                                 }
                             }
                         }
