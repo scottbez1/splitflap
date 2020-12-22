@@ -690,7 +690,7 @@ module enclosure_right() {
 module enclosure_right_etch() {
     // alignment indicator (circle)
     enclosure_etch_style()
-        translate([enclosure_vertical_inset + thickness + enclosure_indicator_inset, enclosure_length_right - enclosure_indicator_inset])
+        translate([enclosure_height - enclosure_indicator_position_y, enclosure_length_right - enclosure_indicator_inset])
             circle(r=enclosure_indicator_size/2, $fn=60);
 }
 
