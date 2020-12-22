@@ -35,8 +35,8 @@ render_3d = true;
 render_enclosure = 2; // 0=invisible; 1=translucent; 2=opaque color;
 render_flaps = 2; // 0=invisible; 1=front flap only; 2=all flaps
 render_flap_area = 0; // 0=invisible; 1=collapsed flap exclusion; 2=collapsed+extended flap exclusion
-render_letters = "44";
-render_units = len(render_letters);
+render_string = "44";
+render_units = len(render_string);
 render_unit_separation = 0;
 render_spool = true;
 render_pcb = true;
@@ -1092,7 +1092,7 @@ module laser_etch() {
 if (render_3d) {
     for (i = [0 : render_units - 1]) {
         translate([-enclosure_width/2 + (-(render_units-1) / 2 + i)*(enclosure_width + render_unit_separation), 0, 0])
-            split_flap_3d(render_letters[render_units - 1 - i], include_connector=(i != render_units - 1));
+            split_flap_3d(render_string[render_units - 1 - i], include_connector=(i != render_units - 1));
     }
 } else {
     panel_height = enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width + kerf_width + spool_strut_width + kerf_width;
