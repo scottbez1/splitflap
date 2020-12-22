@@ -20,6 +20,7 @@ use<projection_renderer.scad>;
 use<roboto/RobotoCondensed-Regular.ttf>;
 use<rough7380.scad>;
 use<spool.scad>;
+use<shapes.scad>;
 
 include<28byj-48.scad>;
 include<flap_dimensions.scad>;
@@ -76,6 +77,7 @@ kerf_width = 0.2 - 0.02;
 // https://www.ponoko.com/materials/mdf-fiberboard
 thickness = 3.0;
 
+etch_depth = 0.1;  // for render
 eps=.01;
 
 captive_nut_inset=6;
@@ -154,7 +156,6 @@ spool_strut_tab_outset=8;
 spool_strut_width = (spool_strut_tab_outset + thickness/2) * 2;
 spool_strut_length = spool_width;
 spool_strut_inner_length = spool_width - 3 * thickness;
-spool_etch_depth = 0.1;  // for 3D render
 
 spool_strut_exclusion_radius = sqrt((spool_strut_tab_outset+thickness/2)*(spool_strut_tab_outset+thickness/2) + (spool_strut_tab_width/2)*(spool_strut_tab_width/2));
 
@@ -225,6 +226,12 @@ connector_bracket_depth_clearance = 0.20;
 
 
 mounting_hole_inset = m4_button_head_diameter/2 + 2;
+
+enclosure_indicator_inset = 3.0;  // inset on both X and Y
+enclosure_indicator_size = 1.75;  // symbol size
+enclosure_indicator_arrow_width = 2.25;
+enclosure_indicator_arrow_height = enclosure_indicator_arrow_width * 2;
+enclosure_indicator_position_y = (enclosure_height - enclosure_vertical_inset - thickness) - enclosure_indicator_inset;
 
 echo(kerf_width=kerf_width);
 echo(enclosure_height=enclosure_height);
@@ -364,8 +371,8 @@ module flap_spool_complete(captive_nut=false, motor_shaft=false, magnet_hole=fal
 }
 
 module flap_spool_etch() {
-    color(etch_color)
-    flap_spool_home_indicator(num_flaps, flap_hole_radius, flap_hole_separation, flap_spool_outset, spool_etch_depth);
+    enclosure_etch_style()
+        flap_spool_home_indicator(num_flaps, flap_hole_radius, flap_hole_separation, flap_spool_outset);
 }
 
 module spool_retaining_wall(m4_bolt_hole=false) {
@@ -482,6 +489,13 @@ module connector_bracket() {
     }
 }
 
+module enclosure_etch_style() {
+    color(etch_color)
+        translate([0, 0, thickness])
+            linear_extrude(height=etch_depth)
+                children();
+}
+
 module enclosure_front() {
     linear_extrude(height=thickness) {
         difference() {
@@ -502,6 +516,23 @@ module enclosure_front() {
                 front_tabs_negative();
         }
     }
+}
+
+module enclosure_front_etch() {
+    // alignment indicator, left side (triangle)
+    enclosure_etch_style()
+        translate([enclosure_wall_to_wall_width - thickness - enclosure_indicator_inset, enclosure_indicator_position_y])
+            triangle(enclosure_indicator_size, center=true);
+
+    // alignment indicator, right side (circle)
+    enclosure_etch_style()
+        translate([thickness + enclosure_indicator_inset, enclosure_indicator_position_y])
+            circle(r=enclosure_indicator_size/2, $fn=60);
+
+    // position indicator, 'up' arrow
+    enclosure_etch_style()
+        translate([enclosure_width - enclosure_horizontal_inset * 1.5, enclosure_height - enclosure_indicator_arrow_height/2 - enclosure_indicator_inset])
+            arrow([enclosure_indicator_arrow_width, enclosure_indicator_arrow_height], center=true);
 }
 
 // holes for 28byj-48 motor, centered around motor shaft
@@ -604,6 +635,14 @@ module enclosure_left() {
     }
 }
 
+module enclosure_left_etch() {
+    // alignment indicator (triangle)
+    enclosure_etch_style()
+        translate([enclosure_indicator_position_y, enclosure_length - enclosure_indicator_inset])
+            rotate([0, 0, -90])
+                triangle(enclosure_indicator_size, center=true);
+}
+
 module shaft_centered_motor_hole() {
     margin = 5;
     width = 28byj48_mount_center_offset*2 + 3.5*2 + margin*2;
@@ -646,6 +685,13 @@ module enclosure_right() {
             }
         }
     }
+}
+
+module enclosure_right_etch() {
+    // alignment indicator (circle)
+    enclosure_etch_style()
+        translate([enclosure_height - enclosure_indicator_position_y, enclosure_length_right - enclosure_indicator_inset])
+            circle(r=enclosure_indicator_size/2, $fn=60);
 }
 
 module front_back_tabs() {
@@ -776,31 +822,59 @@ module enclosure_bottom() {
 }
 
 module enclosure_bottom_etch() {
-    color(etch_color)
-    linear_extrude(height=2, center=true) {
+    enclosure_etch_style()
         translate([captive_nut_inset + m4_nut_length + 1, 1, thickness]) {
             text_label([str("rev. ", render_revision), render_date, "github.com/scottbez1/splitflap"]);
         }
-    }
 }
 
 module split_flap_3d(letter, include_connector) {
-    module positioned_front() {
+    module position_front() {
         translate([0, front_forward_offset + thickness, -enclosure_height_lower])
             rotate([90, 0, 0])
-                enclosure_front();
+                children();
+    }
+
+    module positioned_front() {
+        position_front()
+            enclosure_front();
+    }
+
+    module positioned_front_etch() {
+        position_front()
+            enclosure_front_etch();
+    }
+
+    module position_left() {
+        translate([enclosure_wall_to_wall_width, -enclosure_length + front_forward_offset, -enclosure_height_lower])
+            rotate([0, -90, 0])
+                children();
     }
 
     module positioned_left() {
-        translate([enclosure_wall_to_wall_width, -enclosure_length + front_forward_offset, -enclosure_height_lower])
-            rotate([0, -90, 0])
-                enclosure_left();
+        position_left()
+            enclosure_left();
+    }
+
+    module positioned_left_etch() {
+        position_left()
+            enclosure_left_etch();
+    }
+
+    module position_right() {
+        translate([0, -enclosure_length_right + front_forward_offset, enclosure_height_upper])
+            rotate([0, 90, 0])
+                children();
     }
 
     module positioned_right() {
-        translate([0, -enclosure_length_right + front_forward_offset, enclosure_height_upper])
-            rotate([0, 90, 0])
-                enclosure_right();
+        position_right()
+            enclosure_right();
+    }
+
+    module positioned_right_etch() {
+        position_right()
+            enclosure_right_etch();
     }
 
     module positioned_top() {
@@ -809,18 +883,19 @@ module split_flap_3d(letter, include_connector) {
                 enclosure_top();
     }
 
+    module position_bottom() {
+        translate([0, front_forward_offset - enclosure_length_right, -enclosure_height_lower + enclosure_vertical_inset])
+            children();
+    }
+
     module positioned_bottom() {
-        translate([0, front_forward_offset - enclosure_length_right, -enclosure_height_lower + enclosure_vertical_inset]) {
+        position_bottom()
             enclosure_bottom();
-        }
     }
 
     module positioned_bottom_etch() {
-        translate([0, front_forward_offset - enclosure_length_right, -enclosure_height_lower + enclosure_vertical_inset]) {
-            translate([0, 0, thickness]) {
-                enclosure_bottom_etch();
-            }
-        }
+        position_bottom()
+            enclosure_bottom_etch();
     }
 
     module positioned_top_connector() {
@@ -895,6 +970,9 @@ module split_flap_3d(letter, include_connector) {
                 positioned_top();
             color(assembly_color3)
                 positioned_bottom();
+            positioned_front_etch();
+            positioned_left_etch();
+            positioned_right_etch();
             positioned_bottom_etch();
             if (include_connector) {
                 color(assembly_color4)
@@ -913,6 +991,9 @@ module split_flap_3d(letter, include_connector) {
             %positioned_right();
             %positioned_top();
             %positioned_bottom();
+            %positioned_front_etch();
+            %positioned_left_etch();
+            %positioned_right_etch();
             %positioned_bottom_etch();
             if (include_connector) {
                 %positioned_top_connector();
@@ -999,12 +1080,10 @@ module split_flap_3d(letter, include_connector) {
             // motor spool
             translate([spool_width - thickness + 5*spool_horizontal_explosion, 0, 0]) {
                 rotate([0, 90, 0]) {
-                    difference() {
-                        color(assembly_color)
-                            flap_spool_complete(motor_shaft=true, magnet_hole=true);
-                        translate([0, 0, -eps])
-                            flap_spool_etch();
-                    }
+                    color(assembly_color)
+                        flap_spool_complete(motor_shaft=true, magnet_hole=true);
+                    translate([0, 0, -eps - thickness])
+                        flap_spool_etch();
                 }
             }
             color(assembly_color1) {
@@ -1016,12 +1095,9 @@ module split_flap_3d(letter, include_connector) {
             }
             translate([-5*spool_horizontal_explosion, 0, 0]) {
                 rotate([0, 90, 0]) {
-                    difference() {
-                        color(assembly_color)
-                            flap_spool_complete(captive_nut=true);
-                        translate([0, 0, -spool_etch_depth + thickness + eps])
-                            flap_spool_etch();
-                    }
+                    color(assembly_color)
+                        flap_spool_complete(captive_nut=true);
+                    flap_spool_etch();
                 }
             }
             translate([thickness * 2, 0, 0]) {
@@ -1078,11 +1154,26 @@ if (render_3d) {
         // Main enclosure (left, right, front)
         translate([0, 0])
             enclosure_left();
+
+        laser_etch()
+            translate([0, 0])
+                enclosure_left_etch();
+
         translate([0, enclosure_length + kerf_width])
             enclosure_right();
+
+        laser_etch()
+            translate([0, enclosure_length + kerf_width])
+                enclosure_right_etch();
+
         translate([0, enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width - enclosure_horizontal_inset])
             rotate([0, 0, -90])
                 enclosure_front();
+
+        laser_etch()
+            translate([0, enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width - enclosure_horizontal_inset])
+                rotate([0, 0, -90])
+                    enclosure_front_etch();
 
         // Top and bottom
         translate([enclosure_height + kerf_width + enclosure_length_right, enclosure_wall_to_wall_width + kerf_width])
@@ -1095,7 +1186,7 @@ if (render_3d) {
 
         // Bottom laser etching
         laser_etch()
-            translate([enclosure_height + kerf_width, enclosure_wall_to_wall_width, thickness])
+            translate([enclosure_height + kerf_width, enclosure_wall_to_wall_width])
                 rotate([0, 0, -90])
                     enclosure_bottom_etch();
 
@@ -1133,10 +1224,10 @@ if (render_3d) {
 
         // Flap spool etching
         laser_etch() {
-            translate([flap_spool_x_off, flap_spool_y_off, thickness])
+            translate([flap_spool_x_off, flap_spool_y_off])
                 mirror([0, 1, 0])
                 flap_spool_etch();
-            translate([flap_spool_x_off + spool_outer_radius*2 + 2, flap_spool_y_off, thickness])
+            translate([flap_spool_x_off + spool_outer_radius*2 + 2, flap_spool_y_off])
                 flap_spool_etch();
         }
 
