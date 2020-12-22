@@ -37,7 +37,7 @@ module flap_spool(flaps, flap_hole_radius, flap_hole_separation, outset, height)
     }
 }
 
-module flap_spool_home_indicator(flaps, flap_hole_radius, flap_hole_separation, outset, height) {
+module flap_spool_home_indicator(flaps, flap_hole_radius, flap_hole_separation, outset, height=0) {
     pitch_radius = flap_spool_pitch_radius(flaps, flap_hole_radius, flap_hole_separation);
     outer_radius = flap_spool_outer_radius(flaps, flap_hole_radius, flap_hole_separation, outset);
 
