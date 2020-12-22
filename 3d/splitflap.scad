@@ -35,6 +35,7 @@ render_3d = true;
 render_enclosure = 2; // 0=invisible; 1=translucent; 2=opaque color;
 render_flaps = 2; // 0=invisible; 1=front flap only; 2=all flaps
 render_flap_area = 0; // 0=invisible; 1=collapsed flap exclusion; 2=collapsed+extended flap exclusion
+render_letters = 1;  // 0=invisible; 1=front flap only; 2=all flaps
 render_string = "44";
 render_units = len(render_string);
 render_unit_separation = 0;
@@ -985,10 +986,13 @@ module split_flap_3d(letter, include_connector) {
                             translate([flap_width, flap_pitch_radius, 0]) {
                                 rotate([flap_rendered_angle, 0, 180]) {
                                     flap();
-                                    flap_letter(get_flap_character(letter, i), 1);  // flap on front (top)
-                                    translate([flap_width, 0, -flap_thickness + eps])
-                                        mirror([1, 0, 0])
-                                            flap_letter(get_flap_character(letter, i+1), 2);  // flap on back (bottom)
+                                    if((i == 0 && render_letters == 1) || render_letters == 2)
+                                        flap_letter(get_flap_character(letter, i), 1);  // flap on front (top)
+                                    if(render_letters == 2) {
+                                        translate([flap_width, 0, -flap_thickness + eps])
+                                            mirror([1, 0, 0])
+                                                flap_letter(get_flap_character(letter, i+1), 2);  // flap on back (bottom)
+                                    }
                                 }
                             }
                         }
@@ -1002,10 +1006,13 @@ module split_flap_3d(letter, include_connector) {
                         if (i == 1 || render_flaps == 2) {
                             rotate([-90, 0, 0]) {
                                 flap();
-                                flap_letter(get_flap_character(letter, num_flaps - i + 1), 2);  // flap on front (top)
-                                translate([flap_width, 0, -flap_thickness + eps])
-                                    mirror([1, 0, 0])
-                                        flap_letter(get_flap_character(letter, num_flaps - i), 1);  // flap on back (bottom)
+                                if((i == 1 && render_letters == 1) || render_letters == 2)
+                                    flap_letter(get_flap_character(letter, num_flaps - i + 1), 2);  // flap on front (top)
+                                if(render_letters == 2) {
+                                    translate([flap_width, 0, -flap_thickness + eps])
+                                        mirror([1, 0, 0])
+                                            flap_letter(get_flap_character(letter, num_flaps - i), 1);  // flap on back (bottom)
+                                }
                             }
                         }
                     }
