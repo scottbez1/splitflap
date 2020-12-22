@@ -229,6 +229,8 @@ mounting_hole_inset = m4_button_head_diameter/2 + 2;
 
 enclosure_indicator_inset = 3.0;  // inset on both X and Y
 enclosure_indicator_size = 1.75;  // symbol size
+enclosure_indicator_arrow_width = 2.25;
+enclosure_indicator_arrow_height = enclosure_indicator_arrow_width * 2;
 enclosure_indicator_position_y = (enclosure_height - enclosure_vertical_inset - thickness) - enclosure_indicator_inset;
 
 echo(kerf_width=kerf_width);
@@ -526,6 +528,11 @@ module enclosure_front_etch() {
     enclosure_etch_style()
         translate([thickness + enclosure_indicator_inset, enclosure_indicator_position_y])
             circle(r=enclosure_indicator_size/2, $fn=60);
+
+    // position indicator, 'up' arrow
+    enclosure_etch_style()
+        translate([enclosure_width - enclosure_horizontal_inset * 1.5, enclosure_height - enclosure_indicator_arrow_height/2 - enclosure_indicator_inset])
+            arrow([enclosure_indicator_arrow_width, enclosure_indicator_arrow_height], center=true);
 }
 
 // holes for 28byj-48 motor, centered around motor shaft
