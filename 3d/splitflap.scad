@@ -519,15 +519,25 @@ module enclosure_front() {
 }
 
 module enclosure_front_etch() {
-    // alignment indicator, left side (triangle)
-    enclosure_etch_style()
-        translate([enclosure_wall_to_wall_width - thickness - enclosure_indicator_inset, enclosure_indicator_position_y])
-            triangle(enclosure_indicator_size, center=true);
+    // alignment indicators, left side (triangle)
+    enclosure_etch_style() {
+        translate([enclosure_wall_to_wall_width - thickness - enclosure_indicator_inset, 0]) {
+            translate([0, enclosure_indicator_position_y])
+                triangle(enclosure_indicator_size, center=true);  // top
+            translate([0, enclosure_height - enclosure_indicator_position_y])
+                triangle(enclosure_indicator_size, center=true);  // bottom
+        }
+    }
 
-    // alignment indicator, right side (circle)
-    enclosure_etch_style()
-        translate([thickness + enclosure_indicator_inset, enclosure_indicator_position_y])
-            circle(r=enclosure_indicator_size/2, $fn=60);
+    // alignment indicators, right side (circle)
+    enclosure_etch_style() {
+        translate([thickness + enclosure_indicator_inset, 0]) {
+            translate([0, enclosure_indicator_position_y])
+                circle(r=enclosure_indicator_size/2, $fn=60);  // top
+            translate([0, enclosure_height - enclosure_indicator_position_y])
+                circle(r=enclosure_indicator_size/2, $fn=60);  // bottom
+        }
+    }
 
     // position indicator, 'up' arrow
     enclosure_etch_style()
@@ -636,11 +646,16 @@ module enclosure_left() {
 }
 
 module enclosure_left_etch() {
-    // alignment indicator (triangle)
-    enclosure_etch_style()
-        translate([enclosure_indicator_position_y, enclosure_length - enclosure_indicator_inset])
-            rotate([0, 0, -90])
-                triangle(enclosure_indicator_size, center=true);
+    // alignment indicators (triangle)
+    enclosure_etch_style() {
+        translate([0, enclosure_length - enclosure_indicator_inset])
+            rotate([0, 0, -90]) {
+                translate([0, enclosure_indicator_position_y])
+                    triangle(enclosure_indicator_size, center=true);  // top
+                translate([0, enclosure_height - enclosure_indicator_position_y])
+                    triangle(enclosure_indicator_size, center=true);  // bottom
+            }
+    }
 }
 
 module shaft_centered_motor_hole() {
@@ -688,10 +703,15 @@ module enclosure_right() {
 }
 
 module enclosure_right_etch() {
-    // alignment indicator (circle)
-    enclosure_etch_style()
-        translate([enclosure_height - enclosure_indicator_position_y, enclosure_length_right - enclosure_indicator_inset])
-            circle(r=enclosure_indicator_size/2, $fn=60);
+    // alignment indicators (circle)
+    enclosure_etch_style() {
+        translate([0, enclosure_length_right - enclosure_indicator_inset]) {
+            translate([enclosure_height - enclosure_indicator_position_y, 0])
+                circle(r=enclosure_indicator_size/2, $fn=60);  // top
+            translate([enclosure_indicator_position_y, 0])
+                circle(r=enclosure_indicator_size/2, $fn=60);  // bottom
+        }
+    }
 }
 
 module front_back_tabs() {
