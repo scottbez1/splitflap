@@ -80,6 +80,8 @@ class Renderer(object):
                 if b'Current top level object is not a 2D object.' in e.stderr:
                     # This is expected if we try rendering an etch layer as a
                     # cut, since there will be nothing to export
+                    if not self.etch_enabled:
+                        break  # no reason to continue looping if no etched geometry
                     continue
                 else:
                     raise
@@ -89,13 +91,10 @@ class Renderer(object):
                 processor.apply_laser_cut_style()
             elif style == 'etch':
                 processor.apply_laser_etch_style()
-            break
-        else:
-            # if a part is neither cut nor etched, there is no data to export
-            logging.debug('Component %d has no geometry', i)
-            return None
+            return processor
 
-        return processor
+        logging.debug('Component %d has no geometry', i)
+        return None
 
     def render_svgs(self, panelize_quantity):
         assert panelize_quantity == 1 or panelize_quantity % 2 == 0, 'Panelize quantity must be 1 or an even number'
