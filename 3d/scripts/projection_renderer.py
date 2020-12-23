@@ -87,7 +87,10 @@ class Renderer(object):
                 processor.apply_laser_etch_style()
             break
         else:
-            raise ValueError("Invalid component!", i)
+            # if a part is neither cut nor etched, there is no data to export
+            logging.debug('Component %d has no geometry', i)
+            return None
+
         return processor
 
     def render_svgs(self, panelize_quantity):
@@ -104,7 +107,7 @@ class Renderer(object):
                     svg_processor = self._render_component(i, panel_horizontal, panel_vertical)
                     if svg_output is None:
                         svg_output = svg_processor
-                    else:
+                    elif svg_processor is not None:
                         svg_output.import_paths(svg_processor)
         output_file_path = os.path.join(self.output_folder, 'combined.svg')
         svg_output.write(output_file_path)
