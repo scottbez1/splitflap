@@ -1139,7 +1139,7 @@ module split_flap_3d(letter, include_connector) {
 }
 
 module laser_etch() {
-    if (render_etch || render_index == -1) {
+    if (!render_2d_mirror && (render_etch || render_index == -1)) {
         children();
     }
 }
