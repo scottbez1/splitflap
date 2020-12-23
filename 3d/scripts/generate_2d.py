@@ -44,8 +44,9 @@ if __name__ == '__main__':
     parser.add_argument('--render-raster', action='store_true', help='Render raster PNG from the output SVG (requires '
                                                                      'Inkscape)')
     parser.add_argument('--thickness', type=float, help='Override panel thickness value')
+    parser.add_argument('--no-etch', action='store_true', help='Do not render laser-etched features')
     parser.add_argument('--mirror', action='store_true', help='Mirror the assembly so the outside faces are facing up. '
-                                                              'Note that this will put the etchings on the outside.')
+                                                              'Note that this will remove all etched features.')
 
     args = parser.parse_args()
 
@@ -54,6 +55,7 @@ if __name__ == '__main__':
     extra_variables = {
         'render_revision': rev_info.git_short_rev(),
         'render_date': rev_info.current_date(),
+        'render_etch' : not args.no_etch,
         'render_2d_mirror' : args.mirror,
     }
     if args.kerf is not None:

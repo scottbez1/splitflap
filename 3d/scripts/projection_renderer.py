@@ -29,6 +29,10 @@ class Renderer(object):
         if extra_variables is None:
             extra_variables = {}
         self.extra_variables = extra_variables
+        try:
+            self.etch_enabled = self.extra_variables['render_etch']
+        except KeyError:
+            self.etch_enabled = True
 
     def clean(self):
         shutil.rmtree(self.output_folder, ignore_errors=True)
@@ -66,7 +70,7 @@ class Renderer(object):
                         variables=self._get_variables({
                             'render_3d': False,
                             'render_index': i,
-                            'render_etch': style == 'etch',
+                            'render_etch': style == 'etch' and self.etch_enabled,
                             'panel_horizontal': panel_horizontal,
                             'panel_vertical': panel_vertical,
                         }),
