@@ -99,7 +99,7 @@ BUFFER_ATTRS uint8_t sensor_buffer[SENSOR_BUFFER_LENGTH];
 #ifdef __AVR__
 // Define placement new so we can initialize SplitflapModules at runtime into a static buffer.
 // (see https://arduino.stackexchange.com/a/1499)
-void* operator new(size_t size, void* ptr) {
+void* operator new(__attribute__((unused)) size_t size, void* ptr) {
   return ptr;
 }
 #endif

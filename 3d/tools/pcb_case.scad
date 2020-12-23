@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-include<pcb.scad>;
+include<../pcb.scad>;
 
 render_pcb = false;  // draw PCB in position in case
 cases_per_row = 1;  // number of cases per each row
@@ -44,6 +44,7 @@ mounting_boss_height = pcb_thickness + 0.4;  // distance above the PCB for the m
 
 // calculations
 eps = 0.01;
+pcb_to_spool = 7.8;  // dummy for PCB render, as we don't have the whole assembly for this value
 
 combined_clearance = pcb_edge_clearance + case_wall_thickness;  // total edge clearance, from PCB edge to outside edge
 pcb_cutout_depth = pcb_thickness + pcb_connector_height/2 + pcb_depth_clearance;  // depth of the PCB cutout, from top
@@ -218,7 +219,7 @@ module pcb_case(with_pcb=false) {
 
         if(with_pcb) {
             translate([0, 0, pcb_cutout_plane])
-                pcb();
+                pcb(pcb_to_spool);
         }
     }
 }

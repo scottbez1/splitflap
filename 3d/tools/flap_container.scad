@@ -14,8 +14,8 @@
    limitations under the License.
 */
 
-include <flap_dimensions.scad>
-use <splitflap.scad>
+include <../flap_dimensions.scad>
+use <../splitflap.scad>
 
 num_flaps = 40;
 containers_x = 1;

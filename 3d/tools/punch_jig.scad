@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-include<flap_dimensions.scad>;
+include<../flap_dimensions.scad>;
 
 print_tolerance = 0.1;
 jig_thickness = 2;
