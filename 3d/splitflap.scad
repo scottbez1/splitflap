@@ -246,7 +246,8 @@ function character_position(c, i=0, list=character_list) =
 
 // returns character in array position, assuming the array loops around
 function character_loop(pos, list=character_list) =
-    pos >= len(list) ? character_loop(pos - len(list), list)
+      pos < 0 ? character_loop(pos + len(list), list)  // negative, add until positive
+    : pos >= len(list) ? character_loop(pos - len(list), list) // out of range, subtract until in
     : pos == undef ? " "  // invalid character, return space
     : list[pos];
 
@@ -1093,11 +1094,11 @@ module split_flap_3d(letter, include_connector) {
                                 if(i == 1 && render_letters >= 1)  // for first flap, do not use character list (always match string)
                                     flap_letter(letter, 2);  // flap on front (bottom)
                                 if(i != 1 && render_letters == 2)
-                                    flap_letter(get_flap_character(letter, len(character_list) - i + 1), 2);  // flap on front (bottom)
+                                    flap_letter(get_flap_character(letter, -i + 1), 2);  // flap on front (bottom)
                                 if(render_letters == 2) {
                                     translate([flap_width, 0, -flap_thickness + eps])
                                         mirror([1, 0, 0])
-                                            flap_letter(get_flap_character(letter, len(character_list) - i), 1);  // flap on back (top)
+                                            flap_letter(get_flap_character(letter, -i), 1);  // flap on back (top)
                                 }
                             }
                         }
