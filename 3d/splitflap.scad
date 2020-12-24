@@ -233,6 +233,17 @@ enclosure_indicator_arrow_width = 2.25;
 enclosure_indicator_arrow_height = enclosure_indicator_arrow_width * 2;
 enclosure_indicator_position_y = (enclosure_height - enclosure_vertical_inset - thickness) - enclosure_indicator_inset;
 
+zip_tie_height = 3.0;  // height of the zip-tie hole
+zip_tie_width = 2.0;  // width of the zip-tie holes
+zip_tie_spacing = 6.5;  // spacing between each zip-tie hole, inside edges
+zip_tie_fillet = 0.5;  // radius of the rounded zip-tie hole corners
+
+enclosure_left_zip_side_inset = 5.0;  // inset from left for the bottom zip tie holes, edge to outside edge
+enclosure_left_zip_bottom_inset = 22.5;  // inset from bottom for the bottom zip tie holes, edge to group center
+
+enclosure_left_zip_top_inset = 22.5;  // inset from top for the top zip tie holes, edge to group center
+
+
 echo(kerf_width=kerf_width);
 echo(enclosure_height=enclosure_height);
 echo(enclosure_height_upper=enclosure_height_upper);
@@ -287,6 +298,16 @@ module captive_nut(bolt_diameter, bolt_length, nut_width, nut_length, nut_inset)
 }
 module m4_captive_nut(bolt_length=m4_bolt_length) {
     captive_nut(m4_hole_diameter, bolt_length + 1, m4_nut_width_flats, m4_nut_length_padded, captive_nut_inset);
+}
+
+
+module zip_tie_holes() {
+    spacing = (zip_tie_spacing + zip_tie_width)/2;
+
+    translate([-spacing, 0, 0])
+        rounded_square([zip_tie_width, zip_tie_height], center=true, r=zip_tie_fillet, $fn=30);
+    translate([spacing, 0, 0])
+        rounded_square([zip_tie_width, zip_tie_height], center=true, r=zip_tie_fillet, $fn=30);
 }
 
 
@@ -631,6 +652,15 @@ module enclosure_left() {
                     }
                 }
             }
+
+            // Zip tie holes, sensor (leading to bottom)
+            translate([enclosure_left_zip_bottom_inset, zip_tie_height/2 + enclosure_left_zip_side_inset, 0])
+                zip_tie_holes();
+
+            // Zip tie holes, motor (leading to top)
+            translate([enclosure_height - enclosure_left_zip_top_inset, enclosure_length - front_forward_offset])
+                rotate([0, 0, 90])  // cable channel facing 'up'
+                    zip_tie_holes();
         }
     }
 }
