@@ -61,7 +61,10 @@ class Renderer(object):
 
     def _render_component(self, i, panel_horizontal, panel_vertical):
         output_file = self._get_component_file(i)
-        for style in ('cut', 'etch'):
+        style_options = ['cut']
+        if self.etch_enabled:
+            style_options.append('etch')
+        for style in (style_options):
             logging.debug('Rendering component %d, %s', i, style)
             try:
                 _ = openscad.run(
@@ -70,7 +73,7 @@ class Renderer(object):
                         variables=self._get_variables({
                             'render_3d': False,
                             'render_index': i,
-                            'render_etch': style == 'etch' and self.etch_enabled,
+                            'render_etch': style == 'etch',
                             'panel_horizontal': panel_horizontal,
                             'panel_vertical': panel_vertical,
                         }),
@@ -80,8 +83,6 @@ class Renderer(object):
                 if b'Current top level object is not a 2D object.' in e.stderr:
                     # This is expected if we try rendering an etch layer as a
                     # cut, since there will be nothing to export
-                    if not self.etch_enabled:
-                        break  # no reason to continue looping if no etched geometry
                     continue
                 else:
                     raise
