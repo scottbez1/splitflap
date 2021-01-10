@@ -56,7 +56,7 @@ const uint8_t flaps[NUM_FLAPS] = {
   #endif
   #define MONITOR_SPEED 38400
 #elif defined(__AVR_ATmega2560__)
-  #define NEOPIXEL_PIN 4
+  #define NEOPIXEL_PIN 5
   #define MONITOR_SPEED 38400
 #elif defined(ARDUINO_ESP8266_WEMOS_D1MINI)
   #define NEOPIXEL_PIN (D8)

@@ -538,12 +538,12 @@ NoConn ~ 19250 2600
 NoConn ~ 19250 1900
 NoConn ~ 19250 1800
 Wire Wire Line
-	19250 4900 19500 4900
+	19250 10100 19500 10100
 Wire Wire Line
-	19250 4800 19500 4800
-Text Label 19500 4800 2    50   ~ 0
+	19250 10000 19500 10000
+Text Label 19500 10000 2    50   ~ 0
 SDA
-Text Label 19500 4900 2    50   ~ 0
+Text Label 19500 10100 2    50   ~ 0
 SCL
 Wire Wire Line
 	21400 2100 20900 2100
@@ -1662,7 +1662,7 @@ U 1 1 648F2DC8
 P 4450 1250
 F 0 "C3" H 4538 1296 50  0000 L CNN
 F 1 "100uF" H 4538 1205 50  0000 L CNN
-F 2 "Capacitor_THT:CP_Radial_D10.0mm_P5.00mm_P7.50mm" H 4450 1250 50  0001 C CNN
+F 2 "Capacitor_THT:CP_Radial_D10.0mm_P3.50mm" H 4450 1250 50  0001 C CNN
 F 3 "~" H 4450 1250 50  0001 C CNN
 	1    4450 1250
 	1    0    0    -1  
@@ -1673,7 +1673,7 @@ U 1 1 648F7093
 P 5000 1250
 F 0 "C4" H 5088 1296 50  0000 L CNN
 F 1 "10uF" H 5088 1205 50  0000 L CNN
-F 2 "Capacitor_THT:CP_Radial_D10.0mm_P2.50mm_P5.00mm" H 5000 1250 50  0001 C CNN
+F 2 "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm" H 5000 1250 50  0001 C CNN
 F 3 "~" H 5000 1250 50  0001 C CNN
 	1    5000 1250
 	1    0    0    -1  
@@ -2619,28 +2619,8 @@ Wire Wire Line
 	19250 8300 20100 8300
 Text Label 20100 8600 2    50   ~ 0
 MOTOR_L_PHASE_A
-Text Notes 20250 3950 0    50   ~ 0
-L
-Text Notes 20250 5100 0    50   ~ 0
-K
-Text Notes 20250 5500 0    50   ~ 0
-J
-Text Notes 20250 5850 0    50   ~ 0
-I
-Text Notes 20250 6350 0    50   ~ 0
-H
-Text Notes 20250 7150 0    50   ~ 0
-G
-Text Notes 20250 7550 0    50   ~ 0
-F
-Text Notes 20250 7900 0    50   ~ 0
-E
-Text Notes 20250 8450 0    50   ~ 0
-A
-Text Notes 20250 8850 0    50   ~ 0
-B
-Text Notes 20250 9250 0    50   ~ 0
-C
-Text Notes 20250 9650 0    50   ~ 0
-D
+NoConn ~ 19250 4800
+NoConn ~ 19250 4900
+Text Notes 19300 4900 0    50   ~ 0
+Dedicated SDA/SCL pins are used,\nso these must be left disconnected.
 $EndSCHEMATC
