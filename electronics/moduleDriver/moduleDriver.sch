@@ -1408,7 +1408,7 @@ U 1 1 61902623
 P 8600 1000
 F 0 "H1" H 8700 1046 50  0000 L CNN
 F 1 "MountingHole" H 8700 955 50  0000 L CNN
-F 2 "MountingHole:MountingHole_4.3mm_M4_ISO7380" H 8600 1000 50  0001 C CNN
+F 2 "MountingHole:MountingHole_4.3mm_M4_ISO7380_Pad" H 8600 1000 50  0001 C CNN
 F 3 "~" H 8600 1000 50  0001 C CNN
 	1    8600 1000
 	1    0    0    -1  
@@ -1419,7 +1419,7 @@ U 1 1 619139E1
 P 8850 1000
 F 0 "H2" H 8950 1046 50  0000 L CNN
 F 1 "MountingHole" H 8950 955 50  0000 L CNN
-F 2 "MountingHole:MountingHole_4.3mm_M4_ISO7380" H 8850 1000 50  0001 C CNN
+F 2 "MountingHole:MountingHole_4.3mm_M4_ISO7380_Pad" H 8850 1000 50  0001 C CNN
 F 3 "~" H 8850 1000 50  0001 C CNN
 	1    8850 1000
 	1    0    0    -1  
@@ -1430,7 +1430,7 @@ U 1 1 61913E82
 P 9100 1000
 F 0 "H3" H 9200 1046 50  0000 L CNN
 F 1 "MountingHole" H 9200 955 50  0000 L CNN
-F 2 "MountingHole:MountingHole_4.3mm_M4_ISO7380" H 9100 1000 50  0001 C CNN
+F 2 "MountingHole:MountingHole_4.3mm_M4_ISO7380_Pad" H 9100 1000 50  0001 C CNN
 F 3 "~" H 9100 1000 50  0001 C CNN
 	1    9100 1000
 	1    0    0    -1  
@@ -1441,7 +1441,7 @@ U 1 1 61914268
 P 9350 1000
 F 0 "H4" H 9450 1046 50  0000 L CNN
 F 1 "MountingHole" H 9450 955 50  0000 L CNN
-F 2 "MountingHole:MountingHole_4.3mm_M4_ISO7380" H 9350 1000 50  0001 C CNN
+F 2 "MountingHole:MountingHole_4.3mm_M4_ISO7380_Pad" H 9350 1000 50  0001 C CNN
 F 3 "~" H 9350 1000 50  0001 C CNN
 	1    9350 1000
 	1    0    0    -1  
