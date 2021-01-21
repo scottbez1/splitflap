@@ -1403,7 +1403,7 @@ Wire Wire Line
 Wire Wire Line
 	14850 5850 14700 5850
 $Comp
-L Mechanical:MountingHole H1
+L Mechanical:MountingHole_Pad H1
 U 1 1 61902623
 P 8600 1000
 F 0 "H1" H 8700 1046 50  0000 L CNN
@@ -1414,7 +1414,7 @@ F 3 "~" H 8600 1000 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Mechanical:MountingHole H2
+L Mechanical:MountingHole_Pad H2
 U 1 1 619139E1
 P 8850 1000
 F 0 "H2" H 8950 1046 50  0000 L CNN
@@ -1425,7 +1425,7 @@ F 3 "~" H 8850 1000 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Mechanical:MountingHole H3
+L Mechanical:MountingHole_Pad H3
 U 1 1 61913E82
 P 9100 1000
 F 0 "H3" H 9200 1046 50  0000 L CNN
@@ -1436,7 +1436,7 @@ F 3 "~" H 9100 1000 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Mechanical:MountingHole H4
+L Mechanical:MountingHole_Pad H4
 U 1 1 61914268
 P 9350 1000
 F 0 "H4" H 9450 1046 50  0000 L CNN
@@ -2623,4 +2623,8 @@ NoConn ~ 19250 4800
 NoConn ~ 19250 4900
 Text Notes 19300 4900 0    50   ~ 0
 Dedicated SDA/SCL pins are used,\nso these must be left disconnected.
+NoConn ~ 8600 1100
+NoConn ~ 8850 1100
+NoConn ~ 9100 1100
+NoConn ~ 9350 1100
 $EndSCHEMATC
