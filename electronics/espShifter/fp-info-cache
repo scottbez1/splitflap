@@ -1,4 +1,4 @@
-16749722298947379
+16744902421196754
 Battery
 BatteryHolder_Bulgin_BX0036_1xC
 Bulgin Battery Holder, BX0036, Battery Type C (https://www.bulgin.com/products/pub/media/bulgin/data/Battery_holders.pdf)
@@ -51134,13 +51134,6 @@ LevelShifterModule
 0
 12
 12
-Mega2560Shield
-Mega2560Shield
-
-
-0
-98
-85
 Module
 A20_OLINUXINO_LIME2
 A20 Olinuxino LIME2, 1.2GHz, 512-1024MB RAM, Micro-SD, NAND or eMMC, 1000Mbit Ethernet
@@ -66240,13 +66233,6 @@ Shielding Cabinet
 0
 48
 1
-RS485
-RS485Module
-
-
-0
-8
-8
 Relay_SMD
 Relay_DPDT_AXICOM_IMSeries_JLeg
 http://www.te.com/commerce/DocumentDelivery/DDEController?Action=showdoc&DocId=Specification+Or+Standard%7F108-98001%7FW5%7Fpdf%7FEnglish%7FENG_SS_108-98001_W5.pdf
@@ -73723,13 +73709,6 @@ transformer flyback
 0
 10
 10
-ULN2003AModule
-ULN2003AModule
-
-
-0
-11
-11
 Valve
 Valve_ECC-83-1
 Valve ECC-83-1 round pins
