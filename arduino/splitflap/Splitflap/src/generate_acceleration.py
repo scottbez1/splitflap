@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #   Copyright 2020 Scott Bezek and the splitflap contributors
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
@@ -72,14 +72,14 @@ def run(output_file_path):
     git_root = subprocess.check_output(
         ['git', 'rev-parse', '--show-toplevel'],
         cwd=os.path.dirname(os.path.abspath(__file__)),
-    ).strip()
+    ).decode('utf-8').strip()
     script_path = os.path.relpath(os.path.abspath(__file__), os.path.abspath(git_root))
     with open(output_file_path, 'wb') as f:
         f.write(_TEMPLATE.format(
             periods_array=', '.join([str(x) for x in ramp_periods]),
             max_accel_step=len(ramp_periods) - 1,
             script_path=script_path,
-        ))
+        ).encode('utf-8'))
 
 
 if __name__ == '__main__':
