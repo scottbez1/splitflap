@@ -190,7 +190,7 @@ inline int8_t FindFlapIndex(uint8_t character, uint8_t current_target_flap_index
           return i;
         }
     }
-		for (uint8_t i = 0; i < current_target_flap_index; i++) {
+    for (uint8_t i = 0; i < current_target_flap_index; i++) {
         if (character == flaps[i]) {
           return i;
         }
