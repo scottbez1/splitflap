@@ -121,7 +121,7 @@ flap_width_slop = 0.15;  // amount of slop of the flap side to side between the 
 
 spool_width_slop = 1.4;  // amount of slop for the spool assembly side-to-side inside the enclosure
 
-spool_tab_clearance = -0.02;  // for the tabs connecting the struts to the spool ends (interference fit)
+spool_tab_clearance = -0.08;  // for the tabs connecting the struts to the spool ends (interference fit)
 spool_retaining_clearance = 0.10;  // for the notches in the spool retaining wall
 spool_joint_clearance = 0.10;  // for the notched joints on the spool struts
 
