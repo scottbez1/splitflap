@@ -70,9 +70,9 @@ spool_horizontal_explosion = lookup(spool_explosion, [
 ]);
 
 
-// Ponoko kerf values are 0.2 mm for MDF and acrylic (all thicknesses)
+// Kerf adjustment value for 2D export, should be equal to the laser's kerf
 // Remember: it's better to underestimate (looser fit) than overestimate (no fit)
-kerf_width = 0.2 - 0.02;
+kerf_width = 0.1;
 
 // MDF, .120in nominal
 // https://www.ponoko.com/materials/mdf-fiberboard
