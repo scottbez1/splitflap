@@ -164,7 +164,8 @@ spool_strut_exclusion_radius = sqrt((spool_strut_tab_outset+thickness/2)*(spool_
 magnet_hole_radius = (4 - 0.1)/2;
 magnet_hole_offset = (spool_strut_exclusion_radius + flap_pitch_radius)/2;
 
-28byj48_chassis_height_slop = 1;
+// Clearance between the motor chassis and the outside right wall of the previous module
+28byj48_chassis_height_clearance = 1;
 
 motor_shaft_under_radius = 0.08;  // interference fit
 motor_slop_radius = 3;
@@ -174,7 +175,7 @@ motor_slop_radius = 3;
 enclosure_wall_to_wall_width = thickness + spool_width_slop/2 + spool_width_clearance + spool_width_slop/2 + max(28byj48_mount_bracket_height + m4_button_head_length, 4 + 28byj48_mount_bracket_height - spool_width_slop/2) + thickness;
 
 // Width of the front panel
-enclosure_width = enclosure_wall_to_wall_width + 28byj48_chassis_height + 28byj48_chassis_height_slop - thickness - 28byj48_mount_bracket_height;
+enclosure_width = enclosure_wall_to_wall_width + 28byj48_chassis_height + 28byj48_chassis_height_clearance - thickness - 28byj48_mount_bracket_height;
 enclosure_horizontal_inset = (enclosure_width - enclosure_wall_to_wall_width)/2;
 front_window_upper_base = (flap_height - flap_pin_width/2);
 front_window_overhang = 3;
