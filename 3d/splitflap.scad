@@ -117,7 +117,7 @@ letter_color = color_invert(flap_color);  // inverse of the flap color, for cont
 flap_rendered_angle = 90;
 
 
-flap_width_slop = 0.15;  // amount of slop of the flap side to side between the 2 spools
+flap_width_slop = 0.25;  // amount of slop of the flap side to side between the 2 spools
 
 spool_width_slop = 1.4;  // amount of slop for the spool assembly side-to-side inside the enclosure
 
