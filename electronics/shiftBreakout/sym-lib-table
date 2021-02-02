@@ -11,4 +11,5 @@
   (lib (name RS485Module)(type Legacy)(uri ${KIPRJMOD}/../lib/RS485Module.lib)(options "")(descr ""))
   (lib (name screw_terminal_01x03_power_output)(type Legacy)(uri ${KIPRJMOD}/../lib/screw_terminal_01x03_power_output.lib)(options "")(descr ""))
   (lib (name 74HC165_2)(type Legacy)(uri ${KIPRJMOD}/../lib/74HC165_2.lib)(options "")(descr ""))
+  (lib (name 74HC125)(type Legacy)(uri /home/scott/src/splitflap/electronics/lib/74HC125.lib)(options "")(descr ""))
 )
