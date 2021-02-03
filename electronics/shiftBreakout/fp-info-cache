@@ -1,4 +1,4 @@
-18614357399986300
+18617582043667189
 Battery
 BatteryHolder_Bulgin_BX0036_1xC
 Bulgin Battery Holder, BX0036, Battery Type C (https://www.bulgin.com/products/pub/media/bulgin/data/Battery_holders.pdf)
@@ -54683,6 +54683,13 @@ L_Toroid Vertical series Radial pin pitch 31.80mm  length 67.6mm width 36.1mm Vi
 0
 2
 2
+JLCPCB
+AssemblyToolingHole
+
+
+0
+0
+0
 JST_XH_Connectors
 JST_XH_2-5mm_5pin
 
@@ -74556,6 +74563,13 @@ ST7789_240x240
 0
 11
 7
+ScrewTerminals
+C72334_WJ500V-5.08-3P
+
+
+0
+3
+3
 Sensor_Audio
 CUI_CMC-4013-SMT
 Omnidirectional, -42dB, reflowable, electret condenser microphone https://www.cuidevices.com/product/resource/cmc-4013-smt-tr.pdf
