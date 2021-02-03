@@ -162,7 +162,7 @@ spool_strut_exclusion_radius = sqrt((spool_strut_tab_outset+thickness/2)*(spool_
 
 
 magnet_diameter = 4;
-magnet_hole_clearance = -0.1;  // interference fit
+magnet_hole_clearance = -0.09;  // interference fit
 magnet_hole_radius = (magnet_diameter + magnet_hole_clearance)/2;
 magnet_hole_offset = (spool_strut_exclusion_radius + flap_pitch_radius)/2;
 
