@@ -161,7 +161,9 @@ spool_strut_inner_length = spool_width - 3 * thickness;
 spool_strut_exclusion_radius = sqrt((spool_strut_tab_outset+thickness/2)*(spool_strut_tab_outset+thickness/2) + (spool_strut_tab_width/2)*(spool_strut_tab_width/2));
 
 
-magnet_hole_radius = (4 - 0.1)/2;
+magnet_diameter = 4;
+magnet_hole_clearance = -0.1;  // interference fit
+magnet_hole_radius = (magnet_diameter + magnet_hole_clearance)/2;
 magnet_hole_offset = (spool_strut_exclusion_radius + flap_pitch_radius)/2;
 
 28byj48_chassis_height_slop = 1;
