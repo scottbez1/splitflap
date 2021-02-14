@@ -9,8 +9,12 @@
 
 // 2) General Settings
 #ifndef NUM_MODULES
-#define NUM_MODULES (12)
+#define NUM_MODULES (4)
 #endif
+
+// Normally, this should be all 0's, but in case you need to adjust your offset,
+// you can do it programmatically instead of reseating every card
+const uint8_t flap_offset[NUM_MODULES] = { 0, 0, 0, 0 };
 
 // Whether to force a full rotation when the same letter is specified again
 #define FORCE_FULL_ROTATION true

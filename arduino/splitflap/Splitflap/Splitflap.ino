@@ -388,7 +388,7 @@ inline void run_iteration() {
                 int8_t index = FindFlapIndex(recv_buffer[i]);
                 if (index != -1) {
                   if (FORCE_FULL_ROTATION || index != modules[i]->GetTargetFlapIndex()) {
-                    modules[i]->GoToFlapIndex(index);
+                    modules[i]->GoToFlapIndex(index + flap_offset[i]);
                   }
                 }
                 Serial.write(recv_buffer[i]);
