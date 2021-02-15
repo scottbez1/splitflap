@@ -21,8 +21,8 @@ num_flaps = 40;
 containers_x = 1;
 containers_y = 1;
 
-flap_thickness_allowance = 1 - flap_thickness;  // fudged, so all flaps are considered 1 mm thick
-cavity_top_allowance = 5;  // extra case height above the flaps
+flap_thickness_allowance = 1.1 - flap_thickness;  // fudged, so all flaps are considered 1 mm thick
+cavity_top_allowance = 2;  // extra case height above the flaps
 
 flap_clearance = 0.5;  // distance between the flap edges and the case walls
 wall_thickness = 3.5;  // thickness of the case walls around the flaps
