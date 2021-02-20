@@ -13,41 +13,33 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+#pragma once
 
 #include <Arduino.h>
-#include <TFT_eSPI.h>
-#include <Wire.h>
 
-#include "config.h"
 #include "splitflap_task.h"
+#include "task.h"
 
-SplitflapTask splitflapTask(1);
-
-// Note: Currently, MQTT is supported OR a display, not both.
-#ifdef MQTT
-#include "mqtt_task.h"
-MQTTTask mqttTask(splitflapTask, 0);
-#else
-#include "display_task.h"
-DisplayTask displayTask(splitflapTask, 0);
-#endif
-
-void setup() {
-  Serial.begin(MONITOR_SPEED);
-
-  splitflapTask.begin();
-
-  #ifdef MQTT
-  mqttTask.begin();
-  #else
-  displayTask.begin();
-  #endif
-
-  // Delete the default Arduino loopTask to free up Core 1
-  vTaskDelete(NULL);
-}
+#include <PubSubClient.h>
+#include <WiFi.h>
 
 
-void loop() {
-  assert(false);
-}
+class MQTTTask : public Task<MQTTTask> {
+    friend class Task<MQTTTask>; // Allow base Task to invoke protected run()
+
+    public:
+        MQTTTask(SplitflapTask& splitflapTask, const uint8_t taskCore);
+
+    protected:
+        void run();
+
+    private:
+        SplitflapTask& splitflap_task_;
+        WiFiClient wifi_client_;
+        PubSubClient mqtt_client_;
+        int mqtt_last_connect_time_ = 0;
+
+        void connectWifi();
+        void connectMQTT();
+        void mqttCallback(char *topic, byte *payload, unsigned int length);
+};

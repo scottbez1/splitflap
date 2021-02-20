@@ -36,6 +36,7 @@ class SplitflapTask : public Task<SplitflapTask> {
         SplitflapTask(const uint8_t taskCore);
         ~SplitflapTask();
         SplitflapState getState();
+        void writeBuffer(const char *word);
 
     protected:
         void run();
@@ -48,6 +49,8 @@ class SplitflapTask : public Task<SplitflapTask> {
 
         // TODO: move to serial task
         int recv_buffer[NUM_MODULES];
+        bool recv_buffer_ready = false;
+        void showBuffer();
         void dumpStatus(void);
 
         // TODO: rename to match style guide

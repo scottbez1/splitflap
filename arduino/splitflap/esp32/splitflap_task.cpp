@@ -90,6 +90,26 @@ void SplitflapTask::updateStateCache() {
     }
 }
 
+void SplitflapTask::showBuffer() {
+    pending_move_response = true;
+    Serial.print("{\"type\":\"move_echo\", \"dest\":\"");
+    Serial.flush();
+    for (uint8_t i = 0; i < recv_count; i++) {
+        int8_t index = findFlapIndex(recv_buffer[i]);
+        if (index != -1) {
+            if (FORCE_FULL_ROTATION || index != modules[i]->GetTargetFlapIndex()) {
+            modules[i]->GoToFlapIndex(index);
+            }
+        }
+        Serial.write(recv_buffer[i]);
+        if (i % 8 == 0) {
+            Serial.flush();
+        }
+    }
+    Serial.print("\"}\n");
+    Serial.flush();
+}
+
 void SplitflapTask::runUpdate() {
     uint32_t iterationStartMillis = millis();
     boolean all_idle = true;
@@ -173,23 +193,7 @@ void SplitflapTask::runUpdate() {
             recv_count = 0;
             break;
           case '\n':
-              pending_move_response = true;
-              Serial.print("{\"type\":\"move_echo\", \"dest\":\"");
-              Serial.flush();
-              for (uint8_t i = 0; i < recv_count; i++) {
-                int8_t index = findFlapIndex(recv_buffer[i]);
-                if (index != -1) {
-                  if (FORCE_FULL_ROTATION || index != modules[i]->GetTargetFlapIndex()) {
-                    modules[i]->GoToFlapIndex(index);
-                  }
-                }
-                Serial.write(recv_buffer[i]);
-                if (i % 8 == 0) {
-                  Serial.flush();
-                }
-              }
-              Serial.print("\"}\n");
-              Serial.flush();
+              recv_buffer_ready = true;
               break;
           default:
             if (recv_count > NUM_MODULES - 1) {
@@ -200,6 +204,13 @@ void SplitflapTask::runUpdate() {
             break;
         }
       }
+
+      if (recv_buffer_ready) {
+        recv_buffer_ready = false;
+        showBuffer();
+        recv_count = 0;
+      }
+
     }
 }
 
@@ -263,6 +274,15 @@ void SplitflapTask::dumpStatus() {
 SplitflapState SplitflapTask::getState() {
     SemaphoreGuard lock(semaphore_);
     return state_cache_;
+}
+
+void SplitflapTask::writeBuffer(const char *word) {
+    SemaphoreGuard lock(semaphore_);
+    recv_count = NUM_MODULES;
+    for (int i = 0; i < NUM_MODULES; i++) {
+        recv_buffer[i] = word[i];
+    }
+    recv_buffer_ready = true;
 }
 
 // void disableAll(char* message) {
