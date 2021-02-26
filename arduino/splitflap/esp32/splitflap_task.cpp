@@ -38,6 +38,18 @@ SplitflapTask::~SplitflapTask() {
   }
 }
 
+// TODO: Move to a separate status class?
+static void setLedStatus(uint8_t moduleIndex, bool on) {
+  uint8_t groupPosition = moduleIndex % 6;
+  uint8_t byteIndex = MOTOR_BUFFER_LENGTH - 1 - moduleIndex/6*4 - (groupPosition < 3 ? 1 : 2);
+  uint8_t bitMask = (groupPosition < 3) ? (1 << (4 + groupPosition)) : (1 << (groupPosition - 3));
+  if (on) {
+    motor_buffer[byteIndex] |= bitMask;
+  } else {
+    motor_buffer[byteIndex] &= ~bitMask;
+  }
+}
+
 void SplitflapTask::run() {
     esp_err_t result = esp_task_wdt_add(NULL);
     ESP_ERROR_CHECK(result);
@@ -57,6 +69,18 @@ void SplitflapTask::run() {
     Serial.print("{\"type\":\"init\", \"num_modules\":");
     Serial.print(NUM_MODULES);
     Serial.print("}\n");
+
+    for (uint8_t r = 0; r < 5; r++) {
+      for (uint8_t i = 0; i < NUM_MODULES; i++) {
+        setLedStatus(i, 1);
+        motor_sensor_io();
+        delay(10);
+        setLedStatus(i, 0);
+        motor_sensor_io();
+      }
+      result = esp_task_wdt_reset();
+      ESP_ERROR_CHECK(result);
+    }
 
     for (uint8_t i = 0; i < NUM_MODULES; i++) {
         modules[i]->Init();
@@ -92,28 +116,44 @@ void SplitflapTask::updateStateCache() {
 
 void SplitflapTask::runUpdate() {
     uint32_t iterationStartMillis = millis();
+
+    uint32_t flashStep = iterationStartMillis / 200;
+    uint32_t flashGroup = (flashStep % 16) / 2;
+    uint8_t flashPhase = flashStep % 2;
+
     boolean all_idle = true;
     boolean all_stopped = true;
-    for (uint8_t i = 0; i < NUM_MODULES; i++) {
-      modules[i]->Update();
-      bool is_idle = modules[i]->state == PANIC
-        || modules[i]->state == STATE_DISABLED
-        || modules[i]->state == LOOK_FOR_HOME
-        || modules[i]->state == SENSOR_ERROR
-        || (modules[i]->state == NORMAL && modules[i]->current_accel_step == 0);
 
-      bool is_stopped = modules[i]->state == PANIC
-        || modules[i]->state == STATE_DISABLED
-        || modules[i]->current_accel_step == 0;
+    if (!sensor_test_) {
+      for (uint8_t i = 0; i < NUM_MODULES; i++) {
+        modules[i]->Update();
+        bool is_idle = modules[i]->state == PANIC
+          || modules[i]->state == STATE_DISABLED
+          || modules[i]->state == LOOK_FOR_HOME
+          || modules[i]->state == SENSOR_ERROR
+          || (modules[i]->state == NORMAL && modules[i]->current_accel_step == 0);
 
-      all_idle &= is_idle;
-      all_stopped &= is_stopped;
+        bool is_stopped = modules[i]->state == PANIC
+          || modules[i]->state == STATE_DISABLED
+          || modules[i]->current_accel_step == 0;
+
+        setLedStatus(i, flashGroup < modules[i]->state && flashPhase == 0);
+
+        all_idle &= is_idle;
+        all_stopped &= is_stopped;
+      }
+      if (all_stopped && !was_stopped) {
+        stopped_at_millis = iterationStartMillis;
+      }
+      was_stopped = all_stopped;
+      motor_sensor_io();
+    } else {
+      motor_sensor_io();
+      for (uint8_t i = 0; i < NUM_MODULES; i++) {
+        setLedStatus(i, modules[i]->GetHomeState());
+      }
+      motor_sensor_io();
     }
-    if (all_stopped && !was_stopped) {
-      stopped_at_millis = iterationStartMillis;
-    }
-    was_stopped = all_stopped;
-    motor_sensor_io();
 
 #if INA219_POWER_SENSE
     if (iterationStartMillis - lastCurrentReadMillis > 100) {
@@ -159,45 +199,52 @@ void SplitflapTask::runUpdate() {
 
       while (Serial.available() > 0) {
         int b = Serial.read();
-        switch (b) {
-          case '@':
-            for (uint8_t i = 0; i < NUM_MODULES; i++) {
-              modules[i]->ResetErrorCounters();
-              modules[i]->GoHome();
-            }
-            break;
-          case '#':
-            pending_no_op = true;
-            break;
-          case '=':
-            recv_count = 0;
-            break;
-          case '\n':
-              pending_move_response = true;
-              Serial.print("{\"type\":\"move_echo\", \"dest\":\"");
-              Serial.flush();
-              for (uint8_t i = 0; i < recv_count; i++) {
-                int8_t index = findFlapIndex(recv_buffer[i]);
-                if (index != -1) {
-                  if (FORCE_FULL_ROTATION || index != modules[i]->GetTargetFlapIndex()) {
-                    modules[i]->GoToFlapIndex(index);
+        if (b == '%' && all_stopped) {
+          sensor_test_ = !sensor_test_;
+          Serial.print("{\"type\":\"sensor_test\", \"enabled\":");
+          Serial.print(sensor_test_ ? "true" : "false");
+          Serial.print("}\n");
+        } else if (sensor_test_ == false) {
+          switch (b) {
+            case '@':
+              for (uint8_t i = 0; i < NUM_MODULES; i++) {
+                modules[i]->ResetErrorCounters();
+                modules[i]->GoHome();
+              }
+              break;
+            case '#':
+              pending_no_op = true;
+              break;
+            case '=':
+              recv_count = 0;
+              break;
+            case '\n':
+                pending_move_response = true;
+                Serial.print("{\"type\":\"move_echo\", \"dest\":\"");
+                Serial.flush();
+                for (uint8_t i = 0; i < recv_count; i++) {
+                  int8_t index = findFlapIndex(recv_buffer[i]);
+                  if (index != -1) {
+                    if (FORCE_FULL_ROTATION || index != modules[i]->GetTargetFlapIndex()) {
+                      modules[i]->GoToFlapIndex(index);
+                    }
+                  }
+                  Serial.write(recv_buffer[i]);
+                  if (i % 8 == 0) {
+                    Serial.flush();
                   }
                 }
-                Serial.write(recv_buffer[i]);
-                if (i % 8 == 0) {
-                  Serial.flush();
-                }
+                Serial.print("\"}\n");
+                Serial.flush();
+                break;
+            default:
+              if (recv_count > NUM_MODULES - 1) {
+                break;
               }
-              Serial.print("\"}\n");
-              Serial.flush();
+              recv_buffer[recv_count] = b;
+              recv_count++;
               break;
-          default:
-            if (recv_count > NUM_MODULES - 1) {
-              break;
-            }
-            recv_buffer[recv_count] = b;
-            recv_count++;
-            break;
+          }
         }
       }
     }

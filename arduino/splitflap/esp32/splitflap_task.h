@@ -59,6 +59,8 @@ class SplitflapTask : public Task<SplitflapTask> {
 
         // bool disabled = false;
 
+        bool sensor_test_ = false;
+
         SemaphoreHandle_t semaphore_;
 
         // Cached state. Protected by semaphore_

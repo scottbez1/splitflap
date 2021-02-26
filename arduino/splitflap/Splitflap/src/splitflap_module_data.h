@@ -30,8 +30,8 @@ enum HomeState {
 
 enum State {
   NORMAL,
-  PANIC,
-  STATE_DISABLED,
   LOOK_FOR_HOME,
   SENSOR_ERROR,
+  PANIC,
+  STATE_DISABLED,
 };

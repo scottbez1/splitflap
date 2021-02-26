@@ -88,9 +88,14 @@
 #error "Unknown/unsupported board for SPI mode. ATmega328-based boards (Uno, Duemilanove, Diecimila), ESP8266 and ESP32 are currently supported"
 #endif
 
-
+#ifdef CHAINLINK
+#define MOTOR_BUFFER_LENGTH (NUM_MODULES * 2 / 3 + (NUM_MODULES % 3 != 0) * 2)
+#define SENSOR_BUFFER_LENGTH (NUM_MODULES / 6 + (NUM_MODULES % 6 != 0))
+#else
 #define MOTOR_BUFFER_LENGTH (NUM_MODULES / 2 + (NUM_MODULES % 2 != 0))
 #define SENSOR_BUFFER_LENGTH (NUM_MODULES / 4 + (NUM_MODULES % 4 != 0))
+#endif
+
 
 BUFFER_ATTRS uint8_t motor_buffer[MOTOR_BUFFER_LENGTH];
 BUFFER_ATTRS uint8_t sensor_buffer[SENSOR_BUFFER_LENGTH];
@@ -118,10 +123,18 @@ static char moduleBuffer[NUM_MODULES][sizeof(SplitflapModule)];
 
 SplitflapModule* modules[NUM_MODULES];
 
+#ifdef CHAINLINK
+static const uint8_t MOTOR_OFFSET[] = {0, 0, 1, 2, 3, 3};
+#endif
+
 inline void initialize_modules() {
   for (uint8_t i = 0; i < NUM_MODULES; i++) {
     // Create SplitflapModules in a statically allocated buffer using placement new
+#ifdef CHAINLINK
+    modules[i] = new (moduleBuffer[i]) SplitflapModule(motor_buffer[MOTOR_BUFFER_LENGTH - 1 - i/6*4 - MOTOR_OFFSET[i%6]], i % 2 == 0 ? 0 : 4, sensor_buffer[i/6], 1 << (i % 6));
+#else
     modules[i] = new (moduleBuffer[i]) SplitflapModule(motor_buffer[MOTOR_BUFFER_LENGTH - 1 - i/2], i % 2 == 0 ? 0 : 4, sensor_buffer[i/4], 1 << (i % 4));
+#endif
   }
   
   memset(motor_buffer, 0, MOTOR_BUFFER_LENGTH);
