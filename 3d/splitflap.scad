@@ -117,11 +117,11 @@ letter_color = color_invert(flap_color);  // inverse of the flap color, for cont
 flap_rendered_angle = 90;
 
 
-flap_width_slop = 0.15;  // amount of slop of the flap side to side between the 2 spools
+flap_width_slop = 0.5;  // amount of slop of the flap side to side between the 2 spools
 
 spool_width_slop = 1.4;  // amount of slop for the spool assembly side-to-side inside the enclosure
 
-spool_tab_clearance = -0.02;  // for the tabs connecting the struts to the spool ends (interference fit)
+spool_tab_clearance = -0.06;  // for the tabs connecting the struts to the spool ends (interference fit)
 spool_retaining_clearance = 0.10;  // for the notches in the spool retaining wall
 spool_joint_clearance = 0.10;  // for the notched joints on the spool struts
 
@@ -161,7 +161,9 @@ spool_strut_inner_length = spool_width - 3 * thickness;
 spool_strut_exclusion_radius = sqrt((spool_strut_tab_outset+thickness/2)*(spool_strut_tab_outset+thickness/2) + (spool_strut_tab_width/2)*(spool_strut_tab_width/2));
 
 
-magnet_hole_radius = (4 - 0.1)/2;
+magnet_diameter = 4;
+magnet_hole_clearance = -0.07;  // interference fit
+magnet_hole_radius = (magnet_diameter + magnet_hole_clearance)/2;
 magnet_hole_offset = (spool_strut_exclusion_radius + flap_pitch_radius)/2;
 
 28byj48_chassis_height_slop = 1;
