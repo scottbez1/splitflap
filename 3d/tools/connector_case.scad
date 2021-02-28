@@ -96,7 +96,6 @@ module connector_case(num_conn, num_cases, dual=false) {
         connector_case_row(num_conn, num_cases);
         if(dual) {
             translate([0, case_length_dual_offset, 0])
-            //translate([-20, -combined_offset, 0])
             mirror([0, 1, 0])
             connector_case_row(num_conn, num_cases);
         }
