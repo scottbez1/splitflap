@@ -19,6 +19,7 @@ from __future__ import division
 from __future__ import print_function
 
 import argparse
+import json
 import logging
 import os
 import subprocess
@@ -34,13 +35,22 @@ sys.path.append(repo_root)
 
 from util import rev_info
 
+KERF_PRESETS = {
+    'ponoko-3mm-mdf': 0.18,
+    'ponoko-3mm-acrylic': 0.1,
+}
+
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--panelize', type=int, default=1, help='Quantity to panelize - must be 1 or an even number')
     parser.add_argument('--skip-optimize', action='store_true', help='Don\'t remove redundant/overlapping cut lines')
-    parser.add_argument('--kerf', type=float, help='Override kerf_width value')
+
+    kerf_group = parser.add_mutually_exclusive_group()
+    kerf_group.add_argument('--kerf', type=float, help='Override kerf_width value')
+    kerf_group.add_argument('--kerf-preset', choices=KERF_PRESETS, help='Override kerf_width using a defined preset')
+
     parser.add_argument('--render-raster', action='store_true', help='Render raster PNG from the output SVG (requires '
                                                                      'Inkscape)')
     parser.add_argument('--thickness', type=float, help='Override panel thickness value')
@@ -55,13 +65,17 @@ if __name__ == '__main__':
     extra_variables = {
         'render_revision': rev_info.git_short_rev(),
         'render_date': rev_info.current_date(),
-        'render_etch' : not args.no_etch,
-        'render_2d_mirror' : args.mirror,
+        'render_etch': not args.no_etch,
+        'render_2d_mirror': args.mirror,
     }
     if args.kerf is not None:
         extra_variables['kerf_width'] = args.kerf
+    elif args.kerf_preset is not None:
+        extra_variables['kerf_width'] = KERF_PRESETS[args.kerf_preset]
     if args.thickness is not None:
         extra_variables['thickness'] = args.thickness
+
+    print('Variables:\n' + json.dumps(extra_variables, indent=4))
 
     renderer = Renderer(os.path.join(source_parts_dir, 'splitflap.scad'), laser_parts_directory, extra_variables)
     renderer.clean()
