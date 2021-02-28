@@ -50,6 +50,19 @@ static void setLedStatus(uint8_t moduleIndex, bool on) {
   }
 }
 
+static uint8_t loopbackMotorByte(uint8_t loopbackIndex) {
+  return MOTOR_BUFFER_LENGTH - 1 - (loopbackIndex / 2) * 4 - (((loopbackIndex % 2) == 0) ? 1 : 2);
+}
+static uint8_t loopbackMotorBitMask(uint8_t loopbackIndex) {
+  return (loopbackIndex % 2) == 0 ? (1 << 7) : (1 << 3);
+}
+static uint8_t loopbackSensorByte(uint8_t loopbackIndex) {
+  return loopbackIndex / 2;
+}
+static uint8_t loopbackSensorBitMask(uint8_t loopbackIndex) {
+  return (loopbackIndex % 2) == 0 ? 1 << 6 : 1 << 7;
+}
+
 void SplitflapTask::run() {
     esp_err_t result = esp_task_wdt_add(NULL);
     ESP_ERROR_CHECK(result);
@@ -70,7 +83,52 @@ void SplitflapTask::run() {
     Serial.print(NUM_MODULES);
     Serial.print("}\n");
 
-    for (uint8_t r = 0; r < 5; r++) {
+#ifdef CHAINLINK
+
+    bool loopback_error = false;
+
+    // Turn one loopback bit on at a time and make sure only that loopback bit is set
+    for (uint8_t loop_out_index = 0; loop_out_index < NUM_LOOPBACKS; loop_out_index++) {
+      motor_buffer[loopbackMotorByte(loop_out_index)] = loopbackMotorBitMask(loop_out_index);
+      motor_sensor_io();
+      motor_sensor_io();
+      for (uint8_t loop_in_index = 0; loop_in_index < NUM_LOOPBACKS; loop_in_index++) {
+        uint8_t expected_bit_mask = (loop_out_index == loop_in_index) ? loopbackSensorBitMask(loop_in_index) : 0;
+        uint8_t actual_bit_mask = sensor_buffer[loopbackSensorByte(loop_in_index)] & loopbackSensorBitMask(loop_in_index);
+        if (actual_bit_mask != expected_bit_mask) {
+          // TODO: do something with loopback errors
+          loopback_error = true;
+          Serial.printf("Bad loopback. Set loopback %u but found unexpected value at loopback %u\n", 
+              loop_out_index,
+              loop_in_index
+          );
+        }
+      }
+      motor_buffer[loopbackMotorByte(loop_out_index)] = 0;
+    }
+
+    // Turn off all motors, leds, and loopbacks; make sure all loopback inputs read 0
+    memset(motor_buffer, 0, MOTOR_BUFFER_LENGTH);
+    motor_sensor_io();
+    motor_sensor_io();
+    for (uint8_t i = 0; i < NUM_LOOPBACKS; i++) {
+      if ((sensor_buffer[loopbackSensorByte(i)] & loopbackSensorBitMask(i)) != 0) {
+        // TODO: do something with loopback errors
+        loopback_error = true;
+        Serial.printf("Bad loopback at index %u - should have been 0\n", i);
+      }
+    }
+
+    if (loopback_error) {
+      // Loop forever
+      while(1) {
+          updateStateCache();
+          ESP_ERROR_CHECK(esp_task_wdt_reset());
+      }
+    }
+#endif
+
+    for (uint8_t r = 0; r < 3; r++) {
       for (uint8_t i = 0; i < NUM_MODULES; i++) {
         setLedStatus(i, 1);
         motor_sensor_io();
@@ -80,21 +138,16 @@ void SplitflapTask::run() {
       }
       result = esp_task_wdt_reset();
       ESP_ERROR_CHECK(result);
+      delay(500);
     }
 
     for (uint8_t i = 0; i < NUM_MODULES; i++) {
         modules[i]->Init();
-#if !SENSOR_TEST
         modules[i]->GoHome();
-#endif
     }
 
     while(1) {
-#if SENSOR_TEST
-        sensorTestUpdate();
-#else
         runUpdate();
-#endif
         updateStateCache();
 
         result = esp_task_wdt_reset();
@@ -148,10 +201,14 @@ void SplitflapTask::runUpdate() {
       was_stopped = all_stopped;
       motor_sensor_io();
     } else {
+      // Read sensor state
       motor_sensor_io();
+
       for (uint8_t i = 0; i < NUM_MODULES; i++) {
         setLedStatus(i, modules[i]->GetHomeState());
       }
+
+      // Output LED state
       motor_sensor_io();
     }
 
@@ -250,18 +307,6 @@ void SplitflapTask::runUpdate() {
     }
 }
 
-void SplitflapTask::sensorTestUpdate() {
-    SemaphoreGuard lock(semaphore_);
-    motor_sensor_io();
-
-    Serial.println();
-    for (uint8_t i = 0; i < NUM_MODULES; i++) {
-      Serial.print(modules[i]->GetHomeState() ? '0' : '1');
-    }
-    delay(100);
-}
-
-
 int8_t SplitflapTask::findFlapIndex(uint8_t character) {
     for (int8_t i = 0; i < NUM_FLAPS; i++) {
         if (character == flaps[i]) {
@@ -312,7 +357,7 @@ SplitflapState SplitflapTask::getState() {
     return state_cache_;
 }
 
-// void disableAll(char* message) {
+// void SplitflapTask::disableAll(const char* message) {
 //   for (uint8_t i = 0; i < NUM_MODULES; i++) {
 //     modules[i]->Disable();
 //   }

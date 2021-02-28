@@ -123,7 +123,10 @@ const uint8_t flaps[NUM_FLAPS] = {
  */
 
 
-// Configuration validation
+// Configuration validation and dependent settings
 #if NUM_MODULES < 1
 #error NUM_MODULES must be at least 1
+#endif
+#ifdef CHAINLINK
+#define NUM_LOOPBACKS (NUM_MODULES / 3)
 #endif

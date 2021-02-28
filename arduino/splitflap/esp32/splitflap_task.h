@@ -45,6 +45,7 @@ class SplitflapTask : public Task<SplitflapTask> {
         void sensorTestUpdate();
 
         int8_t findFlapIndex(uint8_t character);
+        // void disableAll(const char* message);
 
         // TODO: move to serial task
         int recv_buffer[NUM_MODULES];
@@ -58,7 +59,6 @@ class SplitflapTask : public Task<SplitflapTask> {
         uint32_t stopped_at_millis = 0;
 
         // bool disabled = false;
-
         bool sensor_test_ = false;
 
         SemaphoreHandle_t semaphore_;
