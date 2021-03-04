@@ -100,6 +100,9 @@ class Splitflap(object):
     def get_status(self):
         return self.last_status
 
+    def get_num_modules(self):
+        return self.num_modules
+
     def print_status(self, status=None):
         if(status is None):
             status = self.last_status
