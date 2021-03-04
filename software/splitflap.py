@@ -97,6 +97,22 @@ class Splitflap(object):
     def get_status(self):
         return self.last_status
 
+    def print_status(self, status=None):
+        if(status is None):
+            status = self.last_status
+
+        for module in status:
+            state = ''
+            if module['state'] == 'panic':
+                state = '!!!!'
+            elif module['state'] == 'look_for_home':
+                state = '...'
+            elif module['state'] == 'sensor_error':
+                state = '????'
+            elif module['state'] == 'normal':
+                state = module['flap']
+            print('{:4}  {: 4} {: 4}'.format(state, module['count_missed_home'], module['count_unexpected_home']))
+
 
 @contextmanager
 def splitflap(serial_port):
