@@ -2,6 +2,9 @@ import json
 from contextlib import contextmanager
 
 import serial
+import serial.tools.list_ports
+
+import six
 
 _ALPHABET = {
     ' ',
@@ -120,3 +123,21 @@ def splitflap(serial_port):
         s = Splitflap(ser)
         s._loop_for_status()
         yield s
+
+
+def ask_for_serial_port():
+    print('Available ports:')
+    ports = sorted(
+        filter(
+            lambda p: p.description != 'n/a',
+            serial.tools.list_ports.comports(),
+        ),
+        key=lambda p: p.device,
+    )
+    for i, port in enumerate(ports):
+        print('[{: 2}] {} - {}'.format(i, port.device, port.description))
+    print()
+    value = six.moves.input('Use which port? ')
+    port_index = int(value)
+    assert 0 <= port_index < len(ports)
+    return ports[port_index].device
