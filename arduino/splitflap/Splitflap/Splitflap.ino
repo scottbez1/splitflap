@@ -163,7 +163,11 @@ void setup() {
   Serial.print("\n\n\n");
   Serial.print(FAVR("{\"type\":\"init\", \"num_modules\":"));
   Serial.print(NUM_MODULES);
-  Serial.print(FAVR("}\n"));
+  Serial.print(FAVR(", \"character_list\":\""));
+  for(uint8_t i = 0; i < NUM_FLAPS; i++) {
+    Serial.print((char)flaps[i]);
+  }
+  Serial.print(FAVR("\"}\n"));
 
   for (uint8_t i = 0; i < NUM_MODULES; i++) {
     recv_buffer[i] = 0;
@@ -180,8 +184,13 @@ void setup() {
 }
 
 
-inline int8_t FindFlapIndex(uint8_t character) {
-    for (int8_t i = 0; i < NUM_FLAPS; i++) {
+inline int8_t FindFlapIndex(uint8_t character, uint8_t current_flap_index) {
+    for (uint8_t i = current_flap_index; i < NUM_FLAPS; i++) {
+        if (character == flaps[i]) {
+          return i;
+        }
+    }
+    for (uint8_t i = 0; i < current_flap_index; i++) {
         if (character == flaps[i]) {
           return i;
         }
@@ -381,7 +390,7 @@ inline void run_iteration() {
               }
 #endif
               for (uint8_t i = 0; i < recv_count; i++) {
-                int8_t index = FindFlapIndex(recv_buffer[i]);
+                int8_t index = FindFlapIndex(recv_buffer[i], modules[i]->GetCurrentFlapIndex());
                 if (index != -1) {
                   if (FORCE_FULL_ROTATION || index != modules[i]->GetTargetFlapIndex()) {
                     modules[i]->GoToFlapIndex(index);

@@ -1,5 +1,5 @@
 /*
-   Copyright 2018 Scott Bezek and the splitflap contributors
+   Copyright 2020 Scott Bezek and the splitflap contributors
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -14,14 +14,13 @@
    limitations under the License.
 */
 
-flap_width = 54;
-flap_height = 43;
-flap_thickness = 30 / 1000 * 25.4; // 30 mil
-flap_corner_radius = 3.1; // 2.88-3.48mm (used just for display)
+use<roboto/RobotoCondensed-Regular.ttf>;
+include<flap_dimensions.scad>;
 
-flap_notch_height_auto = false;
-flap_notch_height_default = 15;
-flap_notch_depth = 3.2;
+letter_font = "RobotoCondensed";
+letter_height = 0.75;  // aspect, 0-1
+letter_width  =  0.8;  // aspect, 0-1
+letter_gap_comp = true;  // shifts letter positions to compensate for gap between flaps
 
-flap_pin_width = 1.4;
-
+letter_offset_x = -0.78;  // offset from center (mm)
+letter_offset_y = 0.5;
