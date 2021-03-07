@@ -5,7 +5,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  render-schematic:
+  export-electronics:
+    name: Export Electronics
     runs-on: ubuntu-20.04
 
     steps:
@@ -15,7 +16,10 @@ jobs:
       - name: Install dependencies
         run: ./electronics/scripts/dependencies.sh
 
-      - name: Render schematic
+      - name: Export schematic
+        run: ./electronics/scripts/export_schematic.py electronics/shiftBreakout/shiftBreakout.sch
+
+      - name: Render PCB 3D
         run: ./electronics/scripts/export_schematic.py electronics/shiftBreakout/shiftBreakout.sch
 
       - name: Archive artifacts

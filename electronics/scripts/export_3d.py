@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-#   Copyright 2015-2020 Scott Bezek and the splitflap contributors
+#   Copyright 2015-2021 Scott Bezek and the splitflap contributors
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+import argparse
 import logging
 import os
 import psutil
@@ -26,6 +27,7 @@ sys.path.append(repo_root)
 
 from util import file_util
 from export_util import (
+    patch_config,
     PopenContext,
     versioned_file,
     xdotool,
@@ -56,15 +58,18 @@ def _wait_for_pcbnew_idle():
     raise RuntimeError('Timeout waiting for pcbnew to go idle')
 
 
-def _pcbnew_export_3d(output_directory):
-    output_file = os.path.join(output_directory, '3d.png')
+def _pcbnew_export_3d(output_file):
     if os.path.exists(output_file):
         os.remove(output_file)
 
     wait_for_window('pcbnew', 'Pcbnew ')
 
+    time.sleep(1)
+
     logger.info('Focus main pcbnew window')
     xdotool(['search', '--name', 'Pcbnew ', 'windowfocus'])
+
+    time.sleep(1)
 
     logger.info('Open 3d viewer')
     xdotool(['key', 'alt+3'])
@@ -145,6 +150,10 @@ def _pcbnew_export_3d(output_directory):
     ])
 
     logger.info('Enter build output filename')
+    xdotool([
+        'key',
+        'ctrl+a',
+    ])
     xdotool(['type', output_file])
 
     logger.info('Save')
@@ -154,20 +163,34 @@ def _pcbnew_export_3d(output_directory):
     time.sleep(2)
 
 
-def export_schematic():
-    pcb_file = os.path.join(electronics_root, 'splitflap.kicad_pcb')
+def export_3d(filename):
+    pcb_file = os.path.abspath(filename)
     output_dir = os.path.join(electronics_root, 'build')
     file_util.mkdir_p(output_dir)
 
     screencast_output_file = os.path.join(output_dir, 'export_3d_screencast.ogv')
 
-    with versioned_file(pcb_file):
-        with recorded_xvfb(screencast_output_file, width=3840, height=2160, colordepth=24):
-            with PopenContext(['pcbnew', pcb_file], close_fds=True) as pcbnew_proc:
-                _pcbnew_export_3d(output_dir)
-                pcbnew_proc.terminate()
+    name, _ = os.path.splitext(os.path.basename(pcb_file))
+    output_file = os.path.join(output_dir, f'{name}-3d.png')
+
+    settings = {
+        'canvas_type': '1',
+        'SMaskColor_Red': '0.1',
+        'SMaskColor_Green': '0.1',
+        'SMaskColor_Blue': '0.1',
+        'RenderEngine': '1',
+        'Render_RAY_ProceduralTextures': '0',
+    }
+    with patch_config(os.path.expanduser('~/.config/kicad/pcbnew'), settings):
+        with versioned_file(pcb_file):
+            with recorded_xvfb(screencast_output_file, width=3840, height=2160, colordepth=24):
+                with PopenContext(['pcbnew', pcb_file], close_fds=True) as pcbnew_proc:
+                    _pcbnew_export_3d(output_file)
+                    pcbnew_proc.terminate()
 
 
 if __name__ == '__main__':
-    export_schematic()
-
+    parser = argparse.ArgumentParser()
+    parser.add_argument('pcb')
+    args = parser.parse_args()
+    export_3d(args.pcb)
