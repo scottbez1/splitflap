@@ -79,8 +79,11 @@ def _pcbnew_export_3d(output_file):
 
     time.sleep(3)
 
+    # Maximize window
     xdotool(['search', '--name', '3D Viewer', 'windowmove', '0', '0'])
     xdotool(['search', '--name', '3D Viewer', 'windowsize', str(WIDTH), str(HEIGHT)])
+
+    time.sleep(3)
 
     logger.info('Zoom in')
     for i in range(6):
@@ -107,7 +110,7 @@ def _pcbnew_export_3d(output_file):
         'Down',
         'Return',
     ])
-    time.sleep(0.2)
+    time.sleep(2)
 
     for i in range(2):
         logger.info('Rotate X Clockwise')
@@ -120,7 +123,7 @@ def _pcbnew_export_3d(output_file):
             'Down',
             'Return',
         ])
-        time.sleep(0.2)
+        time.sleep(2)
 
     for i in range(2):
         logger.info('Rotate Y counter-clockwise')
@@ -136,7 +139,7 @@ def _pcbnew_export_3d(output_file):
             'Down',
             'Return',
         ])
-        time.sleep(0.2)
+        time.sleep(2)
 
     logger.info('Rotate Z counter-clockwise')
     xdotool([
@@ -153,7 +156,7 @@ def _pcbnew_export_3d(output_file):
         'Down',
         'Return',
     ])
-    time.sleep(1)
+    time.sleep(2)
 
     logger.info('Wait for rendering...')
 
