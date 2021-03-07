@@ -16,6 +16,7 @@
 
 import logging
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -102,4 +103,25 @@ def versioned_file(filename):
         with open(filename, 'w') as temp_schematic:
             logger.debug('Restoring %s', filename)
             temp_schematic.write(original_contents)
+
+
+@contextmanager
+def patch_config(filename, replacements):
+    with open(filename, 'r') as f:
+        original_contents = f.read()
+
+    new_contents = original_contents
+    for (key, value) in replacements.items():
+        pattern = '^' + re.escape(key) + '=(.*)$'
+        new_contents = re.sub(pattern, f'{key}={value}', new_contents, flags=re.MULTILINE)
+
+    with open(filename, 'w') as f:
+        logger.debug('Writing to %s', filename)
+        f.write(new_contents)
+    try:
+        yield
+    finally:
+        with open(filename, 'w') as f:
+            logger.debug('Restoring %s', filename)
+            f.write(original_contents)
 

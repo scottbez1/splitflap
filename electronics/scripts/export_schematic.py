@@ -17,7 +17,6 @@
 import argparse
 import logging
 import os
-import re
 import shutil
 import subprocess
 import sys
@@ -32,6 +31,7 @@ sys.path.append(repo_root)
 from util import file_util
 from export_util import (
     PopenContext,
+    patch_config,
     versioned_file,
     xdotool,
     wait_for_window,
@@ -76,7 +76,7 @@ def export_schematic(schematic_file):
     schematic_output_pdf_file = os.path.join(output_dir, f'{filename}.pdf')
     schematic_output_png_file = os.path.join(output_dir, f'{filename}.png')
 
-    ensure_eeschema_config()
+    # ensure_eeschema_config()
 
     settings = {
         'PlotFormat': '4',  # PDF
@@ -104,27 +104,6 @@ def ensure_eeschema_config():
         logger.debug('eeschema config not found; installing default')
         os.makedirs(os.path.dirname(EESCHEMA_CONFIG_PATH), exist_ok=True)
         shutil.copy2(os.path.join(electronics_root, 'scripts', 'eeschema_config_default'), EESCHEMA_CONFIG_PATH)
-
-
-@contextmanager
-def patch_config(filename, replacements):
-    with open(filename, 'r') as f:
-        original_contents = f.read()
-    
-    new_contents = original_contents
-    for (key, value) in replacements.items():
-        pattern = '^' + re.escape(key) + '=(.*)$'
-        new_contents = re.sub(pattern, f'{key}={value}', new_contents, flags=re.MULTILINE)
-
-    with open(filename, 'w') as f:
-        logger.debug('Writing to %s', filename)
-        f.write(new_contents)
-    try:
-        yield
-    finally:
-        with open(filename, 'w') as f:
-            logger.debug('Restoring %s', filename)
-            f.write(original_contents)
 
 
 if __name__ == '__main__':
