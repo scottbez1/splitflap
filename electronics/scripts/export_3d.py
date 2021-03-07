@@ -38,8 +38,8 @@ from export_util import (
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-WIDTH = 2560
-HEIGHT = 1440
+WIDTH = 3840
+HEIGHT = 2160
 
 RENDER_TIMEOUT = 4 * 60
 
@@ -62,20 +62,14 @@ def _pcbnew_export_3d(output_file):
     if os.path.exists(output_file):
         os.remove(output_file)
 
-    wait_for_window('pcbnew', 'Pcbnew ')
-
-    time.sleep(1)
-
-    logger.info('Focus main pcbnew window')
-    xdotool(['search', '--name', 'Pcbnew ', 'windowfocus'])
+    wait_for_window('pcbnew', 'Pcbnew ', additional_commands=['windowfocus'])
 
     time.sleep(1)
 
     logger.info('Open 3d viewer')
     xdotool(['key', 'alt+3'])
 
-    wait_for_window('3D Viewer', '3D Viewer')
-    xdotool(['search', '--name', '3D Viewer', 'windowfocus'])
+    wait_for_window('3D Viewer', '3D Viewer', additional_commands=['windowfocus'])
 
     time.sleep(3)
 
@@ -205,7 +199,7 @@ def export_3d(filename):
     }
     with patch_config(os.path.expanduser('~/.config/kicad/pcbnew'), settings):
         with versioned_file(pcb_file):
-            with recorded_xvfb(screencast_output_file, width=2560, height=1440, colordepth=24):
+            with recorded_xvfb(screencast_output_file, width=WIDTH, height=HEIGHT, colordepth=24):
                 with PopenContext(['pcbnew', pcb_file], close_fds=True) as pcbnew_proc:
                     _pcbnew_export_3d(output_file)
                     pcbnew_proc.terminate()

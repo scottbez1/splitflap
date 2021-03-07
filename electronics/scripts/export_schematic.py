@@ -43,17 +43,13 @@ logger = logging.getLogger(__name__)
 EESCHEMA_CONFIG_PATH = os.path.expanduser('~/.config/kicad/eeschema')
 
 def eeschema_plot_schematic(output_directory):
-    wait_for_window('eeschema', '\[')
-
-    logger.info('Focus main eeschema window')
-    xdotool(['search', '--name', '\[', 'windowfocus'])
+    wait_for_window('eeschema', '\[', additional_commands=['windowfocus'])
 
     logger.info('Open File->Plot->Plot')
     xdotool(['key', 'alt+f'])
     xdotool(['key', 'l'])
 
-    wait_for_window('plot', 'Plot')
-    xdotool(['search', '--name', 'Plot', 'windowfocus'])
+    wait_for_window('plot', 'Plot', additional_commands=['windowfocus'])
 
     logger.info('Enter build output directory')
     xdotool(['type', output_directory])

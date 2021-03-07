@@ -52,12 +52,17 @@ class PopenContext(subprocess.Popen):
 def xdotool(command):
     return subprocess.check_output(['xdotool'] + command)
 
-def wait_for_window(name, window_regex, timeout=10):
+def wait_for_window(name, window_regex, additional_commands=None, timeout=10):
+    if additional_commands is not None:
+        commands = additional_commands
+    else:
+        commands = []
+
     DELAY = 0.5
     logger.info('Waiting for %s window...', name)
     for i in range(int(timeout/DELAY)):
         try:
-            xdotool(['search', '--name', window_regex])
+            xdotool(['search', '--name', window_regex] + commands)
             logger.info('Found %s window', name)
             return
         except subprocess.CalledProcessError:
