@@ -1,5 +1,5 @@
-#!/usr/bin/env python
-#   Copyright 2015-2016 Scott Bezek and the splitflap contributors
+#!/usr/bin/env python3
+#   Copyright 2015-2021 Scott Bezek and the splitflap contributors
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -53,6 +53,8 @@ def plot_to_directory(pcb_file, output_directory, temp_dir):
             LayerDef(pcbnew.B_Cu, True),
             LayerDef(pcbnew.F_SilkS, False),
             LayerDef(pcbnew.B_SilkS, True),
+            LayerDef(pcbnew.F_Mask, False),
+            LayerDef(pcbnew.B_Mask, True),
             LayerDef(pcbnew.F_Paste, False),
         ]
 

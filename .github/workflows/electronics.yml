@@ -29,6 +29,12 @@ jobs:
       - name: Export JLCPCB fabrication files
         run: kikit fab jlcpcb --assembly --schematic electronics/shiftBreakout/shiftBreakout.sch electronics/shiftBreakout/shiftBreakout.kicad_pcb electronics/build/jlc/
 
+
+      - name: Export PCB overview PDF
+        run: ./electronics/scripts/generate_pdf.py electronics/shiftBreakout/shiftBreakout.kicad_pcb
+        env:
+          PYTHONUNBUFFERED: 1
+
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
         if: always()

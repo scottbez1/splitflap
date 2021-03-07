@@ -1,5 +1,5 @@
-#!/usr/bin/env python
-#   Copyright 2015-2016 Scott Bezek and the splitflap contributors
+#!/usr/bin/env python3
+#   Copyright 2015-2021 Scott Bezek and the splitflap contributors
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 @contextmanager
 def versioned_board(filename):
     _, versioned_contents = get_versioned_contents(filename)
-    with tempfile.NamedTemporaryFile(suffix='.kicad_pcb') as temp_pcb:
+    with tempfile.NamedTemporaryFile(suffix='.kicad_pcb', mode='w') as temp_pcb:
         logger.debug('Writing to %s', temp_pcb.name)
         temp_pcb.write(versioned_contents)
         temp_pcb.flush()
