@@ -26,6 +26,9 @@ jobs:
         env:
           PYTHONUNBUFFERED: 1
 
+      - name: Export JLCPCB fabrication files
+        run: kikit fab jlcpcb --assembly --schematic electronics/shiftBreakout/shiftBreakout.sch electronics/shiftBreakout/shiftBreakout.kicad_pcb electronics/build/jlc/
+
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
         if: always()
