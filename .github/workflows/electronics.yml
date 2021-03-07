@@ -12,25 +12,37 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Set up outputs directory
+        run: mkdir -p electronics/build/outputs
+
       - name: Install dependencies
         run: ./electronics/scripts/dependencies.sh
 
       - name: Export schematic
-        run: ./electronics/scripts/export_schematic.py electronics/shiftBreakout/shiftBreakout.sch
+        run: |
+          ./electronics/scripts/export_schematic.py electronics/shiftBreakout/shiftBreakout.sch
+          cp electronics/build/shiftBreakout.pdf electronics/build/outputs/chainlinkDriver-schematic.pdf
+          cp electronics/build/shiftBreakout.png electronics/build/outputs/chainlinkDriver-schematic.png
         env:
           PYTHONUNBUFFERED: 1
 
       - name: Render PCB 3D
-        run: ./electronics/scripts/export_3d.py electronics/shiftBreakout/shiftBreakout.kicad_pcb
+        run: |
+          ./electronics/scripts/export_3d.py electronics/shiftBreakout/shiftBreakout.kicad_pcb
+          cp electronics/build/shiftBreakout-3d.png electronics/build/outputs/chainlinkDriver-3d.png
+          ./scripts/annotate_image.sh electronics/build/outputs/chainlinkDriver-3d.png
         env:
           PYTHONUNBUFFERED: 1
 
       - name: Export JLCPCB fabrication files
-        run: kikit fab jlcpcb --assembly --schematic electronics/shiftBreakout/shiftBreakout.sch electronics/shiftBreakout/shiftBreakout.kicad_pcb electronics/build/jlc/
-
+        run: |
+          kikit fab jlcpcb --assembly --schematic electronics/shiftBreakout/shiftBreakout.sch electronics/shiftBreakout/shiftBreakout.kicad_pcb electronics/build/jlc/
+          cp -r electronics/build/jlc electronics/build/outputs
 
       - name: Export PCB overview PDF
-        run: ./electronics/scripts/generate_pdf.py electronics/shiftBreakout/shiftBreakout.kicad_pcb
+        run: |
+          ./electronics/scripts/generate_pdf.py electronics/shiftBreakout/shiftBreakout.kicad_pcb
+          cp electronics/build/shiftBreakout-pcb-packet.pdf electronics/build/outputs/chainlinkDriver-pcb-packet.pdf
         env:
           PYTHONUNBUFFERED: 1
 
@@ -51,4 +63,4 @@ jobs:
 
       - name: Sync artifacts to S3
         run: |
-          aws s3 sync electronics/build s3://splitflap-artifacts/${GITHUB_REF#refs/heads/}
+          aws s3 sync electronics/build/outputs s3://splitflap-artifacts/${GITHUB_REF#refs/heads/}/electronics --delete --acl public-read
