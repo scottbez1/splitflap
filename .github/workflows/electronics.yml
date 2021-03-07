@@ -18,3 +18,10 @@ jobs:
       - name: Render schematic
         run: ./electronics/scripts/export_schematic.py electronics/shiftBreakout/shiftBreakout.sch
 
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: electronics
+          path: |
+            electronics/build
