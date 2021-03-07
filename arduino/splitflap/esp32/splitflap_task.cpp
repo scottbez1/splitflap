@@ -276,10 +276,10 @@ SplitflapState SplitflapTask::getState() {
     return state_cache_;
 }
 
-void SplitflapTask::writeBuffer(const char *word) {
+void SplitflapTask::writeBuffer(const char *word, uint8_t length) {
     SemaphoreGuard lock(semaphore_);
-    recv_count = NUM_MODULES;
-    for (int i = 0; i < NUM_MODULES; i++) {
+    recv_count = length;
+    for (int i = 0; i < recv_count; i++) {
         recv_buffer[i] = word[i];
     }
     recv_buffer_ready = true;

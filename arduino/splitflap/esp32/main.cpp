@@ -19,17 +19,16 @@
 #include <Wire.h>
 
 #include "config.h"
+
+#include "display_task.h"
 #include "splitflap_task.h"
 
 SplitflapTask splitflapTask(1);
+DisplayTask displayTask(splitflapTask, 0);
 
-// Note: Currently, MQTT is supported OR a display, not both.
 #ifdef MQTT
 #include "mqtt_task.h"
 MQTTTask mqttTask(splitflapTask, 0);
-#else
-#include "display_task.h"
-DisplayTask displayTask(splitflapTask, 0);
 #endif
 
 void setup() {
@@ -39,9 +38,8 @@ void setup() {
 
   #ifdef MQTT
   mqttTask.begin();
-  #else
-  displayTask.begin();
   #endif
+  displayTask.begin();
 
   // Delete the default Arduino loopTask to free up Core 1
   vTaskDelete(NULL);

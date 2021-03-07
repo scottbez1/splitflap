@@ -36,7 +36,7 @@ class SplitflapTask : public Task<SplitflapTask> {
         SplitflapTask(const uint8_t taskCore);
         ~SplitflapTask();
         SplitflapState getState();
-        void writeBuffer(const char *word);
+        void writeBuffer(const char *word, uint8_t length);
 
     protected:
         void run();

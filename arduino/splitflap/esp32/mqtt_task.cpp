@@ -30,7 +30,7 @@ void MQTTTask::connectWifi() {
 
 void MQTTTask::mqttCallback(char *topic, byte *payload, unsigned int length) {
     Serial.printf("Received mqtt callback for topic %s\n", topic);
-    splitflap_task_.writeBuffer((const char *)payload);
+    splitflap_task_.writeBuffer((const char *)payload, length);
 }
 
 void MQTTTask::connectMQTT() {
