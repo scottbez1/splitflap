@@ -1,6 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
-#   Copyright 2015-2016 Scott Bezek and the splitflap contributors
+#   Copyright 2015-2021 Scott Bezek and the splitflap contributors
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -14,8 +14,10 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+import argparse
 import logging
 import os
+import re
 import subprocess
 import sys
 import time
@@ -54,37 +56,32 @@ def eeschema_plot_schematic(output_directory):
     logger.info('Enter build output directory')
     xdotool(['type', output_directory])
 
-    logger.info('Select PDF plot format')
-    xdotool([
-        'key',
-        'Tab',
-        'Tab',
-        'Up',
-        'Up',
-        'Up',
-        'space',
-    ])
-
     logger.info('Plot')
     xdotool(['key', 'Return'])
 
     logger.info('Wait before shutdown')
     time.sleep(2)
 
-def export_schematic():
-    schematic_file = os.path.join(electronics_root, 'splitflap.sch')
+def export_schematic(schematic_file):
+    # Use absolute path - eeschema handles libraries differently with full path vs filename
+    schematic_file = os.path.abspath(schematic_file)
+    filename, _ = os.path.splitext(os.path.basename(schematic_file))
     output_dir = os.path.join(electronics_root, 'build')
     file_util.mkdir_p(output_dir)
 
     screencast_output_file = os.path.join(output_dir, 'export_schematic_screencast.ogv')
-    schematic_output_pdf_file = os.path.join(output_dir, 'splitflap.pdf')
-    schematic_output_png_file = os.path.join(output_dir, 'schematic.png')
+    schematic_output_pdf_file = os.path.join(output_dir, f'{filename}.pdf')
+    schematic_output_png_file = os.path.join(output_dir, f'{filename}.png')
 
-    with versioned_file(schematic_file):
-        with recorded_xvfb(screencast_output_file, width=800, height=600, colordepth=24):
-            with PopenContext(['eeschema', schematic_file], close_fds=True) as eeschema_proc:
-                eeschema_plot_schematic(output_dir)
-                eeschema_proc.terminate()
+    settings = {
+        'PlotFormat': '4',  # PDF
+    }
+    with patch_config(os.path.expanduser('~/.config/kicad/eeschema'), settings):
+        with versioned_file(schematic_file):
+            with recorded_xvfb(screencast_output_file, width=800, height=600, colordepth=24):
+                with PopenContext(['eeschema', schematic_file], close_fds=True) as eeschema_proc:
+                    eeschema_plot_schematic(output_dir)
+                    eeschema_proc.terminate()
 
     logger.info('Rasterize')
     subprocess.check_call([
@@ -95,7 +92,32 @@ def export_schematic():
        '-alpha', 'remove',
        schematic_output_png_file,
    ])
+
+
+@contextmanager
+def patch_config(filename, replacements):
+    with open(filename, 'r') as f:
+        original_contents = f.read()
     
+    new_contents = original_contents
+    for (key, value) in replacements.items():
+        pattern = '^' + re.escape(key) + '=(.*)$'
+        new_contents = re.sub(pattern, f'{key}={value}', new_contents, flags=re.MULTILINE)
+
+    with open(filename, 'w') as f:
+        logger.debug('Writing to %s', filename)
+        f.write(new_contents)
+    try:
+        yield
+    finally:
+        with open(filename, 'w') as f:
+            logger.debug('Restoring %s', filename)
+            f.write(original_contents)
+
+
 if __name__ == '__main__':
-    export_schematic()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('schematic')
+    args = parser.parse_args()
+    export_schematic(args.schematic)
 

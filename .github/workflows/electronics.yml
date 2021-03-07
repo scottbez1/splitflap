@@ -15,3 +15,6 @@ jobs:
       - name: Install dependencies
         run: ./electronics/scripts/dependencies.sh
 
+      - name: Render schematic
+        run: ./electronics/scripts/export_schematic.py electronics/shiftBreakout/shiftBreakout.sch
+
