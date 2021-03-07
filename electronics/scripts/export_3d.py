@@ -50,7 +50,7 @@ def _wait_for_pcbnew_idle():
         for proc in psutil.process_iter():
             if proc.name() == 'pcbnew':
                 cpu = proc.cpu_percent(interval=1)
-                print(cpu)
+                print(cpu, flush=True)
                 if cpu < 5:
                     print('Render took %d seconds' % (time.time() - start))
                     return
@@ -83,12 +83,31 @@ def _pcbnew_export_3d(output_file):
     xdotool(['search', '--name', '3D Viewer', 'windowsize', str(WIDTH), str(HEIGHT)])
 
     logger.info('Zoom in')
+    for i in range(6):
+        xdotool([
+            'click',
+            '4',
+        ])
+        time.sleep(0.2)
+
+    logger.info('Move right')
     xdotool([
         'key',
         'alt+v',
-        'i',
+        'Down',
+        'Down',
+        'Down',
+        'Down',
+        'Down',
+        'Down',
+        'Down',
+        'Down',
+        'Down',
+        'Down',
+        'Down',
+        'Return',
     ])
-    time.sleep(5)
+    time.sleep(0.2)
 
     for i in range(2):
         logger.info('Rotate X Clockwise')
@@ -101,7 +120,7 @@ def _pcbnew_export_3d(output_file):
             'Down',
             'Return',
         ])
-        time.sleep(2)
+        time.sleep(0.2)
 
     for i in range(2):
         logger.info('Rotate Y counter-clockwise')
@@ -117,7 +136,7 @@ def _pcbnew_export_3d(output_file):
             'Down',
             'Return',
         ])
-        time.sleep(2)
+        time.sleep(0.2)
 
     logger.info('Rotate Z counter-clockwise')
     xdotool([
@@ -134,7 +153,7 @@ def _pcbnew_export_3d(output_file):
         'Down',
         'Return',
     ])
-    time.sleep(2)
+    time.sleep(1)
 
     logger.info('Wait for rendering...')
 
@@ -183,7 +202,7 @@ def export_3d(filename):
     }
     with patch_config(os.path.expanduser('~/.config/kicad/pcbnew'), settings):
         with versioned_file(pcb_file):
-            with recorded_xvfb(screencast_output_file, width=3840, height=2160, colordepth=24):
+            with recorded_xvfb(screencast_output_file, width=2560, height=1440, colordepth=24):
                 with PopenContext(['pcbnew', pcb_file], close_fds=True) as pcbnew_proc:
                     _pcbnew_export_3d(output_file)
                     pcbnew_proc.terminate()

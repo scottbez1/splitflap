@@ -18,9 +18,13 @@ jobs:
 
       - name: Export schematic
         run: ./electronics/scripts/export_schematic.py electronics/shiftBreakout/shiftBreakout.sch
+        env:
+          PYTHONUNBUFFERED: 1
 
       - name: Render PCB 3D
         run: ./electronics/scripts/export_3d.py electronics/shiftBreakout/shiftBreakout.kicad_pcb
+        env:
+          PYTHONUNBUFFERED: 1
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
