@@ -18,6 +18,7 @@ import argparse
 import logging
 import os
 import re
+import shutil
 import subprocess
 import sys
 import time
@@ -39,6 +40,8 @@ from export_util import (
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
+
+EESCHEMA_CONFIG_PATH = os.path.expanduser('~/.config/kicad/eeschema')
 
 def eeschema_plot_schematic(output_directory):
     wait_for_window('eeschema', '\[')
@@ -73,6 +76,8 @@ def export_schematic(schematic_file):
     schematic_output_pdf_file = os.path.join(output_dir, f'{filename}.pdf')
     schematic_output_png_file = os.path.join(output_dir, f'{filename}.png')
 
+    ensure_eeschema_config()
+
     settings = {
         'PlotFormat': '4',  # PDF
     }
@@ -92,6 +97,13 @@ def export_schematic(schematic_file):
        '-alpha', 'remove',
        schematic_output_png_file,
    ])
+
+
+def ensure_eeschema_config():
+    if not os.path.exists(EESCHEMA_CONFIG_PATH):
+        logger.debug('eeschema config not found; installing default')
+        os.makedirs(os.path.dirname(EESCHEMA_CONFIG_PATH), exist_ok=True)
+        shutil.copy2(os.path.join(electronics_root, 'scripts', 'eeschema_config_default'), EESCHEMA_CONFIG_PATH)
 
 
 @contextmanager
