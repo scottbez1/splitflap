@@ -38,10 +38,10 @@ from export_util import (
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-WIDTH = 3840
-HEIGHT = 2160
+WIDTH = 2560
+HEIGHT = 1440
 
-RENDER_TIMEOUT = 4 * 60
+RENDER_TIMEOUT = 10 * 60
 
 
 def _wait_for_pcbnew_idle():
