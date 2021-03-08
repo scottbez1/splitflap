@@ -68,8 +68,8 @@ def export_schematic(schematic_file):
     file_util.mkdir_p(output_dir)
 
     screencast_output_file = os.path.join(output_dir, 'export_schematic_screencast.ogv')
-    schematic_output_pdf_file = os.path.join(output_dir, f'{filename}.pdf')
-    schematic_output_png_file = os.path.join(output_dir, f'{filename}.png')
+    schematic_output_pdf_file = os.path.join(output_dir, filename + '.pdf')
+    schematic_output_png_file = os.path.join(output_dir, filename + '.png')
 
     settings = {
         'PlotFormat': '4',  # PDF

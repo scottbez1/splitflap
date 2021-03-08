@@ -6,9 +6,9 @@ Prototype four-character display: [video](https://www.youtube.com/watch?v=vq4o_8
 ![animated rendering](https://s3.amazonaws.com/splitflap-artifacts/dev/newBoard/3d/3d_animation.gif)
 [![prototype video](renders/prototypeVideoThumbnail.jpg)](https://www.youtube.com/watch?v=vq4o_88kN8g)
 
-[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml/badge.svg)](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml)
-[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml/badge.svg)](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml)
-[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/electronics_legacy.yml/badge.svg)](https://github.com/scottbez1/splitflap/actions/workflows/electronics_legacy.yml)
+[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml/badge.svg?branch=dev/newBoard)](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml)
+[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml/badge.svg?branch=dev/newBoard)](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml)
+[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/electronics_legacy.yml/badge.svg?branch=dev/newBoard)](https://github.com/scottbez1/splitflap/actions/workflows/electronics_legacy.yml)
 
 The goal is to make a low-cost display that's easy to fabricate at home in small/single quantities (e.g. custom materials can be ordered from Ponoko or similar, and other hardware is generally available).
 

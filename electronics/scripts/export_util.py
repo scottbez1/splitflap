@@ -112,6 +112,10 @@ def versioned_file(filename):
 
 @contextmanager
 def patch_config(filename, replacements):
+    if not os.path.exists(filename):
+        yield
+        return
+
     with open(filename, 'r') as f:
         original_contents = f.read()
 
