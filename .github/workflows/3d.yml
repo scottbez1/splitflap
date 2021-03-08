@@ -22,7 +22,7 @@ jobs:
           xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python -u 3d/scripts/generate_2d.py --render-raster
           cp 3d/build/laser_parts/combined.svg 3d/build/outputs/3d_laser_vector.svg
           cp 3d/build/laser_parts/raster.png 3d/build/outputs/3d_laser_raster.png
-          ./3d/scripts/annotate_image.sh 3d/build/outputs/3d_laser_raster.png
+          ./scripts/annotate_image.sh 3d/build/outputs/3d_laser_raster.png
 
       - name: Generate animated gif
         run: |
