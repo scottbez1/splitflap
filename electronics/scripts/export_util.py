@@ -122,7 +122,7 @@ def patch_config(filename, replacements):
     new_contents = original_contents
     for (key, value) in replacements.items():
         pattern = '^' + re.escape(key) + '=(.*)$'
-        new_contents = re.sub(pattern, f'{key}={value}', new_contents, flags=re.MULTILINE)
+        new_contents = re.sub(pattern, key + '=' + value, new_contents, flags=re.MULTILINE)
 
     with open(filename, 'w') as f:
         logger.debug('Writing to %s', filename)
