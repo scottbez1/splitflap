@@ -37,9 +37,9 @@ I'd love to hear your thoughts and questions about this project, and happy to in
 #### :warning: Latest Experimental Files: ####
 
 * Lasercut Vector File ([svg](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector.svg))
-* Electronics Bill of Materials ([csv](https://s3.amazonaws.com/splitflap-artifacts/dev/actionsElectronicsLegacy/electronics-legacy/bom.csv))
-* Controller PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/actionsElectronicsLegacy/electronics-legacy/pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/actionsElectronicsLegacy/electronics-legacy/pcb_packet.pdf)), panelized ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/actionsElectronicsLegacy/electronics-legacy/panelized_pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/actionsElectronicsLegacy/electronics-legacy/panelized_pcb_packet.pdf))
-* Sensor PCB, panelized ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/actionsElectronicsLegacy/electronics-legacy/sensor_pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/actionsElectronicsLegacy/electronics-legacy/sensor_pcb_packet.pdf))
+* Electronics Bill of Materials ([csv](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/bom.csv))
+* Controller PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/pcb_packet.pdf)), panelized ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/panelized_pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/panelized_pcb_packet.pdf))
+* Sensor PCB, panelized ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/sensor_pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/sensor_pcb_packet.pdf))
 
 **Important:** these files have been auto-generated from the latest commit on the `master` branch, and may contain changes that are untested or outright broken. Use at your own risk.
 
@@ -201,14 +201,14 @@ Nearly everything is a through-hole component rather than SMD, so it's very easy
 The driver uses 2 MIC5842 low-side shift-register drivers, with built-in transient-suppression diodes, to control the motors, and a 74HC165 shift register to read from 4 hall-effect magnetic home position sensors.
 There are optional WS2812B RGB LEDs which can be used to indicate the status of each of the 4 channels.
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/actionsElectronicsLegacy/electronics-legacy/schematic.pdf">
-<img height="320" src="https://s3.amazonaws.com/splitflap-artifacts/dev/actionsElectronicsLegacy/electronics-legacy/schematic.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/schematic.pdf">
+<img height="320" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/schematic.png"/>
 </a>
 
 The PCB layout is 10cm x 5cm which makes it fairly cheap to produce using a low-cost PCB manufacturer (e.g. Seeed Studio).
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/actionsElectronicsLegacy/electronics-legacy/pcb_raster.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/actionsElectronicsLegacy/electronics-legacy/pcb_raster.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/pcb_raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/pcb_raster.png"/>
 </a>
 
 Each module also needs a hall-effect sensor board, with an AH3391Q (or similar) sensor and connector.
@@ -216,8 +216,8 @@ These boards are small (about 16mm x 16 mm) and are available on a second PCB de
 The panelization is configurable (see [generate_panelize_config.py](electronics/scripts/panelize/generate_panelize_config.py))
 and is optimized for production at SeeedStudio.
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/actionsElectronicsLegacy/electronics-legacy/sensor_pcb_raster.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/actionsElectronicsLegacy/electronics-legacy/sensor_pcb_raster.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/sensor_pcb_raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/sensor_pcb_raster.png"/>
 </a>
 
 These are automatically updated on every commit with the latest rendering from the `master` branch. See this blog post for more details on how that works: [Automated KiCad, OpenSCAD rendering using Travis CI](http://scottbezek.blogspot.com/2016/04/automated-kicad-openscad-rendering.html).
