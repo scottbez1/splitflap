@@ -27,7 +27,7 @@ jobs:
 
       - name: Panelized control board
         run: |
-          (cd electronics && python -u scripts/panelize/generate_panelize_config.py scripts/panelize/splitflap_panel_metaconfig.json && python -u ../thirdparty/panelize.py build/panelized_splitflap_config.txt && python -u scripts/generate_svg.py build/panelized_splitflap.kicad_pcb && python -u scripts/generate_pdf.py build/panelized_splitflap.kicad_pcb && python -u scripts/generate_gerber.py build/panelized_splitflap.kicad_pcb)
+          (cd electronics && python -u scripts/panelize/generate_panelize_config.py scripts/panelize/splitflap_panel_metaconfig.json && python3 -u ../thirdparty/panelize.py build/panelized_splitflap_config.txt && python -u scripts/generate_svg.py build/panelized_splitflap.kicad_pcb && python -u scripts/generate_pdf.py build/panelized_splitflap.kicad_pcb && python -u scripts/generate_gerber.py build/panelized_splitflap.kicad_pcb)
           cp electronics/build/panelized_splitflap_merged.png electronics/build/outputs/panelized_pcb_raster.png
           ./scripts/annotate_image.sh electronics/build/outputs/panelized_pcb_raster.png
           cp electronics/build/panelized_splitflap-pcb-packet.pdf electronics/build/outputs/panelized_pcb_packet.pdf
@@ -35,7 +35,7 @@ jobs:
 
       - name: Panelized sensor board
         run: |
-          (cd electronics && python -u scripts/panelize/generate_panelize_config.py scripts/panelize/sensor_panel_metaconfig.json && python -u ../thirdparty/panelize.py build/panelized_sensor_config.txt && python -u scripts/generate_svg.py build/panelized_sensor.kicad_pcb && python -u scripts/generate_pdf.py build/panelized_sensor.kicad_pcb && python -u scripts/generate_gerber.py build/panelized_sensor.kicad_pcb)
+          (cd electronics && python -u scripts/panelize/generate_panelize_config.py scripts/panelize/sensor_panel_metaconfig.json && python3 -u ../thirdparty/panelize.py build/panelized_sensor_config.txt && python -u scripts/generate_svg.py build/panelized_sensor.kicad_pcb && python -u scripts/generate_pdf.py build/panelized_sensor.kicad_pcb && python -u scripts/generate_gerber.py build/panelized_sensor.kicad_pcb)
           cp electronics/build/panelized_sensor_merged.png electronics/build/outputs/sensor_pcb_raster.png
           ./scripts/annotate_image.sh electronics/build/outputs/sensor_pcb_raster.png
           cp electronics/build/panelized_sensor-pcb-packet.pdf electronics/build/outputs/sensor_pcb_packet.pdf
