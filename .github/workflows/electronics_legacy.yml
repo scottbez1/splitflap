@@ -45,7 +45,7 @@ jobs:
         run: |
           python -u electronics/scripts/export_schematic.py electronics/splitflap.sch --kicad-4
           cp electronics/build/splitflap.pdf electronics/build/outputs/schematic.pdf
-          cp electronics/build/schematic.png electronics/build/outputs/schematic.png
+          cp electronics/build/splitflap.png electronics/build/outputs/schematic.png
 
       - name: BOM
         run: |
