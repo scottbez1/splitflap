@@ -109,6 +109,7 @@ if __name__ == '__main__':
             '--verb=FitCanvasToDrawing',
             '--verb=FileSave',
             '--verb=FileClose',
+            '--verb=FileQuit',
             raster_svg,
         ])
         logging.info('Export PNG')
