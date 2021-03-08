@@ -228,6 +228,9 @@ connector_bracket_overlap = 4;
 connector_bracket_clearance = 0.10;
 connector_bracket_depth_clearance = 0.20;
 
+// 'get' functions to extract these values for when this file is 'used' and not 'included'
+function connector_bracket_length() = connector_bracket_length_outer;
+function connector_bracket_width() = connector_bracket_width;
 
 mounting_hole_inset = m4_button_head_diameter/2 + 2;
 
@@ -497,20 +500,24 @@ module front_tabs_negative() {
     }
 }
 
+module connector_bracket_2d() {
+    difference() {
+        square([connector_bracket_width, connector_bracket_length_outer]);
+        translate([connector_bracket_thickness, -eps]) {
+            square([connector_bracket_width - connector_bracket_thickness*2, connector_bracket_length_outer - connector_bracket_length_inner + eps]);
+        }
+        translate([connector_bracket_thickness - connector_bracket_clearance/2, -eps]) {
+            square([thickness + connector_bracket_clearance, connector_bracket_length_outer - connector_bracket_overlap + connector_bracket_depth_clearance + eps]);
+        }
+        translate([connector_bracket_width - connector_bracket_thickness - thickness - connector_bracket_clearance/2, -eps]) {
+            square([thickness + connector_bracket_clearance, connector_bracket_length_outer - connector_bracket_overlap + connector_bracket_depth_clearance + eps]);
+        }
+    }
+}
+
 module connector_bracket() {
     linear_extrude(height=thickness) {
-        difference() {
-            square([connector_bracket_width, connector_bracket_length_outer]);
-            translate([connector_bracket_thickness, -eps]) {
-                square([connector_bracket_width - connector_bracket_thickness*2, connector_bracket_length_outer - connector_bracket_length_inner + eps]);
-            }
-            translate([connector_bracket_thickness - connector_bracket_clearance/2, -eps]) {
-                square([thickness + connector_bracket_clearance, connector_bracket_length_outer - connector_bracket_overlap + connector_bracket_depth_clearance + eps]);
-            }
-            translate([connector_bracket_width - connector_bracket_thickness - thickness - connector_bracket_clearance/2, -eps]) {
-                square([thickness + connector_bracket_clearance, connector_bracket_length_outer - connector_bracket_overlap + connector_bracket_depth_clearance + eps]);
-            }
-        }
+        connector_bracket_2d();
     }
 }
 
