@@ -17,9 +17,17 @@ jobs:
       - name: Install dependencies
         run: ./3d/scripts/dependencies.sh
 
+      - name: Generate 2d output
+        run: |
+          (cd 3d && xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python -u scripts/generate_2d.py --render-raster)
 
+      - name: Generate animated gif
+        run: |
+          (cd 3d && xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python -u scripts/generate_gif.py)
 
-
+      - name: Generate STLs for web viewer
+        run: |
+          python -u 3d/scripts/generate_stl.py
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
