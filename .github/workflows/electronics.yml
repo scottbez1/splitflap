@@ -20,29 +20,29 @@ jobs:
 
       - name: Export schematic
         run: |
-          ./electronics/scripts/export_schematic.py electronics/shiftBreakout/shiftBreakout.sch
-          cp electronics/build/shiftBreakout.pdf electronics/build/outputs/chainlinkDriver-schematic.pdf
-          cp electronics/build/shiftBreakout.png electronics/build/outputs/chainlinkDriver-schematic.png
+          ./electronics/scripts/export_schematic.py electronics/chainlinkDriver/chainlinkDriver.sch
+          cp electronics/build/chainlinkDriver.pdf electronics/build/outputs/chainlinkDriver-schematic.pdf
+          cp electronics/build/chainlinkDriver.png electronics/build/outputs/chainlinkDriver-schematic.png
         env:
           PYTHONUNBUFFERED: 1
 
       - name: Render PCB 3D
         run: |
-          ./electronics/scripts/export_3d.py electronics/shiftBreakout/shiftBreakout.kicad_pcb
-          cp electronics/build/shiftBreakout-3d.png electronics/build/outputs/chainlinkDriver-3d.png
+          ./electronics/scripts/export_3d.py electronics/chainlinkDriver/chainlinkDriver.kicad_pcb
+          cp electronics/build/chainlinkDriver-3d.png electronics/build/outputs/chainlinkDriver-3d.png
           ./scripts/annotate_image.sh electronics/build/outputs/chainlinkDriver-3d.png
         env:
           PYTHONUNBUFFERED: 1
 
       - name: Export JLCPCB fabrication files
         run: |
-          ./electronics/scripts/export_jlcpcb.py electronics/shiftBreakout/shiftBreakout.sch electronics/shiftBreakout/shiftBreakout.kicad_pcb
+          ./electronics/scripts/export_jlcpcb.py electronics/chainlinkDriver/chainlinkDriver.sch electronics/chainlinkDriver/chainlinkDriver.kicad_pcb
           cp -r electronics/build/jlc electronics/build/outputs
 
       - name: Export PCB overview PDF
         run: |
-          ./electronics/scripts/generate_pdf.py electronics/shiftBreakout/shiftBreakout.kicad_pcb
-          cp electronics/build/shiftBreakout-pcb-packet.pdf electronics/build/outputs/chainlinkDriver-pcb-packet.pdf
+          ./electronics/scripts/generate_pdf.py electronics/chainlinkDriver/chainlinkDriver.kicad_pcb
+          cp electronics/build/chainlinkDriver-pcb-packet.pdf electronics/build/outputs/chainlinkDriver-pcb-packet.pdf
         env:
           PYTHONUNBUFFERED: 1
 
