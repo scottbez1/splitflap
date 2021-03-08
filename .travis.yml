@@ -4,12 +4,8 @@ language: generic
 addons:
   artifacts: true
 install:
-- ./3d/scripts/dependencies.sh
 - travis_wait ./electronics/scripts/dependencies.sh
 script:
-- (cd 3d && xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python -u scripts/generate_2d.py --render-raster)
-- (cd 3d && xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python -u scripts/generate_gif.py)
-- python -u 3d/scripts/generate_stl.py
 # Control board
 - (cd electronics && python -u scripts/generate_svg.py splitflap.kicad_pcb && python -u scripts/generate_pdf.py splitflap.kicad_pcb && python -u scripts/generate_gerber.py splitflap.kicad_pcb)
 # Panelized control board

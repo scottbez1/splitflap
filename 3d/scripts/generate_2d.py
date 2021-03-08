@@ -1,6 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
-#   Copyright 2015-2020 Scott Bezek and the splitflap contributors
+#   Copyright 2015-2021 Scott Bezek and the splitflap contributors
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -14,9 +14,6 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-
-from __future__ import division
-from __future__ import print_function
 
 import argparse
 import json
@@ -112,6 +109,7 @@ if __name__ == '__main__':
             '--verb=FitCanvasToDrawing',
             '--verb=FileSave',
             '--verb=FileClose',
+            '--verb=FileQuit',
             raster_svg,
         ])
         logging.info('Export PNG')
