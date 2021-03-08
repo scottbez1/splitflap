@@ -1,4 +1,4 @@
-name: Render Electronics
+name: Export Electronics
 
 on:
   push:
