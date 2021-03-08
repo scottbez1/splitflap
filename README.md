@@ -3,7 +3,7 @@
 This is a work in progress DIY [split-flap display](https://en.wikipedia.org/wiki/Split-flap_display).
 Prototype four-character display: [video](https://www.youtube.com/watch?v=vq4o_88kN8g).
 
-![animated rendering](https://s3.amazonaws.com/splitflap-artifacts/dev/openscadActions/3d/3d_animation.gif)
+![animated rendering](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_animation.gif)
 [![prototype video](renders/prototypeVideoThumbnail.jpg)](https://www.youtube.com/watch?v=vq4o_88kN8g)
 
 [![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml/badge.svg)](https://github.com/scottbez1/splitflap/actions)
@@ -36,7 +36,7 @@ I'd love to hear your thoughts and questions about this project, and happy to in
 
 #### :warning: Latest Experimental Files: ####
 
-* Lasercut Vector File ([svg](https://s3.amazonaws.com/splitflap-artifacts/dev/openscadActions/3d/3d_laser_vector.svg))
+* Lasercut Vector File ([svg](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector.svg))
 * Electronics Bill of Materials ([csv](https://s3.amazonaws.com/splitflap-travis/branches/master/bom.csv))
 * Controller PCB ([gerbers](https://s3.amazonaws.com/splitflap-travis/branches/master/pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/pcb_packet.pdf)), panelized ([gerbers](https://s3.amazonaws.com/splitflap-travis/branches/master/panelized_pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/panelized_pcb_packet.pdf))
 * Sensor PCB, panelized ([gerbers](https://s3.amazonaws.com/splitflap-travis/branches/master/sensor_pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/sensor_pcb_packet.pdf))
@@ -52,7 +52,7 @@ If you are interested in building a display without digging into the design deta
 * store-bought vinyl stickers for flap letters
 * control up to 12 modules from a single Arduino
 
-![2d laser cut rendering](https://s3.amazonaws.com/splitflap-artifacts/dev/openscadActions/3d/3d_laser_raster.png)
+![2d laser cut rendering](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_raster.png)
 
 ## Build Your Own  ##
 <a href="https://github.com/scottbez1/splitflap/wiki">
