@@ -9,7 +9,7 @@ if (url_params.has('branch')) {
     branch = url_params.get('branch');
 }
 
-var model_base_url = 'https://s3.amazonaws.com/splitflap-travis/branches/' + branch + '/3d_colored_stl/';
+var model_base_url = 'https://s3.amazonaws.com/splitflap-artifacts/' + branch + '/3d/3d_colored_stl/';
 
 var debug = false;
 

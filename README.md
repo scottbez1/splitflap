@@ -3,10 +3,12 @@
 This is a work in progress DIY [split-flap display](https://en.wikipedia.org/wiki/Split-flap_display).
 Prototype four-character display: [video](https://www.youtube.com/watch?v=vq4o_88kN8g).
 
-![animated rendering](https://s3.amazonaws.com/splitflap-travis/branches/master/3d_animation.gif)
+![animated rendering](https://s3.amazonaws.com/splitflap-artifacts/dev/newBoard/3d/3d_animation.gif)
 [![prototype video](renders/prototypeVideoThumbnail.jpg)](https://www.youtube.com/watch?v=vq4o_88kN8g)
 
-[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml/badge.svg)](https://github.com/scottbez1/splitflap/actions)
+[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml/badge.svg)](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml)
+[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml/badge.svg)](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml)
+[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/electronics_legacy.yml/badge.svg)](https://github.com/scottbez1/splitflap/actions/workflows/electronics_legacy.yml)
 
 The goal is to make a low-cost display that's easy to fabricate at home in small/single quantities (e.g. custom materials can be ordered from Ponoko or similar, and other hardware is generally available).
 
@@ -42,18 +44,17 @@ I'd love to hear your thoughts and questions about this project, and happy to in
 
 **Important:** the files linked below are EXPERIMENTAL and have been auto-generated from the latest commit. They may contain changes that are untested or outright broken. Do not use these unless you are actively making changes to the project and know what you're doing. Otherwise, use the [latest stable release](https://github.com/scottbez1/splitflap/releases/latest).
 
-* Lasercut Vector File ([svg](https://s3.amazonaws.com/splitflap-travis/branches/master/3d_laser_vector.svg))
+* Lasercut Vector File ([svg](https://s3.amazonaws.com/splitflap-artifacts/dev/newBoard/3d/3d_laser_vector.svg))
 * Classic Controller electronics
-    * Bill of Materials ([csv](https://s3.amazonaws.com/splitflap-travis/branches/master/bom.csv))
-    * PCB ([gerbers](https://s3.amazonaws.com/splitflap-travis/branches/master/pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/pcb_packet.pdf)), panelized ([gerbers](https://s3.amazonaws.com/splitflap-travis/branches/master/panelized_pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/panelized_pcb_packet.pdf))
+    * Bill of Materials ([csv](https://s3.amazonaws.com/splitflap-artifacts/dev/newBoard/electronics-legacy/bom.csv))
+    * PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/newBoard/electronics-legacy/pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/newBoard/electronics-legacy/pcb_packet.pdf)), panelized ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/newBoard/electronics-legacy/panelized_pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/newBoard/electronics-legacy/panelized_pcb_packet.pdf))
 * Chainlink Driver electronics
     * Schematic [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/newBoard/electronics/chainlinkDriver-schematic.pdf)
     * PCB overview [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/newBoard/electronics/chainlinkDriver-pcb-packet.pdf)
     * PCB gerbers [zip](https://s3.amazonaws.com/splitflap-artifacts/dev/newBoard/electronics/jlc/gerbers.zip)
     * PCB bom (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/dev/newBoard/electronics/jlc/bom.csv)
     * PCB component positions (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/dev/newBoard/electronics/jlc/pos.csv)
-* Sensor PCB, panelized ([gerbers](https://s3.amazonaws.com/splitflap-travis/branches/master/sensor_pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/sensor_pcb_packet.pdf))
-
+* Sensor PCB, panelized ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/newBoard/electronics-legacy/sensor_pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/newBoard/electronics-legacy/sensor_pcb_packet.pdf))
 
 If you are interested in building a display, I recommend using [one of the stable releases instead](https://github.com/scottbez1/splitflap/releases).
 
@@ -64,7 +65,7 @@ If you are interested in building a display, I recommend using [one of the stabl
 * store-bought vinyl stickers for flap letters
 * control up to 12 modules from a single Arduino Uno
 
-![2d laser cut rendering](https://s3.amazonaws.com/splitflap-travis/branches/master/3d_laser_raster.png)
+![2d laser cut rendering](https://s3.amazonaws.com/splitflap-artifacts/dev/newBoard/3d/3d_laser_raster.png)
 
 ## Build Your Own  ##
 
@@ -207,14 +208,14 @@ Nearly everything is a through-hole component rather than SMD, so it's very easy
 The driver uses 2 MIC5842 low-side shift-register drivers, with built-in transient-suppression diodes, to control the motors, and a 74HC165 shift register to read from 4 hall-effect magnetic home position sensors.
 There are optional WS2812B RGB LEDs which can be used to indicate the status of each of the 4 channels.
 
-<a href="https://s3.amazonaws.com/splitflap-travis/branches/master/schematic.pdf">
-<img height="320" src="https://s3.amazonaws.com/splitflap-travis/branches/master/schematic.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/newBoard/electronics-legacy/schematic.pdf">
+<img height="320" src="https://s3.amazonaws.com/splitflap-artifacts/dev/newBoard/electronics-legacy/schematic.png"/>
 </a>
 
 The PCB layout is 10cm x 5cm which makes it fairly cheap to produce using a low-cost PCB manufacturer (e.g. Seeed Studio).
 
-<a href="https://s3.amazonaws.com/splitflap-travis/branches/master/pcb_raster.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-travis/branches/master/pcb_raster.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/newBoard/electronics-legacy/pcb_raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/newBoard/electronics-legacy/pcb_raster.png"/>
 </a>
 
 
@@ -255,8 +256,8 @@ These boards are small (about 16mm x 16 mm) and are available on a second PCB de
 The panelization is configurable (see [generate_panelize_config.py](electronics/scripts/panelize/generate_panelize_config.py))
 and is optimized for production at SeeedStudio.
 
-<a href="https://s3.amazonaws.com/splitflap-travis/branches/master/sensor_pcb_raster.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-travis/branches/master/sensor_pcb_raster.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/newBoard/electronics-legacy/sensor_pcb_raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/newBoard/electronics-legacy/sensor_pcb_raster.png"/>
 </a>
 
 

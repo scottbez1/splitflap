@@ -1,0 +1,54 @@
+name: Render 3D Designs
+
+on:
+  push:
+
+jobs:
+  render-3d:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up outputs directory
+        run: mkdir -p 3d/build/outputs
+
+      - name: Install dependencies
+        run: ./3d/scripts/dependencies.sh
+
+      - name: Generate 2d output
+        run: |
+          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python -u 3d/scripts/generate_2d.py --render-raster
+          cp 3d/build/laser_parts/combined.svg 3d/build/outputs/3d_laser_vector.svg
+          cp 3d/build/laser_parts/raster.png 3d/build/outputs/3d_laser_raster.png
+          ./scripts/annotate_image.sh 3d/build/outputs/3d_laser_raster.png
+
+      - name: Generate animated gif
+        run: |
+          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python -u 3d/scripts/generate_gif.py
+          cp 3d/build/animation/animation.gif 3d/build/outputs/3d_animation.gif
+
+      - name: Generate STLs for web viewer
+        run: |
+          python -u 3d/scripts/generate_stl.py
+          cp -r 3d/build/colored_stl 3d/build/outputs/3d_colored_stl
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: 3d
+          path: |
+            3d/build
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Sync artifacts to S3
+        run: |
+          aws s3 sync 3d/build/outputs s3://splitflap-artifacts/${GITHUB_REF#refs/heads/}/3d --delete --acl public-read
