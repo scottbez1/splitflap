@@ -22,7 +22,7 @@ jobs:
           (cd electronics && python -u scripts/generate_svg.py splitflap.kicad_pcb && python -u scripts/generate_pdf.py splitflap.kicad_pcb && python -u scripts/generate_gerber.py splitflap.kicad_pcb)
           cp electronics/build/splitflap_merged.png electronics/build/outputs/pcb_raster.png
           ./scripts/annotate_image.sh electronics/build/outputs/pcb_raster.png
-          cp electronics/build/splitflap_packet.pdf electronics/build/outputs/pcb_packet.pdf
+          cp electronics/build/splitflap-pcb-packet.pdf electronics/build/outputs/pcb_packet.pdf
           cp electronics/build/splitflap_gerber.zip electronics/build/outputs/pcb_gerber.zip
 
       - name: Panelized control board
@@ -30,7 +30,7 @@ jobs:
           (cd electronics && python -u scripts/panelize/generate_panelize_config.py scripts/panelize/splitflap_panel_metaconfig.json && python -u ../thirdparty/panelize.py build/panelized_splitflap_config.txt && python -u scripts/generate_svg.py build/panelized_splitflap.kicad_pcb && python -u scripts/generate_pdf.py build/panelized_splitflap.kicad_pcb && python -u scripts/generate_gerber.py build/panelized_splitflap.kicad_pcb)
           cp electronics/build/panelized_splitflap_merged.png electronics/build/outputs/panelized_pcb_raster.png
           ./scripts/annotate_image.sh electronics/build/outputs/panelized_pcb_raster.png
-          cp electronics/build/panelized_splitflap_packet.pdf electronics/build/outputs/panelized_pcb_packet.pdf
+          cp electronics/build/panelized_splitflap-pcb-packet.pdf electronics/build/outputs/panelized_pcb_packet.pdf
           cp electronics/build/panelized_splitflap_gerber.zip electronics/build/outputs/panelized_pcb_gerber.zip
 
       - name: Panelized sensor board
@@ -38,7 +38,7 @@ jobs:
           (cd electronics && python -u scripts/panelize/generate_panelize_config.py scripts/panelize/sensor_panel_metaconfig.json && python -u ../thirdparty/panelize.py build/panelized_sensor_config.txt && python -u scripts/generate_svg.py build/panelized_sensor.kicad_pcb && python -u scripts/generate_pdf.py build/panelized_sensor.kicad_pcb && python -u scripts/generate_gerber.py build/panelized_sensor.kicad_pcb)
           cp electronics/build/panelized_sensor_merged.png electronics/build/outputs/sensor_pcb_raster.png
           ./scripts/annotate_image.sh electronics/build/outputs/sensor_pcb_raster.png
-          cp electronics/build/panelized_sensor_packet.pdf electronics/build/outputs/sensor_pcb_packet.pdf
+          cp electronics/build/panelized_sensor-pcb-packet.pdf electronics/build/outputs/sensor_pcb_packet.pdf
           cp electronics/build/panelized_sensor_gerber.zip electronics/build/outputs/sensor_pcb_gerber.zip
 
       - name: Schematic
