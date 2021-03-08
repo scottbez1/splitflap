@@ -1,0 +1,57 @@
+name: Export electronics (legacy)
+
+on:
+  push:
+
+jobs:
+  export-electronics-legacy:
+    runs-on: ubuntu-18.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up outputs directory
+        run: mkdir -p electronics/build/outputs
+
+      - name: Install dependencies
+        run: ./electronics/scripts/dependencies.sh
+
+      - name: Control board
+        run: |
+          (cd electronics && python -u scripts/generate_svg.py splitflap.kicad_pcb && python -u scripts/generate_pdf.py splitflap.kicad_pcb && python -u scripts/generate_gerber.py splitflap.kicad_pcb)
+
+      - name: Panelized control board
+        run: |
+          (cd electronics && python -u scripts/panelize/generate_panelize_config.py scripts/panelize/splitflap_panel_metaconfig.json && python3 -u ../thirdparty/panelize.py build/panelized_splitflap_config.txt && python -u scripts/generate_svg.py build/panelized_splitflap.kicad_pcb && python -u scripts/generate_pdf.py build/panelized_splitflap.kicad_pcb && python -u scripts/generate_gerber.py build/panelized_splitflap.kicad_pcb)
+
+      - name: Panelized sensor board
+        run: |
+          (cd electronics && python -u scripts/panelize/generate_panelize_config.py scripts/panelize/sensor_panel_metaconfig.json && python3 -u ../thirdparty/panelize.py build/panelized_sensor_config.txt && python -u scripts/generate_svg.py build/panelized_sensor.kicad_pcb && python -u scripts/generate_pdf.py build/panelized_sensor.kicad_pcb && python -u scripts/generate_gerber.py build/panelized_sensor.kicad_pcb)
+
+      - name: Schematic
+        run: |
+          python -u electronics/scripts/export_schematic.py
+
+      - name: BOM
+        run: |
+          (cd electronics && python -u scripts/export_bom.py splitflap.sch && python -u scripts/export_bom.py sensor.sch && python -u bom/generate_bom_csv.py build/bom.csv splitflap.xml sensor.xml sensor.xml sensor.xml sensor.xml)
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: electronics-legacy
+          path: |
+            electronics/build
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Sync artifacts to S3
+        run: |
+          aws s3 sync electronics/build/outputs s3://splitflap-artifacts/${GITHUB_REF#refs/heads/}/electronics-legacy --delete --acl public-read
