@@ -73,7 +73,7 @@ class SvgProcessor(object):
 
     @staticmethod
     def _apply_transform(node, values):
-        if 'style' not in node.attributes:
+        if node.getAttribute('style') == '':
             return
         original_style = node.attributes['style'].value
         for (k,v) in values.items():
