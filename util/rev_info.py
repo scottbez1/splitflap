@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import datetime
 import subprocess
 
@@ -9,7 +7,7 @@ def git_short_rev():
         'rev-parse',
         '--short',
         'HEAD',
-    ]).strip()
+    ]).decode('utf-8').strip()
 
 def current_date():
     return datetime.date.today().strftime('%Y-%m-%d')

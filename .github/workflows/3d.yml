@@ -19,15 +19,20 @@ jobs:
 
       - name: Generate 2d output
         run: |
-          (cd 3d && xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python -u scripts/generate_2d.py --render-raster)
+          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python -u 3d/scripts/generate_2d.py --render-raster
+          cp 3d/build/laser_parts/combined.svg 3d/build/outputs/3d_laser_vector.svg
+          cp 3d/build/laser_parts/raster.png 3d/build/outputs/3d_laser_raster.png
+          ./3d/scripts/annotate_image.sh 3d/build/outputs/3d_laser_raster.png
 
       - name: Generate animated gif
         run: |
-          (cd 3d && xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python -u scripts/generate_gif.py)
+          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python -u 3d/scripts/generate_gif.py
+          cp 3d/build/animation/animation.gif 3d/build/outputs/3d_animation.gif
 
       - name: Generate STLs for web viewer
         run: |
           python -u 3d/scripts/generate_stl.py
+          cp -r 3d/build/colored_stl 3d/build/outputs/3d_colored_stl
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v2

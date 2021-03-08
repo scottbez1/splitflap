@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #   Copyright 2015-2016 Scott Bezek and the splitflap contributors
 #
@@ -13,10 +13,6 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
-
-
-from __future__ import division
-from __future__ import print_function
 
 import errno
 import functools

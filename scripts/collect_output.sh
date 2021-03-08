@@ -4,13 +4,13 @@ set -ev
 
 mkdir -p deploy
 
-cp 3d/build/animation/animation.gif deploy/3d_animation.gif
+# cp 3d/build/animation/animation.gif deploy/3d_animation.gif
 
-cp 3d/build/laser_parts/combined.svg deploy/3d_laser_vector.svg
-cp 3d/build/laser_parts/raster.png deploy/3d_laser_raster.png
-./scripts/annotate_image.sh deploy/3d_laser_raster.png
+# cp 3d/build/laser_parts/combined.svg deploy/3d_laser_vector.svg
+# cp 3d/build/laser_parts/raster.png deploy/3d_laser_raster.png
+# ./scripts/annotate_image.sh deploy/3d_laser_raster.png
 
-cp -r 3d/build/colored_stl deploy/3d_colored_stl
+# cp -r 3d/build/colored_stl deploy/3d_colored_stl
 
 cp electronics/build/splitflap.pdf deploy/schematic.pdf
 cp electronics/build/schematic.png deploy/schematic.png
