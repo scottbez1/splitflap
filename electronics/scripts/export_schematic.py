@@ -42,17 +42,37 @@ logger = logging.getLogger(__name__)
 
 EESCHEMA_CONFIG_PATH = os.path.expanduser('~/.config/kicad/eeschema')
 
-def eeschema_plot_schematic(output_directory):
+def eeschema_plot_schematic(output_directory, kicad_4):
     wait_for_window('eeschema', '\[', additional_commands=['windowfocus'])
 
     logger.info('Open File->Plot->Plot')
     xdotool(['key', 'alt+f'])
-    xdotool(['key', 'l'])
+    if kicad_4:
+        xdotool(['key', 'p'])
+        xdotool(['key', 'p'])
+    else:
+        xdotool(['key', 'l'])
 
     wait_for_window('plot', 'Plot', additional_commands=['windowfocus'])
 
     logger.info('Enter build output directory')
     xdotool(['type', output_directory])
+
+    if kicad_4:
+        logger.info('Select PDF plot format')
+        xdotool([
+            'key',
+            'Tab',
+            'Tab',
+            'Tab',
+            'Tab',
+            'Tab',
+            'Up',
+            'Up',
+            'Up',
+            'space',
+        ])
+
 
     logger.info('Plot')
     xdotool(['key', 'Return'])
@@ -60,7 +80,7 @@ def eeschema_plot_schematic(output_directory):
     logger.info('Wait before shutdown')
     time.sleep(2)
 
-def export_schematic(schematic_file):
+def export_schematic(schematic_file, kicad_4):
     # Use absolute path - eeschema handles libraries differently with full path vs filename
     schematic_file = os.path.abspath(schematic_file)
     filename, _ = os.path.splitext(os.path.basename(schematic_file))
@@ -78,7 +98,7 @@ def export_schematic(schematic_file):
         with versioned_file(schematic_file):
             with recorded_xvfb(screencast_output_file, width=800, height=600, colordepth=24):
                 with PopenContext(['eeschema', schematic_file], close_fds=True) as eeschema_proc:
-                    eeschema_plot_schematic(output_dir)
+                    eeschema_plot_schematic(output_dir, kicad_4)
                     eeschema_proc.terminate()
 
     logger.info('Rasterize')
@@ -95,6 +115,7 @@ def export_schematic(schematic_file):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('schematic')
+    parser.add_argument('--kicad-4', action='store_true')
     args = parser.parse_args()
-    export_schematic(args.schematic)
+    export_schematic(args.schematic, args.kicad_4)
 
