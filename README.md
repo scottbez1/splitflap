@@ -246,6 +246,9 @@ Key features:
 <img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/newBoard/electronics/chainlinkDriver-schematic.png"/>
 </a>
 
+<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/newBoard/electronics/chainlinkDriver-pcb-raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/newBoard/electronics/chainlinkDriver-pcb-raster.png"/>
+</a>
 
 #### Chainlink Central Controller ####
 Not designed yet. Follow development in the slack group!

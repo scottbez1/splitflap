@@ -46,6 +46,13 @@ jobs:
         env:
           PYTHONUNBUFFERED: 1
 
+      - name: Export PCB SVG
+        run: |
+          ./electronics/scripts/generate_svg.py electronics/chainlinkDriver/chainlinkDriver.kicad_pcb
+          cp electronics/build/chainlinkDriver_merged.png electronics/build/outputs/chainlinkDriver-pcb-raster.png
+        env:
+          PYTHONUNBUFFERED: 1
+
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
         if: always()

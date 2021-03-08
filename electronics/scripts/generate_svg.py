@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #   Copyright 2015-2016 Scott Bezek and the splitflap contributors
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
