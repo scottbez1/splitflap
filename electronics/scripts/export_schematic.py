@@ -78,7 +78,7 @@ def eeschema_plot_schematic(output_directory, kicad_4):
     xdotool(['key', 'Return'])
 
     logger.info('Wait before shutdown')
-    time.sleep(2)
+    time.sleep(5)
 
 def export_schematic(schematic_file, kicad_4):
     # Use absolute path - eeschema handles libraries differently with full path vs filename
