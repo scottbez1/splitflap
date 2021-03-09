@@ -40,6 +40,7 @@ SplitflapTask::~SplitflapTask() {
 
 // TODO: Move to a separate status class?
 static void setLedStatus(uint8_t moduleIndex, bool on) {
+#ifdef CHAINLINK
   uint8_t groupPosition = moduleIndex % 6;
   uint8_t byteIndex = MOTOR_BUFFER_LENGTH - 1 - moduleIndex/6*4 - (groupPosition < 3 ? 1 : 2);
   uint8_t bitMask = (groupPosition < 3) ? (1 << (4 + groupPosition)) : (1 << (groupPosition - 3));
@@ -48,6 +49,7 @@ static void setLedStatus(uint8_t moduleIndex, bool on) {
   } else {
     motor_buffer[byteIndex] &= ~bitMask;
   }
+#endif
 }
 
 static uint8_t loopbackMotorByte(uint8_t loopbackIndex) {
@@ -126,7 +128,6 @@ void SplitflapTask::run() {
           ESP_ERROR_CHECK(esp_task_wdt_reset());
       }
     }
-#endif
 
     for (uint8_t r = 0; r < 3; r++) {
       for (uint8_t i = 0; i < NUM_MODULES; i++) {
@@ -140,6 +141,7 @@ void SplitflapTask::run() {
       ESP_ERROR_CHECK(result);
       delay(500);
     }
+#endif
 
     for (uint8_t i = 0; i < NUM_MODULES; i++) {
         modules[i]->Init();
