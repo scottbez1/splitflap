@@ -42,6 +42,9 @@ logger = logging.getLogger(__name__)
 
 EESCHEMA_CONFIG_PATH = os.path.expanduser('~/.config/kicad/eeschema')
 
+WIDTH = 800
+HEIGHT = 600
+
 def eeschema_plot_schematic(output_directory, kicad_4):
     wait_for_window('eeschema', '\[', additional_commands=['windowfocus'])
 
@@ -55,8 +58,20 @@ def eeschema_plot_schematic(output_directory, kicad_4):
 
     wait_for_window('plot', 'Plot', additional_commands=['windowfocus'])
 
+    time.sleep(2)
+    
+    if not kicad_4:
+        # Move/resize window to standard position and click into the text box
+        xdotool(['search', '--name', 'Plot', 'windowmove', '0', '0'])
+        xdotool(['search', '--name', 'Plot', 'windowsize', str(WIDTH), str(HEIGHT)])
+        time.sleep(2)
+        xdotool(['mousemove', '400', '20', 'click', '1'])
+
     logger.info('Enter build output directory')
+    xdotool(['key', 'BackSpace', 'BackSpace'])
     xdotool(['type', output_directory])
+
+    time.sleep(2)
 
     if kicad_4:
         logger.info('Select PDF plot format')
@@ -72,6 +87,7 @@ def eeschema_plot_schematic(output_directory, kicad_4):
             'Up',
             'space',
         ])
+        time.sleep(2)
 
 
     logger.info('Plot')
@@ -96,7 +112,7 @@ def export_schematic(schematic_file, kicad_4):
     }
     with patch_config(os.path.expanduser('~/.config/kicad/eeschema'), settings):
         with versioned_file(schematic_file):
-            with recorded_xvfb(screencast_output_file, width=800, height=600, colordepth=24):
+            with recorded_xvfb(screencast_output_file, width=WIDTH, height=HEIGHT, colordepth=24):
                 with PopenContext(['eeschema', schematic_file], close_fds=True) as eeschema_proc:
                     eeschema_plot_schematic(output_dir, kicad_4)
                     eeschema_proc.terminate()
