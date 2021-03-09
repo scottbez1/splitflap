@@ -56,6 +56,7 @@ def plot_to_directory(pcb_file, output_directory, temp_dir):
             LayerDef(pcbnew.B_Mask,     'GBS'),
             LayerDef(pcbnew.B_SilkS,    'GBO'),
             LayerDef(pcbnew.Edge_Cuts,  'GML'),
+            LayerDef(pcbnew.F_Paste,    'GTP'),
         ]
 
         for layer in layers:

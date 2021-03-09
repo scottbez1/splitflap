@@ -16,6 +16,7 @@
 
 import logging
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -51,12 +52,17 @@ class PopenContext(subprocess.Popen):
 def xdotool(command):
     return subprocess.check_output(['xdotool'] + command)
 
-def wait_for_window(name, window_regex, timeout=10):
+def wait_for_window(name, window_regex, additional_commands=None, timeout=10):
+    if additional_commands is not None:
+        commands = additional_commands
+    else:
+        commands = []
+
     DELAY = 0.5
     logger.info('Waiting for %s window...', name)
     for i in range(int(timeout/DELAY)):
         try:
-            xdotool(['search', '--name', window_regex])
+            xdotool(['search', '--name', window_regex] + commands)
             logger.info('Found %s window', name)
             return
         except subprocess.CalledProcessError:
@@ -76,23 +82,55 @@ def recorded_xvfb(video_filename, **xvfb_args):
             yield
             screencast_proc.terminate()
 
-def _get_versioned_contents(filename):
-    with open(filename, 'rb') as schematic:
-        original_contents = schematic.read()
+
+def get_versioned_contents(filename):
+    with open(filename, 'r') as f:
+        original_contents = f.read()
+        date = rev_info.current_date()
+        rev = rev_info.git_short_rev()
+        logger.info('Replacing placeholders with %s and %s' % (date, rev))
         return original_contents, original_contents \
-            .replace('Date ""', 'Date "%s"' % rev_info.current_date()) \
-            .replace('Rev ""', 'Rev "%s"' % rev_info.git_short_rev())
+            .replace('Date ""', 'Date "%s"' % date) \
+            .replace('DATE: YYYY-MM-DD', 'DATE: %s' % date) \
+            .replace('Rev ""', 'Rev "%s"' % rev) \
+            .replace('COMMIT: deadbeef', 'COMMIT: %s' % rev)
+
 
 @contextmanager
-def versioned_schematic(filename):
-    original_contents, versioned_contents = _get_versioned_contents(filename)
-    with open(filename, 'wb') as temp_schematic:
+def versioned_file(filename):
+    original_contents, versioned_contents = get_versioned_contents(filename)
+    with open(filename, 'w') as temp_schematic:
         logger.debug('Writing to %s', filename)
         temp_schematic.write(versioned_contents)
     try:
         yield
     finally:
-        with open(filename, 'wb') as temp_schematic:
+        with open(filename, 'w') as temp_schematic:
             logger.debug('Restoring %s', filename)
             temp_schematic.write(original_contents)
+
+
+@contextmanager
+def patch_config(filename, replacements):
+    if not os.path.exists(filename):
+        yield
+        return
+
+    with open(filename, 'r') as f:
+        original_contents = f.read()
+
+    new_contents = original_contents
+    for (key, value) in replacements.items():
+        pattern = '^' + re.escape(key) + '=(.*)$'
+        new_contents = re.sub(pattern, key + '=' + value, new_contents, flags=re.MULTILINE)
+
+    with open(filename, 'w') as f:
+        logger.debug('Writing to %s', filename)
+        f.write(new_contents)
+    try:
+        yield
+    finally:
+        with open(filename, 'w') as f:
+            logger.debug('Restoring %s', filename)
+            f.write(original_contents)
 

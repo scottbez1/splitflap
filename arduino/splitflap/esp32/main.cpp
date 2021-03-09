@@ -26,7 +26,6 @@
 SplitflapTask splitflapTask(1);
 DisplayTask displayTask(splitflapTask, 0);
 
-
 void setup() {
   Serial.begin(MONITOR_SPEED);
 
@@ -41,4 +40,3 @@ void setup() {
 void loop() {
   assert(false);
 }
-
