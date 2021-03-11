@@ -2276,78 +2276,6 @@ Wire Wire Line
 Connection ~ 9350 6900
 Wire Wire Line
 	9350 6900 9350 7450
-$Comp
-L Connector:Screw_Terminal_01x03 J4
-U 1 1 6100B2D3
-P 1600 1000
-F 0 "J4" H 1680 1042 50  0000 L CNN
-F 1 "Power_A" H 1680 951 50  0000 L CNN
-F 2 "ScrewTerminals:C72334_WJ500V-5.08-3P" H 1600 1000 50  0001 C CNN
-F 3 "~" H 1600 1000 50  0001 C CNN
-F 4 "C72334" H 1600 1000 50  0001 C CNN "LCSC"
-	1    1600 1000
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector:Screw_Terminal_01x03 J16
-U 1 1 6100B87A
-P 1600 1300
-F 0 "J16" H 1680 1342 50  0000 L CNN
-F 1 "Power_B" H 1680 1251 50  0000 L CNN
-F 2 "ScrewTerminals:C72334_WJ500V-5.08-3P" H 1600 1300 50  0001 C CNN
-F 3 "~" H 1600 1300 50  0001 C CNN
-F 4 "C72334" H 1600 1300 50  0001 C CNN "LCSC"
-	1    1600 1300
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector:Screw_Terminal_01x03 J2
-U 1 1 6100DE6D
-P 1250 6800
-F 0 "J2" H 1168 6475 50  0000 C CNN
-F 1 "Inputs_A" H 1168 6566 50  0000 C CNN
-F 2 "ScrewTerminals:C72334_WJ500V-5.08-3P" H 1250 6800 50  0001 C CNN
-F 3 "~" H 1250 6800 50  0001 C CNN
-F 4 "C72334" H 1250 6800 50  0001 C CNN "LCSC"
-	1    1250 6800
-	-1   0    0    1   
-$EndComp
-$Comp
-L Connector:Screw_Terminal_01x03 J1
-U 1 1 6106613D
-P 1250 6500
-F 0 "J1" H 1168 6175 50  0000 C CNN
-F 1 "Inputs_B" H 1168 6266 50  0000 C CNN
-F 2 "ScrewTerminals:C72334_WJ500V-5.08-3P" H 1250 6500 50  0001 C CNN
-F 3 "~" H 1250 6500 50  0001 C CNN
-F 4 "C72334" H 1250 6500 50  0001 C CNN "LCSC"
-	1    1250 6500
-	-1   0    0    1   
-$EndComp
-$Comp
-L Connector:Screw_Terminal_01x03 J17
-U 1 1 61066781
-P 3800 6500
-F 0 "J17" H 3880 6542 50  0000 L CNN
-F 1 "Outputs_A" H 3880 6451 50  0000 L CNN
-F 2 "ScrewTerminals:C72334_WJ500V-5.08-3P" H 3800 6500 50  0001 C CNN
-F 3 "~" H 3800 6500 50  0001 C CNN
-F 4 "C72334" H 3800 6500 50  0001 C CNN "LCSC"
-	1    3800 6500
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector:Screw_Terminal_01x03 J18
-U 1 1 610B6669
-P 3800 6800
-F 0 "J18" H 3880 6842 50  0000 L CNN
-F 1 "Outputs_B" H 3880 6751 50  0000 L CNN
-F 2 "ScrewTerminals:C72334_WJ500V-5.08-3P" H 3800 6800 50  0001 C CNN
-F 3 "~" H 3800 6800 50  0001 C CNN
-F 4 "C72334" H 3800 6800 50  0001 C CNN "LCSC"
-	1    3800 6800
-	1    0    0    -1  
-$EndComp
 NoConn ~ 14800 850 
 NoConn ~ 15050 850 
 NoConn ~ 15300 850 
@@ -2393,4 +2321,121 @@ Text Notes 10250 7550 0    50   ~ 0
 Motor data does not need to be buffered for transmission reasons\n(it is 1:1 from one board to the next, not bussed), but it is buffered\nto keep timing in sync with the buffered clock.\n\n74HC595 chaining relies on narrow propagation delay > hold time\nmargin to work, so we need to be cognizant of anything that may\ncause data to change sooner after the rising clock edge (reducing\neffective propagation delay)
 Text Notes 1350 6100 0    50   ~ 0
 Use shielded 5 conductor (or 4 conductor if using R13) cable.\nConnect shield to GND at both ends.
+$Comp
+L Connector:Screw_Terminal_01x02 J16
+U 1 1 604CA397
+P 1600 900
+F 0 "J16" H 1680 892 50  0000 L CNN
+F 1 "Power" H 1680 801 50  0000 L CNN
+F 2 "ScrewTerminals:C8465_WJ500V-5.08-2P" H 1600 900 50  0001 C CNN
+F 3 "~" H 1600 900 50  0001 C CNN
+F 4 "C8465" H 1600 900 50  0001 C CNN "LCSC"
+F 5 "2.40;0;0" H 1600 900 50  0001 C CNN "JLCPCB_CORRECTION"
+	1    1600 900 
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Screw_Terminal_01x02 J17
+U 1 1 604FD568
+P 1600 1100
+F 0 "J17" H 1680 1092 50  0000 L CNN
+F 1 "Power" H 1680 1001 50  0000 L CNN
+F 2 "ScrewTerminals:C8465_WJ500V-5.08-2P" H 1600 1100 50  0001 C CNN
+F 3 "~" H 1600 1100 50  0001 C CNN
+F 4 "C8465" H 1600 1100 50  0001 C CNN "LCSC"
+F 5 "2.40;0;0" H 1600 1100 50  0001 C CNN "JLCPCB_CORRECTION"
+	1    1600 1100
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Screw_Terminal_01x02 J18
+U 1 1 604FD827
+P 1600 1300
+F 0 "J18" H 1680 1292 50  0000 L CNN
+F 1 "Power" H 1680 1201 50  0000 L CNN
+F 2 "ScrewTerminals:C8465_WJ500V-5.08-2P" H 1600 1300 50  0001 C CNN
+F 3 "~" H 1600 1300 50  0001 C CNN
+F 4 "C8465" H 1600 1300 50  0001 C CNN "LCSC"
+F 5 "2.40;0;0" H 1600 1300 50  0001 C CNN "JLCPCB_CORRECTION"
+	1    1600 1300
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Screw_Terminal_01x02 J4
+U 1 1 605198F6
+P 1250 6900
+F 0 "J4" H 1500 6800 50  0000 C CNN
+F 1 "Inputs" H 1450 6900 50  0000 C CNN
+F 2 "ScrewTerminals:C8465_WJ500V-5.08-2P" H 1250 6900 50  0001 C CNN
+F 3 "~" H 1250 6900 50  0001 C CNN
+F 4 "C8465" H 1250 6900 50  0001 C CNN "LCSC"
+F 5 "2.40;0;0" H 1250 6900 50  0001 C CNN "JLCPCB_CORRECTION"
+	1    1250 6900
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector:Screw_Terminal_01x02 J2
+U 1 1 6055C477
+P 1250 6700
+F 0 "J2" H 1500 6600 50  0000 C CNN
+F 1 "Inputs" H 1450 6700 50  0000 C CNN
+F 2 "ScrewTerminals:C8465_WJ500V-5.08-2P" H 1250 6700 50  0001 C CNN
+F 3 "~" H 1250 6700 50  0001 C CNN
+F 4 "C8465" H 1250 6700 50  0001 C CNN "LCSC"
+F 5 "2.40;0;0" H 1250 6700 50  0001 C CNN "JLCPCB_CORRECTION"
+	1    1250 6700
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector:Screw_Terminal_01x02 J1
+U 1 1 6055C6FC
+P 1250 6500
+F 0 "J1" H 1500 6400 50  0000 C CNN
+F 1 "Inputs" H 1450 6500 50  0000 C CNN
+F 2 "ScrewTerminals:C8465_WJ500V-5.08-2P" H 1250 6500 50  0001 C CNN
+F 3 "~" H 1250 6500 50  0001 C CNN
+F 4 "C8465" H 1250 6500 50  0001 C CNN "LCSC"
+F 5 "2.40;0;0" H 1250 6500 50  0001 C CNN "JLCPCB_CORRECTION"
+	1    1250 6500
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector:Screw_Terminal_01x02 J19
+U 1 1 6055DB99
+P 3800 6400
+F 0 "J19" H 4050 6300 50  0000 C CNN
+F 1 "Outputs" H 4000 6400 50  0000 C CNN
+F 2 "ScrewTerminals:C8465_WJ500V-5.08-2P" H 3800 6400 50  0001 C CNN
+F 3 "~" H 3800 6400 50  0001 C CNN
+F 4 "C8465" H 3800 6400 50  0001 C CNN "LCSC"
+F 5 "2.40;0;0" H 3800 6400 50  0001 C CNN "JLCPCB_CORRECTION"
+	1    3800 6400
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Screw_Terminal_01x02 J20
+U 1 1 6056062F
+P 3800 6600
+F 0 "J20" H 4050 6500 50  0000 C CNN
+F 1 "Outputs" H 4000 6600 50  0000 C CNN
+F 2 "ScrewTerminals:C8465_WJ500V-5.08-2P" H 3800 6600 50  0001 C CNN
+F 3 "~" H 3800 6600 50  0001 C CNN
+F 4 "C8465" H 3800 6600 50  0001 C CNN "LCSC"
+F 5 "2.40;0;0" H 3800 6600 50  0001 C CNN "JLCPCB_CORRECTION"
+	1    3800 6600
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Screw_Terminal_01x02 J21
+U 1 1 60560DD4
+P 3800 6800
+F 0 "J21" H 4050 6700 50  0000 C CNN
+F 1 "Outputs" H 4000 6800 50  0000 C CNN
+F 2 "ScrewTerminals:C8465_WJ500V-5.08-2P" H 3800 6800 50  0001 C CNN
+F 3 "~" H 3800 6800 50  0001 C CNN
+F 4 "C8465" H 3800 6800 50  0001 C CNN "LCSC"
+F 5 "2.40;0;0" H 3800 6800 50  0001 C CNN "JLCPCB_CORRECTION"
+	1    3800 6800
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
