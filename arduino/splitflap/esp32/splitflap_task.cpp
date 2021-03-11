@@ -121,13 +121,13 @@ void SplitflapTask::run() {
       }
     }
 
-    // if (loopback_error) {
-    //   // Loop forever
-    //   while(1) {
-    //       updateStateCache();
-    //       ESP_ERROR_CHECK(esp_task_wdt_reset());
-    //   }
-    // }
+    if (loopback_error) {
+      // Loop forever
+      while(1) {
+          updateStateCache();
+          ESP_ERROR_CHECK(esp_task_wdt_reset());
+      }
+    }
 
     for (uint8_t r = 0; r < 3; r++) {
       for (uint8_t i = 0; i < NUM_MODULES; i++) {
