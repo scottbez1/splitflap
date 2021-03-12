@@ -50,7 +50,6 @@ class SplitflapTask : public Task<SplitflapTask> {
 
         // TODO: move to serial task
         char recv_buffer[NUM_MODULES];
-        bool recv_buffer_ready = false;
         void dumpStatus(void);
 
         // TODO: rename to match style guide

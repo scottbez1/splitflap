@@ -66,8 +66,8 @@
   #define PIN_NUM_CLK  33
   #define PIN_NUM_CS   21
 
-  // Note: You may need to slow this down to 3MHz if you're using a shift-register board
-  // The MIC5842 only officially supports up to 3.3MHz
+  // Note: You may need to slow this down to 3MHz if you're using a classic driver board;
+  // the MIC5842 only officially supports up to 3.3MHz
   #define SPI_CLOCK 8000000
 
   #define BUFFER_ATTRS WORD_ALIGNED_ATTR
