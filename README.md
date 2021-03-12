@@ -3,10 +3,12 @@
 This is a work in progress DIY [split-flap display](https://en.wikipedia.org/wiki/Split-flap_display).
 Prototype four-character display: [video](https://www.youtube.com/watch?v=vq4o_88kN8g).
 
-![animated rendering](https://s3.amazonaws.com/splitflap-travis/branches/master/3d_animation.gif)
+![animated rendering](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_animation.gif)
 [![prototype video](renders/prototypeVideoThumbnail.jpg)](https://www.youtube.com/watch?v=vq4o_88kN8g)
 
-[![Build Status](https://travis-ci.org/scottbez1/splitflap.svg?branch=master)](https://travis-ci.org/scottbez1/splitflap)
+[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml/badge.svg?branch=dev/newBoard)](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml)
+[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml/badge.svg?branch=dev/newBoard)](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml)
+[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/electronics_legacy.yml/badge.svg?branch=dev/newBoard)](https://github.com/scottbez1/splitflap/actions/workflows/electronics_legacy.yml)
 
 The goal is to make a low-cost display that's easy to fabricate at home in small/single quantities (e.g. custom materials can be ordered from Ponoko or similar, and other hardware is generally available).
 
@@ -14,56 +16,62 @@ The 3d model is built using OpenSCAD in [`3d/splitflap.scad`](3d/splitflap.scad)
 
 You can view an interactive 3d model of the design on the [project website](https://scottbez1.github.io/splitflap/).
 
-**New:** Join the [community Slack group](https://join.slack.com/t/splitflap/shared_invite/zt-dpvol87b-3zUaxXrUd8WauPXr1uBj5Q) to discuss or ask questions about the project! (It's new so it may be a bit quiet, but don't be shy!)
+**New:** Join the [community Slack group](https://join.slack.com/t/splitflap/shared_invite/zt-dpvol87b-3zUaxXrUd8WauPXr1uBj5Q) to discuss or ask questions about the project!
 
 Want to help support prototyping and development?
 <a href="https://www.buymeacoffee.com/scottbez1" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" height="22" ></a>
 
+<a href="https://www.youtube.com/watch?v=UAQJJAQSg_g" target="_blank"><img src="https://img.youtube.com/vi/UAQJJAQSg_g/maxresdefault.jpg" alt="How a split-flap display works" width="640"></a>
+
+
 ### Current Status ###
-This design is currently nearly stable. The source files provided here have been used to produce multiple working prototypes, but may still have some minor issues and/or incomplete documentation.
+[You can download the **latest stable release** from the official 'releases' page.](https://github.com/scottbez1/splitflap/releases/latest)
+
+Releases have been tested and used to produce working units, but as this is a DIY project, there may always be minor issues and/or incomplete documentation.
 
 | Component | Status | Notes |
 | --- | --- | --- |
 | Enclosure/Mechanics | *Stable* | |
-| Electronics | *Stable* | |
+| Classic Controller Electronics | *Stable* | |
+| New Chainlink Electronics | *Alpha* | Next-generation/alternative electronics, designed for easier assembly and larger displays |
 | Firmware | *Stable* | |
-| Control Software | *Beta* | Example python code for driving the display is in the [software](software) directory|
+| Control Software Example | *Stable* | Example python code for driving the display is in the [software](software) directory|
 
-[You can download the **latest stable release** from the official 'releases' page.](https://github.com/scottbez1/splitflap/releases/latest)
 
 I'd love to hear your thoughts and questions about this project, and happy to incorporate any feedback you might have into these designs! Please feel free (and encouraged) to [open GitHub issues](https://github.com/scottbez1/splitflap/issues/new), email me directly, reach out [on Twitter](https://twitter.com/scottbez1), and [get involved](https://github.com/scottbez1/splitflap/pulls) in the open source development and let's keep chatting and building together!
 
 #### :warning: Latest Experimental Files: ####
 
-* Lasercut Vector File ([svg](https://s3.amazonaws.com/splitflap-travis/branches/master/3d_laser_vector.svg))
-* Electronics Bill of Materials ([csv](https://s3.amazonaws.com/splitflap-travis/branches/master/bom.csv))
-* Controller PCB ([gerbers](https://s3.amazonaws.com/splitflap-travis/branches/master/pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/pcb_packet.pdf)), panelized ([gerbers](https://s3.amazonaws.com/splitflap-travis/branches/master/panelized_pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/panelized_pcb_packet.pdf))
-* Sensor PCB, panelized ([gerbers](https://s3.amazonaws.com/splitflap-travis/branches/master/sensor_pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-travis/branches/master/sensor_pcb_packet.pdf))
+**Important:** the files linked below are EXPERIMENTAL and have been auto-generated from the latest commit. They may contain changes that are untested or outright broken. Do not use these unless you are actively making changes to the project and know what you're doing. Otherwise, use the [latest stable release](https://github.com/scottbez1/splitflap/releases/latest).
 
-**Important:** these files have been auto-generated from the latest commit on the `master` branch, and may contain changes that are untested or outright broken. Use at your own risk.
+* Lasercut Vector File ([svg](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector.svg))
+* Classic Controller electronics
+    * Bill of Materials ([csv](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/bom.csv))
+    * PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/pcb_packet.pdf)), panelized ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/panelized_pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/panelized_pcb_packet.pdf))
+* Chainlink Driver electronics
+    * Schematic [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriver-schematic.pdf)
+    * PCB overview [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriver-pcb-packet.pdf)
+    * PCB gerbers [zip](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/jlc/gerbers.zip)
+    * PCB bom (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/jlc/bom.csv)
+    * PCB component positions (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/jlc/pos.csv)
+* Sensor PCB, panelized ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/sensor_pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/sensor_pcb_packet.pdf))
 
-If you are interested in building a display without digging into the design details, I recommend using [one of the stable releases instead](https://github.com/scottbez1/splitflap/releases).
+If you are interested in building a display, I recommend using [one of the stable releases instead](https://github.com/scottbez1/splitflap/releases).
 
 ### Design Highlights ###
 * laser cut enclosure and mechanisms from a single material
 * cheap, widely available 28byj-48 stepper motor (less expensive than NEMA-17 motors, and doesn't require an expensive high current stepper driver)
 * CR80 PVC cards for flaps, cheap in bulk
 * store-bought vinyl stickers for flap letters
-* control up to 12 modules from a single Arduino
+* control up to 12 modules from a single Arduino Uno
 
-![2d laser cut rendering](https://s3.amazonaws.com/splitflap-travis/branches/master/3d_laser_raster.png)
+![2d laser cut rendering](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_raster.png)
 
 ## Build Your Own  ##
-<a href="https://github.com/scottbez1/splitflap/wiki">
-<img height="320" src="https://github.com/scottbez1/splitflap/wiki/images/assembly/laserPieces.jpg"/>
-<img height="320" src="https://github.com/scottbez1/splitflap/wiki/images/flaps/punchedCard.jpg"/>
-</a>
 
-This design is still a work in progress; a build log/instructions for building a prototype split-flap display of your own is posted in [the wiki](https://github.com/scottbez1/splitflap/wiki).
-
+* [**Ordering guide (v0.5/0.6)**](https://paper.dropbox.com/doc/Ordering-Splitflap-v0.5--AS8OCZ~75DLuHBGHhxn94YAMAg-iCwwMo0hRkkAlwdutccWf)
 * [**Latest stable release**](https://github.com/scottbez1/splitflap/releases/latest)
-* [**Ordering guide (v0.5)**](https://paper.dropbox.com/doc/Ordering-Splitflap-v0.5--AS8OCZ~75DLuHBGHhxn94YAMAg-iCwwMo0hRkkAlwdutccWf)
-* [**Assembly instructions (v0.5)**](https://paper.dropbox.com/doc/Splitflap-Kit-v0.5v1.0-Instructions--ASQDu1uoa6n4_t1pva1bM1MgAg-bxXJlke5ROmamcx4OH44r)
+* [**Assembly instructions (v0.5/0.6)**](https://paper.dropbox.com/doc/Splitflap-Kit-v0.5v1.0-Instructions--ASQDu1uoa6n4_t1pva1bM1MgAg-bxXJlke5ROmamcx4OH44r)
 
 ### Rough Cost Breakdown ###
 
@@ -191,8 +199,8 @@ The project also includes a number of optional 3D printed designs to make assemb
 
 All of these designs are parametric and customizable within OpenSCAD. To print them, open up the relevant file in OpenSCAD and use `File -> Export -> Export as STL` to render the design as an STL file for your slicer.
 
-### Driver Electronics ###
-The driver board is designed to plug into an Arduino like a shield, and can control 4 stepper motors.
+### Classic Driver Electronics ###
+The Classic driver board is designed to plug into an Arduino like a shield, and can control 4 stepper motors.
 Up to 3 driver boards can be chained together, for up to 12 modules controlled by a single Arduino.
 The designs for the controller can be found under [`electronics/splitflap.pro`](electronics/splitflap.pro) (KiCad 4 project).
 Nearly everything is a through-hole component rather than SMD, so it's very easy to hand-solder.
@@ -200,28 +208,73 @@ Nearly everything is a through-hole component rather than SMD, so it's very easy
 The driver uses 2 MIC5842 low-side shift-register drivers, with built-in transient-suppression diodes, to control the motors, and a 74HC165 shift register to read from 4 hall-effect magnetic home position sensors.
 There are optional WS2812B RGB LEDs which can be used to indicate the status of each of the 4 channels.
 
-<a href="https://s3.amazonaws.com/splitflap-travis/branches/master/schematic.pdf">
-<img height="320" src="https://s3.amazonaws.com/splitflap-travis/branches/master/schematic.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/schematic.pdf">
+<img height="320" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/schematic.png"/>
 </a>
 
 The PCB layout is 10cm x 5cm which makes it fairly cheap to produce using a low-cost PCB manufacturer (e.g. Seeed Studio).
 
-<a href="https://s3.amazonaws.com/splitflap-travis/branches/master/pcb_raster.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-travis/branches/master/pcb_raster.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/pcb_raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/pcb_raster.png"/>
 </a>
 
+
+### Module Electronics ###
 Each module also needs a hall-effect sensor board, with an AH3391Q (or similar) sensor and connector.
 These boards are small (about 16mm x 16 mm) and are available on a second PCB design that's panelized.
 The panelization is configurable (see [generate_panelize_config.py](electronics/scripts/panelize/generate_panelize_config.py))
 and is optimized for production at SeeedStudio.
 
-<a href="https://s3.amazonaws.com/splitflap-travis/branches/master/sensor_pcb_raster.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-travis/branches/master/sensor_pcb_raster.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/sensor_pcb_raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/sensor_pcb_raster.png"/>
 </a>
 
-These are automatically updated on every commit with the latest rendering from the `master` branch. See this blog post for more details on how that works: [Automated KiCad, OpenSCAD rendering using Travis CI](http://scottbezek.blogspot.com/2016/04/automated-kicad-openscad-rendering.html).
+### Chainlink Electronics ###
+The Chainlink system is an upcoming alternative to the Classic controller/driver, which is designed to be easier and  
+cheaper to build, especially in higher quantities due to its simplified BOM and surface-mount components. It's also
+designed to support longer chains of driver boards to control large displays (think 100+ split-flap modules).
 
-#### Rendering ####
+This electronics design is still in very active development, and not recommended unless you know what you're doing.
+
+The Chainlink system uses 2 PCB designs:
+* Each **Chainlink Driver** board accepts data and power and connects to 6 individual split-flap modules. Chainlink
+Driver boards can be chained together to construct a large display.
+* A **Chainlink Central Controller** board holds the microcontroller (ESP32 with USB, Wifi, BLE capabilities), central
+power management/distribution, and sends data to the chained Driver boards.
+
+#### Chainlink Driver ####
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriver-3d.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriver-3d.png"/>
+</a>
+
+Key features:
+* Controls 6 split-flap modules per board instead of just 4 - fewer PCBs means lower cost and less wiring
+* Longer PCB (200mm) gets connectors closer to each module so wires have more slack
+* Primarily SMD and all components (except the pin headers and motor connectors) are available in JLCPCB's parts library
+for easy SMD/THT assembly
+* Clock and latch lines are buffered with a 74HC125 to support longer chains
+* Neopixels replaced by shift-register-driven single-color LED per module (one fewer data line needed in the chain, lower current draw, and 3.3v IO friendly)
+* 2 bits of loopback (connecting 2 spare output bits on output shift registers to 2 spare inputs) allows the controller
+to validate data integrity up and down the whole chain
+* TPL7407L mosfet low-side drivers instead of ULN2003A/MIC5842 (lower on-resistance means less voltage drop in the driver = more torque, less waste heat, and less total current consumption)
+* Module order goes from right-to-left since this is intended to be installed and accessed from *behind* the modules
+
+
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriver-schematic.pdf">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriver-schematic.png"/>
+</a>
+
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriver-pcb-raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriver-pcb-raster.png"/>
+</a>
+
+#### Chainlink Central Controller ####
+Not designed yet. Follow development in the slack group for updates!
+
+
+### Rendering ###
+The mechanical and electrical design renderings and links above are automatically updated on every commit with the latest rendering. See this blog post for more details on how that works: [Automated KiCad, OpenSCAD rendering using Travis CI](http://scottbezek.blogspot.com/2016/04/automated-kicad-openscad-rendering.html).
+
 The PCB layout can be rendered to an svg or png (seen above) by running [`electronics/scripts/generate_svg.py file.kicad_pcb`](electronics/scripts/generate_svg.py).
 This uses KiCad's [Python scripting API](https://docs.kicad-pcb.org/doxygen/md_Documentation_development_pcbnew-plugins.html)
 to render several layers to individual svg files, manipulates them to apply color and opacity settings, and then merges them to a single svg.

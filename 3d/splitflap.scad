@@ -117,11 +117,11 @@ letter_color = color_invert(flap_color);  // inverse of the flap color, for cont
 flap_rendered_angle = 90;
 
 
-flap_width_slop = 0.15;  // amount of slop of the flap side to side between the 2 spools
+flap_width_slop = 0.5;  // amount of slop of the flap side to side between the 2 spools
 
 spool_width_slop = 1.4;  // amount of slop for the spool assembly side-to-side inside the enclosure
 
-spool_tab_clearance = -0.02;  // for the tabs connecting the struts to the spool ends (interference fit)
+spool_tab_clearance = -0.06;  // for the tabs connecting the struts to the spool ends (interference fit)
 spool_retaining_clearance = 0.10;  // for the notches in the spool retaining wall
 spool_joint_clearance = 0.10;  // for the notched joints on the spool struts
 
@@ -161,10 +161,13 @@ spool_strut_inner_length = spool_width - 3 * thickness;
 spool_strut_exclusion_radius = sqrt((spool_strut_tab_outset+thickness/2)*(spool_strut_tab_outset+thickness/2) + (spool_strut_tab_width/2)*(spool_strut_tab_width/2));
 
 
-magnet_hole_radius = (4 - 0.1)/2;
+magnet_diameter = 4;
+magnet_hole_clearance = -0.07;  // interference fit
+magnet_hole_radius = (magnet_diameter + magnet_hole_clearance)/2;
 magnet_hole_offset = (spool_strut_exclusion_radius + flap_pitch_radius)/2;
 
-28byj48_chassis_height_slop = 1;
+// Clearance between the motor chassis and the outside right wall of the previous module
+28byj48_chassis_height_clearance = 1.4;
 
 motor_shaft_under_radius = 0.08;  // interference fit
 motor_slop_radius = 3;
@@ -174,7 +177,7 @@ motor_slop_radius = 3;
 enclosure_wall_to_wall_width = thickness + spool_width_slop/2 + spool_width_clearance + spool_width_slop/2 + max(28byj48_mount_bracket_height + m4_button_head_length, 4 + 28byj48_mount_bracket_height - spool_width_slop/2) + thickness;
 
 // Width of the front panel
-enclosure_width = enclosure_wall_to_wall_width + 28byj48_chassis_height + 28byj48_chassis_height_slop - thickness - 28byj48_mount_bracket_height;
+enclosure_width = enclosure_wall_to_wall_width + 28byj48_chassis_height + 28byj48_chassis_height_clearance - thickness - 28byj48_mount_bracket_height;
 enclosure_horizontal_inset = (enclosure_width - enclosure_wall_to_wall_width)/2;
 front_window_upper_base = (flap_height - flap_pin_width/2);
 front_window_overhang = 3;
@@ -225,6 +228,9 @@ connector_bracket_overlap = 4;
 connector_bracket_clearance = 0.10;
 connector_bracket_depth_clearance = 0.20;
 
+// 'get' functions to extract these values for when this file is 'used' and not 'included'
+function connector_bracket_length() = connector_bracket_length_outer;
+function connector_bracket_width() = connector_bracket_width;
 
 mounting_hole_inset = m4_button_head_diameter/2 + 2;
 
@@ -494,20 +500,24 @@ module front_tabs_negative() {
     }
 }
 
+module connector_bracket_2d() {
+    difference() {
+        square([connector_bracket_width, connector_bracket_length_outer]);
+        translate([connector_bracket_thickness, -eps]) {
+            square([connector_bracket_width - connector_bracket_thickness*2, connector_bracket_length_outer - connector_bracket_length_inner + eps]);
+        }
+        translate([connector_bracket_thickness - connector_bracket_clearance/2, -eps]) {
+            square([thickness + connector_bracket_clearance, connector_bracket_length_outer - connector_bracket_overlap + connector_bracket_depth_clearance + eps]);
+        }
+        translate([connector_bracket_width - connector_bracket_thickness - thickness - connector_bracket_clearance/2, -eps]) {
+            square([thickness + connector_bracket_clearance, connector_bracket_length_outer - connector_bracket_overlap + connector_bracket_depth_clearance + eps]);
+        }
+    }
+}
+
 module connector_bracket() {
     linear_extrude(height=thickness) {
-        difference() {
-            square([connector_bracket_width, connector_bracket_length_outer]);
-            translate([connector_bracket_thickness, -eps]) {
-                square([connector_bracket_width - connector_bracket_thickness*2, connector_bracket_length_outer - connector_bracket_length_inner + eps]);
-            }
-            translate([connector_bracket_thickness - connector_bracket_clearance/2, -eps]) {
-                square([thickness + connector_bracket_clearance, connector_bracket_length_outer - connector_bracket_overlap + connector_bracket_depth_clearance + eps]);
-            }
-            translate([connector_bracket_width - connector_bracket_thickness - thickness - connector_bracket_clearance/2, -eps]) {
-                square([thickness + connector_bracket_clearance, connector_bracket_length_outer - connector_bracket_overlap + connector_bracket_depth_clearance + eps]);
-            }
-        }
+        connector_bracket_2d();
     }
 }
 

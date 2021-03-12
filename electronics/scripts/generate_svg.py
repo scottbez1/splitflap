@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #   Copyright 2015-2016 Scott Bezek and the splitflap contributors
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,11 +23,10 @@ import pcb_util
 
 from svg_processor import SvgProcessor
 
+electronics_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
-
-# Have to use absolute path for build_directory otherwise pcbnew will output relative to the temp file
-BUILD_DIRECTORY = os.path.abspath('build')
 
 
 def color_with_alpha(base_color, alpha):
@@ -35,11 +34,12 @@ def color_with_alpha(base_color, alpha):
 
 
 def run(pcb_file):
-    temp_dir = os.path.join(BUILD_DIRECTORY, 'temp_layers')
+    output_directory = os.path.join(electronics_root, 'build')
+    temp_dir = os.path.join(output_directory, 'temp_layers')
     shutil.rmtree(temp_dir, ignore_errors=True)
     try:
         os.makedirs(temp_dir)
-        plot_to_directory(pcb_file, BUILD_DIRECTORY, temp_dir)
+        plot_to_directory(pcb_file, output_directory, temp_dir)
     finally:
         shutil.rmtree(temp_dir, ignore_errors=True)
 
@@ -99,6 +99,24 @@ def plot_to_directory(pcb_file, output_directory, temp_dir):
             output_filename2 = os.path.join(temp_dir, 'processed-' + os.path.basename(output_filename))
             processor.write(output_filename2)
             processed_svg_files.append((output_filename2, processor))
+
+        # Plot the paste layer to its own SVG
+        logger.info('Plotting paste SVG')
+        output_filename = plotter.plot(pcbnew.F_Paste, pcbnew.PLOT_FORMAT_SVG)
+        processor = SvgProcessor(output_filename)
+        def colorize(original):
+            if original.lower() == '#000000':
+                return '#FF0000'
+            return original
+        processor.apply_group_style_transforms({
+            'fill-opacity': lambda _: '0',
+            'stroke': lambda _: '#FF0000',
+            'stroke-opacity': lambda _: '1',
+            'stroke-width': lambda _: '20',
+        })
+        paste_filename = os.path.join(output_directory, '%s_paste.svg' % board_name)
+        processor.write(paste_filename)
+
 
         logger.info('Merging layers...')
         final_svg = os.path.join(output_directory, '%s_merged.svg' % board_name)

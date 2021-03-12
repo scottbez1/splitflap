@@ -56,7 +56,7 @@ const uint8_t flaps[NUM_FLAPS] = {
   #endif
   #define MONITOR_SPEED 38400
 #elif defined(__AVR_ATmega2560__)
-  #define NEOPIXEL_PIN 4
+  #define NEOPIXEL_PIN 5
   #define MONITOR_SPEED 38400
 #elif defined(ARDUINO_ESP8266_WEMOS_D1MINI)
   #define NEOPIXEL_PIN (D8)
@@ -123,7 +123,10 @@ const uint8_t flaps[NUM_FLAPS] = {
  */
 
 
-// Configuration validation
+// Configuration validation and dependent settings
 #if NUM_MODULES < 1
 #error NUM_MODULES must be at least 1
+#endif
+#ifdef CHAINLINK
+#define NUM_LOOPBACKS (NUM_MODULES / 3)
 #endif

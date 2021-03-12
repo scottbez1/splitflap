@@ -13,9 +13,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+#ifdef MQTT
 #include "mqtt_task.h"
 #include "secrets.h"
-
 
 void MQTTTask::connectWifi() {
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
@@ -30,7 +30,7 @@ void MQTTTask::connectWifi() {
 
 void MQTTTask::mqttCallback(char *topic, byte *payload, unsigned int length) {
     Serial.printf("Received mqtt callback for topic %s\n", topic);
-    splitflap_task_.writeBuffer((const char *)payload, length);
+    splitflap_task_.showString((const char *)payload, length);
 }
 
 void MQTTTask::connectMQTT() {
@@ -64,3 +64,4 @@ void MQTTTask::run() {
         delay(1);
     }
 }
+#endif

@@ -58,8 +58,7 @@
   #include "driver/spi_master.h"
   #include "driver/spi_slave.h"
 
-  #define OUT_LATCH_PIN (25)
-  #define IN_LATCH_PIN (26)
+  #define LATCH_PIN (25)
   #define OUTPUT_ENABLE_PIN (27)
 
   #define PIN_NUM_MISO 22
@@ -91,9 +90,14 @@
 #error "Unknown/unsupported board for SPI mode. ATmega328-based boards (Uno, Duemilanove, Diecimila), ESP8266 and ESP32 are currently supported"
 #endif
 
-
+#ifdef CHAINLINK
+#define MOTOR_BUFFER_LENGTH (NUM_MODULES * 2 / 3 + (NUM_MODULES % 3 != 0) * 2)
+#define SENSOR_BUFFER_LENGTH (NUM_MODULES / 6 + (NUM_MODULES % 6 != 0))
+#else
 #define MOTOR_BUFFER_LENGTH (NUM_MODULES / 2 + (NUM_MODULES % 2 != 0))
 #define SENSOR_BUFFER_LENGTH (NUM_MODULES / 4 + (NUM_MODULES % 4 != 0))
+#endif
+
 
 BUFFER_ATTRS uint8_t motor_buffer[MOTOR_BUFFER_LENGTH];
 BUFFER_ATTRS uint8_t sensor_buffer[SENSOR_BUFFER_LENGTH];
@@ -107,14 +111,12 @@ void* operator new(__attribute__((unused)) size_t size, void* ptr) {
 #endif
 
 #ifdef ESP32
-void out_latch(spi_transaction_t *trans) {
-    digitalWrite(OUT_LATCH_PIN, HIGH);
-    digitalWrite(OUT_LATCH_PIN, LOW);
+void reset_latch(spi_transaction_t *trans) {
+    digitalWrite(LATCH_PIN, LOW);
 }
 
-void in_latch(spi_transaction_t *trans) {
-    digitalWrite(IN_LATCH_PIN, LOW);
-    digitalWrite(IN_LATCH_PIN, HIGH);
+void latch_registers(spi_transaction_t *trans) {
+    digitalWrite(LATCH_PIN, HIGH);
 }
 #endif
 
@@ -123,20 +125,26 @@ static char moduleBuffer[NUM_MODULES][sizeof(SplitflapModule)];
 
 SplitflapModule* modules[NUM_MODULES];
 
+#ifdef CHAINLINK
+static const uint8_t MOTOR_OFFSET[] = {0, 0, 1, 2, 3, 3};
+#endif
+
 inline void initialize_modules() {
   for (uint8_t i = 0; i < NUM_MODULES; i++) {
     // Create SplitflapModules in a statically allocated buffer using placement new
+#ifdef CHAINLINK
+    modules[i] = new (moduleBuffer[i]) SplitflapModule(motor_buffer[MOTOR_BUFFER_LENGTH - 1 - i/6*4 - MOTOR_OFFSET[i%6]], i % 2 == 0 ? 0 : 4, sensor_buffer[i/6], 1 << (i % 6));
+#else
     modules[i] = new (moduleBuffer[i]) SplitflapModule(motor_buffer[MOTOR_BUFFER_LENGTH - 1 - i/2], i % 2 == 0 ? 0 : 4, sensor_buffer[i/4], 1 << (i % 4));
+#endif
   }
   
   memset(motor_buffer, 0, MOTOR_BUFFER_LENGTH);
   memset(sensor_buffer, 0, SENSOR_BUFFER_LENGTH);
 
   // Initialize SPI
-  pinMode(IN_LATCH_PIN, OUTPUT);
-  digitalWrite(IN_LATCH_PIN, HIGH);
-  pinMode(OUT_LATCH_PIN, OUTPUT);
-  digitalWrite(OUT_LATCH_PIN, LOW);
+  pinMode(LATCH_PIN, OUTPUT);
+  digitalWrite(LATCH_PIN, LOW);
 
 #ifdef ESP32
 
@@ -158,18 +166,18 @@ inline void initialize_modules() {
       .command_bits=0,
       .address_bits=0,
       .dummy_bits=0,
-      .mode=0,
+      .mode=3,
       .duty_cycle_pos=0,
       .cs_ena_pretrans=0,
       .cs_ena_posttrans=0,
       .clock_speed_hz=SPI_CLOCK,
       .input_delay_ns=0,
-      .spics_io_num=PIN_NUM_CS,
+      .spics_io_num=-1,
       .flags = 0,
       // .flags = SPI_DEVICE_HALFDUPLEX,
       .queue_size=1,
       .pre_cb=NULL,
-      .post_cb=&out_latch,
+      .post_cb=NULL,
   };
   ret=spi_bus_add_device(SPI_HOST, &tx_device_config, &spi_tx);
   ESP_ERROR_CHECK(ret);
@@ -185,11 +193,11 @@ inline void initialize_modules() {
       .clock_speed_hz=SPI_CLOCK,
       .input_delay_ns=0,
       .spics_io_num=-1,// PIN_NUM_CS,
-      .flags = 0,
-      // .flags = SPI_DEVICE_HALFDUPLEX,
+      // .flags = 0,
+      .flags = SPI_DEVICE_HALFDUPLEX,
       .queue_size=1,
-      .pre_cb=&in_latch,
-      .post_cb=NULL,
+      .pre_cb=&latch_registers,
+      .post_cb=&reset_latch,
   };
   ret=spi_bus_add_device(SPI_HOST, &rx_device_config, &spi_rx);
   ESP_ERROR_CHECK(ret);
@@ -202,7 +210,7 @@ inline void initialize_modules() {
   memset(&rx_transaction, 0, sizeof(rx_transaction));
   rx_transaction.length = SENSOR_BUFFER_LENGTH*8;
   rx_transaction.rxlength = SENSOR_BUFFER_LENGTH*8;
-  rx_transaction.tx_buffer = &motor_buffer;
+  rx_transaction.tx_buffer = NULL;
   rx_transaction.rx_buffer = &sensor_buffer;
 
 #else
