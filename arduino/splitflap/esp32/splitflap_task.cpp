@@ -169,6 +169,27 @@ void SplitflapTask::updateStateCache() {
     }
 }
 
+void SplitflapTask::showString(const char* str, uint8_t length) {
+    SemaphoreGuard lock(semaphore_);
+    pending_move_response = true;
+    Serial.print("{\"type\":\"move_echo\", \"dest\":\"");
+    Serial.flush();
+    for (uint8_t i = 0; i < length; i++) {
+        int8_t index = findFlapIndex(str[i]);
+        if (index != -1) {
+            if (FORCE_FULL_ROTATION || index != modules[i]->GetTargetFlapIndex()) {
+            modules[i]->GoToFlapIndex(index);
+            }
+        }
+        Serial.write(str[i]);
+        if (i % 8 == 0) {
+            Serial.flush();
+        }
+    }
+    Serial.print("\"}\n");
+    Serial.flush();
+}
+
 void SplitflapTask::runUpdate() {
     uint32_t iterationStartMillis = millis();
 
@@ -278,23 +299,7 @@ void SplitflapTask::runUpdate() {
               recv_count = 0;
               break;
             case '\n':
-                pending_move_response = true;
-                Serial.print("{\"type\":\"move_echo\", \"dest\":\"");
-                Serial.flush();
-                for (uint8_t i = 0; i < recv_count; i++) {
-                  int8_t index = findFlapIndex(recv_buffer[i]);
-                  if (index != -1) {
-                    if (FORCE_FULL_ROTATION || index != modules[i]->GetTargetFlapIndex()) {
-                      modules[i]->GoToFlapIndex(index);
-                    }
-                  }
-                  Serial.write(recv_buffer[i]);
-                  if (i % 8 == 0) {
-                    Serial.flush();
-                  }
-                }
-                Serial.print("\"}\n");
-                Serial.flush();
+                showString(recv_buffer, recv_count);
                 break;
             default:
               if (recv_count > NUM_MODULES - 1) {

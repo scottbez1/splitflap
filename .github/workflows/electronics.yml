@@ -64,7 +64,7 @@ jobs:
             electronics/build
 
       - name: Configure AWS Credentials
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' && github.repository_owner == 'scottbez1'
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -72,6 +72,6 @@ jobs:
           aws-region: us-east-1
 
       - name: Sync artifacts to S3
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' && github.repository_owner == 'scottbez1'
         run: |
           aws s3 sync electronics/build/outputs s3://splitflap-artifacts/${GITHUB_REF#refs/heads/}/electronics --delete --acl public-read --cache-control max-age=0,no-cache
