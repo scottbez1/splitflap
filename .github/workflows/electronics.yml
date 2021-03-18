@@ -19,7 +19,34 @@ jobs:
       - name: Install dependencies
         run: ./electronics/scripts/dependencies.sh
 
-      - name: Export schematic
+# Sensor board:
+      - name: Panelize sensor PCB
+        run: |
+          kikit panelize grid --gridsize 6 6 --space 0 --vcuts electronics/sensor/sensor.kicad_pcb electronics/build/panelized_sensor.kicad_pcb
+
+      - name: Export panelized sensor PCB SVG
+        run: |
+          ./electronics/scripts/generate_svg.py electronics/build/panelized_sensor.kicad_pcb
+          cp electronics/build/panelized_sensor_merged.png electronics/build/outputs/sensor_pcb_raster.png
+          ./scripts/annotate_image.sh electronics/build/outputs/sensor_pcb_raster.png
+        env:
+          PYTHONUNBUFFERED: 1
+
+      - name: Export panelized sensor PCB fabrication files
+        run: |
+#         TODO: migrate to KiKit?
+          python3 -u electronics/scripts/generate_gerber.py electronics/build/panelized_sensor.kicad_pcb
+          cp electronics/build/panelized_sensor_gerber.zip electronics/build/outputs/sensor_pcb_gerber.zip
+
+      - name: Export panelized sensor PCB overview PDF
+        run: |
+          ./electronics/scripts/generate_pdf.py electronics/build/panelized_sensor.kicad_pcb
+          cp electronics/build/panelized_sensor-pcb-packet.pdf electronics/build/outputs/sensor_pcb_packet.pdf
+        env:
+          PYTHONUNBUFFERED: 1
+
+# Chainlink Driver:
+      - name: Export chainlinkDriver schematic
         run: |
           ./electronics/scripts/export_schematic.py electronics/chainlinkDriver/chainlinkDriver.sch
           cp electronics/build/chainlinkDriver.pdf electronics/build/outputs/chainlinkDriver-schematic.pdf
@@ -27,7 +54,7 @@ jobs:
         env:
           PYTHONUNBUFFERED: 1
 
-      - name: Render PCB 3D
+      - name: Render chainlinkDriver PCB 3D
         run: |
           ./electronics/scripts/export_3d.py electronics/chainlinkDriver/chainlinkDriver.kicad_pcb
           cp electronics/build/chainlinkDriver-3d.png electronics/build/outputs/chainlinkDriver-3d.png
@@ -35,19 +62,19 @@ jobs:
         env:
           PYTHONUNBUFFERED: 1
 
-      - name: Export JLCPCB fabrication files
+      - name: Export chainlinkDriver JLCPCB fabrication files
         run: |
           ./electronics/scripts/export_jlcpcb.py electronics/chainlinkDriver/chainlinkDriver.sch electronics/chainlinkDriver/chainlinkDriver.kicad_pcb
           cp -r electronics/build/jlc electronics/build/outputs
 
-      - name: Export PCB overview PDF
+      - name: Export chainlinkDriver PCB overview PDF
         run: |
           ./electronics/scripts/generate_pdf.py electronics/chainlinkDriver/chainlinkDriver.kicad_pcb
           cp electronics/build/chainlinkDriver-pcb-packet.pdf electronics/build/outputs/chainlinkDriver-pcb-packet.pdf
         env:
           PYTHONUNBUFFERED: 1
 
-      - name: Export PCB SVG
+      - name: Export chainlinkDriver PCB SVG
         run: |
           ./electronics/scripts/generate_svg.py electronics/chainlinkDriver/chainlinkDriver.kicad_pcb
           cp electronics/build/chainlinkDriver_merged.png electronics/build/outputs/chainlinkDriver-pcb-raster.png

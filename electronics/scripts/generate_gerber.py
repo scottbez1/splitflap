@@ -23,19 +23,18 @@ from collections import namedtuple
 
 import pcb_util
 
+electronics_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-# Have to use absolute path for build_directory otherwise pcbnew will output relative to the temp file
-BUILD_DIRECTORY = os.path.abspath('build')
-
-
 def run(pcb_file):
-    temp_dir = os.path.join(BUILD_DIRECTORY, 'temp_gerbers')
+    output_directory = os.path.join(electronics_root, 'build')
+    temp_dir = os.path.join(output_directory, 'temp_gerbers')
     shutil.rmtree(temp_dir, ignore_errors=True)
     try:
         os.makedirs(temp_dir)
-        plot_to_directory(pcb_file, BUILD_DIRECTORY, temp_dir)
+        plot_to_directory(pcb_file, output_directory, temp_dir)
     finally:
         shutil.rmtree(temp_dir, ignore_errors=True)
 
