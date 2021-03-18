@@ -34,7 +34,7 @@ jobs:
 
       - name: Export panelized sensor PCB fabrication files
         run: |
-#         TODO: migrate to KiKit?
+          # TODO: migrate to KiKit?
           python3 -u electronics/scripts/generate_gerber.py electronics/build/panelized_sensor.kicad_pcb
           cp electronics/build/panelized_sensor_gerber.zip electronics/build/outputs/sensor_pcb_gerber.zip
 
