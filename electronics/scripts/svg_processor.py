@@ -36,6 +36,15 @@ class SvgProcessor(object):
                 'fill': transform_function,
                 'stroke': transform_function,
             })
+        for path in self.svg_node.getElementsByTagName('path'):
+            SvgProcessor._apply_transform(path, {
+                'fill': transform_function,
+                'stroke': transform_function,
+            })
+
+    def apply_group_style_transforms(self, transform_dict):
+        for group in self.svg_node.getElementsByTagName('g'):
+            SvgProcessor._apply_transform(group, transform_dict)
 
     def import_groups(self, from_svg_processor):
         for child in from_svg_processor.svg_node.childNodes:
@@ -46,7 +55,7 @@ class SvgProcessor(object):
             self.svg_node.appendChild(output_node)
 
     def write(self, filename):
-        with open(filename, 'wb') as output_file:
+        with open(filename, 'w') as output_file:
             self.svg_node.writexml(output_file)
 
     def wrap_with_group(self, attrs):
@@ -55,14 +64,17 @@ class SvgProcessor(object):
         for k,v in attrs.items():
             wrapper.setAttribute(k,v)
 
-        for child in parent.getElementsByTagName('g'):
-            parent.removeChild(child)
-            wrapper.appendChild(child)
+        for child in parent.childNodes:
+            if child.nodeType == minidom.Node.ELEMENT_NODE and child.tagName == 'g':
+                parent.removeChild(child)
+                wrapper.appendChild(child)
 
         parent.appendChild(wrapper)
 
     @staticmethod
     def _apply_transform(node, values):
+        if node.getAttribute('style') == '':
+            return
         original_style = node.attributes['style'].value
         for (k,v) in values.items():
             escaped_key = re.escape(k)

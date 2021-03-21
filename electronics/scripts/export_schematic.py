@@ -1,6 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
-#   Copyright 2015-2016 Scott Bezek and the splitflap contributors
+#   Copyright 2015-2021 Scott Bezek and the splitflap contributors
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+import argparse
 import logging
 import os
 import subprocess
@@ -29,7 +30,8 @@ sys.path.append(repo_root)
 from util import file_util
 from export_util import (
     PopenContext,
-    versioned_schematic,
+    patch_config,
+    versioned_file,
     xdotool,
     wait_for_window,
     recorded_xvfb,
@@ -38,57 +40,82 @@ from export_util import (
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-def eeschema_plot_schematic(output_directory):
-    wait_for_window('eeschema', '\[')
+EESCHEMA_CONFIG_PATH = os.path.expanduser('~/.config/kicad/eeschema')
 
-    logger.info('Focus main eeschema window')
-    xdotool(['search', '--name', '\[', 'windowfocus'])
+WIDTH = 800
+HEIGHT = 600
+
+def eeschema_plot_schematic(output_directory, kicad_4):
+    wait_for_window('eeschema', '\[', additional_commands=['windowfocus'])
 
     logger.info('Open File->Plot->Plot')
     xdotool(['key', 'alt+f'])
-    xdotool(['key', 'p'])
-    xdotool(['key', 'p'])
+    if kicad_4:
+        xdotool(['key', 'p'])
+        xdotool(['key', 'p'])
+    else:
+        xdotool(['key', 'l'])
 
-    wait_for_window('plot', 'Plot')
-    xdotool(['search', '--name', 'Plot', 'windowfocus'])
+    wait_for_window('plot', 'Plot', additional_commands=['windowfocus'])
+
+    time.sleep(2)
+    
+    if not kicad_4:
+        # Move/resize window to standard position and click into the text box
+        xdotool(['search', '--name', 'Plot', 'windowmove', '0', '0'])
+        xdotool(['search', '--name', 'Plot', 'windowsize', str(WIDTH), str(HEIGHT)])
+        time.sleep(2)
+        xdotool(['mousemove', '400', '20', 'click', '1'])
 
     logger.info('Enter build output directory')
+    xdotool(['key', 'BackSpace', 'BackSpace'])
     xdotool(['type', output_directory])
 
-    logger.info('Select PDF plot format')
-    xdotool([
-        'key',
-        'Tab',
-        'Tab',
-        'Tab',
-        'Tab',
-        'Tab',
-        'Up',
-        'Up',
-        'Up',
-        'space',
-    ])
+    time.sleep(2)
+
+    if kicad_4:
+        logger.info('Select PDF plot format')
+        xdotool([
+            'key',
+            'Tab',
+            'Tab',
+            'Tab',
+            'Tab',
+            'Tab',
+            'Up',
+            'Up',
+            'Up',
+            'space',
+        ])
+        time.sleep(2)
+
 
     logger.info('Plot')
     xdotool(['key', 'Return'])
 
     logger.info('Wait before shutdown')
-    time.sleep(2)
+    time.sleep(5)
 
-def export_schematic():
-    schematic_file = os.path.join(electronics_root, 'splitflap.sch')
+def export_schematic(schematic_file, kicad_4):
+    # Use absolute path - eeschema handles libraries differently with full path vs filename
+    schematic_file = os.path.abspath(schematic_file)
+    filename, _ = os.path.splitext(os.path.basename(schematic_file))
     output_dir = os.path.join(electronics_root, 'build')
     file_util.mkdir_p(output_dir)
 
     screencast_output_file = os.path.join(output_dir, 'export_schematic_screencast.ogv')
-    schematic_output_pdf_file = os.path.join(output_dir, 'splitflap.pdf')
-    schematic_output_png_file = os.path.join(output_dir, 'schematic.png')
+    schematic_output_pdf_file = os.path.join(output_dir, filename + '.pdf')
+    schematic_output_png_file = os.path.join(output_dir, filename + '.png')
 
-    with versioned_schematic(schematic_file):
-        with recorded_xvfb(screencast_output_file, width=800, height=600, colordepth=24):
-            with PopenContext(['eeschema', schematic_file], close_fds=True) as eeschema_proc:
-                eeschema_plot_schematic(output_dir)
-                eeschema_proc.terminate()
+    settings = {
+        'PlotFormat': '4',  # PDF
+    }
+    with patch_config(os.path.expanduser('~/.config/kicad/eeschema'), settings):
+        with versioned_file(schematic_file):
+            with recorded_xvfb(screencast_output_file, width=WIDTH, height=HEIGHT, colordepth=24):
+                with PopenContext(['eeschema', schematic_file], close_fds=True) as eeschema_proc:
+                    eeschema_plot_schematic(output_dir, kicad_4)
+                    eeschema_proc.terminate()
 
     logger.info('Rasterize')
     subprocess.check_call([
@@ -99,7 +126,12 @@ def export_schematic():
        '-alpha', 'remove',
        schematic_output_png_file,
    ])
-    
+
+
 if __name__ == '__main__':
-    export_schematic()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('schematic')
+    parser.add_argument('--kicad-4', action='store_true')
+    args = parser.parse_args()
+    export_schematic(args.schematic, args.kicad_4)
 

@@ -1,0 +1,77 @@
+name: Export Electronics
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  export-electronics:
+    name: Export Electronics
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up outputs directory
+        run: mkdir -p electronics/build/outputs
+
+      - name: Install dependencies
+        run: ./electronics/scripts/dependencies.sh
+
+      - name: Export schematic
+        run: |
+          ./electronics/scripts/export_schematic.py electronics/chainlinkDriver/chainlinkDriver.sch
+          cp electronics/build/chainlinkDriver.pdf electronics/build/outputs/chainlinkDriver-schematic.pdf
+          cp electronics/build/chainlinkDriver.png electronics/build/outputs/chainlinkDriver-schematic.png
+        env:
+          PYTHONUNBUFFERED: 1
+
+      - name: Render PCB 3D
+        run: |
+          ./electronics/scripts/export_3d.py electronics/chainlinkDriver/chainlinkDriver.kicad_pcb
+          cp electronics/build/chainlinkDriver-3d.png electronics/build/outputs/chainlinkDriver-3d.png
+          ./scripts/annotate_image.sh electronics/build/outputs/chainlinkDriver-3d.png
+        env:
+          PYTHONUNBUFFERED: 1
+
+      - name: Export JLCPCB fabrication files
+        run: |
+          ./electronics/scripts/export_jlcpcb.py electronics/chainlinkDriver/chainlinkDriver.sch electronics/chainlinkDriver/chainlinkDriver.kicad_pcb
+          cp -r electronics/build/jlc electronics/build/outputs
+
+      - name: Export PCB overview PDF
+        run: |
+          ./electronics/scripts/generate_pdf.py electronics/chainlinkDriver/chainlinkDriver.kicad_pcb
+          cp electronics/build/chainlinkDriver-pcb-packet.pdf electronics/build/outputs/chainlinkDriver-pcb-packet.pdf
+        env:
+          PYTHONUNBUFFERED: 1
+
+      - name: Export PCB SVG
+        run: |
+          ./electronics/scripts/generate_svg.py electronics/chainlinkDriver/chainlinkDriver.kicad_pcb
+          cp electronics/build/chainlinkDriver_merged.png electronics/build/outputs/chainlinkDriver-pcb-raster.png
+          ./scripts/annotate_image.sh electronics/build/outputs/chainlinkDriver-pcb-raster.png
+        env:
+          PYTHONUNBUFFERED: 1
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: electronics
+          path: |
+            electronics/build
+
+      - name: Configure AWS Credentials
+        if: github.event_name == 'push' && github.repository_owner == 'scottbez1'
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Sync artifacts to S3
+        if: github.event_name == 'push' && github.repository_owner == 'scottbez1'
+        run: |
+          aws s3 sync electronics/build/outputs s3://splitflap-artifacts/${GITHUB_REF#refs/heads/}/electronics --delete --acl public-read --cache-control max-age=0,no-cache

@@ -1,5 +1,5 @@
-#!/usr/bin/env python
-#   Copyright 2015-2016 Scott Bezek and the splitflap contributors
+#!/usr/bin/env python3
+#   Copyright 2015-2021 Scott Bezek and the splitflap contributors
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -23,19 +23,19 @@ from collections import namedtuple
 
 import pcb_util
 
+electronics_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-# Have to use absolute path for build_directory otherwise pcbnew will output relative to the temp file
-BUILD_DIRECTORY = os.path.abspath('build')
-
 
 def run(pcb_file):
-    temp_dir = os.path.join(BUILD_DIRECTORY, 'temp_pdfs')
+    output_directory = os.path.join(electronics_root, 'build')
+    temp_dir = os.path.join(output_directory, 'temp_pdfs')
     shutil.rmtree(temp_dir, ignore_errors=True)
     try:
         os.makedirs(temp_dir)
-        plot_to_directory(pcb_file, BUILD_DIRECTORY, temp_dir)
+        plot_to_directory(pcb_file, output_directory, temp_dir)
     finally:
         shutil.rmtree(temp_dir, ignore_errors=True)
 
@@ -53,6 +53,9 @@ def plot_to_directory(pcb_file, output_directory, temp_dir):
             LayerDef(pcbnew.B_Cu, True),
             LayerDef(pcbnew.F_SilkS, False),
             LayerDef(pcbnew.B_SilkS, True),
+            LayerDef(pcbnew.F_Mask, False),
+            LayerDef(pcbnew.B_Mask, True),
+            LayerDef(pcbnew.F_Paste, False),
         ]
 
         pdfs = []
@@ -64,7 +67,7 @@ def plot_to_directory(pcb_file, output_directory, temp_dir):
         _, map_file = plotter.plot_drill()
         pdfs.append(map_file)
 
-        output_pdf_filename = os.path.join(output_directory, '%s_packet.pdf' % (board_name,))
+        output_pdf_filename = os.path.join(output_directory, '%s-pcb-packet.pdf' % (board_name,))
 
         command = ['pdfunite'] + pdfs + [output_pdf_filename]
         subprocess.check_call(command)

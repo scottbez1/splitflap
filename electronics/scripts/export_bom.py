@@ -27,7 +27,7 @@ sys.path.append(repo_root)
 from util import file_util
 from export_util import (
     PopenContext,
-    versioned_schematic,
+    versioned_file,
     xdotool,
     wait_for_window,
     recorded_xvfb,
@@ -57,12 +57,14 @@ def eeschema_export_bom():
 
 
 def export_bom(schematic_file):
+    # Use absolute path - eeschema handles libraries differently with full path vs filename
+    schematic_file = os.path.abspath(schematic_file)
     output_dir = os.path.join(electronics_root, 'build')
     file_util.mkdir_p(output_dir)
 
     screencast_output_file = os.path.join(output_dir, 'export_bom_screencast.ogv')
 
-    with versioned_schematic(schematic_file):
+    with versioned_file(schematic_file):
         with recorded_xvfb(screencast_output_file, width=800, height=600, colordepth=24):
             with PopenContext(['eeschema', schematic_file], close_fds=True) as eeschema_proc:
                 eeschema_export_bom()

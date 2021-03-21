@@ -29,6 +29,10 @@ class Renderer(object):
         if extra_variables is None:
             extra_variables = {}
         self.extra_variables = extra_variables
+        try:
+            self.etch_enabled = self.extra_variables['render_etch']
+        except KeyError:
+            self.etch_enabled = True
 
     def clean(self):
         shutil.rmtree(self.output_folder, ignore_errors=True)
@@ -57,7 +61,10 @@ class Renderer(object):
 
     def _render_component(self, i, panel_horizontal, panel_vertical):
         output_file = self._get_component_file(i)
-        for style in ('cut', 'etch'):
+        style_options = ['cut']
+        if self.etch_enabled:
+            style_options.append('etch')
+        for style in (style_options):
             logging.debug('Rendering component %d, %s', i, style)
             try:
                 _ = openscad.run(
@@ -85,10 +92,10 @@ class Renderer(object):
                 processor.apply_laser_cut_style()
             elif style == 'etch':
                 processor.apply_laser_etch_style()
-            break
-        else:
-            raise ValueError("Invalid component!", i)
-        return processor
+            return processor
+
+        logging.debug('Component %d has no geometry', i)
+        return None
 
     def render_svgs(self, panelize_quantity):
         assert panelize_quantity == 1 or panelize_quantity % 2 == 0, 'Panelize quantity must be 1 or an even number'
@@ -104,7 +111,7 @@ class Renderer(object):
                     svg_processor = self._render_component(i, panel_horizontal, panel_vertical)
                     if svg_output is None:
                         svg_output = svg_processor
-                    else:
+                    elif svg_processor is not None:
                         svg_output.import_paths(svg_processor)
         output_file_path = os.path.join(self.output_folder, 'combined.svg')
         svg_output.write(output_file_path)

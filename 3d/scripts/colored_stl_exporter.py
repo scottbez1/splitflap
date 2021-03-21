@@ -47,7 +47,8 @@ USE_INCLUDE_REGEX = re.compile(r'\b(?P<statement>use|include)\s*<\s*(?P<filename
 COLOR_REGEX = re.compile(r'\bcolor\s*\(')
 EXTRACTED_COLOR_REGEX = re.compile(r'ECHO: extracted_color = (?P<color>.*)')
 
-RGB_COLOR_REGEX = re.compile(r'\[(?P<r>.*?),(?P<g>.*?),(?P<b>.*?)\]')
+# RGB_COLOR_REGEX = re.compile(r'\[(?P<r>.*?),(?P<g>.*?),(?P<b>.*?)\]')
+RGBA_COLOR_REGEX = re.compile(r'\[(?P<r>[0-9.]*), *?(?P<g>[0-9.]*), *?(?P<b>[0-9.]*)(?:, *)?(?P<a>[0-9.]*)?\]')
 
 
 class ColoredStlExporter(object):
@@ -128,7 +129,15 @@ module color_extractor(c) {
             contents = COLOR_REGEX.sub(' color_selector(', contents)
             return contents + '''
         module color_selector(c) {{
-            if (c == {})
+            precision = 0.0000001;  // arbitrary
+            function compare_floats(x, y, i=0) = 
+                  (len(x) != len(y)) ? false  // if arrays differ in length, they can't be equal
+                : (i >= len(x)) ? true  // if we've hit the end of the arrays without issue, we're equal
+                : (x[i] - precision <= y[i]) && x[i] + precision >= y[i]
+                    ? compare_floats(x, y, i+1)
+                    : false;  // not equal, short circuit
+
+            if (c == {0} || compare_floats(c, {0}))
                 children();
         }}
                     '''.format(color)
@@ -192,13 +201,18 @@ module color_extractor(c) {
 
     @staticmethod
     def parse_openscad_color(color):
-        match = RGB_COLOR_REGEX.search(color)
+        match = RGBA_COLOR_REGEX.search(color)
         if match:
-            return [
+            color_out = [
                 float(match.group('r')),
                 float(match.group('g')),
                 float(match.group('b')),
             ]
+            if(match.group('a')):
+               color_out.append(float(match.group('a')))
+
+            return color_out
+
         if '"' in color and webcolors:
             try:
                 c = webcolors.name_to_rgb(color[1:-1]) # skip the ""
