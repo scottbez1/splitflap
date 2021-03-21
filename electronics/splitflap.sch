@@ -887,13 +887,13 @@ $EndComp
 $Comp
 L VCC #PWR034
 U 1 1 5B6D26FA
-P 3750 1800
-F 0 "#PWR034" H 3750 1650 50  0001 C CNN
-F 1 "VCC" V 3750 2000 50  0000 C CNN
-F 2 "" H 3750 1800 50  0001 C CNN
-F 3 "" H 3750 1800 50  0001 C CNN
-	1    3750 1800
-	0    -1   -1   0   
+P 3600 1700
+F 0 "#PWR034" H 3600 1550 50  0001 C CNN
+F 1 "VCC" H 3600 1850 50  0000 C CNN
+F 2 "" H 3600 1700 50  0001 C CNN
+F 3 "" H 3600 1700 50  0001 C CNN
+	1    3600 1700
+	1    0    0    -1  
 $EndComp
 $Comp
 L no_pin Z4
@@ -959,17 +959,18 @@ F 5 "This is a mounting hole, not a component." H 2500 6250 60  0001 C CNN "BOM_
 	1    0    0    -1  
 $EndComp
 $Comp
-L Jumper_NC_Dual JP1
-U 1 1 5F7C4A77
-P 3850 1600
-F 0 "JP1" H 3900 1500 50  0000 L CNN
-F 1 "VIN <-> VCC" H 3850 1700 50  0000 C BNN
-F 2 "PinHeaders:Pin_Header_Straight_1x03" H 3850 1600 50  0001 C CNN
-F 3 "" H 3850 1600 50  0001 C CNN
-	1    3850 1600
+L Jumper_NC_Small JP1
+U 1 1 5B70A750
+P 3750 1750
+F 0 "JP1" H 3750 1830 50  0000 C CNN
+F 1 "VIN <-> VCC" H 3760 1690 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x02_Pitch2.54mm" H 3750 1750 50  0001 C CNN
+F 3 "" H 3750 1750 50  0001 C CNN
+F 4 "S1012EC-02-ND, S9337-ND (Both optional)" H 3750 1750 60  0001 C CNN "DK#"
+F 5 "Optional pin headers and jumper to power Arduino from 12V motor power. Combine S1012EC-* male headers with other components and order a single, longer header (e.g. 1x40 and snap it apart)" H 3750 1750 60  0001 C CNN "BOM_Note"
+	1    3750 1750
 	1    0    0    -1  
 $EndComp
-NoConn ~ 3600 1600
 Wire Wire Line
 	4700 1700 4700 1750
 Wire Wire Line
@@ -1356,15 +1357,7 @@ Connection ~ 2150 6450
 Wire Wire Line
 	2150 6450 2150 6550
 Wire Wire Line
-	3750 1800 3850 1800
-Wire Wire Line
-	4400 1750 4150 1750
-Wire Wire Line
-	4150 1750 4150 1600
-Wire Wire Line
-	4150 1600 4100 1600
-Wire Wire Line
-	3850 1800 3850 1700
+	3850 1750 4400 1750
 Wire Wire Line
 	2650 5450 2450 5450
 $Comp
@@ -1428,4 +1421,8 @@ Wire Wire Line
 	3600 6300 3600 6250
 Wire Wire Line
 	3850 5700 3850 5750
+Wire Wire Line
+	3600 1700 3600 1750
+Wire Wire Line
+	3600 1750 3650 1750
 $EndSCHEMATC
