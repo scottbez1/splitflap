@@ -18,6 +18,7 @@ flap_width = 54;
 flap_height = 43;
 flap_thickness = 30 / 1000 * 25.4; // 30 mil
 flap_corner_radius = 3.1; // 2.88-3.48mm (used just for display)
+flap_width_slop = 0.5;  // amount of slop of the flap side to side between the 2 spools
 
 flap_notch_height_auto = false;
 flap_notch_height_default = 15;
@@ -29,6 +30,10 @@ flap_pin_width = 1.4;
 flap_color = [1, 1, 1];  // white, "ffffff"
 
 eps=.01;
+
+flap_hole_radius = (flap_pin_width + 1) / 2;
+flap_hole_separation = 1;  // additional spacing between hole edges
+flap_gap = (flap_hole_radius * 2 - flap_pin_width) + flap_hole_separation;
 
 // flap();
 

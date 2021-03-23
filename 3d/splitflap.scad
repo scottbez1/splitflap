@@ -26,7 +26,9 @@ include<28byj-48.scad>;
 include<flap_fonts.scad>;
 include<m4_dimensions.scad>;
 include<pcb.scad>;
+include<common.scad>;
 include<parts/flap.scad>;
+include<parts/spool.scad>;
 
 // ##### RENDERING OPTIONS #####
 
@@ -58,83 +60,25 @@ panel_horizontal = 0;
 render_revision = "deadbeef";
 render_date = "YYYY-MM-DD";
 
-spool_explosion = 0; // 0-1
-spool_strut_explosion = lookup(spool_explosion, [
-    [0, 0],
-    [0.2, 0],
-    [1, 30],
-]);
-spool_horizontal_explosion = lookup(spool_explosion, [
-    [0, 0],
-    [1, 8],
-]);
-
-
 // Ponoko kerf values are 0.2 mm for MDF and acrylic (all thicknesses)
 // Remember: it's better to underestimate (looser fit) than overestimate (no fit)
 kerf_width = 0.2 - 0.02;
 
-// MDF, .120in nominal
-// https://www.ponoko.com/materials/mdf-fiberboard
-thickness = 3.0;
-
-etch_depth = 0.1;  // for render
-eps=.01;
-
 captive_nut_inset=6;
 
 assembly_inner_radius = m4_hole_diameter/2;
-
-
-// Rendering Colors
-assembly_color = [0.76, 0.60, 0.42];  // MDF, "c1996b"
-etch_color = [0, 0, 0];  // black, "000000"
-
-hardware_color = [0.75, 0.75, 0.8];  // steel, "bfbfcc"
-
-flap_color = [1, 1, 1];  // white, "ffffff"
-
-
-// multiply two equal matricies by each element, limiting to a max of 1.0
-function color_multiply(x, y) =
-    [ for(j=[0:len(x) - 1]) min(x[j] * y[j], 1.0) ];
-
-// inverts a color matrix by subtracting the input channel values from 1.0
-function color_invert(x) =
-    [ for(j=[0:len(x) - 1]) (1.0 - x[j]) ];
-
-assembly_color1 = color_multiply(assembly_color, [1.161, 1.157, 1.157, 1.0]);  // "e1b17c" with MDF
-assembly_color2 = color_multiply(assembly_color, [0.897, 0.895, 0.895, 1.0]);  // "ae8960" with MDF
-assembly_color3 = color_multiply(assembly_color, [0.547, 0.542, 0.540, 1.0]);  // "6a533a" with MDF
-assembly_color4 = color_multiply(assembly_color, [0.268, 0.268, 0.271, 1.0]);  // "34291d" with MDF
 
 bolt_color = hardware_color;
 nut_color = color_multiply(hardware_color, [0.933, 0.933, 0.9, 1.0]);  // "b2b2b7" with steel
 
 letter_color = color_invert(flap_color);  // inverse of the flap color, for contrast
 
-
 flap_rendered_angle = 90;
-
-
-flap_width_slop = 0.5;  // amount of slop of the flap side to side between the 2 spools
-
-spool_width_slop = 1.4;  // amount of slop for the spool assembly side-to-side inside the enclosure
-
-spool_tab_clearance = -0.06;  // for the tabs connecting the struts to the spool ends (interference fit)
-spool_retaining_clearance = 0.10;  // for the notches in the spool retaining wall
-spool_joint_clearance = 0.10;  // for the notched joints on the spool struts
-
 
 num_flaps = 40;
 
-flap_hole_radius = (flap_pin_width + 1) / 2;
-flap_hole_separation = 1;  // additional spacing between hole edges
-flap_gap = (flap_hole_radius * 2 - flap_pin_width) + flap_hole_separation;
 function get_flap_gap() = flap_gap;  // for exposing this value when this file is 'used' and not 'included' in other files
 
-flap_spool_outset = flap_hole_radius;
-flap_pitch_radius = flap_spool_pitch_radius(num_flaps, flap_hole_radius, flap_hole_separation); //num_flaps * (flap_hole_radius*2 + flap_hole_separation) / (2*PI);
 spool_outer_radius = flap_spool_outer_radius(num_flaps, flap_hole_radius, flap_hole_separation, flap_spool_outset); //flap_pitch_radius + 2*flap_hole_radius;
 
 // Radius where flaps are expected to flap in their *most collapsed* (90 degree) state
@@ -146,31 +90,13 @@ front_forward_offset = flap_pitch_radius + flap_thickness/2;
 
 flap_notch_height = (flap_notch_height_auto == true) ? sqrt(spool_outer_radius*spool_outer_radius - flap_pitch_radius*flap_pitch_radius) : flap_notch_height_default;
 
-spool_width = flap_width - flap_notch_depth*2 + flap_width_slop + thickness*2;  // spool width, outside face (spool to spool)
-spool_width_clearance = max(spool_width, flap_width + flap_width_slop);  // width clearance for the spool, either for the spool itself or the flaps
-
 //legacyAssert(spool_width >= flap_width, "Flap is wider than spool!");
-spool_strut_num_joints = 3;
-spool_strut_tab_width=8;
-spool_strut_tab_width_narrow=6;
-spool_strut_tab_outset=8;
-spool_strut_width = (spool_strut_tab_outset + thickness/2) * 2;
-spool_strut_length = spool_width;
-spool_strut_inner_length = spool_width - 3 * thickness;
-
-spool_strut_exclusion_radius = sqrt((spool_strut_tab_outset+thickness/2)*(spool_strut_tab_outset+thickness/2) + (spool_strut_tab_width/2)*(spool_strut_tab_width/2));
 
 
-magnet_diameter = 4;
-magnet_hole_clearance = -0.07;  // interference fit
-magnet_hole_radius = (magnet_diameter + magnet_hole_clearance)/2;
-magnet_hole_offset = (spool_strut_exclusion_radius + flap_pitch_radius)/2;
 
 // Clearance between the motor chassis and the outside right wall of the previous module
 28byj48_chassis_height_clearance = 1.4;
 
-motor_shaft_under_radius = 0.08;  // interference fit
-motor_slop_radius = 3;
 
 
 // Width measured from the outside of the walls
@@ -325,61 +251,6 @@ module zip_tie_holes() {
 }
 
 
-// ##### Struts for bracing spool #####
-module spool_strut_tab_hole(narrow, clearance) {
-    square([thickness + clearance, narrow ? spool_strut_tab_width_narrow + clearance : spool_strut_tab_width + clearance], center=true);
-}
-module spool_strut_tab_holes(narrow=false, clearance=spool_tab_clearance) {
-    for (i=[0:3]) {
-        angle = 90*i;
-        translate([cos(angle)*spool_strut_tab_outset, sin(angle)*spool_strut_tab_outset])
-            rotate([0,0,angle])
-                spool_strut_tab_hole(narrow, clearance);
-    }
-}
-module spool_strut() {
-    joint_tab_width = spool_strut_inner_length / spool_strut_num_joints;
-    linear_extrude(thickness, center=true) {
-        union() {
-            translate([0, -spool_strut_tab_width_narrow / 2]) {
-                square([thickness + eps, spool_strut_tab_width_narrow]);
-            }
-            translate([thickness, -spool_strut_tab_width / 2]) {
-                square([spool_strut_length - thickness, spool_strut_tab_width]);
-            }
-            translate([thickness*2, -spool_strut_width / 2]) {
-                difference() {
-                    square([spool_strut_inner_length, spool_strut_width]);
-
-                    // subtract out joints
-                    union() {
-                        for (i = [0:2:spool_strut_num_joints-1]) {
-                            translate([i*joint_tab_width - spool_joint_clearance/2, -eps])
-                                square([joint_tab_width + spool_joint_clearance, thickness + spool_joint_clearance/2 + eps]);
-                        }
-                        for (i = [1:2:spool_strut_num_joints-1]) {
-                            translate([i*joint_tab_width, spool_strut_width - thickness - spool_joint_clearance/2])
-                                square([joint_tab_width, thickness + spool_joint_clearance + eps]);
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-module spool_struts() {
-    for (i=[0:3]) {
-        angle = 90*i;
-        //color([i < 2 ? 0 : 1, i == 0 || i == 2 ? 0 : 1, 0])
-        color(i % 2 == 0 ? assembly_color2 : assembly_color3)
-        translate([0, sin(angle)*(spool_strut_tab_outset + spool_strut_explosion), cos(angle)*(spool_strut_tab_outset + spool_strut_explosion)])
-            rotate([-angle, 0, 0])
-                spool_strut();
-    }
-}
-
-
 module flap_spool_complete(captive_nut=false, motor_shaft=false, magnet_hole=false) {
     linear_extrude(thickness, convexity=10) {  // 'convexity' to fix rendering errors with etch 'difference()' result
         difference() {
@@ -410,29 +281,8 @@ module flap_spool_etch() {
         flap_spool_home_indicator(num_flaps, flap_hole_radius, flap_hole_separation, flap_spool_outset);
 }
 
-module spool_retaining_wall(m4_bolt_hole=false) {
-    linear_extrude(thickness) {
-        difference() {
-            square([spool_strut_width, spool_strut_width], center=true);
-            spool_strut_tab_holes(clearance=spool_retaining_clearance);
-            if (m4_bolt_hole) {
-                circle(r=m4_hole_diameter/2, $fn=30);
-            }
-        }
-    }
-}
 
 
-// double-flatted motor shaft of 28byj-48 motor (2D)
-module motor_shaft() {
-    union() {
-        intersection() {
-            circle(r=28byj48_shaft_radius-motor_shaft_under_radius, $fn=50);
-            square([28byj48_shaft_radius*2, 3], center=true);
-        }
-        square([28byj48_shaft_radius/3, 28byj48_shaft_radius*4], center=true);
-    }
-}
 
 module front_tabs_negative() {
     for (i = [0 : num_front_tabs-1]) {
@@ -466,12 +316,6 @@ module connector_bracket() {
     }
 }
 
-module enclosure_etch_style() {
-    color(etch_color)
-        translate([0, 0, thickness])
-            linear_extrude(height=etch_depth)
-                children();
-}
 
 module enclosure_front() {
     linear_extrude(height=thickness) {
@@ -512,27 +356,7 @@ module enclosure_front_etch() {
             arrow([enclosure_indicator_arrow_width, enclosure_indicator_arrow_height], center=true);
 }
 
-// holes for 28byj-48 motor, centered around motor shaft
-module motor_mount() {
-    circle(r=28byj48_shaft_radius+motor_slop_radius, $fn=30);
-    translate([-28byj48_mount_center_offset, -8]) {
-        circle(r=motor_mount_hole_radius, $fn=30);
-    }
-    translate([28byj48_mount_center_offset, -8]) {
-        circle(r=motor_mount_hole_radius, $fn=30);
-    }
 
-    hull() {
-        x = -28byj48_chassis_radius - motor_hole_slop/2 + motor_window_radius;
-        y = [-28byj48_shaft_offset - motor_backpack_extent - motor_hole_slop/2 + motor_window_radius,
-            -28byj48_shaft_offset + 28byj48_chassis_radius + motor_hole_slop/2 - motor_window_radius];
-
-        translate([ x, y[0], 0]) circle(r=motor_window_radius, $fn=40);
-        translate([-x, y[1], 0]) circle(r=motor_window_radius, $fn=40);
-        translate([-x, y[0], 0]) circle(r=motor_window_radius, $fn=40);
-        translate([ x, y[1], 0]) circle(r=motor_window_radius, $fn=40);
-    }
-}
 
 module side_tabs_negative(hole_sizes=[], extend_last_tab=false) {
     for (i = [0 : len(hole_sizes)]) {
