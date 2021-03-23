@@ -26,6 +26,8 @@ def run():
     with splitflap(port) as s:
         while True:
             string = input("Enter text: ")
+            if string == "exit" or string == "quit" or string == "q":
+                break
             string = filter_string(string, s)  # filter characters to displayable ones
             string = string.ljust(s.get_num_modules(), ' ')  # pad to the right with spaces
             print('Going to {}'.format(string))
