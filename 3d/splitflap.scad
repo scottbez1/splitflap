@@ -23,10 +23,10 @@ use<spool.scad>;
 use<shapes.scad>;
 
 include<28byj-48.scad>;
-include<flap_dimensions.scad>;
 include<flap_fonts.scad>;
 include<m4_dimensions.scad>;
 include<pcb.scad>;
+include<parts/flap.scad>;
 
 // ##### RENDERING OPTIONS #####
 
@@ -422,38 +422,6 @@ module spool_retaining_wall(m4_bolt_hole=false) {
     }
 }
 
-
-module flap_2d(cut_tabs = true) {
-    translate([0, -flap_pin_width/2, 0])
-    difference() {
-        union() {
-            square([flap_width, flap_height - flap_corner_radius]);
-
-            // rounded corners
-            hull() {
-                translate([flap_corner_radius, flap_height - flap_corner_radius])
-                    circle(r=flap_corner_radius, $fn=40);
-                translate([flap_width - flap_corner_radius, flap_height - flap_corner_radius])
-                    circle(r=flap_corner_radius, $fn=40);
-            }
-        }
-        // spool tabs
-        if(cut_tabs) {
-            translate([-eps, flap_pin_width])
-                square([eps + flap_notch_depth, flap_notch_height]);
-            translate([flap_width - flap_notch_depth, flap_pin_width])
-                square([eps + flap_notch_depth, flap_notch_height]);
-        }
-    }
-}
-
-module flap() {
-    color(flap_color)
-    translate([0, 0, -flap_thickness/2])
-    linear_extrude(height=flap_thickness) {
-        flap_2d();
-    }
-}
 
 module draw_letter(letter) {
     translate([0, -flap_height * letter_height, 0])  // valign compensation

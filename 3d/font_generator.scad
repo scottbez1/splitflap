@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-include<flap_dimensions.scad>;
+include<parts/flap.scad>;
 use<projection_renderer.scad>;
 use<splitflap.scad>;
 

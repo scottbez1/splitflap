@@ -15,7 +15,7 @@
 */
 
 use<roboto/RobotoCondensed-Regular.ttf>;
-include<flap_dimensions.scad>;
+include<parts/flap.scad>;
 
 letter_font = "RobotoCondensed";
 letter_height = 0.75;  // aspect, 0-1
