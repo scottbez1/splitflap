@@ -423,36 +423,6 @@ module spool_retaining_wall(m4_bolt_hole=false) {
 }
 
 
-module draw_letter(letter) {
-    translate([0, -flap_height * letter_height, 0])  // valign compensation
-        scale([letter_width, 1, 1])
-            translate([letter_offset_x, letter_offset_y])
-                text(text=letter, size=flap_height * letter_height * 2, font=letter_font, halign="center");
-}
-
-module flap_letter(letter, half = 0) {
-    color(letter_color)
-    translate([0, 0, flap_thickness/2 + eps])
-    linear_extrude(height=0.1, center=true) {
-        if (half != 0) {  // trimming to top (1) or bottom (2)
-            intersection() {
-                flap_2d();  // limit to bounds of flap
-                translate([flap_width/2, -flap_pin_width/2, 0]) {
-                    rotation = (half == 2) ? -180 : 0;  // flip upside-down for bottom
-                    gap_comp = (letter_gap_comp == true) ? -flap_gap/2 : 0;
-                    translate([0, gap_comp, 0])
-                        rotate([0,0,rotation])
-                            draw_letter(letter);
-                }
-            }
-        } else {
-            translate([flap_width/2, -flap_pin_width/2 - flap_gap/2, 0])
-                draw_letter(letter);
-        }
-    }
-}
-
-
 // double-flatted motor shaft of 28byj-48 motor (2D)
 module motor_shaft() {
     union() {
