@@ -73,8 +73,11 @@ void SplitflapTask::run() {
 
     // Initialize shift registers before turning on shift register output-enable
     motor_sensor_io();
+
+#ifdef OUTPUT_ENABLE_PIN
     pinMode(OUTPUT_ENABLE_PIN, OUTPUT);
     digitalWrite(OUTPUT_ENABLE_PIN, LOW);
+#endif
 
     // TODO: Move to serial task
     for (uint8_t i = 0; i < NUM_MODULES; i++) {

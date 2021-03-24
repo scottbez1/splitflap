@@ -59,12 +59,14 @@
   #include "driver/spi_slave.h"
 
   #define LATCH_PIN (25)
-  #define OUTPUT_ENABLE_PIN (27)
+
+  // Optional - uncomment if connecting the output enable pin of the 74HC595 shift registers
+  // to the ESP32. You can otherwise hard-wire the output enable pins to always be enabled.
+  // #define OUTPUT_ENABLE_PIN (27)
 
   #define PIN_NUM_MISO 22
   #define PIN_NUM_MOSI 32
   #define PIN_NUM_CLK  33
-  #define PIN_NUM_CS   21
 
   // Note: You may need to slow this down to 3MHz if you're using a classic driver board;
   // the MIC5842 only officially supports up to 3.3MHz
@@ -174,7 +176,6 @@ inline void initialize_modules() {
       .input_delay_ns=0,
       .spics_io_num=-1,
       .flags = 0,
-      // .flags = SPI_DEVICE_HALFDUPLEX,
       .queue_size=1,
       .pre_cb=NULL,
       .post_cb=NULL,
@@ -192,8 +193,7 @@ inline void initialize_modules() {
       .cs_ena_posttrans=0,
       .clock_speed_hz=SPI_CLOCK,
       .input_delay_ns=0,
-      .spics_io_num=-1,// PIN_NUM_CS,
-      // .flags = 0,
+      .spics_io_num=-1,
       .flags = SPI_DEVICE_HALFDUPLEX,
       .queue_size=1,
       .pre_cb=&latch_registers,
