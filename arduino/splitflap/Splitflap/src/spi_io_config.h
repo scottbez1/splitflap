@@ -145,8 +145,20 @@ inline void initialize_modules() {
   memset(sensor_buffer, 0, SENSOR_BUFFER_LENGTH);
 
   // Initialize SPI
+#ifdef IN_LATCH_PIN
+  pinMode(IN_LATCH_PIN, OUTPUT);
+  digitalWrite(IN_LATCH_PIN, HIGH);
+#endif
+
+#ifdef OUT_LATCH_PIN
+  pinMode(OUT_LATCH_PIN, OUTPUT);
+  digitalWrite(OUT_LATCH_PIN, LOW);
+#endif
+
+#ifdef LATCH_PIN
   pinMode(LATCH_PIN, OUTPUT);
   digitalWrite(LATCH_PIN, LOW);
+#endif
 
 #ifdef ESP32
 
