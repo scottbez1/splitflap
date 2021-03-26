@@ -18,6 +18,10 @@ include<../28byj-48.scad>;
 
 motor_shaft_under_radius = 0.08;  // interference fit
 motor_slop_radius = 3;
+motor_mount_hole_radius = m4_hole_diameter/2;
+motor_backpack_extent = 28byj48_backpack_extent + 2; // Add 2mm to make sure there's room for the wires
+motor_hole_slop = 1;
+motor_window_radius = 5;
 
 // holes for 28byj-48 motor, centered around motor shaft
 module motor_mount() {

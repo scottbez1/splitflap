@@ -16,6 +16,9 @@
 
 28byj48_chassis_radius = 28/2;
 28byj48_chassis_height = 19;
+// Clearance between the motor chassis and the outside right wall of the previous module
+28byj48_chassis_height_clearance = 1.4;
+
 28byj48_shaft_offset = 8;
 28byj48_mount_outer_radius = 3.5;
 28byj48_mount_hole_radius = 4.2/2;

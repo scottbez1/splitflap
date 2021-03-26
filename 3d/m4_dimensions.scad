@@ -14,14 +14,4 @@
    limitations under the License.
 */
 
-// M4 bolts
-m4_hole_diameter = 4.5;
-m4_bolt_length = 12;
-m4_button_head_diameter = 7.6 + .2;
-m4_button_head_length = 2.2 + .2;
-m4_nut_width_flats = 7 + .2;
-m4_nut_width_corners = 7/cos(180/6);
-m4_nut_width_corners_padded = m4_nut_width_corners + .2;
-m4_nut_length = 3.2;
-m4_nut_length_padded = m4_nut_length + .2;
 

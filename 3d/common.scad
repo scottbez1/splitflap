@@ -10,7 +10,6 @@ num_flaps = 40;
 assembly_color = [0.76, 0.60, 0.42];  // MDF, "c1996b"
 etch_color = [0, 0, 0];  // black, "000000"
 
-hardware_color = [0.75, 0.75, 0.8];  // steel, "bfbfcc"
 
 assembly_color1 = color_multiply(assembly_color, [1.161, 1.157, 1.157, 1.0]);  // "e1b17c" with MDF
 assembly_color2 = color_multiply(assembly_color, [0.897, 0.895, 0.895, 1.0]);  // "ae8960" with MDF

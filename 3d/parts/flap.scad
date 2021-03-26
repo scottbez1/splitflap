@@ -34,6 +34,8 @@ eps=.01;
 flap_hole_radius = (flap_pin_width + 1) / 2;
 flap_hole_separation = 1;  // additional spacing between hole edges
 flap_gap = (flap_hole_radius * 2 - flap_pin_width) + flap_hole_separation;
+letter_color = color_invert(flap_color);  // inverse of the flap color, for contrast
+
 
 // flap();
 

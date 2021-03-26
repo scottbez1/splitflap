@@ -14,10 +14,10 @@
    limitations under the License.
 */
 
+include<../common.scad>;
 include<flap.scad>;
 include<motor.scad>;
-include<../common.scad>;
-include<../m4_dimensions.scad>;
+include<hardware.scad>;
 
 thickness = 3.0;
 
