@@ -73,8 +73,11 @@ void SplitflapTask::run() {
 
     // Initialize shift registers before turning on shift register output-enable
     motor_sensor_io();
+
+#ifdef OUTPUT_ENABLE_PIN
     pinMode(OUTPUT_ENABLE_PIN, OUTPUT);
     digitalWrite(OUTPUT_ENABLE_PIN, LOW);
+#endif
 
     // TODO: Move to serial task
     for (uint8_t i = 0; i < NUM_MODULES; i++) {
@@ -167,6 +170,27 @@ void SplitflapTask::updateStateCache() {
         SemaphoreGuard lock(semaphore_);
         memcpy(&state_cache_, &new_state, sizeof(state_cache_));
     }
+}
+
+void SplitflapTask::showString(const char* str, uint8_t length) {
+    SemaphoreGuard lock(semaphore_);
+    pending_move_response = true;
+    Serial.print("{\"type\":\"move_echo\", \"dest\":\"");
+    Serial.flush();
+    for (uint8_t i = 0; i < length; i++) {
+        int8_t index = findFlapIndex(str[i]);
+        if (index != -1) {
+            if (FORCE_FULL_ROTATION || index != modules[i]->GetTargetFlapIndex()) {
+            modules[i]->GoToFlapIndex(index);
+            }
+        }
+        Serial.write(str[i]);
+        if (i % 8 == 0) {
+            Serial.flush();
+        }
+    }
+    Serial.print("\"}\n");
+    Serial.flush();
 }
 
 void SplitflapTask::runUpdate() {
@@ -278,23 +302,7 @@ void SplitflapTask::runUpdate() {
               recv_count = 0;
               break;
             case '\n':
-                pending_move_response = true;
-                Serial.print("{\"type\":\"move_echo\", \"dest\":\"");
-                Serial.flush();
-                for (uint8_t i = 0; i < recv_count; i++) {
-                  int8_t index = findFlapIndex(recv_buffer[i]);
-                  if (index != -1) {
-                    if (FORCE_FULL_ROTATION || index != modules[i]->GetTargetFlapIndex()) {
-                      modules[i]->GoToFlapIndex(index);
-                    }
-                  }
-                  Serial.write(recv_buffer[i]);
-                  if (i % 8 == 0) {
-                    Serial.flush();
-                  }
-                }
-                Serial.print("\"}\n");
-                Serial.flush();
+                showString(recv_buffer, recv_count);
                 break;
             default:
               if (recv_count > NUM_MODULES - 1) {

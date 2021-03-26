@@ -22,7 +22,7 @@ character_list = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.? ";
 num_columns = 10;  // 0 for infinite
 
 spacing_x = 10;
-spacing_y = 5;
+spacing_y = 10;
 
 kerf_width = 0;
 render_fill = false;

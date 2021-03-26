@@ -26,10 +26,19 @@
 SplitflapTask splitflapTask(1);
 DisplayTask displayTask(splitflapTask, 0);
 
+#ifdef MQTT
+#include "mqtt_task.h"
+MQTTTask mqttTask(splitflapTask, 0);
+#endif
+
 void setup() {
   Serial.begin(MONITOR_SPEED);
 
   splitflapTask.begin();
+
+  #ifdef MQTT
+  mqttTask.begin();
+  #endif
   displayTask.begin();
 
   // Delete the default Arduino loopTask to free up Core 1

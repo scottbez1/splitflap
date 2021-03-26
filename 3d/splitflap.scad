@@ -225,7 +225,7 @@ connector_bracket_length_inner = side_tab_width * 2 - m4_button_head_diameter/2;
 connector_bracket_thickness = captive_nut_inset - thickness - 0.2;
 connector_bracket_width = enclosure_width - enclosure_wall_to_wall_width + thickness*2 + connector_bracket_thickness*2;
 connector_bracket_overlap = 4;
-connector_bracket_clearance = 0.10;
+connector_bracket_clearance = 0.40;
 connector_bracket_depth_clearance = 0.20;
 
 // 'get' functions to extract these values for when this file is 'used' and not 'included'
