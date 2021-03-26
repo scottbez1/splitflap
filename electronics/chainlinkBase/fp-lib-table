@@ -3,4 +3,6 @@
   (lib (name ESP32)(type KiCad)(uri ${KIPRJMOD}/../lib/ESP32.pretty)(options "")(descr ""))
   (lib (name ModifiedSymbols)(type KiCad)(uri ${KIPRJMOD}/../lib/ModifiedSymbols.pretty)(options "")(descr ""))
   (lib (name VN7007ALHTR)(type KiCad)(uri ${KIPRJMOD}/../lib/VN7007ALHTR.pretty)(options "")(descr ""))
+  (lib (name BK-6013)(type KiCad)(uri ${KIPRJMOD}/../lib/BK-6013.pretty)(options "")(descr ""))
+  (lib (name ScrewTerminals)(type KiCad)(uri ${KIPRJMOD}/../lib/ScrewTerminals.pretty)(options "")(descr ""))
 )
