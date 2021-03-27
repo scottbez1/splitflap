@@ -697,8 +697,8 @@ module enclosure_left() {
                     square([alignment_bar_cutout_width, alignment_bar_cutout_width], center=true);
 
                     // Front-side fillet
-                    translate([0, alignment_bar_cutout_width/2, 0])
-                        fillet_tool(r=alignment_bar_fillet_radius, overlap=1, $fn=40);
+                    // translate([0, alignment_bar_cutout_width/2, 0])
+                    //     fillet_tool(r=alignment_bar_fillet_radius, overlap=1, $fn=40);
 
                     // Back-side fillet
                     translate([0, -alignment_bar_cutout_width/2, 0])
