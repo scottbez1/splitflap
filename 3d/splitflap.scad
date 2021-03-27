@@ -630,10 +630,10 @@ module connector_bracket_side_holes() {
 
 module alignment_bar() {
     color(assembly_color1)
-    translate([enclosure_width - enclosure_horizontal_inset, -enclosure_length_right + front_forward_offset - alignment_bar_diameter/2, -enclosure_height_lower + alignment_bar_diameter/2])
-        rotate([0, -90, 0])
-            linear_extrude(height=enclosure_width * len(render_letters))
-                circle(r=alignment_bar_diameter/2, $fn=60);
+        translate([enclosure_width - enclosure_horizontal_inset, -enclosure_length_right + front_forward_offset - alignment_bar_diameter/2, -enclosure_height_lower + alignment_bar_diameter/2])
+            rotate([0, -90, 0])
+                linear_extrude(height=enclosure_width * len(render_letters))
+                    circle(r=alignment_bar_diameter/2, $fn=60);
 }
 
 module enclosure_left() {
@@ -703,7 +703,7 @@ module enclosure_left() {
                     // Back-side fillet
                     translate([0, -alignment_bar_cutout_width/2, 0])
                         mirror([0, 1, 0])
-                        fillet_tool(r=alignment_bar_fillet_radius, $fn=40);
+                            fillet_tool(r=alignment_bar_fillet_radius, $fn=40);
                 }
             }
         }

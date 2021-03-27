@@ -76,9 +76,9 @@ module arrow(size, aspect=[0.5, 0.3], center=false) {
 module fillet_tool(r, overlap=0.01, $fn=$fn) {
     tool_size = r + overlap;
     translate([r, r, 0])
-    mirror([1, 1, 0])
-    difference() {
-        square([tool_size, tool_size]);
-        circle(r=r, $fn=$fn);
-    }
+        mirror([1, 1, 0])
+            difference() {
+                square([tool_size, tool_size]);
+                circle(r=r, $fn=$fn);
+            }
 }
