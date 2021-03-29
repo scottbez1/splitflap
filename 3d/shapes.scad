@@ -71,3 +71,14 @@ module arrow(size, aspect=[0.5, 0.3], center=false) {
             triangle(head);
     }
 }
+
+// positioned where origin is at the point to be rounded (first quadrant)
+module fillet_tool(r, overlap=0.01, $fn=$fn) {
+    tool_size = r + overlap;
+    translate([r, r, 0])
+        mirror([1, 1, 0])
+            difference() {
+                square([tool_size, tool_size]);
+                circle(r=r, $fn=$fn);
+            }
+}
