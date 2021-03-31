@@ -204,7 +204,7 @@ inline void initialize_modules() {
       .cs_ena_pretrans=0,
       .cs_ena_posttrans=0,
       .clock_speed_hz=SPI_CLOCK,
-      .input_delay_ns=0,
+      .input_delay_ns=30,
       .spics_io_num=-1,
       .flags = SPI_DEVICE_HALFDUPLEX,
       .queue_size=1,

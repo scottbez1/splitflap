@@ -60,7 +60,8 @@ class SplitflapTask : public Task<SplitflapTask> {
         uint32_t stopped_at_millis = 0;
 
         // bool disabled = false;
-        bool sensor_test_ = false;
+        uint32_t last_sensor_print_millis_ = 0;
+        bool sensor_test_ = SENSOR_TEST;
 
         SemaphoreHandle_t semaphore_;
 
