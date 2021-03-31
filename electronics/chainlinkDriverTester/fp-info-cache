@@ -1,4 +1,18 @@
-18620868511543189
+18616096723668319
+BK-6013
+BK-6013
+
+
+0
+4
+2
+BK-6013
+Memory_Protection_Devices-BK-6013-0-0-0
+
+
+0
+4
+2
 Battery
 BatteryHolder_Bulgin_BX0036_1xC
 Bulgin Battery Holder, BX0036, Battery Type C (https://www.bulgin.com/products/pub/media/bulgin/data/Battery_holders.pdf)
@@ -54683,20 +54697,6 @@ L_Toroid Vertical series Radial pin pitch 31.80mm  length 67.6mm width 36.1mm Vi
 0
 2
 2
-JLCPCB
-AssemblyToolingHole
-
-
-0
-0
-0
-JST_XH_Connectors
-JST_XH_2-5mm_5pin
-
-
-0
-5
-5
 Jumper
 SolderJumper-2_P1.3mm_Bridged2Bar_Pad1.0x1.5mm
 SMD Solder Jumper, 1x1.5mm Pads, 0.3mm gap, bridged with 2 copper strips
@@ -55964,34 +55964,6 @@ Yellow 5381 Series LED
 0
 2
 2
-LevelShifterModule
-LevelShifterModule
-
-
-0
-12
-12
-ModifiedSymbols
-LED_0603_1608Metric_Silkscreen
-LED SMD 0603 (1608 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: http://www.tortai-tech.com/upload/download/2011102023233369053.pdf), generated with kicad-footprint-generator
-LED
-0
-2
-2
-ModifiedSymbols
-SOIC-14_3.9x8.7mm_P1.27mm_silk
-SOIC, 14 Pin (JEDEC MS-012AB, https://www.analog.com/media/en/package-pcb-resources/package/pkg_pdf/soic_narrow-r/r_14.pdf), generated with kicad-footprint-generator ipc_gullwing_generator.py
-SOIC SO
-0
-14
-14
-ModifiedSymbols
-SOIC-16_3.9x9.9mm_P1.27mm_silk
-SOIC, 16 Pin (JEDEC MS-012AC, https://www.analog.com/media/en/package-pcb-resources/package/pkg_pdf/soic_narrow-r/r_16.pdf), generated with kicad-footprint-generator ipc_gullwing_generator.py
-SOIC SO
-0
-16
-16
 Module
 A20_OLINUXINO_LIME2
 A20 Olinuxino LIME2, 1.2GHz, 512-1024MB RAM, Micro-SD, NAND or eMMC, 1000Mbit Ethernet
@@ -74549,20 +74521,6 @@ rotary encoder
 0
 5
 4
-ST7789
-ST7789_80x160
-
-
-0
-12
-8
-ST7789
-ST7789_240x240
-
-
-0
-11
-7
 ScrewTerminals
 C8465_WJ500V-5.08-2P
 
@@ -80254,6 +80212,13 @@ transformer flyback
 0
 10
 10
+VN7007ALHTR
+VN7007ALHTR
+
+
+0
+8
+8
 Valve
 Valve_ECC-83-1
 Valve ECC-83-1 round pins
@@ -81024,3 +80989,17 @@ varistor SIOV
 0
 2
 2
+pogoPins
+pogo1mm
+
+
+0
+1
+1
+pogoPins
+pogo2mm
+
+
+0
+1
+1

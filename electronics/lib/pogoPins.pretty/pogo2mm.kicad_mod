@@ -1,0 +1,9 @@
+(module pogo2mm (layer F.Cu) (tedit 6064AEC2)
+  (fp_text reference REF** (at 0 0.5) (layer F.SilkS) hide
+    (effects (font (size 1 1) (thickness 0.15)))
+  )
+  (fp_text value pogo2mm (at 0 -0.5) (layer F.Fab)
+    (effects (font (size 1 1) (thickness 0.15)))
+  )
+  (pad 1 thru_hole circle (at 0 0) (size 3.7 3.7) (drill 2.15) (layers *.Cu *.Mask))
+)
