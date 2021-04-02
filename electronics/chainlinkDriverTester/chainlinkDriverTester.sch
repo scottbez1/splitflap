@@ -2158,7 +2158,7 @@ Wire Wire Line
 Wire Wire Line
 	7650 1100 7800 1100
 Wire Wire Line
-	9050 1100 9800 1100
+	9050 1100 9300 1100
 Text Label 9800 1100 2    50   ~ 0
 3V3_FUSED
 Text Label 1900 4400 0    50   ~ 0
@@ -2429,23 +2429,23 @@ $EndComp
 $Comp
 L Connector:TestPoint TP62
 U 1 1 61F7F830
-P 8550 6400
-F 0 "TP62" V 8550 6588 50  0000 L CNN
-F 1 "TestPoint" V 8595 6588 50  0001 L CNN
-F 2 "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm" H 8750 6400 50  0001 C CNN
-F 3 "~" H 8750 6400 50  0001 C CNN
-	1    8550 6400
+P 8550 6100
+F 0 "TP62" V 8550 6288 50  0000 L CNN
+F 1 "TestPoint" V 8595 6288 50  0001 L CNN
+F 2 "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm" H 8750 6100 50  0001 C CNN
+F 3 "~" H 8750 6100 50  0001 C CNN
+	1    8550 6100
 	0    1    1    0   
 $EndComp
 $Comp
 L Connector:TestPoint TP61
 U 1 1 61F7E6FB
-P 8550 6300
-F 0 "TP61" V 8550 6488 50  0000 L CNN
-F 1 "TestPoint" V 8595 6488 50  0001 L CNN
-F 2 "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm" H 8750 6300 50  0001 C CNN
-F 3 "~" H 8750 6300 50  0001 C CNN
-	1    8550 6300
+P 8550 6000
+F 0 "TP61" V 8550 6188 50  0000 L CNN
+F 1 "TestPoint" V 8595 6188 50  0001 L CNN
+F 2 "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm" H 8750 6000 50  0001 C CNN
+F 3 "~" H 8750 6000 50  0001 C CNN
+	1    8550 6000
 	0    1    1    0   
 $EndComp
 Wire Wire Line
@@ -2746,11 +2746,11 @@ F 4 "MCP23017-E/SS-ND" H 7850 6500 50  0001 C CNN "DK#"
 	1    7850 6500
 	1    0    0    -1  
 $EndComp
-Text Label 9550 6200 2    50   ~ 0
+Text Label 9550 6400 2    50   ~ 0
 SENSOR_F_SIGNAL
-Text Label 9550 6100 2    50   ~ 0
+Text Label 9550 6300 2    50   ~ 0
 SENSOR_E_SIGNAL
-Text Label 9550 6000 2    50   ~ 0
+Text Label 9550 6200 2    50   ~ 0
 SENSOR_D_SIGNAL
 Text Label 9550 5900 2    50   ~ 0
 SENSOR_C_SIGNAL
@@ -2761,11 +2761,11 @@ Wire Wire Line
 Wire Wire Line
 	8550 5900 9550 5900
 Wire Wire Line
-	8550 6000 9550 6000
-Wire Wire Line
-	8550 6100 9550 6100
-Wire Wire Line
 	8550 6200 9550 6200
+Wire Wire Line
+	8550 6300 9550 6300
+Wire Wire Line
+	8550 6400 9550 6400
 $Comp
 L Mechanical:MountingHole_Pad H10
 U 1 1 62B11681
@@ -2952,4 +2952,48 @@ Wire Wire Line
 	10300 1100 10500 1100
 Text Label 14500 4300 0    50   ~ 0
 SW_IN
+$Comp
+L Device:LED_Small D?
+U 1 1 607210C0
+P 9300 1200
+AR Path="/60D00052/607210C0" Ref="D?"  Part="1" 
+AR Path="/607210C0" Ref="D4"  Part="1" 
+F 0 "D4" V 9350 1350 50  0000 R CNN
+F 1 "Red" V 9250 1400 50  0000 R CNN
+F 2 "LED_SMD:LED_0805_2012Metric" V 9300 1200 50  0001 C CNN
+F 3 "~" V 9300 1200 50  0001 C CNN
+	1    9300 1200
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 6072153E
+P 9300 1450
+AR Path="/60D00052/6072153E" Ref="R?"  Part="1" 
+AR Path="/6072153E" Ref="R13"  Part="1" 
+F 0 "R13" H 9400 1400 50  0000 C CNN
+F 1 "220" H 9400 1500 50  0000 C CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" H 9300 1450 50  0001 C CNN
+F 3 "~" H 9300 1450 50  0001 C CNN
+	1    9300 1450
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	9300 1300 9300 1350
+Wire Wire Line
+	9300 1550 9300 1650
+Connection ~ 9300 1100
+Wire Wire Line
+	9300 1100 9800 1100
+$Comp
+L power:GND #PWR02
+U 1 1 6074C1AB
+P 9300 1650
+F 0 "#PWR02" H 9300 1400 50  0001 C CNN
+F 1 "GND" H 9305 1477 50  0000 C CNN
+F 2 "" H 9300 1650 50  0001 C CNN
+F 3 "" H 9300 1650 50  0001 C CNN
+	1    9300 1650
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
