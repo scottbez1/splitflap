@@ -649,10 +649,6 @@ Wire Wire Line
 	3750 4000 3750 4100
 Wire Wire Line
 	3750 4100 3600 4100
-Wire Wire Line
-	2100 5050 2100 5200
-Wire Wire Line
-	2100 5200 2600 5200
 $Comp
 L power:+3.3V #PWR0105
 U 1 1 60D0A51A
@@ -662,17 +658,6 @@ F 1 "+3.3V" H 3765 4173 50  0000 C CNN
 F 2 "" H 3750 4000 50  0001 C CNN
 F 3 "" H 3750 4000 50  0001 C CNN
 	1    3750 4000
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:+3.3V #PWR0106
-U 1 1 60D0A520
-P 2100 5050
-F 0 "#PWR0106" H 2100 4900 50  0001 C CNN
-F 1 "+3.3V" H 2115 5223 50  0000 C CNN
-F 2 "" H 2100 5050 50  0001 C CNN
-F 3 "" H 2100 5050 50  0001 C CNN
-	1    2100 5050
 	1    0    0    -1  
 $EndComp
 Text Label 4200 4900 2    50   ~ 0
@@ -2872,28 +2857,6 @@ F 3 "~" H 3800 4400 50  0001 C CNN
 	1    3600 4400
 	0    1    1    0   
 $EndComp
-$Comp
-L Connector:TestPoint TP71
-U 1 1 62B8767D
-P 2600 4700
-F 0 "TP71" V 2600 4950 50  0000 C CNN
-F 1 "TestPoint" V 2704 4772 50  0001 C CNN
-F 2 "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm" H 2800 4700 50  0001 C CNN
-F 3 "~" H 2800 4700 50  0001 C CNN
-	1    2600 4700
-	0    -1   -1   0   
-$EndComp
-$Comp
-L Connector:TestPoint TP72
-U 1 1 62B87DD9
-P 2600 4900
-F 0 "TP72" V 2600 5150 50  0000 C CNN
-F 1 "TestPoint" V 2704 4972 50  0001 C CNN
-F 2 "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm" H 2800 4900 50  0001 C CNN
-F 3 "~" H 2800 4900 50  0001 C CNN
-	1    2600 4900
-	0    -1   -1   0   
-$EndComp
 Wire Wire Line
 	8200 1100 8850 1100
 Wire Wire Line
@@ -2996,4 +2959,167 @@ F 3 "" H 9300 1650 50  0001 C CNN
 	1    9300 1650
 	1    0    0    -1  
 $EndComp
+$Comp
+L Logic_LevelTranslator:SN74LV1T34DBV U6
+U 1 1 6077F65C
+P 6550 8900
+F 0 "U6" H 6894 8946 50  0000 L CNN
+F 1 "SN74LV1T34DBV" H 6894 8855 50  0000 L CNN
+F 2 "Package_TO_SOT_SMD:SOT-23-5" H 7200 8650 50  0001 C CNN
+F 3 "https://www.ti.com/lit/ds/symlink/sn74lv1t34.pdf" H 6150 8700 50  0001 C CNN
+	1    6550 8900
+	1    0    0    -1  
+$EndComp
+$Comp
+L LED:WS2812B D5
+U 1 1 60781C6E
+P 7400 8900
+F 0 "D5" H 7744 8946 50  0000 L CNN
+F 1 "WS2812B" H 7744 8855 50  0000 L CNN
+F 2 "LED_SMD:LED_WS2812B_PLCC4_5.0x5.0mm_P3.2mm" H 7450 8600 50  0001 L TNN
+F 3 "https://cdn-shop.adafruit.com/datasheets/WS2812B.pdf" H 7500 8525 50  0001 L TNN
+	1    7400 8900
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6850 8900 7100 8900
+$Comp
+L power:+5V #PWR03
+U 1 1 6079EC4F
+P 6950 8450
+F 0 "#PWR03" H 6950 8300 50  0001 C CNN
+F 1 "+5V" H 6965 8623 50  0000 C CNN
+F 2 "" H 6950 8450 50  0001 C CNN
+F 3 "" H 6950 8450 50  0001 C CNN
+	1    6950 8450
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR05
+U 1 1 6079F756
+P 6950 9300
+F 0 "#PWR05" H 6950 9050 50  0001 C CNN
+F 1 "GND" H 6955 9127 50  0000 C CNN
+F 2 "" H 6950 9300 50  0001 C CNN
+F 3 "" H 6950 9300 50  0001 C CNN
+	1    6950 9300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6550 9200 6950 9200
+Wire Wire Line
+	6950 9300 6950 9200
+Connection ~ 6950 9200
+Wire Wire Line
+	6950 9200 7050 9200
+Wire Wire Line
+	6550 8600 6950 8600
+Wire Wire Line
+	6950 8450 6950 8600
+Connection ~ 6950 8600
+Wire Wire Line
+	6950 8600 7050 8600
+Wire Wire Line
+	6250 8900 5600 8900
+Text Label 5600 8900 0    50   ~ 0
+LED
+$Comp
+L Connector:TestPoint TP71
+U 1 1 62B8767D
+P 2600 4700
+F 0 "TP71" V 2600 4950 50  0000 C CNN
+F 1 "TestPoint" V 2704 4772 50  0001 C CNN
+F 2 "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm" H 2800 4700 50  0001 C CNN
+F 3 "~" H 2800 4700 50  0001 C CNN
+	1    2600 4700
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	1900 4900 2600 4900
+Text Label 1900 4900 0    50   ~ 0
+LED
+$Comp
+L LED:WS2812B D6
+U 1 1 60898405
+P 8200 8900
+F 0 "D6" H 8544 8946 50  0000 L CNN
+F 1 "WS2812B" H 8544 8855 50  0000 L CNN
+F 2 "LED_SMD:LED_WS2812B_PLCC4_5.0x5.0mm_P3.2mm" H 8250 8600 50  0001 L TNN
+F 3 "https://cdn-shop.adafruit.com/datasheets/WS2812B.pdf" H 8300 8525 50  0001 L TNN
+	1    8200 8900
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7400 8600 7850 8600
+Connection ~ 7400 8600
+Connection ~ 7400 9200
+Wire Wire Line
+	7700 8900 7900 8900
+$Comp
+L Device:C_Small C?
+U 1 1 608F3043
+P 6200 8700
+AR Path="/60D00052/608F3043" Ref="C?"  Part="1" 
+AR Path="/608F3043" Ref="C9"  Part="1" 
+F 0 "C9" H 6250 8950 50  0000 R CNN
+F 1 "0.1uF" H 6300 8850 50  0000 R CNN
+F 2 "Capacitor_SMD:C_0805_2012Metric" H 6200 8700 50  0001 C CNN
+F 3 "~" H 6200 8700 50  0001 C CNN
+	1    6200 8700
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6200 8600 6550 8600
+Connection ~ 6550 8600
+Wire Wire Line
+	6200 8800 6200 9200
+Wire Wire Line
+	6200 9200 6550 9200
+Connection ~ 6550 9200
+$Comp
+L Device:C_Small C?
+U 1 1 60932510
+P 7050 8700
+AR Path="/60D00052/60932510" Ref="C?"  Part="1" 
+AR Path="/60932510" Ref="C10"  Part="1" 
+F 0 "C10" H 7100 8950 50  0000 R CNN
+F 1 "0.1uF" H 7150 8850 50  0000 R CNN
+F 2 "Capacitor_SMD:C_0805_2012Metric" H 7050 8700 50  0001 C CNN
+F 3 "~" H 7050 8700 50  0001 C CNN
+	1    7050 8700
+	1    0    0    -1  
+$EndComp
+Connection ~ 7050 8600
+Wire Wire Line
+	7050 8600 7400 8600
+Wire Wire Line
+	7050 8800 7050 9200
+Connection ~ 7050 9200
+Wire Wire Line
+	7050 9200 7400 9200
+$Comp
+L Device:C_Small C?
+U 1 1 60952141
+P 7850 8700
+AR Path="/60D00052/60952141" Ref="C?"  Part="1" 
+AR Path="/60952141" Ref="C8"  Part="1" 
+F 0 "C8" H 7900 8950 50  0000 R CNN
+F 1 "0.1uF" H 7950 8850 50  0000 R CNN
+F 2 "Capacitor_SMD:C_0805_2012Metric" H 7850 8700 50  0001 C CNN
+F 3 "~" H 7850 8700 50  0001 C CNN
+	1    7850 8700
+	1    0    0    -1  
+$EndComp
+NoConn ~ 8500 8900
+Wire Wire Line
+	7400 9200 7850 9200
+Connection ~ 7850 8600
+Wire Wire Line
+	7850 8600 8200 8600
+Wire Wire Line
+	7850 8800 7850 9200
+Connection ~ 7850 9200
+Wire Wire Line
+	7850 9200 8200 9200
+NoConn ~ 2600 5200
 $EndSCHEMATC
