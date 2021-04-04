@@ -1111,8 +1111,6 @@ Wire Wire Line
 	3650 8600 3650 8500
 Connection ~ 3650 8500
 Wire Wire Line
-	3650 8500 2950 8500
-Wire Wire Line
 	3750 8300 3500 8300
 Wire Wire Line
 	3500 8300 3500 8400
@@ -1284,8 +1282,6 @@ F 3 "" H 1300 1050 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	1300 1050 1300 1000
-Wire Wire Line
 	1300 950  1400 950 
 Wire Wire Line
 	1300 750  1300 800 
@@ -1294,13 +1290,13 @@ Wire Wire Line
 $Comp
 L power:PWR_FLAG #FLG0103
 U 1 1 6165DEB7
-P 1300 800
-F 0 "#FLG0103" H 1300 875 50  0001 C CNN
-F 1 "PWR_FLAG" V 1300 927 50  0000 L CNN
-F 2 "" H 1300 800 50  0001 C CNN
-F 3 "~" H 1300 800 50  0001 C CNN
-	1    1300 800 
-	0    -1   -1   0   
+P 1400 850
+F 0 "#FLG0103" H 1400 925 50  0001 C CNN
+F 1 "PWR_FLAG" H 1450 1000 50  0000 L CNN
+F 2 "" H 1400 850 50  0001 C CNN
+F 3 "~" H 1400 850 50  0001 C CNN
+	1    1400 850 
+	1    0    0    -1  
 $EndComp
 Connection ~ 1300 800 
 Wire Wire Line
@@ -2150,8 +2146,6 @@ Text Label 1900 4400 0    50   ~ 0
 3V3_FUSED
 Text Label 2950 8100 0    50   ~ 0
 3V3_FUSED
-Wire Wire Line
-	2950 8100 3650 8100
 Connection ~ 3650 8100
 Wire Wire Line
 	1900 4400 2600 4400
@@ -2327,17 +2321,14 @@ SENSOR_LATCH
 $Comp
 L power:PWR_FLAG #FLG0106
 U 1 1 6205E226
-P 1300 1000
-F 0 "#FLG0106" H 1300 1075 50  0001 C CNN
-F 1 "PWR_FLAG" V 1300 1127 50  0000 L CNN
-F 2 "" H 1300 1000 50  0001 C CNN
-F 3 "~" H 1300 1000 50  0001 C CNN
-	1    1300 1000
-	0    -1   -1   0   
+P 1400 950
+F 0 "#FLG0106" H 1400 1025 50  0001 C CNN
+F 1 "PWR_FLAG" H 1000 1100 50  0000 L CNN
+F 2 "" H 1400 950 50  0001 C CNN
+F 3 "~" H 1400 950 50  0001 C CNN
+	1    1400 950 
+	-1   0    0    1   
 $EndComp
-Connection ~ 1300 1000
-Wire Wire Line
-	1300 1000 1300 950 
 Wire Wire Line
 	3950 6900 3250 6900
 Connection ~ 3950 6900
@@ -2420,17 +2411,6 @@ F 1 "TestPoint" V 8595 6288 50  0001 L CNN
 F 2 "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm" H 8750 6100 50  0001 C CNN
 F 3 "~" H 8750 6100 50  0001 C CNN
 	1    8550 6100
-	0    1    1    0   
-$EndComp
-$Comp
-L Connector:TestPoint TP61
-U 1 1 61F7E6FB
-P 8550 6000
-F 0 "TP61" V 8550 6188 50  0000 L CNN
-F 1 "TestPoint" V 8595 6188 50  0001 L CNN
-F 2 "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm" H 8750 6000 50  0001 C CNN
-F 3 "~" H 8750 6000 50  0001 C CNN
-	1    8550 6000
 	0    1    1    0   
 $EndComp
 Wire Wire Line
@@ -3122,4 +3102,106 @@ Connection ~ 7850 9200
 Wire Wire Line
 	7850 9200 8200 9200
 NoConn ~ 2600 5200
+Text Label 8800 6600 0    50   ~ 0
+GPA0
+Text Label 8800 6700 0    50   ~ 0
+GPA1
+Text Label 8800 6800 0    50   ~ 0
+GPA2
+Text Label 8800 6900 0    50   ~ 0
+GPA3
+Text Label 8800 7000 0    50   ~ 0
+GPA4
+Text Label 8800 7100 0    50   ~ 0
+GPA5
+Text Label 8800 7200 0    50   ~ 0
+GPA6
+Text Label 8800 7300 0    50   ~ 0
+GPA7
+$Comp
+L Connector:Barrel_Jack_Switch J1
+U 1 1 6074305E
+P 800 900
+F 0 "J1" H 857 1217 50  0000 C CNN
+F 1 "Barrel_Jack_Switch" H 857 1126 50  0000 C CNN
+F 2 "PJ-202A:PJ-202A" H 850 860 50  0001 C CNN
+F 3 "~" H 850 860 50  0001 C CNN
+	1    800  900 
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1100 800  1300 800 
+Wire Wire Line
+	1300 950  1300 1000
+Wire Wire Line
+	1100 1000 1200 1000
+Connection ~ 1300 1000
+Wire Wire Line
+	1300 1000 1300 1050
+Wire Wire Line
+	1100 900  1200 900 
+Wire Wire Line
+	1200 900  1200 1000
+Connection ~ 1200 1000
+Wire Wire Line
+	1200 1000 1300 1000
+Connection ~ 1400 850 
+Connection ~ 1400 950 
+$Comp
+L Connector:Conn_01x03_Female J2
+U 1 1 607CDC54
+P 2550 8300
+F 0 "J2" H 2442 8585 50  0000 C CNN
+F 1 "Conn_01x03_Female" H 2442 8494 50  0000 C CNN
+F 2 "Connector_PinSocket_2.54mm:PinSocket_1x03_P2.54mm_Vertical" H 2550 8300 50  0001 C CNN
+F 3 "~" H 2550 8300 50  0001 C CNN
+	1    2550 8300
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	2750 8200 2750 8100
+Wire Wire Line
+	2750 8100 3650 8100
+Wire Wire Line
+	2750 8300 3500 8300
+Connection ~ 3500 8300
+Wire Wire Line
+	2750 8400 2750 8500
+Wire Wire Line
+	2750 8500 3650 8500
+$Comp
+L Device:Buzzer BZ1
+U 1 1 606C3416
+P 10900 5600
+F 0 "BZ1" H 11052 5629 50  0000 L CNN
+F 1 "Buzzer" H 11052 5538 50  0000 L CNN
+F 2 "Buzzer_Beeper:Buzzer_12x9.5RM7.6" V 10875 5700 50  0001 C CNN
+F 3 "~" V 10875 5700 50  0001 C CNN
+F 4 "668-AI-1224-TWT-5V-R-ND" H 10900 5600 50  0001 C CNN "DK#"
+	1    10900 5600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9550 6000 8550 6000
+Text Label 9550 6000 2    50   ~ 0
+BUZZER
+Text Label 10300 5500 0    50   ~ 0
+BUZZER
+Wire Wire Line
+	10300 5500 10800 5500
+$Comp
+L power:GND #PWR06
+U 1 1 60731F39
+P 10700 5800
+F 0 "#PWR06" H 10700 5550 50  0001 C CNN
+F 1 "GND" H 10705 5627 50  0000 C CNN
+F 2 "" H 10700 5800 50  0001 C CNN
+F 3 "" H 10700 5800 50  0001 C CNN
+	1    10700 5800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	10700 5800 10700 5700
+Wire Wire Line
+	10700 5700 10800 5700
 $EndSCHEMATC

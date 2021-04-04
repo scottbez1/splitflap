@@ -1,4 +1,4 @@
-18616096723668319
+18617640355177731
 BK-6013
 BK-6013
 
@@ -58302,6 +58302,13 @@ DIL DIP PDIP 2.54mm 7.62mm 300mil
 0
 4
 4
+PJ-202A
+PJ-202A
+CONN POWER JACK 2.1MM PCB
+CONN POWER JACK 2.1MM PCB BARREL JACK
+0
+3
+3
 Package_BGA
 Analog_BGA-28_4.0x6.25mm_Layout4x7_P0.8mm_Ball0.45mm_Pad0.4
 Analog BGA-28 4.0mm x 6.25mm package, pitch 0.4mm pad, based on https://www.analog.com/media/en/technical-documentation/data-sheets/8063fa.pdf
