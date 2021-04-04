@@ -51,9 +51,9 @@ I'd love to hear your thoughts and questions about this project, and happy to in
 * Chainlink Driver electronics
     * Schematic [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriver-schematic.pdf)
     * PCB overview [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriver-pcb-packet.pdf)
-    * PCB gerbers [zip](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/jlc/gerbers.zip)
-    * PCB bom (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/jlc/bom.csv)
-    * PCB component positions (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/jlc/pos.csv)
+    * PCB gerbers [zip](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriver-jlc/gerbers.zip)
+    * PCB bom (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriver-jlc/bom.csv)
+    * PCB component positions (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriver-jlc/pos.csv)
 * Sensor PCB, panelized ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/sensor_pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/sensor_pcb_packet.pdf))
 
 If you are interested in building a display, I recommend using [one of the stable releases instead](https://github.com/scottbez1/splitflap/releases).

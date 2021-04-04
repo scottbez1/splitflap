@@ -38,7 +38,7 @@ jobs:
       - name: Export JLCPCB fabrication files
         run: |
           ./electronics/scripts/export_jlcpcb.py electronics/chainlinkDriver/chainlinkDriver.kicad_pcb --assembly-schematic electronics/chainlinkDriver/chainlinkDriver.sch
-          cp -r electronics/build/jlc electronics/build/outputs
+          cp -r electronics/build/chainlinkDriver-jlc electronics/build/outputs
 
       - name: Export PCB overview PDF
         run: |
@@ -75,7 +75,7 @@ jobs:
       - name: Export JLCPCB fabrication files
         run: |
           ./electronics/scripts/export_jlcpcb.py electronics/chainlinkDriverTester/chainlinkDriverTester.kicad_pcb
-          cp -r electronics/build/jlc electronics/build/outputs
+          cp -r electronics/build/chainlinkDriverTester-jlc electronics/build/outputs
 
       - name: Export PCB overview PDF
         run: |

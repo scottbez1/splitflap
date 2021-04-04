@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 def export_jlcpcb(pcb, schematic):
     pcb_file = os.path.abspath(pcb)
 
-    output_dir = os.path.join(electronics_root, 'build', os.path.splitext(os.path.basename(pcb_file))[0], 'jlc')
+    output_dir = os.path.join(electronics_root, 'build', os.path.splitext(os.path.basename(pcb_file))[0] + '-jlc')
     file_util.mkdir_p(output_dir)
 
     with versioned_file(pcb_file):
