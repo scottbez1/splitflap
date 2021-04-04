@@ -126,6 +126,14 @@ module enclosure_front_etch() {
             arrow([enclosure_indicator_arrow_width, enclosure_indicator_arrow_height], center=true);
 }
 
+module alignment_bar() {
+    color(assembly_color1)
+        translate([enclosure_width - enclosure_horizontal_inset, -enclosure_length_right + front_forward_offset - alignment_bar_diameter/2, -enclosure_height_lower + alignment_bar_diameter/2])
+            rotate([0, -90, 0])
+                linear_extrude(height=enclosure_width * len(render_letters))
+                    circle(r=alignment_bar_diameter/2, $fn=60);
+}
+
 module enclosure_left() {
     linear_extrude(height=thickness) {
         difference() {
@@ -177,6 +185,25 @@ module enclosure_left() {
             translate([enclosure_height - enclosure_left_zip_top_inset, enclosure_length - front_forward_offset])
                 rotate([0, 0, 90])  // cable channel facing 'up'
                     zip_tie_holes();
+
+            // Alignment bar cutout
+            translate([0, alignment_bar_center]) {
+                union() {
+                    // Cutout
+                    translate([alignment_bar_cutout_width/2, 0])
+                        circle(r=alignment_bar_cutout_width/2, $fn=40);
+                    square([alignment_bar_cutout_width, alignment_bar_cutout_width], center=true);
+
+                    // Front-side fillet
+                    // translate([0, alignment_bar_cutout_width/2, 0])
+                    //     fillet_tool(r=alignment_bar_fillet_radius, overlap=1, $fn=40);
+
+                    // Back-side fillet
+                    translate([0, -alignment_bar_cutout_width/2, 0])
+                        mirror([0, 1, 0])
+                            fillet_tool(r=alignment_bar_fillet_radius, $fn=40);
+                }
+            }
         }
     }
 }
