@@ -20,9 +20,6 @@ assembly_color4 = color_multiply(assembly_color, [0.268, 0.268, 0.271, 1.0]);  /
 function color_multiply(x, y) =
     [ for(j=[0:len(x) - 1]) min(x[j] * y[j], 1.0) ];
 
-// inverts a color matrix by subtracting the input channel values from 1.0
-function color_invert(x) =
-    [ for(j=[0:len(x) - 1]) (1.0 - x[j]) ];
 
 module enclosure_etch_style() {
     color(etch_color)

@@ -15,6 +15,7 @@
 */
 
 include<../28byj-48.scad>;
+include<hardware.scad>;
 
 motor_shaft_under_radius = 0.08;  // interference fit
 motor_slop_radius = 3;

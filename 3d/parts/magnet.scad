@@ -14,6 +14,8 @@
    limitations under the License.
 */
 
+include <spool.scad>;
+
 magnet_diameter = 4;
 magnet_hole_clearance = -0.07;  // interference fit
 magnet_hole_radius = (magnet_diameter + magnet_hole_clearance)/2;

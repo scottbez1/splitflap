@@ -13,11 +13,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+include<../common.scad>;
+
 
 zip_tie_height = 3.0;  // height of the zip-tie hole
 zip_tie_width = 2.0;  // width of the zip-tie holes
 zip_tie_spacing = 6.5;  // spacing between each zip-tie hole, inside edges
-zip_tie_fillet = 0.5;  // radius of the rounded zip-tie hole corners
+zip_tie_fillet = 0.5;  // radius of the ounded zip-tie hole corners
 
 
 // M4 bolts

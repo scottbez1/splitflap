@@ -15,6 +15,8 @@
 */
 
 include<enclosure.scad>;
+include<hardware.scad>;
+include<../common.scad>;
 
 connector_bracket_length_outer = 14;
 connector_bracket_length_inner = side_tab_width * 2 - m4_button_head_diameter/2;

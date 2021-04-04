@@ -15,6 +15,7 @@
 */
 
 include<flap.scad>;
+include<spool.scad>;
 
 // Enclosure tabs: front/back
 enclosure_tab_clearance = 0.10;

@@ -14,6 +14,8 @@
    limitations under the License.
 */
 
+include<../flap_fonts.scad>;
+
 flap_width = 54;
 flap_height = 43;
 flap_thickness = 30 / 1000 * 25.4; // 30 mil
@@ -36,8 +38,11 @@ flap_hole_separation = 1;  // additional spacing between hole edges
 flap_gap = (flap_hole_radius * 2 - flap_pin_width) + flap_hole_separation;
 letter_color = color_invert(flap_color);  // inverse of the flap color, for contrast
 
-
 // flap();
+
+// inverts a color matrix by subtracting the input channel values from 1.0
+function color_invert(x) =
+    [ for(j=[0:len(x) - 1]) (1.0 - x[j]) ];
 
 module flap_2d(cut_tabs = true) {
     translate([0, -flap_pin_width/2, 0])
