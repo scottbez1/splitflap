@@ -25,6 +25,22 @@ X IN+ 8 -400 100 100 R 50 50 1 1 I
 ENDDRAW
 ENDDEF
 #
+# BuckModule_Buck
+#
+DEF BuckModule_Buck U 0 40 Y Y 1 F N
+F0 "U" 0 0 50 H V C CNN
+F1 "BuckModule_Buck" 0 0 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+DRAW
+S -350 150 400 -150 0 1 0 f
+X IN IN -450 100 100 R 50 50 1 1 P
+X IN_GND IN_GND -450 -100 100 R 50 50 1 1 P
+X OUT OUT 500 100 100 L 50 50 1 1 P
+X OUT_GND OUT_GND 500 -100 100 L 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
 # Connector_Barrel_Jack_Switch
 #
 DEF Connector_Barrel_Jack_Switch J 0 20 Y N 1 F N

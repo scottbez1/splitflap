@@ -5,5 +5,6 @@
   (lib (name pogoPins)(type KiCad)(uri ${KIPRJMOD}/../lib/pogoPins.pretty)(options "")(descr ""))
   (lib (name BK-6013)(type KiCad)(uri ${KIPRJMOD}/../lib/BK-6013.pretty)(options "")(descr ""))
   (lib (name VN7007ALHTR)(type KiCad)(uri ${KIPRJMOD}/../lib/VN7007ALHTR.pretty)(options "")(descr ""))
-  (lib (name PJ-202A)(type KiCad)(uri /home/scott/src/splitflap/electronics/lib/PJ-202A.pretty)(options "")(descr ""))
+  (lib (name PJ-202A)(type KiCad)(uri ${KIPRJMOD}/../lib/PJ-202A.pretty)(options "")(descr ""))
+  (lib (name Buck)(type KiCad)(uri ${KIPRJMOD}/../lib/Buck.pretty)(options "")(descr ""))
 )
