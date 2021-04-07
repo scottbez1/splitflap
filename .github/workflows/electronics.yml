@@ -98,7 +98,7 @@ jobs:
         run: |
           ./electronics/scripts/export_schematic.py electronics/chainlinkBase/chainlinkBase.sch
           cp electronics/build/chainlinkBase.pdf electronics/build/outputs/chainlinkBase-schematic.pdf
-          cp electronics/build/chainlinkBase.png electronics/build/outputs/chainlinkBase-schematic.png
+          cp electronics/build/chainlinkBase-0.png electronics/build/outputs/chainlinkBase-schematic.png
         env:
           PYTHONUNBUFFERED: 1
 
