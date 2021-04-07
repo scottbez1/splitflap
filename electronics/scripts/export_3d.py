@@ -50,7 +50,7 @@ def _wait_for_pcbnew_idle():
         for proc in psutil.process_iter():
             if proc.name() == 'pcbnew':
                 cpu = proc.cpu_percent(interval=1)
-                print(cpu, flush=True)
+                print(f'CPU={cpu}', flush=True)
                 if cpu < 5:
                     print('Render took %d seconds' % (time.time() - start))
                     return

@@ -56,7 +56,7 @@ jobs:
           PYTHONUNBUFFERED: 1
 
       # TODO: avoid duplication
-      - name: Export schematic
+      - name: Export schematic [chainlinkDriverTester]
         run: |
           ./electronics/scripts/export_schematic.py electronics/chainlinkDriverTester/chainlinkDriverTester.sch
           cp electronics/build/chainlinkDriverTester.pdf electronics/build/outputs/chainlinkDriverTester-schematic.pdf
@@ -64,7 +64,7 @@ jobs:
         env:
           PYTHONUNBUFFERED: 1
 
-      - name: Render PCB 3D
+      - name: Render PCB 3D [chainlinkDriverTester]
         run: |
           ./electronics/scripts/export_3d.py electronics/chainlinkDriverTester/chainlinkDriverTester.kicad_pcb
           cp electronics/build/chainlinkDriverTester-3d.png electronics/build/outputs/chainlinkDriverTester-3d.png
@@ -72,23 +72,61 @@ jobs:
         env:
           PYTHONUNBUFFERED: 1
 
-      - name: Export JLCPCB fabrication files
+      - name: Export JLCPCB fabrication files [chainlinkDriverTester]
         run: |
           ./electronics/scripts/export_jlcpcb.py electronics/chainlinkDriverTester/chainlinkDriverTester.kicad_pcb
           cp -r electronics/build/chainlinkDriverTester-jlc electronics/build/outputs
 
-      - name: Export PCB overview PDF
+      - name: Export PCB overview PDF [chainlinkDriverTester]
         run: |
           ./electronics/scripts/generate_pdf.py electronics/chainlinkDriverTester/chainlinkDriverTester.kicad_pcb
           cp electronics/build/chainlinkDriverTester-pcb-packet.pdf electronics/build/outputs/chainlinkDriverTester-pcb-packet.pdf
         env:
           PYTHONUNBUFFERED: 1
 
-      - name: Export PCB SVG
+      - name: Export PCB SVG [chainlinkDriverTester]
         run: |
           ./electronics/scripts/generate_svg.py electronics/chainlinkDriverTester/chainlinkDriverTester.kicad_pcb
           cp electronics/build/chainlinkDriverTester_merged.png electronics/build/outputs/chainlinkDriverTester-pcb-raster.png
           ./scripts/annotate_image.sh electronics/build/outputs/chainlinkDriverTester-pcb-raster.png
+        env:
+          PYTHONUNBUFFERED: 1
+
+
+      # TODO: avoid duplication
+      - name: Export schematic [chainlinkBase]
+        run: |
+          ./electronics/scripts/export_schematic.py electronics/chainlinkBase/chainlinkBase.sch
+          cp electronics/build/chainlinkBase.pdf electronics/build/outputs/chainlinkBase-schematic.pdf
+          cp electronics/build/chainlinkBase.png electronics/build/outputs/chainlinkBase-schematic.png
+        env:
+          PYTHONUNBUFFERED: 1
+
+      - name: Render PCB 3D [chainlinkBase]
+        run: |
+          ./electronics/scripts/export_3d.py electronics/chainlinkBase/chainlinkBase.kicad_pcb
+          cp electronics/build/chainlinkBase-3d.png electronics/build/outputs/chainlinkBase-3d.png
+          ./scripts/annotate_image.sh electronics/build/outputs/chainlinkBase-3d.png
+        env:
+          PYTHONUNBUFFERED: 1
+
+      - name: Export JLCPCB fabrication files [chainlinkBase]
+        run: |
+          ./electronics/scripts/export_jlcpcb.py electronics/chainlinkBase/chainlinkBase.kicad_pcb
+          cp -r electronics/build/chainlinkBase-jlc electronics/build/outputs
+
+      - name: Export PCB overview PDF [chainlinkBase]
+        run: |
+          ./electronics/scripts/generate_pdf.py electronics/chainlinkBase/chainlinkBase.kicad_pcb
+          cp electronics/build/chainlinkBase-pcb-packet.pdf electronics/build/outputs/chainlinkBase-pcb-packet.pdf
+        env:
+          PYTHONUNBUFFERED: 1
+
+      - name: Export PCB SVG [chainlinkBase]
+        run: |
+          ./electronics/scripts/generate_svg.py electronics/chainlinkBase/chainlinkBase.kicad_pcb
+          cp electronics/build/chainlinkBase_merged.png electronics/build/outputs/chainlinkBase-pcb-raster.png
+          ./scripts/annotate_image.sh electronics/build/outputs/chainlinkBase-pcb-raster.png
         env:
           PYTHONUNBUFFERED: 1
 
