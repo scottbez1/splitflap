@@ -41,6 +41,38 @@ X OUT_GND OUT_GND 500 -100 100 L 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
+# Connector_Conn_01x06_Male
+#
+DEF Connector_Conn_01x06_Male J 0 40 Y N 1 F N
+F0 "J" 0 300 50 H V C CNN
+F1 "Connector_Conn_01x06_Male" 0 -400 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+$FPLIST
+ Connector*:*_1x??_*
+$ENDFPLIST
+DRAW
+S 34 -295 0 -305 1 1 6 F
+S 34 -195 0 -205 1 1 6 F
+S 34 -95 0 -105 1 1 6 F
+S 34 5 0 -5 1 1 6 F
+S 34 105 0 95 1 1 6 F
+S 34 205 0 195 1 1 6 F
+P 2 1 1 6 50 -300 34 -300 N
+P 2 1 1 6 50 -200 34 -200 N
+P 2 1 1 6 50 -100 34 -100 N
+P 2 1 1 6 50 0 34 0 N
+P 2 1 1 6 50 100 34 100 N
+P 2 1 1 6 50 200 34 200 N
+X Pin_1 1 200 200 150 L 50 50 1 1 P
+X Pin_2 2 200 100 150 L 50 50 1 1 P
+X Pin_3 3 200 0 150 L 50 50 1 1 P
+X Pin_4 4 200 -100 150 L 50 50 1 1 P
+X Pin_5 5 200 -200 150 L 50 50 1 1 P
+X Pin_6 6 200 -300 150 L 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
 # Connector_Screw_Terminal_01x02
 #
 DEF Connector_Screw_Terminal_01x02 J 0 40 Y N 1 F N

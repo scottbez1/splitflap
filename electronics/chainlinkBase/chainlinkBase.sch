@@ -75,26 +75,26 @@ $EndComp
 $Comp
 L Connector:Screw_Terminal_01x02 J104
 U 1 1 60282EC9
-P 5200 7100
-F 0 "J104" H 5280 7092 50  0000 L CNN
-F 1 "RS485" H 5280 7001 50  0000 L CNN
-F 2 "ScrewTerminals:Generic-5.08-2P" H 5200 7100 50  0001 C CNN
-F 3 "~" H 5200 7100 50  0001 C CNN
-F 4 "EB147A-02-D" H 5200 7100 50  0001 C CNN "DK#"
-	1    5200 7100
-	1    0    0    -1  
+P 5200 7200
+F 0 "J104" H 5280 7192 50  0000 L CNN
+F 1 "RS485" H 5280 7101 50  0000 L CNN
+F 2 "ScrewTerminals:Generic-5.08-2P" H 5200 7200 50  0001 C CNN
+F 3 "~" H 5200 7200 50  0001 C CNN
+F 4 "EB147A-02-D" H 5200 7200 50  0001 C CNN "DK#"
+	1    5200 7200
+	1    0    0    1   
 $EndComp
 $Comp
 L Connector:Screw_Terminal_01x02 J105
 U 1 1 60284131
-P 5200 7400
-F 0 "J105" H 5280 7392 50  0000 L CNN
-F 1 "RS485" H 5280 7301 50  0000 L CNN
-F 2 "ScrewTerminals:Generic-5.08-2P" H 5200 7400 50  0001 C CNN
-F 3 "~" H 5200 7400 50  0001 C CNN
-F 4 "EB147A-02-D" H 5200 7400 50  0001 C CNN "DK#"
-	1    5200 7400
-	1    0    0    -1  
+P 5200 7500
+F 0 "J105" H 5280 7492 50  0000 L CNN
+F 1 "RS485" H 5280 7401 50  0000 L CNN
+F 2 "ScrewTerminals:Generic-5.08-2P" H 5200 7500 50  0001 C CNN
+F 3 "~" H 5200 7500 50  0001 C CNN
+F 4 "EB147A-02-D" H 5200 7500 50  0001 C CNN "DK#"
+	1    5200 7500
+	1    0    0    1   
 $EndComp
 Wire Wire Line
 	4750 7100 5000 7100
@@ -290,20 +290,20 @@ SCL
 Wire Wire Line
 	6650 3400 7350 3400
 Wire Wire Line
-	8750 3400 9450 3400
-Text Label 9450 3400 2    50   ~ 0
+	8750 4800 9450 4800
+Text Label 9450 4800 2    50   ~ 0
 OUT0_EN
 Wire Wire Line
-	8750 3500 9450 3500
-Text Label 9450 3500 2    50   ~ 0
+	8750 4700 9450 4700
+Text Label 9450 4700 2    50   ~ 0
 OUT1_EN
 Wire Wire Line
-	8750 3700 9450 3700
-Text Label 9450 3700 2    50   ~ 0
+	8750 4500 9450 4500
+Text Label 9450 4500 2    50   ~ 0
 OUT3_EN
 Wire Wire Line
-	8750 3800 9450 3800
-Text Label 9450 3800 2    50   ~ 0
+	8750 4400 9450 4400
+Text Label 9450 4400 2    50   ~ 0
 OUT4_EN
 $Comp
 L power:+3.3V #PWR0116
@@ -317,7 +317,7 @@ F 3 "" H 8050 2950 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	8050 3100 8050 2950
+	8050 3100 8050 3000
 $Comp
 L power:+3.3V #PWR0123
 U 1 1 61B08A60
@@ -541,8 +541,6 @@ F 3 "" H 9250 2450 50  0001 C CNN
 	1    9250 2450
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	9250 2350 9250 2400
 $Comp
 L power:+5V #PWR0139
 U 1 1 6288546A
@@ -768,13 +766,6 @@ F 3 "~" H 2450 10350 50  0001 C CNN
 	1    2450 10350
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	8850 2400 9250 2400
-Wire Wire Line
-	8850 2150 8850 2400
-Connection ~ 9250 2400
-Wire Wire Line
-	9250 2400 9250 2450
 Wire Wire Line
 	8850 1550 8150 1550
 Text Label 8150 1550 0    50   ~ 0
@@ -1096,7 +1087,6 @@ Text Notes 7250 5250 0    50   ~ 0
 I2C ADDR: 0x27
 Text Notes 17350 2450 0    50   ~ 0
 I2C ADDR: 0x40
-NoConn ~ 9650 2150
 Wire Wire Line
 	1500 10550 2550 10550
 Wire Wire Line
@@ -1191,20 +1181,20 @@ ADDR_2
 Text Label 11000 5200 0    50   ~ 0
 ADDR_3
 Wire Wire Line
-	9400 4700 8750 4700
+	9400 4100 8750 4100
 Wire Wire Line
-	8750 4800 9400 4800
+	8750 4000 9400 4000
 Wire Wire Line
-	9400 4900 8750 4900
+	9400 3900 8750 3900
 Wire Wire Line
-	8750 5000 9400 5000
-Text Label 9400 4700 2    50   ~ 0
+	8750 3800 9400 3800
+Text Label 9400 4100 2    50   ~ 0
 ADDR_0
-Text Label 9400 4800 2    50   ~ 0
+Text Label 9400 4000 2    50   ~ 0
 ADDR_1
-Text Label 9400 4900 2    50   ~ 0
+Text Label 9400 3900 2    50   ~ 0
 ADDR_2
-Text Label 9400 5000 2    50   ~ 0
+Text Label 9400 3800 2    50   ~ 0
 ADDR_3
 NoConn ~ 8750 4500
 NoConn ~ 8750 4600
@@ -1324,18 +1314,6 @@ F 3 "~" H 3500 3550 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 Connection ~ 3500 3550
-$Comp
-L Transistor_Array:ULN2003A U102
-U 1 1 60BF5C71
-P 9250 1750
-F 0 "U102" H 9250 2417 50  0000 C CNN
-F 1 "TPL7407L" H 9250 2326 50  0000 C CNN
-F 2 "ModifiedSymbols:SOIC-16_3.9x9.9mm_P1.27mm_silk" H 9300 1200 50  0001 L CNN
-F 3 "" H 9350 1550 50  0001 C CNN
-F 4 "296-51862-1-ND" H 9250 1750 50  0001 C CNN "DK#"
-	1    9250 1750
-	1    0    0    -1  
-$EndComp
 Text Label 10850 1550 0    50   ~ 0
 RELAY_MASTER
 Wire Wire Line
@@ -1367,23 +1345,10 @@ Wire Wire Line
 	11450 1400 11450 1450
 Wire Wire Line
 	11450 1450 11500 1450
-NoConn ~ 9650 1650
-NoConn ~ 9650 1750
-NoConn ~ 9650 1850
-NoConn ~ 9650 1950
-NoConn ~ 9650 2050
-NoConn ~ 8850 2050
-NoConn ~ 8850 1950
-NoConn ~ 8850 1850
-NoConn ~ 8850 1750
-NoConn ~ 8850 1650
-Text Label 9450 3600 2    50   ~ 0
+Text Label 9450 4600 2    50   ~ 0
 OUT2_EN
 Wire Wire Line
-	8750 3600 9450 3600
-NoConn ~ 8750 3900
-NoConn ~ 8750 4000
-NoConn ~ 8750 4100
+	8750 4600 9450 4600
 NoConn ~ 8750 4300
 NoConn ~ 8750 4400
 $Comp
@@ -1868,10 +1833,10 @@ Wire Wire Line
 Wire Wire Line
 	17650 6350 17650 6450
 $Comp
-L power:GND #PWR?
+L power:GND #PWR0142
 U 1 1 606F96E9
 P 13100 950
-F 0 "#PWR?" H 13100 700 50  0001 C CNN
+F 0 "#PWR0142" H 13100 700 50  0001 C CNN
 F 1 "GND" H 13105 777 50  0000 C CNN
 F 2 "" H 13100 950 50  0001 C CNN
 F 3 "" H 13100 950 50  0001 C CNN
@@ -1902,4 +1867,159 @@ Wire Wire Line
 Connection ~ 13100 850 
 Wire Wire Line
 	13100 850  13200 850 
+$Comp
+L Connector:Conn_01x06_Male J111
+U 1 1 607902DC
+P 10350 1950
+F 0 "J111" H 10322 1832 50  0000 R CNN
+F 1 "Conn_01x06_Male" H 10322 1923 50  0000 R CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical" H 10350 1950 50  0001 C CNN
+F 3 "~" H 10350 1950 50  0001 C CNN
+	1    10350 1950
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	9650 1650 10150 1650
+Wire Wire Line
+	9650 1750 10150 1750
+Wire Wire Line
+	9650 1850 10150 1850
+Wire Wire Line
+	9650 1950 10150 1950
+Wire Wire Line
+	9650 2050 10150 2050
+Wire Wire Line
+	9650 2150 10150 2150
+$Comp
+L Connector:Conn_01x06_Male J112
+U 1 1 6082E04D
+P 10750 1950
+F 0 "J112" H 10722 1832 50  0000 R CNN
+F 1 "Conn_01x06_Male" H 10722 1923 50  0000 R CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical" H 10750 1950 50  0001 C CNN
+F 3 "~" H 10750 1950 50  0001 C CNN
+	1    10750 1950
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:+5V #PWR0143
+U 1 1 6082EB4F
+P 10550 1250
+F 0 "#PWR0143" H 10550 1100 50  0001 C CNN
+F 1 "+5V" H 10565 1423 50  0000 C CNN
+F 2 "" H 10550 1250 50  0001 C CNN
+F 3 "" H 10550 1250 50  0001 C CNN
+	1    10550 1250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	10550 1250 10550 1650
+Connection ~ 10550 1650
+Wire Wire Line
+	10550 1650 10550 1750
+Connection ~ 10550 1750
+Wire Wire Line
+	10550 1750 10550 1850
+Connection ~ 10550 1850
+Wire Wire Line
+	10550 1850 10550 1950
+Connection ~ 10550 1950
+Wire Wire Line
+	10550 1950 10550 2050
+Connection ~ 10550 2050
+Wire Wire Line
+	10550 2050 10550 2150
+Wire Wire Line
+	9250 2350 9250 2450
+Wire Wire Line
+	8850 2150 8150 2150
+Text Label 8150 2150 0    50   ~ 0
+MISC5
+Wire Wire Line
+	8850 2050 8150 2050
+Text Label 8150 2050 0    50   ~ 0
+MISC4
+Wire Wire Line
+	8850 1950 8150 1950
+Text Label 8150 1950 0    50   ~ 0
+MISC3
+Wire Wire Line
+	8850 1850 8150 1850
+Text Label 8150 1850 0    50   ~ 0
+MISC2
+Wire Wire Line
+	8850 1750 8150 1750
+Text Label 8150 1750 0    50   ~ 0
+MISC1
+Wire Wire Line
+	8850 1650 8150 1650
+Text Label 8150 1650 0    50   ~ 0
+MISC0
+Wire Wire Line
+	9450 3400 8750 3400
+Text Label 9450 3400 2    50   ~ 0
+MISC5
+Wire Wire Line
+	9450 3500 8750 3500
+Text Label 9450 3500 2    50   ~ 0
+MISC4
+Wire Wire Line
+	9450 3600 8750 3600
+Text Label 9450 3600 2    50   ~ 0
+MISC3
+Wire Wire Line
+	9450 3700 8750 3700
+Text Label 9450 3700 2    50   ~ 0
+MISC2
+Wire Wire Line
+	9450 4900 8750 4900
+Text Label 9450 4900 2    50   ~ 0
+MISC1
+Wire Wire Line
+	9450 5000 8750 5000
+Text Label 9450 5000 2    50   ~ 0
+MISC0
+$Comp
+L Transistor_Array:ULN2003A U102
+U 1 1 60BF5C71
+P 9250 1750
+F 0 "U102" H 9250 2417 50  0000 C CNN
+F 1 "TPL7407L" H 9250 2326 50  0000 C CNN
+F 2 "ModifiedSymbols:SOIC-16_3.9x9.9mm_P1.27mm_silk" H 9300 1200 50  0001 L CNN
+F 3 "" H 9350 1550 50  0001 C CNN
+F 4 "296-51862-1-ND" H 9250 1750 50  0001 C CNN "DK#"
+	1    9250 1750
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C_Small C114
+U 1 1 60A2AB1E
+P 8350 3000
+F 0 "C114" V 8121 3000 50  0000 C CNN
+F 1 "0.1uF" V 8212 3000 50  0000 C CNN
+F 2 "Capacitor_SMD:C_0805_2012Metric" H 8350 3000 50  0001 C CNN
+F 3 "~" H 8350 3000 50  0001 C CNN
+	1    8350 3000
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0144
+U 1 1 60A2C0EA
+P 8600 3050
+F 0 "#PWR0144" H 8600 2800 50  0001 C CNN
+F 1 "GND" H 8605 2877 50  0000 C CNN
+F 2 "" H 8600 3050 50  0001 C CNN
+F 3 "" H 8600 3050 50  0001 C CNN
+	1    8600 3050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8450 3000 8600 3000
+Wire Wire Line
+	8600 3000 8600 3050
+Wire Wire Line
+	8250 3000 8050 3000
+Connection ~ 8050 3000
+Wire Wire Line
+	8050 3000 8050 2950
 $EndSCHEMATC
