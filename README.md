@@ -24,7 +24,7 @@ Want to help support prototyping and development?
 <a href="https://www.youtube.com/watch?v=UAQJJAQSg_g" target="_blank"><img src="https://img.youtube.com/vi/UAQJJAQSg_g/maxresdefault.jpg" alt="How a split-flap display works" width="640"></a>
 
 
-### Current Status ###
+### Current Status
 [You can download the **latest stable release** from the official 'releases' page.](https://github.com/scottbez1/splitflap/releases/latest)
 
 Releases have been tested and used to produce working units, but as this is a DIY project, there may always be minor issues and/or incomplete documentation.
@@ -40,7 +40,7 @@ Releases have been tested and used to produce working units, but as this is a DI
 
 I'd love to hear your thoughts and questions about this project, and happy to incorporate any feedback you might have into these designs! Please feel free (and encouraged) to [open GitHub issues](https://github.com/scottbez1/splitflap/issues/new), email me directly, reach out [on Twitter](https://twitter.com/scottbez1), and [get involved](https://github.com/scottbez1/splitflap/pulls) in the open source development and let's keep chatting and building together!
 
-#### :warning: Latest Experimental Files: ####
+#### :warning: Latest Experimental Files:
 
 **Important:** the files linked below are EXPERIMENTAL and have been auto-generated from the latest commit. They may contain changes that are untested or outright broken. Do not use these unless you are actively making changes to the project and know what you're doing. Otherwise, use the [latest stable release](https://github.com/scottbez1/splitflap/releases/latest).
 
@@ -58,7 +58,7 @@ I'd love to hear your thoughts and questions about this project, and happy to in
 
 If you are interested in building a display, I recommend using [one of the stable releases instead](https://github.com/scottbez1/splitflap/releases).
 
-### Design Highlights ###
+### Design Highlights
 * laser cut enclosure and mechanisms from a single material
 * cheap, widely available 28byj-48 stepper motor (less expensive than NEMA-17 motors, and doesn't require an expensive high current stepper driver)
 * CR80 PVC cards for flaps, cheap in bulk
@@ -67,13 +67,13 @@ If you are interested in building a display, I recommend using [one of the stabl
 
 ![2d laser cut rendering](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/3d/3d_laser_raster.png)
 
-## Build Your Own  ##
+# Build Your Own
 
 * [**Ordering guide (v0.5/0.6)**](https://paper.dropbox.com/doc/Ordering-Splitflap-v0.5--AS8OCZ~75DLuHBGHhxn94YAMAg-iCwwMo0hRkkAlwdutccWf)
 * [**Latest stable release**](https://github.com/scottbez1/splitflap/releases/latest)
 * [**Assembly instructions (v0.5/0.6)**](https://paper.dropbox.com/doc/Splitflap-Kit-v0.5v1.0-Instructions--ASQDu1uoa6n4_t1pva1bM1MgAg-bxXJlke5ROmamcx4OH44r)
 
-### Rough Cost Breakdown ###
+## Rough Cost Breakdown
 
 This is an _incomplete_ list of supplies needed to build a split-flap display module to get a rough sense of the overall cost.
 Many items have minimum package sizes, so per-unit-prices will be higher when building fewer units due to the need to
@@ -84,12 +84,12 @@ shipping costs and MOQs no longer dominate the cost.
 
 Overall, expect to spend somewhere around $200 to $250 for 4 standard 40-character modules.
 
-#### Housing ####
+### Housing ###
 
 The laser-cut housing/mechanics can be ordered from Ponoko (high quality, US-based) or Elecrow. Or you can cut it yourself if
 you have a laser-cutter capable of cutting 3mm MDF or acrylic.
 
-##### Ponoko
+#### Ponoko
 
 | Price  | Units per order | Name                               | Supplier | Notes |
 |--------|-----------------|------------------------------------|----------|-------|
@@ -98,7 +98,7 @@ you have a laser-cutter capable of cutting 3mm MDF or acrylic.
 
 **Total:** $16.75 per unit (at 4 units)
 
-##### Elecrow
+#### Elecrow
 | Price | Units per order | Name                                   | Supplier | Notes |
 |-------|-----------------|----------------------------------------|----------|-------|
 | $15   | 5               | Wood laser cut, 3 mm, no engraving     | Elecrow  |       |
@@ -106,7 +106,7 @@ you have a laser-cutter capable of cutting 3mm MDF or acrylic.
 
 **Total:** $9.25 per unit (at 4 units)
 
-#### Hardware & Consumables ####
+### Hardware & Consumables
 
 | Price | Units per order | Name                                | Supplier     | Notes                     |
 |-------|-----------------|-------------------------------------|--------------|---------------------------|
@@ -115,11 +115,11 @@ you have a laser-cutter capable of cutting 3mm MDF or acrylic.
 
 **Total:** $2.50-5.00 per unit (at 4 units)
 
-#### Flaps ####
+### Flaps
 
 There are two options for flaps: hand-cut or professionally die-cut.
 
-##### Hand-Cut (Option 1) #####
+#### Hand-Cut (Option 1)
 
 Each card needs to be cut in half and then have two pieces punched out of either side. Each display unit requires 40 flaps, or 20 cards per unit. 100 cards is enough for 5 units in theory, but 4 in practice because there are no spares for mistakes.
 
@@ -131,7 +131,7 @@ Each card needs to be cut in half and then have two pieces punched out of either
 
 **Total:** $7.00 per unit (at 4 units) + $9.17 upfront for the punch tool + a lot of time and effort
 
-##### Die-Cut (Option 2) #####
+#### Die-Cut (Option 2)
 
 These professional die-cut flaps are manufactured specifically for this project (no manual cutting/punching required) and come in both white and matte black. Sold by Bezek Labs LLC, so proceeds help support continued development on this project.
 
@@ -142,11 +142,11 @@ These professional die-cut flaps are manufactured specifically for this project 
 
 **Total:** $16.75 per unit (at 4 units)
 
-#### PCB ####
+### PCB ###
 
 Circuit boards are available either in small quantities from the Bezek Labs LLC store, or in bulk from PCB manufacturers such as SeeedStudio.
 
-##### Etsy - BezekLabs #####
+#### Etsy - BezekLabs
 
 | Price | Units per order | Name           | Supplier                                                                                         | Notes                    |
 |-------|-----------------|----------------|--------------------------------------------------------------------------------------------------|--------------------------|
@@ -155,7 +155,7 @@ Circuit boards are available either in small quantities from the Bezek Labs LLC 
 
 **Total:** $1.75 per unit (at 4 units)
 
-##### SeeedStudio (Bulk) #####
+#### SeeedStudio (Bulk)
 
 | Price | Units per order | Name           | Supplier    | Notes                              |
 |-------|-----------------|----------------|-------------|------------------------------------|
@@ -165,7 +165,7 @@ Circuit boards are available either in small quantities from the Bezek Labs LLC 
 
 **Total:** $6.25 per unit (at 4 units), or as low as $0.32 per unit (at 80 units)
 
-#### Electronics & Motor ####
+### Electronics & Motor
 
 | Price  | Units per order | Name                             | Supplier                | Notes                                                                                  |
 |--------|-----------------|----------------------------------|-------------------------|----------------------------------------------------------------------------------------|
@@ -179,9 +179,9 @@ Circuit boards are available either in small quantities from the Bezek Labs LLC 
 
 You can find a more detailed breakout of electronics' bill of materials (BOM) in [the ordering instructions](https://paper.dropbox.com/doc/Ordering-Splitflap-v0.5--ATdB3cgS5GyvwTWq1kpunkD4Ag-iCwwMo0hRkkAlwdutccWf).
 
-## Design & Modification Guide ##
+# Design & Modification Guide
 
-### 3D Design ###
+## 3D Design
 The main design file is [`3d/splitflap.scad`](3d/splitflap.scad)
 
 You'll need a recent version of OpenSCAD (e.g. 2015-03), which may need to be installed through the PPA:
@@ -191,8 +191,8 @@ In general, solid objects such as the enclosure sides or spool components are bu
 
 Note that while the design is parameterized and many values may be tweaked, there is currently no error checking for invalid parameters or combinations of parameters. Please take care to validate the design if you change any parameters. For instance, while most of the design will adjust to a changed `num_modules` value, certain values may cause some elements to intersect with other elements or protrude beyond their expected dimensions.
 
-#### Rendering ####
-##### Laser-cut vector files #####
+### Rendering
+#### Laser-cut vector files
 The design can be rendered to 2d for laser cutting by running [`3d/scripts/generate_2d.py [--panelize <number>]`](3d/scripts/generate_2d.py), which outputs to `3d/build/laser_parts/combined.svg`. The optional `--panelize` argument allows for rendering a panel of modules in a single SVG, for bulk laser-cutting.
 
 Internally, the design uses a `projection_renderer` module ([`3d/projection_renderer.scad`](3d/projection_renderer.scad)), which takes a list of child elements to render, and depending on the `render_index` renders a single child at a time. It also _adds_ material to each shape to account for the kerf that will be cut away by the laser.
@@ -201,15 +201,15 @@ The [`generate_2d.py`](3d/scripts/generate_2d.py) script interacts with the `pro
 
 Once the `combined.svg` file is generated, you'll want to double-check there aren't any redundant cut lines that are shared by multiple adjacent pieces, to save time/cost when cutting. They should be detected automatically (and highlighted in red in the rendering above), but it doesn't hurt to double-check. In Inkscape, select the "Edit paths by nodes" tool and select an edge to delete - the endpoints should turn blue. Then click "Delete segment between two non-endpoint nodes", and repeat this for all other redundant cut lines.
 
-##### Animated gif #####
+#### Animated gif
 The design can be rendered to a rotating 3d animated gif (seen above) by running [`3d/scripts/generate_gif.py`](3d/scripts/generate_gif.py), which outputs to `3d/build/animation/animation.gif`
 
 The `generate_gif.py` script runs multiple OpenSCAD instances in parallel to render the design from 360 degrees to individual png frames, which are then combined into the final gif animation. As part of building the animation, `generate_gif.py` renders the design with multiple configurations (opaque enclosure, see-through enclosure, no-enclosure and no flaps) by setting the `render_enclosure` and `render_flaps` variables.
 
-##### STL models/web viewer #####
+#### STL models/web viewer
 The design can be rendered to a series of STL files (one per color used in the model) in order to be displayed in an [interactive web-based 3d viewer](https://scottbez1.github.io/splitflap/). Similar to the `projection_renderer` used to render individual components for laser-cutting, the [ColoredStlExporter](3d/scripts/colored_stl_exporter.py) detects all the colors used in the model and renders them one-by-one to separate STL files, along with a manifest that maps each STL file to its RGB color. The STL files and manifest are loaded using three.js to display an interactive model on a web site using WebGL. See this blog post for more details on how the export and three.js renderer work: [OpenSCAD Rendering Tricks, Part 3: Web viewer](http://scottbezek.blogspot.com/2016/08/openscad-rendering-tricks-part-3-web.html).
 
-#### 3D Printed Tools ####
+### 3D Printed Tools
 The project also includes a number of optional 3D printed designs to make assembly easier. These include:
 
 * [a flap scoring jig](3d/tools/scoring_jig.scad) for precisely marking the cut point when splitting CR80 cards
@@ -219,7 +219,33 @@ The project also includes a number of optional 3D printed designs to make assemb
 
 All of these designs are parametric and customizable within OpenSCAD. To print them, open up the relevant file in OpenSCAD and use `File -> Export -> Export as STL` to render the design as an STL file for your slicer.
 
-### Classic Driver Electronics ###
+## Electronics
+The current recommended approach is the Classic controller board, which plugs into an Arduino Uno as a shield
+and can control up to 4 modules. Up to 2 additional Classic controller boards can be chained using ribbon cables
+for a total of up to 12 modules controlled by a single Arduino Uno.
+
+For small displays (up to 3 modules), you can skip the custom controller boards and use off-the-shelf ULN2003A driver
+modules plugged into an Arduino Uno. This is [partially documented in the wiki](https://github.com/scottbez1/splitflap/wiki/Electronics#basic-prototyping-alternative-electronics-approach)
+but may require some additional tinkering to get it to work. _Help wanted: if you'd like to help improve these instructions,
+please reach out in the Slack group, thanks!_
+
+A new design (Chainlink) is currently under development, which allows for larger-scale displays by chaining more
+modules together and uses a more powerful microcontroller (ESP32). This also adds the possibility of wifi and BLE
+control, though this isn't currently implemented in firmware yet. For the latest on the Chainlink system, join the
+Slack group.
+
+### Module Electronics
+Each module also needs a hall-effect sensor board, with an AH3391Q (or similar) sensor and connector.
+These boards are small (about 16mm x 16 mm) and are available on a second PCB design that's panelized.
+The panelization is configurable (see [generate_panelize_config.py](electronics/scripts/panelize/generate_panelize_config.py))
+and is optimized for production at SeeedStudio.
+
+<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics-legacy/sensor_pcb_raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics-legacy/sensor_pcb_raster.png"/>
+</a>
+
+
+### Classic Controller Electronics
 The Classic driver board is designed to plug into an Arduino like a shield, and can control 4 stepper motors.
 Up to 3 driver boards can be chained together, for up to 12 modules controlled by a single Arduino.
 The designs for the controller can be found under [`electronics/splitflap.pro`](electronics/splitflap.pro) (KiCad 4 project).
@@ -239,17 +265,8 @@ The PCB layout is 10cm x 5cm which makes it fairly cheap to produce using a low-
 </a>
 
 
-### Module Electronics ###
-Each module also needs a hall-effect sensor board, with an AH3391Q (or similar) sensor and connector.
-These boards are small (about 16mm x 16 mm) and are available on a second PCB design that's panelized.
-The panelization is configurable (see [generate_panelize_config.py](electronics/scripts/panelize/generate_panelize_config.py))
-and is optimized for production at SeeedStudio.
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics-legacy/sensor_pcb_raster.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics-legacy/sensor_pcb_raster.png"/>
-</a>
-
-### Chainlink Electronics ###
+### Chainlink Electronics
 The Chainlink system is an upcoming alternative to the Classic controller/driver, which is designed to be easier and  
 cheaper to build, especially in higher quantities due to its simplified BOM and surface-mount components. It's also
 designed to support longer chains of driver boards to control large displays (think 100+ split-flap modules).
@@ -257,15 +274,18 @@ designed to support longer chains of driver boards to control large displays (th
 This electronics design is still in very active development, and not recommended unless you know what you're doing.
 
 The Chainlink system uses 2 PCB designs:
-* Each **Chainlink Driver** board accepts data and power and connects to 6 individual split-flap modules. Chainlink
+* Each **Chainlink Driver** board accepts data and power and connects to **6** individual split-flap modules. Chainlink
 Driver boards can be chained together to construct a large display.
 * A **Chainlink Base** board holds the microcontroller (ESP32 with USB, Wifi, BLE capabilities), central
 power management/distribution, and sends data to the chained Driver boards.
 
-#### Chainlink Driver ####
+#### Chainlink Driver
 <a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkDriver-3d.png">
 <img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkDriver-3d.png"/>
 </a>
+
+This is currently under active development. It has been tested and appears to work, but is not yet recommended for general use.
+Firmware support is in progress.
 
 Key features:
 * Controls 6 split-flap modules per board instead of just 4 - fewer PCBs means lower cost and less wiring
@@ -288,12 +308,14 @@ to validate data integrity up and down the whole chain
 <img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkDriver-pcb-raster.png"/>
 </a>
 
-#### Chainlink Base ####
+#### Chainlink Base
 <a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkBase-3d.png">
 <img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkBase-3d.png"/>
 </a>
 
-Key features:
+This is currently under very active development. _It is **untested** and does not have firmware yet._
+
+Key (planned) features:
 * TTGO T-Display ESP32 module as the controller, which includes USB-C, color IPS LCD display and buttons
 * Optional master relay output for 12V PSU control (5V relay, up to ~500mA coil current)
   * Future firmware will power on PSU after a startup self-test, and power off PSU in case of any faults
@@ -314,7 +336,38 @@ Key features:
 <img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkBase-pcb-raster.png"/>
 </a>
 
-### Rendering ###
+### Electrical tools
+
+#### Chainlink Driver Tester
+<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkDriverTester-3d.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkDriverTester-3d.png"/>
+</a>
+
+This is not likely to be useful unless you're assembling a _very_ large display, but the Chainlink Driver Tester is a complete testbed
+for Chainlink Driver boards as they come assembled by the PCBA fabricator.
+
+This is currently under very active development. _It is **untested** and does not have firmware yet._
+
+Key (planned) features:
+* TTGO T-Display (ESP32) controller, screen, and buttons for test control and results
+* Pogo-pins for all connectors on the Chainlink Driver board-under-test (screw terminals, sensor pin headers, and motor connectors)
+* Switchable 12V supply to the board-under-test, with automotive fuse and INA219 voltage/current monitoring (based on the Chainlink Base channel switch design)
+* Separate 3.3V supply for the board-under-test, protected with a polyfuse, should avoid browning out the Tester's MCU in case of 3.3V short-circuits
+* Motor and sensor connections are broken out from the pogo-pins for a full closed-loop hardware test
+* Screw terminals to chain another Chainlink Driver (not under test) to validate that chained outputs work on the board-under-test
+* MCP23017 GPIO expander with 8 GPIO pins exposed via headers for future expansion inputs
+* Large cutout allows a barcode scanner or camera to aimed at the bottom of the board-under-test for tracking serial numbers. WS2812B LEDs can be added to illuminate the underside.
+* Buzzer option for audible pass/fail feedback
+
+<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkDriverTester-schematic.pdf">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkDriverTester-schematic.png"/>
+</a>
+
+<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkDriverTester-pcb-raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkDriverTester-pcb-raster.png"/>
+</a>
+
+### Rendering
 The mechanical and electrical design renderings and links above are automatically updated on every commit with the latest rendering. See this blog post for more details on how that works: [Automated KiCad, OpenSCAD rendering using Travis CI](http://scottbezek.blogspot.com/2016/04/automated-kicad-openscad-rendering.html).
 
 The PCB layout can be rendered to an svg or png (seen above) by running [`electronics/scripts/generate_svg.py file.kicad_pcb`](electronics/scripts/generate_svg.py).
@@ -329,12 +382,13 @@ This generates gerber files and an Excellon drill file with Seeed Studio's [nami
 
 EESchema isn't easily scriptable, so to export the schematic and bill of materials [`electronics/scripts/export_schematic.py`](electronics/scripts/export_schematic.py) and [`export_bom.py`](electronics/scripts/export_bom.py) start an X Virtual Frame Buffer (Xvfb) and open the `eeschema` GUI within that virtual display, and then send a series of hardcoded key presses via `xdotool` to interact with the GUI and click through the dialogs. This is very fragile but seems to work ok for now. For additional details, see this blog post: [Using UI automation to export KiCad schematics](http://scottbezek.blogspot.com/2016/04/automated-kicad-schematic-export.html).
 
-### Driver Firmware ###
+## Code
+### Firmware
 The driver firmware is written using Arduino and is available at [`arduino/splitflap/Splitflap/Splitflap.ino`](arduino/splitflap/Splitflap/Splitflap.ino). 
 
 The firmware currently runs a basic closed-loop controller that accepts letters over USB serial and drives the stepper motors using a precomputed acceleration ramp for smooth control. The firmware automatically calibrates the spool position at startup, using the hall-effect magnetic sensor, and will automatically recalibrate itself if it ever detects that the spool position has gotten out of sync. If a commanded rotation is expected to bring the spool past the "home" position, it will confirm that the sensor is triggered neither too early nor too late; otherwise it will search for the "home" position to get in sync before continuing to the desired letter.
 
-### Computer Control Software ###
+### Computer Control Software
 The display can be controlled by a computer connected to the Arduino over USB serial. A basic python library for interfacing with the Arduino and a demo application that displays random words can be found in the [software](software) directory.
 
 Commands to the display are sent in a basic plain-text format, and messages _from_ the display are single-line JSON objects, always with a `type` entry describing which type of message it is.
@@ -379,7 +433,7 @@ If you want to make all modules recalibrate their home position, send a single @
 This recalibrates all modules, including any that were in the `sensor_error` state; if recalibration succeeds they will return to the `normal` state and start responding to movement commands again.
 
 
-## License ##
+# License
 I'd love to hear your thoughts and questions about this project, and happy to incorporate any feedback you might have into these designs! Please feel free (and encouraged) to [open GitHub issues](https://github.com/scottbez1/splitflap/issues/new), email me directly, reach out [on Twitter](https://twitter.com/scottbez1), and [get involved](https://github.com/scottbez1/splitflap/pulls) in the open source development and let's keep chatting and building together!
 
 The vast majority of this project is licensed under Apache v2 (see [LICENSE.txt](LICENSE.txt) for full details).

@@ -29,7 +29,7 @@ jobs:
 
       - name: Render PCB 3D
         run: |
-          ./electronics/scripts/export_3d.py electronics/chainlinkDriver/chainlinkDriver.kicad_pcb --width 2000 --height 800 transform z+ z+ z+ z+ z+ z+ z+ mr rx+ rx+ ry- ry- rz-
+          ./electronics/scripts/export_3d.py electronics/chainlinkDriver/chainlinkDriver.kicad_pcb --width 2000 --height 800 transform z+ z+ z+ z+ z+ z+ z+ z+ mr rx+ rx+ ry- ry- rz-
           cp electronics/build/chainlinkDriver-3d.png electronics/build/outputs/chainlinkDriver-3d.png
           ./scripts/annotate_image.sh electronics/build/outputs/chainlinkDriver-3d.png
         env:
