@@ -1,4 +1,4 @@
-18622564111743407
+18624181959646407
 BK-6013
 BK-6013
 
@@ -316,6 +316,13 @@ battery CR-3032 coin cell vertical
 2
 Buck
 BuckModule
+
+
+0
+8
+4
+Buck
+BuckModuleBackSilk
 
 
 0

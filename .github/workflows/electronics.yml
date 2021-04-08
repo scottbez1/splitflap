@@ -29,7 +29,7 @@ jobs:
 
       - name: Render PCB 3D
         run: |
-          ./electronics/scripts/export_3d.py electronics/chainlinkDriver/chainlinkDriver.kicad_pcb
+          ./electronics/scripts/export_3d.py electronics/chainlinkDriver/chainlinkDriver.kicad_pcb --width 2000 --height 800 transform z+ z+ z+ z+ z+ z+ z+ mr rx+ rx+ ry- ry- rz-
           cp electronics/build/chainlinkDriver-3d.png electronics/build/outputs/chainlinkDriver-3d.png
           ./scripts/annotate_image.sh electronics/build/outputs/chainlinkDriver-3d.png
         env:
@@ -66,7 +66,7 @@ jobs:
 
       - name: Render PCB 3D [chainlinkDriverTester]
         run: |
-          ./electronics/scripts/export_3d.py electronics/chainlinkDriverTester/chainlinkDriverTester.kicad_pcb
+          ./electronics/scripts/export_3d.py electronics/chainlinkDriverTester/chainlinkDriverTester.kicad_pcb --width 1600 --height 1100 transform z+ z+ z+ z+ z+ mu mr mr rx+ rx+ ry- ry- rz-
           cp electronics/build/chainlinkDriverTester-3d.png electronics/build/outputs/chainlinkDriverTester-3d.png
           ./scripts/annotate_image.sh electronics/build/outputs/chainlinkDriverTester-3d.png
         env:
@@ -104,7 +104,7 @@ jobs:
 
       - name: Render PCB 3D [chainlinkBase]
         run: |
-          ./electronics/scripts/export_3d.py electronics/chainlinkBase/chainlinkBase.kicad_pcb
+          ./electronics/scripts/export_3d.py electronics/chainlinkBase/chainlinkBase.kicad_pcb --width 1000 --height 1500 transform z+ z+ mu rx+ rx+ ry- ry- rz-
           cp electronics/build/chainlinkBase-3d.png electronics/build/outputs/chainlinkBase-3d.png
           ./scripts/annotate_image.sh electronics/build/outputs/chainlinkBase-3d.png
         env:

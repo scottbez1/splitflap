@@ -38,9 +38,6 @@ from export_util import (
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-WIDTH = 2560
-HEIGHT = 1440
-
 RENDER_TIMEOUT = 10 * 60
 
 
@@ -58,7 +55,36 @@ def _wait_for_pcbnew_idle():
     raise RuntimeError('Timeout waiting for pcbnew to go idle')
 
 
-def _pcbnew_export_3d(output_file):
+def _zoom_in():
+    xdotool([
+        'click',
+        '4',
+    ])
+    time.sleep(0.2)
+
+
+def _invoke_view_option(index):
+    command = ['key', 'alt+v'] + ['Down']*index + ['Return']
+    xdotool(command)
+    time.sleep(2)
+
+
+_transforms = {
+    'z+': ('Zoom in', _zoom_in),
+    'rx+': ('Rotate X Clockwise', lambda: _invoke_view_option(4)),
+    'rx-': ('Rotate X Counterclockwise', lambda: _invoke_view_option(5)),
+    'ry+': ('Rotate Y Clockwise', lambda: _invoke_view_option(6)),
+    'ry-': ('Rotate Y Counterclockwise', lambda: _invoke_view_option(7)),
+    'rz+': ('Rotate Z Clockwise', lambda: _invoke_view_option(8)),
+    'rz-': ('Rotate Z Counterclockwise', lambda: _invoke_view_option(9)),
+    'ml': ('Move left', lambda: _invoke_view_option(10)),
+    'mr': ('Move right', lambda: _invoke_view_option(11)),
+    'mu': ('Move up', lambda: _invoke_view_option(12)),
+    'md': ('Move down', lambda: _invoke_view_option(13)),
+}
+
+
+def _pcbnew_export_3d(output_file, width, height, transforms):
     if os.path.exists(output_file):
         os.remove(output_file)
 
@@ -75,82 +101,14 @@ def _pcbnew_export_3d(output_file):
 
     # Maximize window
     xdotool(['search', '--name', '3D Viewer', 'windowmove', '0', '0'])
-    xdotool(['search', '--name', '3D Viewer', 'windowsize', str(WIDTH), str(HEIGHT)])
+    xdotool(['search', '--name', '3D Viewer', 'windowsize', str(width), str(height)])
 
     time.sleep(3)
 
-    logger.info('Zoom in')
-    for i in range(6):
-        xdotool([
-            'click',
-            '4',
-        ])
-        time.sleep(0.2)
-
-    logger.info('Move right')
-    xdotool([
-        'key',
-        'alt+v',
-        'Down',
-        'Down',
-        'Down',
-        'Down',
-        'Down',
-        'Down',
-        'Down',
-        'Down',
-        'Down',
-        'Down',
-        'Down',
-        'Return',
-    ])
-    time.sleep(2)
-
-    for i in range(2):
-        logger.info('Rotate X Clockwise')
-        xdotool([
-            'key',
-            'alt+v',
-            'Down',
-            'Down',
-            'Down',
-            'Down',
-            'Return',
-        ])
-        time.sleep(2)
-
-    for i in range(2):
-        logger.info('Rotate Y counter-clockwise')
-        xdotool([
-            'key',
-            'alt+v',
-            'Down',
-            'Down',
-            'Down',
-            'Down',
-            'Down',
-            'Down',
-            'Down',
-            'Return',
-        ])
-        time.sleep(2)
-
-    logger.info('Rotate Z counter-clockwise')
-    xdotool([
-        'key',
-        'alt+v',
-        'Down',
-        'Down',
-        'Down',
-        'Down',
-        'Down',
-        'Down',
-        'Down',
-        'Down',
-        'Down',
-        'Return',
-    ])
-    time.sleep(2)
+    for transform in transforms:
+        description, func = _transforms[transform]
+        logger.info(description)
+        func()
 
     logger.info('Wait for rendering...')
 
@@ -179,7 +137,7 @@ def _pcbnew_export_3d(output_file):
     time.sleep(2)
 
 
-def export_3d(filename):
+def export_3d(filename, width, height, transforms):
     pcb_file = os.path.abspath(filename)
     output_dir = os.path.join(electronics_root, 'build')
     file_util.mkdir_p(output_dir)
@@ -199,14 +157,25 @@ def export_3d(filename):
     }
     with patch_config(os.path.expanduser('~/.config/kicad/pcbnew'), settings):
         with versioned_file(pcb_file):
-            with recorded_xvfb(screencast_output_file, width=WIDTH, height=HEIGHT, colordepth=24):
+            with recorded_xvfb(screencast_output_file, width=width, height=height, colordepth=24):
                 with PopenContext(['pcbnew', pcb_file], close_fds=True) as pcbnew_proc:
-                    _pcbnew_export_3d(output_file)
+                    _pcbnew_export_3d(output_file, width, height, transforms)
                     pcbnew_proc.terminate()
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('pcb')
+    parser.add_argument('--width', type=int, default=2560)
+    parser.add_argument('--height', type=int, default=1440)
+
+    # Use subparsers to for an optional nargs="*" choices argument (workaround for https://bugs.python.org/issue9625)
+    subparsers = parser.add_subparsers(dest='which')
+    transform_parser = subparsers.add_parser('transform', help='Apply one or more transforms before capturing image')
+    transform_parser.add_argument('transform', nargs='+', choices=list(_transforms.keys()))
+
     args = parser.parse_args()
-    export_3d(args.pcb)
+
+    transforms = args.transform if args.which == 'transform' else []
+
+    export_3d(args.pcb, args.width, args.height, transforms)
