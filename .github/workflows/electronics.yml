@@ -130,7 +130,7 @@ jobs:
         env:
           PYTHONUNBUFFERED: 1
 
-
+      # Note: These kibot scripts are run last because they mess with file permissions which breaks other scripts, not sure why
       - uses: INTI-CMNB/KiBot@7409c994769074d67fef94641259e03c94aaae25
         with:
           config: electronics/chainlinkBase/chainlinkBase.kibot.yml

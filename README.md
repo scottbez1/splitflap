@@ -299,6 +299,9 @@ to validate data integrity up and down the whole chain
 * TPL7407L mosfet low-side drivers instead of ULN2003A/MIC5842 (lower on-resistance means less voltage drop in the driver = more torque, less waste heat, and less total current consumption)
 * Module order goes from right-to-left since this is intended to be installed and accessed from *behind* the modules
 
+This design is optimized for assembly at JLCPCB, and files are automatically generated for ordering assembled PCBs there.
+However, if you wish to manually assemble this board, you can view the [interactive BOM/placement tool](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/bom/chainlinkDriver-ibom.html)
+)
 
 <a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkDriver-schematic.pdf">
 <img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkDriver-schematic.png"/>
@@ -327,6 +330,8 @@ Key (planned) features:
   * When using a master relay for the 12V supply, directly connect 5V from an independent power supply
   * When omitting the master relay (meaning 12V supply is not controlled by the Base), Base can be powered with ~7V-28V by installing an optional DC-DC step down converter
 * 3.3V output for powering Chainlink Driver boards
+
+[View the interactive BOM/placement tool](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/bom/chainlinkBase-ibom.html)
 
 <a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkBase-schematic.pdf">
 <img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkBase-schematic.png"/>
@@ -358,6 +363,8 @@ Key (planned) features:
 * MCP23017 GPIO expander with 8 GPIO pins exposed via headers for future expansion inputs
 * Large cutout allows a barcode scanner or camera to aimed at the bottom of the board-under-test for tracking serial numbers. WS2812B LEDs can be added to illuminate the underside.
 * Buzzer option for audible pass/fail feedback
+
+[View the interactive BOM/placement tool](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/bom/chainlinkDriverTester-ibom.html)
 
 <a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkDriverTester-schematic.pdf">
 <img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkDriverTester-schematic.png"/>
