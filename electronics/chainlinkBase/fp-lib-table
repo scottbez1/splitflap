@@ -6,4 +6,5 @@
   (lib (name BK-6013)(type KiCad)(uri ${KIPRJMOD}/../lib/BK-6013.pretty)(options "")(descr ""))
   (lib (name ScrewTerminals)(type KiCad)(uri ${KIPRJMOD}/../lib/ScrewTerminals.pretty)(options "")(descr ""))
   (lib (name Buck)(type KiCad)(uri ${KIPRJMOD}/../lib/Buck.pretty)(options "")(descr ""))
+  (lib (name Dummy)(type KiCad)(uri ${KIPRJMOD}/../lib/Dummy.pretty)(options "")(descr ""))
 )

@@ -123,6 +123,23 @@ X Pin_3 3 -200 -100 150 R 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
+# Connector_TestPoint_Small
+#
+DEF Connector_TestPoint_Small TP 0 30 N N 1 F N
+F0 "TP" 0 150 50 H V C CNN
+F1 "Connector_TestPoint_Small" 0 80 50 H V C CNN
+F2 "" 200 0 50 H I C CNN
+F3 "" 200 0 50 H I C CNN
+$FPLIST
+ Pin*
+ Test*
+$ENDFPLIST
+DRAW
+C 0 0 20 0 1 0 N
+X 1 1 0 0 0 U 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
 # Device_CP_Small
 #
 DEF Device_CP_Small C 0 10 N N 1 F N
@@ -575,6 +592,18 @@ X CURSENSE 5 -600 -200 100 R 50 50 1 1 O
 X FR_DIAG 6 -600 0 100 R 50 50 1 1 I
 X GND 7 0 -500 100 U 50 50 1 1 W
 X VCC TAB 0 350 100 D 50 50 1 1 W
+ENDDRAW
+ENDDEF
+#
+# no_pin_no_pin
+#
+DEF no_pin_no_pin Z 0 40 Y Y 1 F N
+F0 "Z" -350 150 60 H V C CNN
+F1 "no_pin_no_pin" 0 0 60 H V C CNN
+F2 "" 0 0 60 H I C CNN
+F3 "" 0 0 60 H I C CNN
+DRAW
+S -400 100 400 -100 0 1 0 N
 ENDDRAW
 ENDDEF
 #
