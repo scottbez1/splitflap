@@ -16,15 +16,15 @@ jobs:
       - name: Set up outputs directory
         run: mkdir -p electronics/build/outputs
 
-      - name: Install dependencies
-        run: ./electronics/scripts/dependencies.sh
-
       - uses: INTI-CMNB/KiBot@7409c994769074d67fef94641259e03c94aaae25
         with:
-          config: electronics/chainlinkBase/chainlinkBase.kibot.yaml
+          config: electronics/chainlinkBase/chainlinkBase.kibot.yml
           dir: electronics/build
           schema: 'electronics/chainlinkBase/chainlinkBase.sch'
           board: 'electronics/chainlinkBase/chainlinkBase.kicad_pcb'
+
+      - name: Install dependencies
+        run: ./electronics/scripts/dependencies.sh
 
       - name: Export schematic
         run: |
