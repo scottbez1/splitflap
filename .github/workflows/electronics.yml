@@ -19,6 +19,13 @@ jobs:
       - name: Install dependencies
         run: ./electronics/scripts/dependencies.sh
 
+      - uses: INTI-CMNB/KiBot@7409c994769074d67fef94641259e03c94aaae25
+        with:
+          config: electronics/chainlinkBase/chainlinkBase.kibot.yaml
+          dir: electronics/build
+          schema: 'electronics/chainlinkBase/chainlinkBase.sch'
+          board: 'electronics/chainlinkBase/chainlinkBase.kicad_pcb'
+
       - name: Export schematic
         run: |
           ./electronics/scripts/export_schematic.py electronics/chainlinkDriver/chainlinkDriver.sch
