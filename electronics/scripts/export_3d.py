@@ -95,7 +95,7 @@ def _pcbnew_export_3d(output_file, width, height, transforms):
     logger.info('Open 3d viewer')
     xdotool(['key', 'alt+3'])
 
-    wait_for_window('3D Viewer', '3D Viewer', additional_commands=['windowfocus'])
+    wait_for_window('3D Viewer', '3D Viewer', additional_commands=['windowfocus'], timeout=30)
 
     time.sleep(3)
 
