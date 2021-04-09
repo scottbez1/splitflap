@@ -12,9 +12,9 @@ preflight:
 
 outputs:
   - name: ibom
-    comment: 'Prototype mounting guide'
+    comment: 'Interactive BOM'
     type: ibom
-    dir: build/bom
+    dir: bom
     options:
       layer_view: F
       dark_mode: true

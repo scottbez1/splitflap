@@ -23,6 +23,16 @@ jobs:
           schema: 'electronics/chainlinkBase/chainlinkBase.sch'
           board: 'electronics/chainlinkBase/chainlinkBase.kicad_pcb'
 
+      - uses: INTI-CMNB/KiBot@7409c994769074d67fef94641259e03c94aaae25
+        with:
+          config: electronics/chainlinkDriverTester/chainlinkDriverTester.kibot.yml
+          dir: electronics/build
+          schema: 'electronics/chainlinkDriverTester/chainlinkDriverTester.sch'
+          board: 'electronics/chainlinkDriverTester/chainlinkDriverTester.kicad_pcb'
+
+      - name: Copy BOM outputs
+        run: cp -r electronics/build/bom electronics/build/outputs
+
       - name: Install dependencies
         run: ./electronics/scripts/dependencies.sh
 
