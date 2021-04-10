@@ -1,4 +1,4 @@
-18619257508225120
+18627418644097931
 BK-6013
 BK-6013
 
@@ -316,6 +316,13 @@ battery CR-3032 coin cell vertical
 2
 Buck
 BuckModule
+
+
+0
+8
+4
+Buck
+BuckModuleBackSilk
 
 
 0
@@ -50455,6 +50462,13 @@ One digit LED 7 segment SA39-11 SC39-11 SA39-12 SC39-12
 0
 10
 10
+Dummy
+Dummy
+
+
+0
+0
+0
 ESP32
 D1_32
 
@@ -55971,6 +55985,34 @@ Yellow 5381 Series LED
 0
 2
 2
+ModifiedSymbols
+LED_0603_1608Metric_Silkscreen
+LED SMD 0603 (1608 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: http://www.tortai-tech.com/upload/download/2011102023233369053.pdf), generated with kicad-footprint-generator
+LED
+0
+2
+2
+ModifiedSymbols
+LED_0805_2012Metric_Silkscreen
+LED SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator
+LED
+0
+2
+2
+ModifiedSymbols
+SOIC-14_3.9x8.7mm_P1.27mm_silk
+SOIC, 14 Pin (JEDEC MS-012AB, https://www.analog.com/media/en/package-pcb-resources/package/pkg_pdf/soic_narrow-r/r_14.pdf), generated with kicad-footprint-generator ipc_gullwing_generator.py
+SOIC SO
+0
+14
+14
+ModifiedSymbols
+SOIC-16_3.9x9.9mm_P1.27mm_silk
+SOIC, 16 Pin (JEDEC MS-012AC, https://www.analog.com/media/en/package-pcb-resources/package/pkg_pdf/soic_narrow-r/r_16.pdf), generated with kicad-footprint-generator ipc_gullwing_generator.py
+SOIC SO
+0
+16
+16
 Module
 A20_OLINUXINO_LIME2
 A20 Olinuxino LIME2, 1.2GHz, 512-1024MB RAM, Micro-SD, NAND or eMMC, 1000Mbit Ethernet
@@ -58309,13 +58351,6 @@ DIL DIP PDIP 2.54mm 7.62mm 300mil
 0
 4
 4
-PJ-202A
-PJ-202A
-CONN POWER JACK 2.1MM PCB
-CONN POWER JACK 2.1MM PCB BARREL JACK
-0
-3
-3
 Package_BGA
 Analog_BGA-28_4.0x6.25mm_Layout4x7_P0.8mm_Ball0.45mm_Pad0.4
 Analog BGA-28 4.0mm x 6.25mm package, pitch 0.4mm pad, based on https://www.analog.com/media/en/technical-documentation/data-sheets/8063fa.pdf
@@ -74556,6 +74591,20 @@ EB147A-02-D
 0
 2
 2
+ScrewTerminals
+Generic-5.08-2P
+
+
+0
+2
+2
+ScrewTerminals
+Generic-5.08-3P
+
+
+0
+3
+3
 Sensor_Audio
 CUI_CMC-4013-SMT
 Omnidirectional, -42dB, reflowable, electret condenser microphone https://www.cuidevices.com/product/resource/cmc-4013-smt-tr.pdf
@@ -81003,17 +81052,3 @@ varistor SIOV
 0
 2
 2
-pogoPins
-pogo1mm
-
-
-0
-1
-1
-pogoPins
-pogo2mm
-
-
-0
-1
-1
