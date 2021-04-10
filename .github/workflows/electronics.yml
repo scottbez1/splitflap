@@ -131,14 +131,24 @@ jobs:
           PYTHONUNBUFFERED: 1
 
       # Note: These kibot scripts are run last because they mess with file permissions which breaks other scripts, not sure why
-      - uses: INTI-CMNB/KiBot@7409c994769074d67fef94641259e03c94aaae25
+      - name: Export BOM [chainlinkDriver]
+        uses: INTI-CMNB/KiBot@7409c994769074d67fef94641259e03c94aaae25
+        with:
+          config: electronics/chainlinkDriver/chainlinkDriver.kibot.yml
+          dir: electronics/build
+          schema: 'electronics/chainlinkDriver/chainlinkDriver.sch'
+          board: 'electronics/chainlinkDriver/chainlinkDriver.kicad_pcb'
+
+      - name: Export BOM [chainlinkBase]
+        uses: INTI-CMNB/KiBot@7409c994769074d67fef94641259e03c94aaae25
         with:
           config: electronics/chainlinkBase/chainlinkBase.kibot.yml
           dir: electronics/build
           schema: 'electronics/chainlinkBase/chainlinkBase.sch'
           board: 'electronics/chainlinkBase/chainlinkBase.kicad_pcb'
 
-      - uses: INTI-CMNB/KiBot@7409c994769074d67fef94641259e03c94aaae25
+      - name: Export BOM [chainlinkDriverTester]
+        uses: INTI-CMNB/KiBot@7409c994769074d67fef94641259e03c94aaae25
         with:
           config: electronics/chainlinkDriverTester/chainlinkDriverTester.kibot.yml
           dir: electronics/build
