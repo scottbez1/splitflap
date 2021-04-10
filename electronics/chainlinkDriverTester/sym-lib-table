@@ -2,5 +2,5 @@
   (lib (name ESP32Modules)(type Legacy)(uri ${KIPRJMOD}/../lib/ESP32Modules.lib)(options "")(descr ""))
   (lib (name VN7007ALHTR)(type Legacy)(uri ${KIPRJMOD}/../lib/VN7007ALHTR.lib)(options "")(descr ""))
   (lib (name BuckModule)(type Legacy)(uri ${KIPRJMOD}/../lib/BuckModule.lib)(options "")(descr ""))
-  (lib (name no_pin)(type Legacy)(uri /home/scott/src/splitflap/electronics/lib/no_pin.lib)(options "")(descr ""))
+  (lib (name no_pin)(type Legacy)(uri ${KIPRJMOD}/../lib/no_pin.lib)(options "")(descr ""))
 )
