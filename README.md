@@ -3,7 +3,7 @@
 This is a work in progress DIY [split-flap display](https://en.wikipedia.org/wiki/Split-flap_display).
 Prototype four-character display: [video](https://www.youtube.com/watch?v=vq4o_88kN8g).
 
-![animated rendering](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/3d/3d_animation.gif)
+![animated rendering](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_animation.gif)
 [![prototype video](renders/prototypeVideoThumbnail.jpg)](https://www.youtube.com/watch?v=vq4o_88kN8g)
 
 [![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml/badge.svg?branch=dev/newBoard)](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml)
@@ -44,18 +44,22 @@ I'd love to hear your thoughts and questions about this project, and happy to in
 
 **Important:** the files linked below are EXPERIMENTAL and have been auto-generated from the latest commit. They may contain changes that are untested or outright broken. Do not use these unless you are actively making changes to the project and know what you're doing. Otherwise, use the [latest stable release](https://github.com/scottbez1/splitflap/releases/latest).
 
-* Lasercut Vector File ([svg](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/3d/3d_laser_vector.svg))
+* Lasercut Vector File ([svg](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector.svg))
 * Classic Controller electronics
-    * Bill of Materials ([csv](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics-legacy/bom.csv))
-    * PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics-legacy/pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics-legacy/pcb_packet.pdf)), panelized ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics-legacy/panelized_pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics-legacy/panelized_pcb_packet.pdf))
-* Chainlink Driver electronics
-    * Schematic [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkDriver-schematic.pdf)
-    * PCB overview [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkDriver-pcb-packet.pdf)
-    * PCB gerbers [zip](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkDriver-jlc/gerbers.zip)
-    * PCB bom (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkDriver-jlc/bom.csv)
-    * PCB component positions (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkDriver-jlc/pos.csv)
-* Sensor PCB, panelized ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics-legacy/sensor_pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics-legacy/sensor_pcb_packet.pdf))
-
+    * Bill of Materials ([csv](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/bom.csv))
+    * PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/pcb_packet.pdf)), panelized ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/panelized_pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/panelized_pcb_packet.pdf))
+* Sensor PCB, panelized ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/sensor_pcb_gerber.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/sensor_pcb_packet.pdf))
+* Chainlink Driver PCB
+    * Schematic [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriver-schematic.pdf)
+    * PCB overview [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriver-pcb-packet.pdf)
+    * PCB gerbers [zip](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriver-jlc/gerbers.zip)
+    * PCB bom (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriver-jlc/bom.csv)
+    * PCB bom (for manual assembly) [link](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/bom/chainlinkDriver-ibom.html)
+* Chainlink Base PCB
+    * Schematic [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkBase-schematic.pdf)
+    * PCB overview [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkBase-pcb-packet.pdf)
+    * PCB gerbers [zip](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkBase-jlc/gerbers.zip)
+    * PCB bom (for manual assembly) [link](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/bom/chainlinkBase-ibom.html)
 If you are interested in building a display, I recommend using [one of the stable releases instead](https://github.com/scottbez1/splitflap/releases).
 
 ### Design Highlights
@@ -65,7 +69,7 @@ If you are interested in building a display, I recommend using [one of the stabl
 * store-bought vinyl stickers for flap letters
 * control up to 12 modules from a single Arduino Uno
 
-![2d laser cut rendering](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/3d/3d_laser_raster.png)
+![2d laser cut rendering](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_raster.png)
 
 # Build Your Own
 
@@ -240,8 +244,8 @@ These boards are small (about 16mm x 16 mm) and are available on a second PCB de
 The panelization is configurable (see [generate_panelize_config.py](electronics/scripts/panelize/generate_panelize_config.py))
 and is optimized for production at SeeedStudio.
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics-legacy/sensor_pcb_raster.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics-legacy/sensor_pcb_raster.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/sensor_pcb_raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/sensor_pcb_raster.png"/>
 </a>
 
 
@@ -254,14 +258,14 @@ Nearly everything is a through-hole component rather than SMD, so it's very easy
 The driver uses 2 MIC5842 low-side shift-register drivers, with built-in transient-suppression diodes, to control the motors, and a 74HC165 shift register to read from 4 hall-effect magnetic home position sensors.
 There are optional WS2812B RGB LEDs which can be used to indicate the status of each of the 4 channels.
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics-legacy/schematic.pdf">
-<img height="320" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics-legacy/schematic.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/schematic.pdf">
+<img height="320" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/schematic.png"/>
 </a>
 
 The PCB layout is 10cm x 5cm which makes it fairly cheap to produce using a low-cost PCB manufacturer (e.g. Seeed Studio).
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics-legacy/pcb_raster.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics-legacy/pcb_raster.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/pcb_raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/pcb_raster.png"/>
 </a>
 
 
@@ -280,8 +284,8 @@ Driver boards can be chained together to construct a large display.
 power management/distribution, and sends data to the chained Driver boards.
 
 #### Chainlink Driver
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkDriver-3d.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkDriver-3d.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriver-3d.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriver-3d.png"/>
 </a>
 
 This is currently under active development. It has been tested and appears to work, but is not yet recommended for general use.
@@ -300,20 +304,19 @@ to validate data integrity up and down the whole chain
 * Module order goes from right-to-left since this is intended to be installed and accessed from *behind* the modules
 
 This design is optimized for assembly at JLCPCB, and files are automatically generated for ordering assembled PCBs there.
-However, if you wish to manually assemble this board, you can view the [interactive BOM/placement tool](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/bom/chainlinkDriver-ibom.html)
-)
+However, if you wish to assemble this board yourself, you can view the [interactive BOM/placement tool](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/bom/chainlinkDriver-ibom.html)
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkDriver-schematic.pdf">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkDriver-schematic.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriver-schematic.pdf">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriver-schematic.png"/>
 </a>
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkDriver-pcb-raster.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkDriver-pcb-raster.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriver-pcb-raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriver-pcb-raster.png"/>
 </a>
 
 #### Chainlink Base
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkBase-3d.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkBase-3d.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkBase-3d.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkBase-3d.png"/>
 </a>
 
 This is currently under very active development. _It is **untested** and does not have firmware yet._
@@ -321,31 +324,33 @@ This is currently under very active development. _It is **untested** and does no
 Key (planned) features:
 * TTGO T-Display ESP32 module as the controller, which includes USB-C, color IPS LCD display and buttons
 * Optional master relay output for 12V PSU control (5V relay, up to ~500mA coil current)
-  * Future firmware will power on PSU after a startup self-test, and power off PSU in case of any faults
+  * Future firmware will power on the 12V PSU after a startup self-test, and power off PSU in case of any faults
 * 5 channels of independently monitored 12V switches for powering groups of Chainlink Driver boards (6-8A max per channel)
+  * Depending on the motors you use, each channel may be able to power about 5 Chainlink Driver boards which is 30 splitflap modules
   * Each channel includes an automotive fuse holder for additional over-current protection
   * INA219 and shunt resistor provide high fidelity voltage and current monitoring 
   * Future firmware will power on each channel after a startup self-test, and power off the channel in case of any faults
-* Flexible controller power
-  * When using a master relay for the 12V supply, directly connect 5V from an independent power supply
-  * When omitting the master relay (meaning 12V supply is not controlled by the Base), Base can be powered with ~7V-28V by installing an optional DC-DC step down converter
-* 3.3V output for powering Chainlink Driver boards
+  * 3.3V output for powering many Chainlink Driver boards
+* Flexible controller input power
+  * USB power from the T-Display works by default, though external power is recommended for larger displays
+  * Regulated 5V can be connected direct to the screw terminals, or
+  * if you are using an always-on 12V PSU without a master relay, you can install a buck module and power the board from 12V using the 7-28V screw terminals
 
-[View the interactive BOM/placement tool](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/bom/chainlinkBase-ibom.html)
+[View the interactive BOM/placement tool](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/bom/chainlinkBase-ibom.html)
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkBase-schematic.pdf">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkBase-schematic.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkBase-schematic.pdf">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkBase-schematic.png"/>
 </a>
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkBase-pcb-raster.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkBase-pcb-raster.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkBase-pcb-raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkBase-pcb-raster.png"/>
 </a>
 
 ### Electrical tools
 
 #### Chainlink Driver Tester
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkDriverTester-3d.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkDriverTester-3d.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriverTester-3d.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriverTester-3d.png"/>
 </a>
 
 This is not likely to be useful unless you're assembling a _very_ large display, but the Chainlink Driver Tester is a complete testbed
@@ -364,14 +369,14 @@ Key (planned) features:
 * Large cutout allows a barcode scanner or camera to aimed at the bottom of the board-under-test for tracking serial numbers. WS2812B LEDs can be added to illuminate the underside.
 * Buzzer option for audible pass/fail feedback
 
-[View the interactive BOM/placement tool](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/bom/chainlinkDriverTester-ibom.html)
+[View the interactive BOM/placement tool](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/bom/chainlinkDriverTester-ibom.html)
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkDriverTester-schematic.pdf">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkDriverTester-schematic.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriverTester-schematic.pdf">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriverTester-schematic.png"/>
 </a>
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkDriverTester-pcb-raster.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkBase/electronics/chainlinkDriverTester-pcb-raster.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriverTester-pcb-raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriverTester-pcb-raster.png"/>
 </a>
 
 ### Rendering
