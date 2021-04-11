@@ -1,4 +1,4 @@
-18627418644097931
+18629043349326931
 BK-6013
 BK-6013
 
@@ -55999,6 +55999,13 @@ LED
 0
 2
 2
+ModifiedSymbols
+PinHeader_1x03_P2.54mm_Vertical_SolderJumper
+Through hole straight pin header, 1x03, 2.54mm pitch, single row
+Through hole pin header THT 1x03 2.54mm single row
+0
+3
+3
 ModifiedSymbols
 SOIC-14_3.9x8.7mm_P1.27mm_silk
 SOIC, 14 Pin (JEDEC MS-012AB, https://www.analog.com/media/en/package-pcb-resources/package/pkg_pdf/soic_narrow-r/r_14.pdf), generated with kicad-footprint-generator ipc_gullwing_generator.py

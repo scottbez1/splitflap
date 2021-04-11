@@ -1799,7 +1799,7 @@ U 1 1 608A0DD3
 P 15000 8550
 F 0 "JP101" H 15000 8735 50  0000 C CNN
 F 1 "LEDs" H 15000 8644 50  0000 C CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical" H 15000 8550 50  0001 C CNN
+F 2 "ModifiedSymbols:PinHeader_1x03_P2.54mm_Vertical_SolderJumper" H 15000 8550 50  0001 C CNN
 F 3 "~" H 15000 8550 50  0001 C CNN
 	1    15000 8550
 	1    0    0    -1  
