@@ -239,9 +239,13 @@ control, though this isn't currently implemented in firmware yet. For the latest
 Slack group.
 
 ### Module Electronics
-Each module also needs a hall-effect sensor board, with an AH3391Q (or similar) sensor and connector.
-These boards are small (about 16mm x 16 mm) and are available on a second PCB design that's panelized.
-The panelization is configurable (see [generate_panelize_config.py](electronics/scripts/panelize/generate_panelize_config.py))
+Each module needs a hall-effect sensor for start-up calibration and fault monitoring. This can be mounted in
+[different ways](https://github.com/scottbez1/splitflap/wiki/Electronics#sensor-board-alternative) but the recommended
+approach is to use a small PCB, with an AH3391Q (or similar) sensor and connector, which mounts to the side of the
+module with a single screw and can easily be adjusted for precise calibration.
+
+These boards are small (about 16mm x 16 mm) and the designs are available as a panelized PCB, which can be snapped
+apart. The panelization is configurable (see [generate_panelize_config.py](electronics/scripts/panelize/generate_panelize_config.py))
 and is optimized for production at SeeedStudio.
 
 <a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-legacy/sensor_pcb_raster.png">
@@ -333,7 +337,7 @@ Key (planned) features:
   * 3.3V output for powering many Chainlink Driver boards
 * Flexible controller input power
   * USB power from the T-Display works by default, though external power is recommended for larger displays
-  * Regulated 5V can be connected direct to the screw terminals, or
+  * Regulated 5V can be connected directly to the screw terminals, or
   * if you are using an always-on 12V PSU without a master relay, you can install a buck module and power the board from 12V using the 7-28V screw terminals
 
 [View the interactive BOM/placement tool](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/bom/chainlinkBase-ibom.html)
@@ -359,14 +363,14 @@ for Chainlink Driver boards as they come assembled by the PCBA fabricator.
 This is currently under very active development. _It is **untested** and does not have firmware yet._
 
 Key (planned) features:
-* TTGO T-Display (ESP32) controller, screen, and buttons for test control and results
+* TTGO T-Display (ESP32) controller, screen, and buttons for controlling tests and reporting results
 * Pogo-pins for all connectors on the Chainlink Driver board-under-test (screw terminals, sensor pin headers, and motor connectors)
-* Switchable 12V supply to the board-under-test, with automotive fuse and INA219 voltage/current monitoring (based on the Chainlink Base channel switch design)
+* 12V switch to supply motor power to the board-under-test, with automotive fuse and INA219 voltage/current monitoring (based on the Chainlink Base channel switch design)
 * Separate 3.3V supply for the board-under-test, protected with a polyfuse, should avoid browning out the Tester's MCU in case of 3.3V short-circuits
 * Motor and sensor connections are broken out from the pogo-pins for a full closed-loop hardware test
 * Screw terminals to chain another Chainlink Driver (not under test) to validate that chained outputs work on the board-under-test
 * MCP23017 GPIO expander with 8 GPIO pins exposed via headers for future expansion inputs
-* Large cutout allows a barcode scanner or camera to aimed at the bottom of the board-under-test for tracking serial numbers. WS2812B LEDs can be added to illuminate the underside.
+* Large cutout allows a barcode scanner or camera to be aimed at the bottom of the board-under-test for tracking serial numbers. WS2812B LEDs can be added to illuminate the underside.
 * Buzzer option for audible pass/fail feedback
 
 [View the interactive BOM/placement tool](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/bom/chainlinkDriverTester-ibom.html)
@@ -398,7 +402,7 @@ EESchema isn't easily scriptable, so to export the schematic and bill of materia
 ### Firmware
 The driver firmware is written using Arduino and is available at [`arduino/splitflap/Splitflap/Splitflap.ino`](arduino/splitflap/Splitflap/Splitflap.ino). 
 
-The firmware currently runs a basic closed-loop controller that accepts letters over USB serial and drives the stepper motors using a precomputed acceleration ramp for smooth control. The firmware automatically calibrates the spool position at startup, using the hall-effect magnetic sensor, and will automatically recalibrate itself if it ever detects that the spool position has gotten out of sync. If a commanded rotation is expected to bring the spool past the "home" position, it will confirm that the sensor is triggered neither too early nor too late; otherwise it will search for the "home" position to get in sync before continuing to the desired letter.
+The firmware implements a closed-loop controller that accepts letters as input over USB serial and drives the stepper motors using a precomputed acceleration ramp for smooth control. The firmware automatically calibrates the spool position at startup, using the hall-effect magnetic sensor, and will automatically recalibrate itself if it ever detects that the spool position has gotten out of sync. If a commanded rotation is expected to bring the spool past the "home" position, it will confirm that the sensor is triggered neither too early nor too late; otherwise it will search for the "home" position to get in sync before continuing to the desired letter.
 
 ### Computer Control Software
 The display can be controlled by a computer connected to the Arduino over USB serial. A basic python library for interfacing with the Arduino and a demo application that displays random words can be found in the [software](software) directory.
