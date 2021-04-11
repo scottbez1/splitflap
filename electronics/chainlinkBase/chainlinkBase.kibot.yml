@@ -1,0 +1,23 @@
+kibot:
+  version: 1
+
+preflight:
+  check_zone_fills: true
+  run_drc: true
+  run_erc: true
+  filters:
+    - filter: 'Overlapping headers'
+      number: 45
+      regex: '(?s)Footprint J112(.*)Footprint J111'
+  update_xml: true
+
+outputs:
+  - name: ibom
+    comment: 'Interactive BOM'
+    type: ibom
+    dir: bom
+    options:
+      layer_view: F
+      dark_mode: true
+      netlist_file: '%F.xml'
+      extra_fields: 'DK#'

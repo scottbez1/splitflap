@@ -17,15 +17,37 @@
 
 DisplayTask::DisplayTask(SplitflapTask& splitflap_task, const uint8_t task_core) : Task{"Display", 8192, 1, task_core}, splitflap_task_{splitflap_task} {}
 
+
+// Customize these settings and layout algorithm if you have a different arrangement of modules:
+static const uint8_t COLUMNS = 24;
+static const int32_t MODULE_WIDTH = 8;
+static const int32_t MODULE_HEIGHT = 13;
+static void getLayoutPosition(const uint8_t module_index, int32_t* out_x, int32_t* out_y) {
+    uint8_t row = module_index / COLUMNS;
+
+    // Each row alternates left-to-right, then right-to-left so data can be easily chained,
+    // winding back and forth down the rows.
+    uint8_t col = (row % 2) ?
+        (COLUMNS - 1 - (module_index % COLUMNS))
+        : module_index % COLUMNS;
+
+    // Leave an empty row and column for headers, and add 1 to width/height as a separator line between modules
+    *out_x = (col + 1) * (MODULE_WIDTH + 1);
+    *out_y = (row + 1) * (MODULE_HEIGHT + 1);
+}
+
+
 void DisplayTask::run() {
     tft_.begin();
     tft_.invertDisplay(1);
-    tft_.setRotation(0);
+    tft_.setRotation(3);
 
     spr_.setColorDepth(16);
-    spr_.createSprite(TFT_WIDTH, TFT_HEIGHT);
-    spr_.setFreeFont(&FreeMono9pt7b);
+    spr_.createSprite(TFT_HEIGHT, TFT_WIDTH);
+    spr_.setTextFont(0);
     spr_.setTextColor(0xFFFF, TFT_BLACK);
+
+    int32_t module_x, module_y;
     while(1) {
         SplitflapState state = splitflap_task_.getState();
 
@@ -33,11 +55,14 @@ void DisplayTask::run() {
         loop_count++;
 
         spr_.fillSprite(TFT_BLACK);
+        spr_.fillRect(MODULE_WIDTH, MODULE_HEIGHT, COLUMNS * (MODULE_WIDTH + 1) + 1, ((NUM_MODULES + COLUMNS - 1) / COLUMNS) * (MODULE_HEIGHT + 1) + 1, 0x2104);
 
         for (uint8_t i = 0; i < NUM_MODULES; i++) {
             SplitflapModuleState& s = state.modules[i];
 
-            spr_.setCursor(0, 15 + i*17);
+            uint16_t background = 0x0000;
+            uint16_t foreground = 0xFFFF;
+
             char c;
             switch (s.state) {
                 case NORMAL:
@@ -45,21 +70,29 @@ void DisplayTask::run() {
                     break;
                 case PANIC:
                     c = '~';
+                    background = 0xD000;
                     break;
                 case STATE_DISABLED:
                     c = '*';
                     break;
                 case LOOK_FOR_HOME:
                     c = '?';
+                    background = 0x6018;
                     break;
                 case SENSOR_ERROR:
-                    c = '!';
+                    c = ' ';
+                    background = 0xD461;
+                    foreground = 0x0000;
                     break;
                 default:
                     c = ' ';
                     break;
             }
-            spr_.printf("%c %c", 'A' + i, c);
+            getLayoutPosition(i, &module_x, &module_y);
+            spr_.setTextColor(foreground, background);
+            spr_.fillRect(module_x, module_y, MODULE_WIDTH, MODULE_HEIGHT, background);
+            spr_.setCursor(module_x + 1, module_y + 2);
+            spr_.printf("%c", c);
         }
 
         spr_.pushSprite(0, 0);

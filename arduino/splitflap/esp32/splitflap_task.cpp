@@ -236,6 +236,14 @@ void SplitflapTask::runUpdate() {
 
       // Output LED state
       motor_sensor_io();
+
+      if (iterationStartMillis - last_sensor_print_millis_ > 200) {
+        last_sensor_print_millis_ = iterationStartMillis;
+        for (uint8_t i = 0; i < NUM_MODULES; i++) {
+            Serial.write(modules[i]->GetHomeState() ? '1' : '0');
+        }
+        Serial.println();
+      }
     }
 
 #if INA219_POWER_SENSE

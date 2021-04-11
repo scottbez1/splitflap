@@ -29,7 +29,7 @@ jobs:
 
       - name: Render PCB 3D
         run: |
-          ./electronics/scripts/export_3d.py electronics/chainlinkDriver/chainlinkDriver.kicad_pcb
+          ./electronics/scripts/export_3d.py electronics/chainlinkDriver/chainlinkDriver.kicad_pcb --width 2000 --height 800 transform z+ z+ z+ z+ z+ z+ z+ z+ mr rx+ rx+ ry- ry- rz-
           cp electronics/build/chainlinkDriver-3d.png electronics/build/outputs/chainlinkDriver-3d.png
           ./scripts/annotate_image.sh electronics/build/outputs/chainlinkDriver-3d.png
         env:
@@ -37,8 +37,8 @@ jobs:
 
       - name: Export JLCPCB fabrication files
         run: |
-          ./electronics/scripts/export_jlcpcb.py electronics/chainlinkDriver/chainlinkDriver.sch electronics/chainlinkDriver/chainlinkDriver.kicad_pcb
-          cp -r electronics/build/jlc electronics/build/outputs
+          ./electronics/scripts/export_jlcpcb.py electronics/chainlinkDriver/chainlinkDriver.kicad_pcb --assembly-schematic electronics/chainlinkDriver/chainlinkDriver.sch
+          cp -r electronics/build/chainlinkDriver-jlc electronics/build/outputs
 
       - name: Export PCB overview PDF
         run: |
@@ -54,6 +54,110 @@ jobs:
           ./scripts/annotate_image.sh electronics/build/outputs/chainlinkDriver-pcb-raster.png
         env:
           PYTHONUNBUFFERED: 1
+
+      # TODO: avoid duplication
+      - name: Export schematic [chainlinkDriverTester]
+        run: |
+          ./electronics/scripts/export_schematic.py electronics/chainlinkDriverTester/chainlinkDriverTester.sch
+          cp electronics/build/chainlinkDriverTester.pdf electronics/build/outputs/chainlinkDriverTester-schematic.pdf
+          cp electronics/build/chainlinkDriverTester.png electronics/build/outputs/chainlinkDriverTester-schematic.png
+        env:
+          PYTHONUNBUFFERED: 1
+
+      - name: Render PCB 3D [chainlinkDriverTester]
+        run: |
+          ./electronics/scripts/export_3d.py electronics/chainlinkDriverTester/chainlinkDriverTester.kicad_pcb --width 1600 --height 1100 transform z+ z+ z+ z+ z+ mu mr mr rx+ rx+ ry- ry- rz-
+          cp electronics/build/chainlinkDriverTester-3d.png electronics/build/outputs/chainlinkDriverTester-3d.png
+          ./scripts/annotate_image.sh electronics/build/outputs/chainlinkDriverTester-3d.png
+        env:
+          PYTHONUNBUFFERED: 1
+
+      - name: Export JLCPCB fabrication files [chainlinkDriverTester]
+        run: |
+          ./electronics/scripts/export_jlcpcb.py electronics/chainlinkDriverTester/chainlinkDriverTester.kicad_pcb
+          cp -r electronics/build/chainlinkDriverTester-jlc electronics/build/outputs
+
+      - name: Export PCB overview PDF [chainlinkDriverTester]
+        run: |
+          ./electronics/scripts/generate_pdf.py electronics/chainlinkDriverTester/chainlinkDriverTester.kicad_pcb
+          cp electronics/build/chainlinkDriverTester-pcb-packet.pdf electronics/build/outputs/chainlinkDriverTester-pcb-packet.pdf
+        env:
+          PYTHONUNBUFFERED: 1
+
+      - name: Export PCB SVG [chainlinkDriverTester]
+        run: |
+          ./electronics/scripts/generate_svg.py electronics/chainlinkDriverTester/chainlinkDriverTester.kicad_pcb
+          cp electronics/build/chainlinkDriverTester_merged.png electronics/build/outputs/chainlinkDriverTester-pcb-raster.png
+          ./scripts/annotate_image.sh electronics/build/outputs/chainlinkDriverTester-pcb-raster.png
+        env:
+          PYTHONUNBUFFERED: 1
+
+
+      # TODO: avoid duplication
+      - name: Export schematic [chainlinkBase]
+        run: |
+          ./electronics/scripts/export_schematic.py electronics/chainlinkBase/chainlinkBase.sch
+          cp electronics/build/chainlinkBase.pdf electronics/build/outputs/chainlinkBase-schematic.pdf
+          cp electronics/build/chainlinkBase-0.png electronics/build/outputs/chainlinkBase-schematic.png
+        env:
+          PYTHONUNBUFFERED: 1
+
+      - name: Render PCB 3D [chainlinkBase]
+        run: |
+          ./electronics/scripts/export_3d.py electronics/chainlinkBase/chainlinkBase.kicad_pcb --width 1000 --height 1500 transform z+ z+ mu rx+ rx+ ry- ry- rz-
+          cp electronics/build/chainlinkBase-3d.png electronics/build/outputs/chainlinkBase-3d.png
+          ./scripts/annotate_image.sh electronics/build/outputs/chainlinkBase-3d.png
+        env:
+          PYTHONUNBUFFERED: 1
+
+      - name: Export JLCPCB fabrication files [chainlinkBase]
+        run: |
+          ./electronics/scripts/export_jlcpcb.py electronics/chainlinkBase/chainlinkBase.kicad_pcb
+          cp -r electronics/build/chainlinkBase-jlc electronics/build/outputs
+
+      - name: Export PCB overview PDF [chainlinkBase]
+        run: |
+          ./electronics/scripts/generate_pdf.py electronics/chainlinkBase/chainlinkBase.kicad_pcb
+          cp electronics/build/chainlinkBase-pcb-packet.pdf electronics/build/outputs/chainlinkBase-pcb-packet.pdf
+        env:
+          PYTHONUNBUFFERED: 1
+
+      - name: Export PCB SVG [chainlinkBase]
+        run: |
+          ./electronics/scripts/generate_svg.py electronics/chainlinkBase/chainlinkBase.kicad_pcb
+          cp electronics/build/chainlinkBase_merged.png electronics/build/outputs/chainlinkBase-pcb-raster.png
+          ./scripts/annotate_image.sh electronics/build/outputs/chainlinkBase-pcb-raster.png
+        env:
+          PYTHONUNBUFFERED: 1
+
+      # Note: These kibot scripts are run last because they mess with file permissions which breaks other scripts, not sure why
+      - name: Export BOM [chainlinkDriver]
+        uses: INTI-CMNB/KiBot@7409c994769074d67fef94641259e03c94aaae25
+        with:
+          config: electronics/chainlinkDriver/chainlinkDriver.kibot.yml
+          dir: electronics/build
+          schema: 'electronics/chainlinkDriver/chainlinkDriver.sch'
+          board: 'electronics/chainlinkDriver/chainlinkDriver.kicad_pcb'
+
+      - name: Export BOM [chainlinkBase]
+        uses: INTI-CMNB/KiBot@7409c994769074d67fef94641259e03c94aaae25
+        with:
+          config: electronics/chainlinkBase/chainlinkBase.kibot.yml
+          dir: electronics/build
+          schema: 'electronics/chainlinkBase/chainlinkBase.sch'
+          board: 'electronics/chainlinkBase/chainlinkBase.kicad_pcb'
+
+      - name: Export BOM [chainlinkDriverTester]
+        uses: INTI-CMNB/KiBot@7409c994769074d67fef94641259e03c94aaae25
+        with:
+          config: electronics/chainlinkDriverTester/chainlinkDriverTester.kibot.yml
+          dir: electronics/build
+          schema: 'electronics/chainlinkDriverTester/chainlinkDriverTester.sch'
+          board: 'electronics/chainlinkDriverTester/chainlinkDriverTester.kicad_pcb'
+
+      - name: Copy BOM outputs
+        run: cp -r electronics/build/bom electronics/build/outputs
+
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
