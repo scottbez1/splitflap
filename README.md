@@ -370,7 +370,7 @@ Key (planned) features:
 * Motor and sensor connections are broken out from the pogo-pins for a full closed-loop hardware test
 * Screw terminals to chain another Chainlink Driver (not under test) to validate that chained outputs work on the board-under-test
 * MCP23017 GPIO expander with 8 GPIO pins exposed via headers for future expansion inputs
-* Large cutout allows a barcode scanner or camera to be aimed at the bottom of the board-under-test for tracking serial numbers. WS2812B LEDs can be added to illuminate the underside.
+* Large cutout allows a barcode scanner or camera to be aimed at the bottom of the board-under-test for tracking serial numbers.
 * Buzzer option for audible pass/fail feedback
 
 [View the interactive BOM/placement tool](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/bom/chainlinkDriverTester-ibom.html)

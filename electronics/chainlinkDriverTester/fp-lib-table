@@ -9,4 +9,5 @@
   (lib (name Buck)(type KiCad)(uri ${KIPRJMOD}/../lib/Buck.pretty)(options "")(descr ""))
   (lib (name Dummy)(type KiCad)(uri ${KIPRJMOD}/../lib/Dummy.pretty)(options "")(descr ""))
   (lib (name ModifiedSymbols)(type KiCad)(uri ${KIPRJMOD}/../lib/ModifiedSymbols.pretty)(options "")(descr ""))
+  (lib (name SwitchESE13)(type KiCad)(uri ${KIPRJMOD}/../lib/SwitchESE13.pretty)(options "")(descr ""))
 )
