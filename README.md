@@ -285,8 +285,9 @@ This electronics design is still in very active development, and not recommended
 The Chainlink system uses 2 PCB designs:
 * Each **Chainlink Driver** board accepts data and power and connects to **6** individual split-flap modules. Chainlink
 Driver boards can be chained together to construct a large display.
-* A **Chainlink Base** board holds the microcontroller (ESP32 with USB, Wifi, BLE capabilities), central
-power management/distribution, and sends data to the chained Driver boards.
+* An optional **Chainlink Base** board holds the microcontroller (ESP32 with USB, Wifi, BLE capabilities), central
+power management/distribution, and sends data to the chained Driver boards. You can omit this PCB and wire an ESP32
+directly to one or more Chainlink Driver boards with no additional components (other than power supply).
 
 #### Chainlink Driver
 <a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriver-3d.png">
@@ -325,6 +326,13 @@ However, if you wish to assemble this board yourself, you can view the [interact
 </a>
 
 This is currently under very active development. _It is **untested** and does not have firmware yet._
+
+The Chainlink Base PCB is an optional component of the Chainlink system, designed for particularly large displays.
+It hosts the ESP32 and adds additional connectivity options (terminals for UART and RS485 serial) and
+power distribution (independently-monitored power channels for multiple "zones" of Driver boards).
+
+I would generally recommend wiring an ESP32 directly rather than using a Chainlink Base PCB unless you are building a
+large (50+ module) display.
 
 Key (planned) features:
 * TTGO T-Display ESP32 module as the controller, which includes USB-C, color IPS LCD display and buttons
