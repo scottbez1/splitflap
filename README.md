@@ -54,6 +54,7 @@ I'd love to hear your thoughts and questions about this project, and happy to in
     * PCB overview [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriver-pcb-packet.pdf)
     * PCB gerbers [zip](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriver-jlc/gerbers.zip)
     * PCB bom (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriver-jlc/bom.csv)
+    * PCB CPL (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkDriver-jlc/pos.csv)
     * PCB bom (for manual assembly) [link](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/bom/chainlinkDriver-ibom.html)
 * Chainlink Base PCB
     * Schematic [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/chainlinkBase-schematic.pdf)
