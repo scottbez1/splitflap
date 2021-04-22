@@ -9,7 +9,8 @@ def git_short_rev():
             '--short',
             'HEAD',
         ]).decode('utf-8').strip()
-    except (FileNotFoundError, subprocess.CalledProcessError):
+    except Exception as e:
+        print("Exception: " + type(e).__name__ + " while trying to find git revision")
         return "notfound"
 
 def current_date():
