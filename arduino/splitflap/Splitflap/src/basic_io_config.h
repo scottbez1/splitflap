@@ -25,9 +25,16 @@
   #if NUM_MODULES > 3
   #error "Basic IO mode only supports up to 3 modules on Atmega168/328-based boards. Set NUM_MODULES to 3 or fewer."
   #endif
+  // Motor A: PB0-3 = pins 8-11
+  // Motor B: PD4-7 = pins 4-7
+  // Motor C: PC0-3 = pins A0-A3
 
-  SplitflapModule moduleA((uint8_t&)PORTD, 4, (uint8_t&)PINB, B00010000);
-  SplitflapModule moduleB((uint8_t&)PORTB, 0, (uint8_t&)PINC, B00010000);
+  // Sensor A: PB4 = pin 12
+  // Sensor B: PC4 = pin A4
+  // Sensor C: PC5 = pin A5
+
+  SplitflapModule moduleA((uint8_t&)PORTB, 0, (uint8_t&)PINB, B00010000);
+  SplitflapModule moduleB((uint8_t&)PORTD, 4, (uint8_t&)PINC, B00010000);
   SplitflapModule moduleC((uint8_t&)PORTC, 0, (uint8_t&)PINC, B00100000);
 
   SplitflapModule* modules[] = {
@@ -38,8 +45,8 @@
 
   void initialize_modules() {
     // Initialize motor outputs
-    DDRD |= 0xF0; // Motor A
-    DDRB |= 0xF; // Motor B
+    DDRB |= 0xF; // Motor A
+    DDRD |= 0xF0; // Motor B
     DDRC |= 0xF; // Motor C
 
     // Initialize sensor inputs with pullups
