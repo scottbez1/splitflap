@@ -40,7 +40,7 @@ static void getLayoutPosition(const uint8_t module_index, int32_t* out_x, int32_
 void DisplayTask::run() {
     tft_.begin();
     tft_.invertDisplay(1);
-    tft_.setRotation(3);
+    tft_.setRotation(1);
 
     spr_.setColorDepth(16);
     spr_.createSprite(TFT_HEIGHT, TFT_WIDTH);
