@@ -46,8 +46,8 @@ if __name__ == '__main__':
     parser.add_argument('-x', '--offset-x', type=float, help='Character offset from center, X-axis')
     parser.add_argument('-y', '--offset-y', type=float, help='Character offset from center, Y-axis')
 
-    parser.add_argument('--start-row', type=int, help="The starting row to render, 0-indexed")
-    parser.add_argument('--row-count', type=int, help="Number of rows to render")
+    parser.add_argument('--start-row', type=int, help='The starting row to render, 0-indexed')
+    parser.add_argument('--row-count', type=int, help='Number of rows to render')
 
     parser.add_argument('--double-sided', action='store_true', help='Generate double sided print')
     parser.add_argument('--ncolumns', type=int, help='Number of columns / characters per row')
