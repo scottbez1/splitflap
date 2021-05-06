@@ -18,6 +18,8 @@ from collections import defaultdict
 from svg.path import (
     Path,
     Line,
+    Move,
+    Close,
     parse_path,
 )
 from xml.dom import minidom
@@ -137,19 +139,21 @@ class SvgProcessor(object):
             path_obj = parse_path(path_text)
             for line_index, line in enumerate(path_obj):
                 slope, intersect = _get_slope_intersect(line.start, line.end)
-
-                # TODO: float inaccuracy and rounding may cause collinear lines to end up in separate buckets in rare
-                # cases, so this is not quite correct. Would be better to put lines into *2* nearest buckets in each
-                # dimension to avoid edge cases.
-                if slope is not None:
-                    slope = round(slope, ndigits=3)
-                intersect = round(intersect, ndigits=3)
-                lines_bucketed_by_slope_intersect[(slope, intersect)].append({
-                    'overall_index': overall_index,
-                    'path_index': path_index,
-                    'line_index': line_index,
-                    'line': line,
-                })
+                # Moves don't draw anything by themselves, but they do set the
+                # target for subsequent closes, so they should not be removed.
+                if not isinstance(line, Move):
+                    # TODO: float inaccuracy and rounding may cause collinear lines to end up in separate buckets in rare
+                    # cases, so this is not quite correct. Would be better to put lines into *2* nearest buckets in each
+                    # dimension to avoid edge cases.
+                    if slope is not None:
+                        slope = round(slope, ndigits=3)
+                    intersect = round(intersect, ndigits=3)
+                    lines_bucketed_by_slope_intersect[(slope, intersect)].append({
+                        'overall_index': overall_index,
+                        'path_index': path_index,
+                        'line_index': line_index,
+                        'line': line,
+                    })
                 overall_index += 1
 
         to_remove = {}
@@ -191,6 +195,14 @@ class SvgProcessor(object):
                     filtered_path.append(replacement_line)
                     kept += 1
                     kept_length += replacement_line.length()
+                elif isinstance(line, Close):
+                    # Replace the close with a line, because if we removed all
+                    # or part of the previous line in this path, a close will
+                    # not work as expected.
+                    new_line = Line(line.start, line.end)
+                    filtered_path.append(new_line)
+                    kept += 1
+                    kept_length += new_line.length()
                 else:
                     filtered_path.append(line)
                     kept += 1
