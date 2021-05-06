@@ -36,8 +36,9 @@ render_3d = true;
 render_enclosure = 2; // 0=invisible; 1=translucent; 2=opaque color;
 render_flaps = 2; // 0=invisible; 1=front flap only; 2=all flaps
 render_flap_area = 0; // 0=invisible; 1=collapsed flap exclusion; 2=collapsed+extended flap exclusion
-render_letters = "44";
-render_units = len(render_letters);
+render_letters = 2;  // 0=invisible; 1=front flap only; 2=all flaps
+render_string = "44";
+render_units = len(render_string);
 render_unit_separation = 0;
 render_spool = true;
 render_pcb = true;
@@ -234,6 +235,7 @@ function connector_bracket_width() = connector_bracket_width;
 
 mounting_hole_inset = m4_button_head_diameter/2 + 2;
 
+
 enclosure_indicator_inset = 3.0;  // inset on both X and Y
 enclosure_indicator_size = 1.75;  // symbol size
 enclosure_indicator_arrow_width = 2.25;
@@ -256,6 +258,26 @@ alignment_bar_fillet_radius = 1.25;
 
 alignment_bar_cutout_width = alignment_bar_diameter + (2 * alignment_bar_clearance);
 alignment_bar_center = (enclosure_length - enclosure_length_right) - alignment_bar_cutout_width/2;
+
+
+character_list = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,\\";
+
+// returns character position in an array
+function character_position(c, i=0, list=character_list) =
+    len(list) == i ? undef
+    : list[i] == c ? i
+    : character_position(c, i+1, list);
+
+// returns character in array position, assuming the array loops around
+function character_loop(pos, list=character_list) =
+      pos < 0 ? character_loop(pos + len(list), list)  // negative, add until positive
+    : pos >= len(list) ? character_loop(pos - len(list), list) // out of range, subtract until in
+    : pos == undef ? " "  // invalid character, return space
+    : list[pos];
+
+// for the starting letter and flap position, returns the relevant character in the spool
+function get_flap_character(letter, flap, list=character_list) =
+    character_loop(character_position(letter) + flap, list);
 
 
 echo(kerf_width=kerf_width);
@@ -1121,8 +1143,14 @@ module split_flap_3d(letter, include_connector) {
                             translate([flap_width, flap_pitch_radius, 0]) {
                                 rotate([flap_rendered_angle, 0, 180]) {
                                     flap();
-                                    if (i == 0) { 
-                                        flap_letter(letter, 1);  // 1 = top
+                                    if(i == 0 && render_letters >= 1)  // for first flap, do not use character list (always match string)
+                                        flap_letter(letter, 1);  // flap on front (top)
+                                    if(i != 0 && render_letters == 2)
+                                        flap_letter(get_flap_character(letter, i), 1);  // flap on front (top)
+                                    if(render_letters == 2) {
+                                        translate([flap_width, 0, -flap_thickness + eps])
+                                            mirror([1, 0, 0])
+                                                flap_letter(get_flap_character(letter, i+1), 2);  // flap on back (bottom)
                                     }
                                 }
                             }
@@ -1137,8 +1165,14 @@ module split_flap_3d(letter, include_connector) {
                         if (i == 1 || render_flaps == 2) {
                             rotate([-90, 0, 0]) {
                                 flap();
-                                if (i == 1) {
-                                    flap_letter(letter, 2);  // 2 = bottom
+                                if(i == 1 && render_letters >= 1)  // for first flap, do not use character list (always match string)
+                                    flap_letter(letter, 2);  // flap on front (bottom)
+                                if(i != 1 && render_letters == 2)
+                                    flap_letter(get_flap_character(letter, -i + 1), 2);  // flap on front (bottom)
+                                if(render_letters == 2) {
+                                    translate([flap_width, 0, -flap_thickness + eps])
+                                        mirror([1, 0, 0])
+                                            flap_letter(get_flap_character(letter, -i), 1);  // flap on back (top)
                                 }
                             }
                         }
@@ -1231,7 +1265,7 @@ module laser_mirror() {
 if (render_3d) {
     for (i = [0 : render_units - 1]) {
         translate([-enclosure_width/2 + (-(render_units-1) / 2 + i)*(enclosure_width + render_unit_separation), 0, 0])
-            split_flap_3d(render_letters[render_units - 1 - i], include_connector=(i != render_units - 1));
+            split_flap_3d(render_string[render_units - 1 - i], include_connector=(i != render_units - 1));
     }
 } else {
     laser_mirror() {
