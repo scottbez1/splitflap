@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-include<../flap_dimensions.scad>
+include<../parts/flap.scad>
 
 print_tolerance = 0.1;
 eps = 0.1;

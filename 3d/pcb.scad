@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-include <m4_dimensions.scad>;
+include <parts/hardware.scad>;
 
 pcb_thickness = 1.6;
 sensor_spool_distance = 0.70;  // distance from the sensor to the face of the spool

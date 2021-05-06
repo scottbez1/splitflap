@@ -1,5 +1,5 @@
 /*
-   Copyright 2018 Scott Bezek and the splitflap contributors
+   Copyright 2015-2020 Scott Bezek and the splitflap contributors
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -14,14 +14,9 @@
    limitations under the License.
 */
 
-flap_width = 54;
-flap_height = 43;
-flap_thickness = 30 / 1000 * 25.4; // 30 mil
-flap_corner_radius = 3.1; // 2.88-3.48mm (used just for display)
+include <spool.scad>;
 
-flap_notch_height_auto = false;
-flap_notch_height_default = 15;
-flap_notch_depth = 3.2;
-
-flap_pin_width = 1.4;
-
+magnet_diameter = 4;
+magnet_hole_clearance = -0.07;  // interference fit
+magnet_hole_radius = (magnet_diameter + magnet_hole_clearance)/2;
+magnet_hole_offset = (spool_strut_exclusion_radius + flap_pitch_radius)/2;
