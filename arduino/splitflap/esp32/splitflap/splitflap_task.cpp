@@ -22,9 +22,9 @@
 #include "src/spi_io_config.h"
 
 // ESP32-specific includes
-#include "semaphore_guard.h"
+#include "../core/semaphore_guard.h"
+#include "../core/task.h"
 #include "splitflap_task.h"
-#include "task.h"
 
 SplitflapTask::SplitflapTask(const uint8_t taskCore) : Task{"Splitflap", 8192, 1, taskCore} {
   semaphore_ = xSemaphoreCreateMutex();
@@ -38,36 +38,14 @@ SplitflapTask::~SplitflapTask() {
   }
 }
 
-// TODO: Move to a separate status class?
-static void setLedStatus(uint8_t moduleIndex, bool on) {
-#ifdef CHAINLINK
-  uint8_t groupPosition = moduleIndex % 6;
-  uint8_t byteIndex = MOTOR_BUFFER_LENGTH - 1 - moduleIndex/6*4 - (groupPosition < 3 ? 1 : 2);
-  uint8_t bitMask = (groupPosition < 3) ? (1 << (4 + groupPosition)) : (1 << (groupPosition - 3));
-  if (on) {
-    motor_buffer[byteIndex] |= bitMask;
-  } else {
-    motor_buffer[byteIndex] &= ~bitMask;
-  }
-#endif
-}
-
-static uint8_t loopbackMotorByte(uint8_t loopbackIndex) {
-  return MOTOR_BUFFER_LENGTH - 1 - (loopbackIndex / 2) * 4 - (((loopbackIndex % 2) == 0) ? 1 : 2);
-}
-static uint8_t loopbackMotorBitMask(uint8_t loopbackIndex) {
-  return (loopbackIndex % 2) == 0 ? (1 << 7) : (1 << 3);
-}
-static uint8_t loopbackSensorByte(uint8_t loopbackIndex) {
-  return loopbackIndex / 2;
-}
-static uint8_t loopbackSensorBitMask(uint8_t loopbackIndex) {
-  return (loopbackIndex % 2) == 0 ? 1 << 6 : 1 << 7;
-}
 
 void SplitflapTask::run() {
     esp_err_t result = esp_task_wdt_add(NULL);
     ESP_ERROR_CHECK(result);
+
+    // XXX REMOVEME
+    pinMode(13, OUTPUT);
+    digitalWrite(13, HIGH);
 
     initialize_modules();
 
@@ -90,54 +68,28 @@ void SplitflapTask::run() {
 
 #ifdef CHAINLINK
 
-    bool loopback_error = false;
+    bool loopback_success = chainlink_test_startup_loopback();
 
     // Turn one loopback bit on at a time and make sure only that loopback bit is set
     for (uint8_t loop_out_index = 0; loop_out_index < NUM_LOOPBACKS; loop_out_index++) {
-      motor_buffer[loopbackMotorByte(loop_out_index)] = loopbackMotorBitMask(loop_out_index);
-      motor_sensor_io();
-      motor_sensor_io();
-      for (uint8_t loop_in_index = 0; loop_in_index < NUM_LOOPBACKS; loop_in_index++) {
-        uint8_t expected_bit_mask = (loop_out_index == loop_in_index) ? loopbackSensorBitMask(loop_in_index) : 0;
-        uint8_t actual_bit_mask = sensor_buffer[loopbackSensorByte(loop_in_index)] & loopbackSensorBitMask(loop_in_index);
-        if (actual_bit_mask != expected_bit_mask) {
-          // TODO: do something with loopback errors
-          loopback_error = true;
-          Serial.printf("Bad loopback. Set loopback %u but found unexpected value at loopback %u\n", 
-              loop_out_index,
-              loop_in_index
-          );
-        }
-      }
-      motor_buffer[loopbackMotorByte(loop_out_index)] = 0;
+      loopback_success &= chainlink_test_loopback(loop_out_index);
     }
 
-    // Turn off all motors, leds, and loopbacks; make sure all loopback inputs read 0
-    memset(motor_buffer, 0, MOTOR_BUFFER_LENGTH);
-    motor_sensor_io();
-    motor_sensor_io();
-    for (uint8_t i = 0; i < NUM_LOOPBACKS; i++) {
-      if ((sensor_buffer[loopbackSensorByte(i)] & loopbackSensorBitMask(i)) != 0) {
-        // TODO: do something with loopback errors
-        loopback_error = true;
-        Serial.printf("Bad loopback at index %u - should have been 0\n", i);
-      }
-    }
-
-    if (loopback_error) {
-      // Loop forever
-      while(1) {
-          updateStateCache();
-          ESP_ERROR_CHECK(esp_task_wdt_reset());
-      }
-    }
+    // XXX FIXME
+    // if (!loopback_success) {
+    //   // Loop forever
+    //   while(1) {
+    //       updateStateCache();
+    //       ESP_ERROR_CHECK(esp_task_wdt_reset());
+    //   }
+    // }
 
     for (uint8_t r = 0; r < 3; r++) {
       for (uint8_t i = 0; i < NUM_MODULES; i++) {
-        setLedStatus(i, 1);
+        chainlink_set_led(i, 1);
         motor_sensor_io();
         delay(10);
-        setLedStatus(i, 0);
+        chainlink_set_led(i, 0);
         motor_sensor_io();
       }
       result = esp_task_wdt_reset();
@@ -165,6 +117,7 @@ void SplitflapTask::updateStateCache() {
     for (uint8_t i = 0; i < NUM_MODULES; i++) {
       new_state.modules[i].flapIndex = modules[i]->GetCurrentFlapIndex();
       new_state.modules[i].state = modules[i]->state;
+      new_state.modules[i].moving = modules[i]->current_accel_step > 0;
     }
     if (memcmp(&state_cache_, &new_state, sizeof(state_cache_))) {
         SemaphoreGuard lock(semaphore_);
@@ -216,7 +169,7 @@ void SplitflapTask::runUpdate() {
           || modules[i]->state == STATE_DISABLED
           || modules[i]->current_accel_step == 0;
 
-        setLedStatus(i, flashGroup < modules[i]->state && flashPhase == 0);
+        chainlink_set_led(i, flashGroup < modules[i]->state && flashPhase == 0);
 
         all_idle &= is_idle;
         all_stopped &= is_stopped;
@@ -231,7 +184,7 @@ void SplitflapTask::runUpdate() {
       motor_sensor_io();
 
       for (uint8_t i = 0; i < NUM_MODULES; i++) {
-        setLedStatus(i, modules[i]->GetHomeState());
+        chainlink_set_led(i, modules[i]->GetHomeState());
       }
 
       // Output LED state
@@ -246,38 +199,7 @@ void SplitflapTask::runUpdate() {
       }
     }
 
-#if INA219_POWER_SENSE
-    if (iterationStartMillis - lastCurrentReadMillis > 100) {
-      currentmA = powerSense.getCurrent_mA();
-      if (currentmA > NUM_MODULES * 250) {
-        disableAll("Over current");
-      } else if (all_stopped && iterationStartMillis - stopped_at_millis > 100 && currentmA >= 3) {
-        disableAll("Unexpected current");
-      }
-      lastCurrentReadMillis = iterationStartMillis;
-    }
-#endif
-
     if (all_idle) {
-
-#if INA219_POWER_SENSE
-        float voltage = powerSense.getBusVoltage_V();
-        if (voltage > 14) {
-          disableAll("Over voltage");
-        } else if (voltage < 10) {
-          disableAll("Under voltage");
-        }
-        // dtostrf(voltage, 6, 3, voltageBuf);
-        // snprintf(displayBuffer, sizeof(displayBuffer), "%sV", voltageBuf);
-        // display.setCursor(84, 0);
-        // display.print(displayBuffer);
-
-        // dtostrf(currentmA / 1000, 6, 3, currentBuf);
-        // snprintf(displayBuffer, sizeof(displayBuffer), "%sA", currentBuf);
-        // display.setCursor(84, 8);
-        // display.print(displayBuffer);
-#endif
-
       if (pending_no_op && all_stopped) {
         Serial.print("{\"type\":\"no_op\"}\n");
         Serial.flush();

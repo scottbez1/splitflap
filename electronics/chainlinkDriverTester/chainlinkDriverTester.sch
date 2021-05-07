@@ -605,9 +605,9 @@ Text Label 4200 4800 2    50   ~ 0
 MOTOR_LATCH
 Text Label 4200 4500 2    50   ~ 0
 SENSOR_DATA
-Text Label 1900 4600 0    50   ~ 0
+Text Label 1900 4300 0    50   ~ 0
 SDA
-Text Label 1900 4800 0    50   ~ 0
+Text Label 1900 4400 0    50   ~ 0
 SCL
 Wire Wire Line
 	4200 4500 3600 4500
@@ -637,11 +637,11 @@ MCP_RESET
 Wire Wire Line
 	3600 4900 4200 4900
 Wire Wire Line
-	1900 4600 2600 4600
+	1900 4300 2600 4300
 Wire Wire Line
-	1900 4800 2600 4800
+	1900 4400 2600 4400
 Wire Wire Line
-	2600 4300 1900 4300
+	2600 4800 1900 4800
 Text Label 4200 4300 2    50   ~ 0
 MCP_INT
 Wire Wire Line
@@ -1292,7 +1292,7 @@ Text Label 4200 5000 2    50   ~ 0
 12V_TEST_FEED
 Wire Wire Line
 	4200 5000 3600 5000
-Text Label 1900 4300 0    50   ~ 0
+Text Label 1900 4800 0    50   ~ 0
 12V_EN
 Wire Wire Line
 	14000 1700 13100 1700
@@ -2118,13 +2118,11 @@ Wire Wire Line
 	9050 1100 9300 1100
 Text Label 9800 1100 2    50   ~ 0
 3V3_FUSED
-Text Label 1900 4400 0    50   ~ 0
+Text Label 4200 4200 2    50   ~ 0
 3V3_FUSED
 Text Label 2950 8100 0    50   ~ 0
 3V3_FUSED
 Connection ~ 3650 8100
-Wire Wire Line
-	1900 4400 2600 4400
 $Comp
 L Regulator_Linear:AP7361C-33E U1
 U 1 1 61DC2D69
@@ -2789,17 +2787,6 @@ $EndComp
 NoConn ~ 15700 1300
 NoConn ~ 15950 1300
 $Comp
-L Connector:TestPoint TP69
-U 1 1 62B86D3D
-P 3600 4200
-F 0 "TP69" V 3600 4388 50  0000 L CNN
-F 1 "TestPoint" V 3645 4388 50  0001 L CNN
-F 2 "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm" H 3800 4200 50  0001 C CNN
-F 3 "~" H 3800 4200 50  0001 C CNN
-	1    3600 4200
-	0    1    1    0   
-$EndComp
-$Comp
 L Connector:TestPoint TP70
 U 1 1 62B87233
 P 3600 4400
@@ -2925,10 +2912,6 @@ F 3 "~" H 2800 4700 50  0001 C CNN
 	1    2600 4700
 	0    -1   -1   0   
 $EndComp
-Wire Wire Line
-	1900 4900 2600 4900
-Text Label 1900 4900 0    50   ~ 0
-LED
 NoConn ~ 2600 5200
 Text Label 8800 6600 0    50   ~ 0
 GPA0
@@ -3154,4 +3137,8 @@ Wire Wire Line
 	9550 6100 8550 6100
 Text Label 9550 6100 2    50   ~ 0
 DETECT
+Wire Wire Line
+	4200 4200 3600 4200
+NoConn ~ 2600 4600
+NoConn ~ 2600 4900
 $EndSCHEMATC

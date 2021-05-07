@@ -1,5 +1,5 @@
 /*
-   Copyright 2021 Scott Bezek and the splitflap contributors
+   Copyright 2020 Scott Bezek and the splitflap contributors
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -17,19 +17,17 @@
 
 #include <Arduino.h>
 
-#include "splitflap_task.h"
-#include "task.h"
-
-
-class TesterTask : public Task<TesterTask> {
-    friend class Task<TesterTask>; // Allow base Task to invoke protected run()
-
+class RecursiveSemaphoreGuard {
     public:
-        TesterTask(SplitflapTask& splitflapTask, const uint8_t taskCore);
-
-    protected:
-        void run();
+        RecursiveSemaphoreGuard(SemaphoreHandle_t handle) : handle_{handle} {
+            xSemaphoreTakeRecursive(handle_, portMAX_DELAY);
+        }
+        ~RecursiveSemaphoreGuard() {
+            xSemaphoreGiveRecursive(handle_);
+        }
+        RecursiveSemaphoreGuard(RecursiveSemaphoreGuard const&)=delete;
+        RecursiveSemaphoreGuard& operator=(RecursiveSemaphoreGuard const&)=delete;
 
     private:
-        SplitflapTask& splitflap_task_;
+        SemaphoreHandle_t handle_;
 };

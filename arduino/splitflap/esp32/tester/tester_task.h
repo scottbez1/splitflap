@@ -1,5 +1,5 @@
 /*
-   Copyright 2020 Scott Bezek and the splitflap contributors
+   Copyright 2021 Scott Bezek and the splitflap contributors
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -16,24 +16,27 @@
 #pragma once
 
 #include <Arduino.h>
-#include <TFT_eSPI.h>
+#include <Wire.h>
 
-#include "splitflap_task.h"
-#include "task.h"
+#include "Adafruit_MCP23017.h"
+#include "src/Adafruit_INA219.h"
 
-class DisplayTask : public Task<DisplayTask> {
-    friend class Task<DisplayTask>; // Allow base Task to invoke protected run()
+#include "../core/task.h"
+
+
+class TesterTask : public Task<TesterTask> {
+    friend class Task<TesterTask>; // Allow base Task to invoke protected run()
 
     public:
-        DisplayTask(SplitflapTask& splitflapTask, const uint8_t taskCore);
+        TesterTask(const uint8_t taskCore);
 
     protected:
         void run();
 
     private:
-        SplitflapTask& splitflap_task_;
-        TFT_eSPI tft_ = TFT_eSPI();
+        Adafruit_MCP23017 mcp_;
+        Adafruit_INA219 ina219_;
 
-        /** Full-size sprite used as a framebuffer */
-        TFT_eSprite spr_ = TFT_eSprite(&tft_);
+        bool enablePower();
+        void disablePower();
 };

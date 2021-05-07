@@ -18,11 +18,12 @@
 #include "config.h"
 #include "src/splitflap_module_data.h"
 
-#include "task.h"
+#include "../core/task.h"
 
 struct SplitflapModuleState {
     State state;
     uint8_t flapIndex;
+    bool moving;
 };
 
 struct SplitflapState {
@@ -36,6 +37,7 @@ class SplitflapTask : public Task<SplitflapTask> {
         SplitflapTask(const uint8_t taskCore);
         ~SplitflapTask();
         SplitflapState getState();
+
         void showString(const char *str, uint8_t length);
 
     protected:

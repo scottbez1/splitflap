@@ -1,5 +1,5 @@
 /*
-   Copyright 2021 Scott Bezek and the splitflap contributors
+   Copyright 2020 Scott Bezek and the splitflap contributors
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -13,21 +13,25 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+
+#include <Arduino.h>
+
+#include "config.h"
+
 #include "tester_task.h"
 
-#define PIN_MOTOR_POWER 21
+TesterTask testerTask(0);
 
-TesterTask::TesterTask(SplitflapTask& splitflap_task, const uint8_t task_core) : Task{"Tester", 8192, 1, task_core}, splitflap_task_{splitflap_task} {
+void setup() {
+  Serial.begin(MONITOR_SPEED);
 
+  testerTask.begin();
+
+  // Delete the default Arduino loopTask to free up Core 1
+  vTaskDelete(NULL);
 }
 
-void TesterTask::run() {
-    pinMode(PIN_MOTOR_POWER, OUTPUT);
 
-    while(1) {
-        digitalWrite(PIN_MOTOR_POWER, HIGH);
-        delay(500);
-        digitalWrite(PIN_MOTOR_POWER, LOW);
-        delay(500);
-    }
+void loop() {
+  assert(false);
 }

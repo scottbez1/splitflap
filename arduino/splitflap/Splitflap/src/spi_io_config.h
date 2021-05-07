@@ -270,4 +270,78 @@ inline void motor_sensor_io() {
 #endif
 }
 
+#ifdef CHAINLINK
+void chainlink_set_led(uint8_t moduleIndex, bool on) {
+  uint8_t groupPosition = moduleIndex % 6;
+  uint8_t byteIndex = MOTOR_BUFFER_LENGTH - 1 - moduleIndex/6*4 - (groupPosition < 3 ? 1 : 2);
+  uint8_t bitMask = (groupPosition < 3) ? (1 << (4 + groupPosition)) : (1 << (groupPosition - 3));
+  if (on) {
+    motor_buffer[byteIndex] |= bitMask;
+  } else {
+    motor_buffer[byteIndex] &= ~bitMask;
+  }
+}
+
+static uint8_t chainlink_loopbackMotorByte(uint8_t loopbackIndex) {
+  return MOTOR_BUFFER_LENGTH - 1 - (loopbackIndex / 2) * 4 - (((loopbackIndex % 2) == 0) ? 1 : 2);
+}
+static uint8_t chainlink_loopbackMotorBitMask(uint8_t loopbackIndex) {
+  return (loopbackIndex % 2) == 0 ? (1 << 7) : (1 << 3);
+}
+static uint8_t chainlink_loopbackSensorByte(uint8_t loopbackIndex) {
+  return loopbackIndex / 2;
+}
+static uint8_t chainlink_loopbackSensorBitMask(uint8_t loopbackIndex) {
+  return (loopbackIndex % 2) == 0 ? 1 << 6 : 1 << 7;
+}
+
+bool chainlink_test_startup_loopback() {
+    bool success = true;
+
+    // Turn off all motors, leds, and loopbacks; make sure all loopback inputs read 0
+    memset(motor_buffer, 0, MOTOR_BUFFER_LENGTH);
+    motor_sensor_io();
+    motor_sensor_io();
+    for (uint8_t i = 0; i < NUM_LOOPBACKS; i++) {
+      if ((sensor_buffer[chainlink_loopbackSensorByte(i)] & chainlink_loopbackSensorBitMask(i)) != 0) {
+        success = false;
+        
+        // TODO: avoid printing here; pass data back to caller
+        Serial.printf("Bad loopback at index %u - should have been 0\n", i);
+      }
+    }
+    return success;
+}
+
+bool chainlink_test_loopback(uint8_t loop_out_index) {
+    bool success = true;
+
+    // Turn on loopback output
+    motor_buffer[chainlink_loopbackMotorByte(loop_out_index)] = chainlink_loopbackMotorBitMask(loop_out_index);
+    motor_sensor_io();
+    motor_sensor_io();
+
+    for (uint8_t loop_in_index = 0; loop_in_index < NUM_LOOPBACKS; loop_in_index++) {
+      uint8_t expected_bit_mask = (loop_out_index == loop_in_index) ? chainlink_loopbackSensorBitMask(loop_in_index) : 0;
+      uint8_t actual_bit_mask = sensor_buffer[chainlink_loopbackSensorByte(loop_in_index)] & chainlink_loopbackSensorBitMask(loop_in_index);
+      if (actual_bit_mask != expected_bit_mask) {
+        success = false;
+
+        // TODO: avoid printing here; pass data back to caller
+        Serial.printf("Bad loopback. Set loopback %u but found unexpected value at loopback %u\n", 
+            loop_out_index,
+            loop_in_index
+        );
+      }
+    }
+
+    // Turn off loopback output
+    motor_buffer[chainlink_loopbackMotorByte(loop_out_index)] = 0;
+    motor_sensor_io();
+
+    return success;
+}
+
+#endif
+
 #endif

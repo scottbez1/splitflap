@@ -358,7 +358,7 @@ inline void SplitflapModule::UpdateExpectedHome() {
 
 __attribute__((always_inline))
 inline void SplitflapModule::GoToFlapIndex(uint8_t index) {
-    if (state != NORMAL || current_accel_step != 0) {
+    if (state != NORMAL) {
         return;
     }
     target_flap_index = index;
