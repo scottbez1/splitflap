@@ -224,6 +224,14 @@ jobs:
           PYTHONUNBUFFERED: 1
 
       # Note: These kibot scripts are run last because they mess with file permissions which breaks other scripts, not sure why
+      - name: Export BOM [classic + sensors]
+        uses: INTI-CMNB/KiBot@2ddbea3e681de09147cb1677890694857def32a8
+        with:
+          config: electronics/splitflap.kibot.yml
+          dir: electronics/build
+          schema: 'electronics/splitflap.sch'
+          board: 'electronics/splitflap.kicad_pcb'
+
       - name: Export BOM [chainlinkDriver]
         uses: INTI-CMNB/KiBot@2ddbea3e681de09147cb1677890694857def32a8
         with:
