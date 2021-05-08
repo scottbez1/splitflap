@@ -73,9 +73,9 @@ jobs:
           PYTHONUNBUFFERED: 1
 
 # Sensor board:
-      - name: Export Classic Controller schematic
+      - name: Export sensor schematic
         run: |
-          ./electronics/scripts/export_schematic.py electronics/sensor.sch
+          ./electronics/scripts/export_schematic.py electronics/sensor/sensor.sch
           cp electronics/build/sensor.pdf electronics/build/outputs/sensor-schematic.pdf
           cp electronics/build/sensor.png electronics/build/outputs/sensor-schematic.png
         env:
