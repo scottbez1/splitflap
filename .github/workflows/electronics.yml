@@ -36,6 +36,18 @@ jobs:
         env:
           PYTHONUNBUFFERED: 1
 
+      - name: Export Classic Controller PCB fabrication files
+        run: |
+          ./electronics/scripts/export_jlcpcb.py electronics/splitflap.kicad_pcb
+          cp -r electronics/build/splitflap-jlc electronics/build/outputs/classic-jlc
+
+      - name: Export Classic Controller PCB overview PDF
+        run: |
+          ./electronics/scripts/generate_pdf.py electronics/splitflap.kicad_pcb
+          cp electronics/build/splitflap-pcb-packet.pdf electronics/build/outputs/classic-pcb-packet.pdf
+        env:
+          PYTHONUNBUFFERED: 1
+
       - name: Panelize Classic Controller PCB
         run: |
           kikit panelize -p electronics/scripts/config/kikit_panelize_classic.json electronics/splitflap.kicad_pcb electronics/build/panelized_splitflap.kicad_pcb
@@ -51,7 +63,7 @@ jobs:
       - name: Export panelized Classic Controller PCB fabrication files
         run: |
           ./electronics/scripts/export_jlcpcb.py electronics/build/panelized_splitflap.kicad_pcb
-          cp -r electronics/build/panelized_splitflap-jlc electronics/build/outputs
+          cp -r electronics/build/panelized_splitflap-jlc electronics/build/outputs/classic-panelized-jlc
 
       - name: Export panelized Classic Controller PCB overview PDF
         run: |
@@ -61,6 +73,14 @@ jobs:
           PYTHONUNBUFFERED: 1
 
 # Sensor board:
+      - name: Export Classic Controller schematic
+        run: |
+          ./electronics/scripts/export_schematic.py electronics/sensor.sch
+          cp electronics/build/sensor.pdf electronics/build/outputs/sensor-schematic.pdf
+          cp electronics/build/sensor.png electronics/build/outputs/sensor-schematic.png
+        env:
+          PYTHONUNBUFFERED: 1
+
       - name: Panelize sensor PCB
         run: |
           kikit panelize -p electronics/scripts/config/kikit_panelize_sensor.json electronics/sensor/sensor.kicad_pcb electronics/build/panelized_sensor.kicad_pcb
@@ -68,23 +88,29 @@ jobs:
       - name: Export panelized sensor PCB SVG
         run: |
           ./electronics/scripts/generate_svg.py electronics/build/panelized_sensor.kicad_pcb
-          cp electronics/build/panelized_sensor_merged.png electronics/build/outputs/sensor_pcb_raster.png
-          ./scripts/annotate_image.sh electronics/build/outputs/sensor_pcb_raster.png
+          cp electronics/build/panelized_sensor_merged.png electronics/build/outputs/sensor-panelized-pcb-raster.png
+          ./scripts/annotate_image.sh electronics/build/outputs/sensor-panelized-pcb-raster.png
         env:
           PYTHONUNBUFFERED: 1
 
       - name: Export panelized sensor PCB fabrication files
         run: |
-          # TODO: migrate to KiKit?
-          python3 -u electronics/scripts/generate_gerber.py electronics/build/panelized_sensor.kicad_pcb
-          cp electronics/build/panelized_sensor_gerber.zip electronics/build/outputs/sensor_pcb_gerber.zip
+          ./electronics/scripts/export_jlcpcb.py electronics/build/panelized_sensor.kicad_pcb
+          cp -r electronics/build/panelized_sensor-jlc electronics/build/outputs/sensor-panelized-jlc
 
       - name: Export panelized sensor PCB overview PDF
         run: |
           ./electronics/scripts/generate_pdf.py electronics/build/panelized_sensor.kicad_pcb
-          cp electronics/build/panelized_sensor-pcb-packet.pdf electronics/build/outputs/sensor_pcb_packet.pdf
+          cp electronics/build/panelized_sensor-pcb-packet.pdf electronics/build/outputs/sensor-panelized-pcb-packet.pdf
         env:
           PYTHONUNBUFFERED: 1
+
+# Merged BOM for Classic Controller + 4x sensors
+# - name: BOM
+#   run: |
+#     echo "TODO: FIXME! Sensor is no longer a kicad 4 project, so can't do a merged BOM here..."
+#     (cd electronics && python -u scripts/export_bom.py splitflap.sch && python -u scripts/export_bom.py sensor.sch && python -u bom/generate_bom_csv.py build/bom.csv splitflap.xml sensor.xml sensor.xml sensor.xml sensor.xml)
+#     cp electronics/build/bom.csv electronics/build/outputs/bom.csv
 
 # Chainlink Driver:
       - name: Export chainlinkDriver schematic

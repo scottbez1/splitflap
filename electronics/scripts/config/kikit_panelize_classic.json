@@ -10,7 +10,8 @@
     },
     "source": {
         "type": "auto",
-        "tolerance": "1mm"
+        // Large tolerance for Arduino Uno Shield footprint
+        "tolerance": "100mm"
     },
     "cuts": {
         "type": "vcuts",
