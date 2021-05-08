@@ -19,10 +19,51 @@ jobs:
       - name: Install dependencies
         run: ./electronics/scripts/dependencies.sh
 
+# Classic Controller board:
+      - name: Export Classic Controller schematic
+        run: |
+          ./electronics/scripts/export_schematic.py electronics/splitflap.sch
+          cp electronics/build/splitflap.pdf electronics/build/outputs/classic-schematic.pdf
+          cp electronics/build/splitflap.png electronics/build/outputs/classic-schematic.png
+        env:
+          PYTHONUNBUFFERED: 1
+
+      - name: Export Classic Controller PCB SVG
+        run: |
+          ./electronics/scripts/generate_svg.py electronics/splitflap.kicad_pcb
+          cp electronics/build/splitflap_merged.png electronics/build/outputs/classic-pcb-raster.png
+          ./scripts/annotate_image.sh electronics/build/outputs/classic-pcb-raster.png
+        env:
+          PYTHONUNBUFFERED: 1
+
+      - name: Panelize Classic Controller PCB
+        run: |
+          kikit panelize -p electronics/scripts/config/kikit_panelize_classic.json electronics/splitflap.kicad_pcb electronics/build/panelized_splitflap.kicad_pcb
+
+      - name: Export panelized Classic Controller PCB SVG
+        run: |
+          ./electronics/scripts/generate_svg.py electronics/build/panelized_splitflap.kicad_pcb
+          cp electronics/build/panelized_splitflap_merged.png electronics/build/outputs/classic-panelized-pcb-raster.png
+          ./scripts/annotate_image.sh electronics/build/outputs/classic-panelized-pcb-raster.png
+        env:
+          PYTHONUNBUFFERED: 1
+
+      - name: Export panelized Classic Controller PCB fabrication files
+        run: |
+          ./electronics/scripts/export_jlcpcb.py electronics/build/panelized_splitflap.kicad_pcb
+          cp -r electronics/build/panelized_splitflap-jlc electronics/build/outputs
+
+      - name: Export panelized Classic Controller PCB overview PDF
+        run: |
+          ./electronics/scripts/generate_pdf.py electronics/build/panelized_splitflap.kicad_pcb
+          cp electronics/build/panelized_splitflap-pcb-packet.pdf electronics/build/outputs/classic-panelized-pcb-packet.pdf
+        env:
+          PYTHONUNBUFFERED: 1
+
 # Sensor board:
       - name: Panelize sensor PCB
         run: |
-          kikit panelize grid --gridsize 6 6 --space 0 --vcuts electronics/sensor/sensor.kicad_pcb electronics/build/panelized_sensor.kicad_pcb
+          kikit panelize -p electronics/scripts/config/kikit_panelize_sensor.json electronics/sensor/sensor.kicad_pcb electronics/build/panelized_sensor.kicad_pcb
 
       - name: Export panelized sensor PCB SVG
         run: |
@@ -82,7 +123,7 @@ jobs:
         env:
           PYTHONUNBUFFERED: 1
 
-      # TODO: avoid duplication
+# Chainlink Driver Tester:
       - name: Export schematic [chainlinkDriverTester]
         run: |
           ./electronics/scripts/export_schematic.py electronics/chainlinkDriverTester/chainlinkDriverTester.sch
@@ -119,8 +160,7 @@ jobs:
         env:
           PYTHONUNBUFFERED: 1
 
-
-      # TODO: avoid duplication
+# Chainlink Base:
       - name: Export schematic [chainlinkBase]
         run: |
           ./electronics/scripts/export_schematic.py electronics/chainlinkBase/chainlinkBase.sch

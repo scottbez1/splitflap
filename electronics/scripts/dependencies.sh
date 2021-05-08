@@ -14,7 +14,7 @@ sudo add-apt-repository --yes ppa:kicad/kicad-5.1-releases
 sudo apt-get update -qq
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y kicad inkscape poppler-utils xdotool recordmydesktop python3-dev python3-pip
 
-sudo python3 -m pip install psutil kikit
+sudo python3 -m pip install psutil git+https://github.com/yaqwsx/KiKit@67d8f91b26cf110e26ec68ff04c678f7d7348c3b
 
 mkdir -p ~/.config/kicad
 cp /usr/share/kicad/template/fp-lib-table ~/.config/kicad/

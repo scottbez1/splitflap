@@ -1,9 +1,5 @@
 name: Export electronics (legacy)
 
-on:
-  push:
-  pull_request:
-
 jobs:
   export-electronics-legacy:
     runs-on: ubuntu-18.04
