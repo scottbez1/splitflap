@@ -3,7 +3,7 @@
   "pcb_comment": "https://github.com/scottbez1/splitflap",
   "origin": [20, 20],
   "board_size": [16.256, 16.256],
-  "rows": 4,
+  "rows": 5,
   "cols": 5,
   "input_kicad_pcb": "sensor.kicad_pcb",
   "output_kicad_pcb": "build/panelized_sensor.kicad_pcb",

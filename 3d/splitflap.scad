@@ -250,6 +250,13 @@ enclosure_left_zip_bottom_inset = 22.5;  // inset from bottom for the bottom zip
 
 enclosure_left_zip_top_inset = 22.5;  // inset from top for the top zip tie holes, edge to group center
 
+alignment_bar_diameter = 6.35;  // 1/4"
+alignment_bar_clearance = 0.25;
+alignment_bar_fillet_radius = 1.25;
+
+alignment_bar_cutout_width = alignment_bar_diameter + (2 * alignment_bar_clearance);
+alignment_bar_center = (enclosure_length - enclosure_length_right) - alignment_bar_cutout_width/2;
+
 
 echo(kerf_width=kerf_width);
 echo(enclosure_height=enclosure_height);
@@ -621,6 +628,14 @@ module connector_bracket_side_holes() {
     }
 }
 
+module alignment_bar() {
+    color(assembly_color1)
+        translate([enclosure_width - enclosure_horizontal_inset, -enclosure_length_right + front_forward_offset - alignment_bar_diameter/2, -enclosure_height_lower + alignment_bar_diameter/2])
+            rotate([0, -90, 0])
+                linear_extrude(height=enclosure_width * len(render_letters))
+                    circle(r=alignment_bar_diameter/2, $fn=60);
+}
+
 module enclosure_left() {
     linear_extrude(height=thickness) {
         difference() {
@@ -672,6 +687,25 @@ module enclosure_left() {
             translate([enclosure_height - enclosure_left_zip_top_inset, enclosure_length - front_forward_offset])
                 rotate([0, 0, 90])  // cable channel facing 'up'
                     zip_tie_holes();
+
+            // Alignment bar cutout
+            translate([0, alignment_bar_center]) {
+                union() {
+                    // Cutout
+                    translate([alignment_bar_cutout_width/2, 0])
+                        circle(r=alignment_bar_cutout_width/2, $fn=40);
+                    square([alignment_bar_cutout_width, alignment_bar_cutout_width], center=true);
+
+                    // Front-side fillet
+                    // translate([0, alignment_bar_cutout_width/2, 0])
+                    //     fillet_tool(r=alignment_bar_fillet_radius, overlap=1, $fn=40);
+
+                    // Back-side fillet
+                    translate([0, -alignment_bar_cutout_width/2, 0])
+                        mirror([0, 1, 0])
+                            fillet_tool(r=alignment_bar_fillet_radius, $fn=40);
+                }
+            }
         }
     }
 }

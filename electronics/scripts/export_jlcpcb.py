@@ -33,29 +33,35 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
-def export_jlcpcb(schematic, pcb):
-    schematic_file = os.path.abspath(schematic)
+def export_jlcpcb(pcb, schematic):
     pcb_file = os.path.abspath(pcb)
 
-    output_dir = os.path.join(electronics_root, 'build', 'jlc')
+    output_dir = os.path.join(electronics_root, 'build', os.path.splitext(os.path.basename(pcb_file))[0] + '-jlc')
     file_util.mkdir_p(output_dir)
 
     with versioned_file(pcb_file):
-        subprocess.check_call([
+        command = [
             'kikit',
             'fab',
             'jlcpcb',
-            '--assembly',
-            '--schematic',
-            schematic_file,
+        ]
+        if schematic is not None:
+            schematic_file = os.path.abspath(schematic)
+            command += [
+                '--assembly',
+                '--schematic',
+                schematic_file,
+            ]
+        command += [
             pcb_file,
             output_dir,
-        ])
+        ]
+        subprocess.check_call(command)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('schematic')
     parser.add_argument('pcb')
+    parser.add_argument('--assembly-schematic')
     args = parser.parse_args()
-    export_jlcpcb(args.schematic, args.pcb)
+    export_jlcpcb(args.pcb, args.assembly_schematic)

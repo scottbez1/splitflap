@@ -73,8 +73,11 @@ void SplitflapTask::run() {
 
     // Initialize shift registers before turning on shift register output-enable
     motor_sensor_io();
+
+#ifdef OUTPUT_ENABLE_PIN
     pinMode(OUTPUT_ENABLE_PIN, OUTPUT);
     digitalWrite(OUTPUT_ENABLE_PIN, LOW);
+#endif
 
     // TODO: Move to serial task
     for (uint8_t i = 0; i < NUM_MODULES; i++) {
@@ -233,6 +236,14 @@ void SplitflapTask::runUpdate() {
 
       // Output LED state
       motor_sensor_io();
+
+      if (iterationStartMillis - last_sensor_print_millis_ > 200) {
+        last_sensor_print_millis_ = iterationStartMillis;
+        for (uint8_t i = 0; i < NUM_MODULES; i++) {
+            Serial.write(modules[i]->GetHomeState() ? '1' : '0');
+        }
+        Serial.println();
+      }
     }
 
 #if INA219_POWER_SENSE

@@ -1,0 +1,9 @@
+(sym_lib_table
+  (lib (name INA219_Breakout)(type Legacy)(uri ${KIPRJMOD}/../lib/INA219_Breakout.lib)(options "")(descr ""))
+  (lib (name CustomPower)(type Legacy)(uri ${KIPRJMOD}/../lib/CustomPower.lib)(options "")(descr ""))
+  (lib (name ESP32Modules)(type Legacy)(uri ${KIPRJMOD}/../lib/ESP32Modules.lib)(options "")(descr ""))
+  (lib (name NCP45560)(type Legacy)(uri ${KIPRJMOD}/../lib/NCP45560.lib)(options "")(descr ""))
+  (lib (name VN7007ALHTR)(type Legacy)(uri ${KIPRJMOD}/../lib/VN7007ALHTR.lib)(options "")(descr ""))
+  (lib (name BuckModule)(type Legacy)(uri ${KIPRJMOD}/../lib/BuckModule.lib)(options "")(descr ""))
+  (lib (name no_pin)(type Legacy)(uri ${KIPRJMOD}/../lib/no_pin.lib)(options "")(descr ""))
+)
