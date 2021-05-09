@@ -27,27 +27,55 @@ spacing_y = 10;
 kerf_width = 0;
 render_fill = false;
 
-num_characters = len(character_list) - 1;
 flap_gap = get_flap_gap();
 
-module flap_pos(i) {
-    x_pos = (flap_width + spacing_x) * ((num_columns == 0) ? i : (i % num_columns));
-    y_pos = (flap_height * 2 + spacing_y + flap_gap/2) * ((num_columns == 0) ? 0 : floor((i / num_columns)));
+// 0: do not do double-sided render
+// 1: render front
+// 2: render back
+side = 0;
+bleed = false;
+
+start_row = 0;
+row_count = 1000;
+
+module flap_transform(row, col, flip) {
+    x_pos = (flap_width + spacing_x) * col;
+    y_pos = (flap_height * 2 + spacing_y + flap_gap/2) * row;
     translate([x_pos, -y_pos, 0])
-        children();
+        translate([flip * flap_width, (0.5 - flip) * (flap_pin_width + flap_gap), 0])
+            rotate([0, 0, flip * 180])
+                children();
 }
 
-module top_flap(i) {
-    flap_pos(i)
-    translate([0, flap_pin_width/2 + flap_gap/2, 0])
-        children();
-}
-
-module bottom_flap(i) {
-    flap_pos(i)
-    translate([flap_width, -flap_pin_width/2 - flap_gap/2, 0])
-        rotate([0, 0, 180])
-            children();
+module flap_pos(i, j) {
+    // i: character id, j = 0: bottom-of-letter, j = 1: top-of-letter
+    cols = (num_columns == 0) ? len(character_list) : num_columns;
+    if (side == 0) {
+        // regular render
+        col = i % cols;
+        row = floor(i / cols);
+        offsetted_row = row - start_row;
+        flip = 1 - j;
+        if (offsetted_row >= 0 && offsetted_row < row_count) {
+            flap_transform(offsetted_row, col, flip)
+                children();
+        }
+    } else {
+        // double sided render
+        char_side = i % 2; // 0: front, 1: back
+        if (char_side + 1 == side) {
+            k = (floor(i / 2) * 2 + j + char_side) % len(character_list);
+            flip = (char_side == 0) ? (1 - j) : j;
+            row = floor(k / 2 / cols);
+            col_front = floor(k / 2) % cols;
+            col = (char_side == 0) ? col_front : (cols - col_front - 1);
+            offsetted_row = row - start_row;
+            if (offsetted_row >= 0 && offsetted_row < row_count) {
+                flap_transform(offsetted_row, col, flip)
+                    children();
+            }
+        }
+    }
 }
 
 module fill_text() {
@@ -60,19 +88,16 @@ module fill_text() {
 render_index = -1;
 render_etch = false;
 
-projection_renderer(render_index = render_index, render_etch = render_etch, kerf_width = kerf_width, panel_height = 0, panel_horizontal = 0, panel_vertical = 0) {
-    for(i = [0 : num_characters]) {
-        top_flap(i)
-            flap();
-        bottom_flap(i)
-            flap();
-    }
+projection_renderer(render_index = render_index, render_etch = render_etch, kerf_width = kerf_width, panel_height = 0, panel_horizontal = 0, panel_vertical = 0, bleed = bleed) {
+    for(i = [0 : len(character_list) - 1])
+        for(j = [0 : 1]) {
+            flap_pos(i, j)
+                flap();
+        }
 
     fill_text()
-    for(i = [0 : num_characters]) {
-        top_flap(i)
-            flap_letter(character_list[i], 1);
-        bottom_flap(i)
-            flap_letter(character_list[i], 2);
-    }
+        for(i = [0 : len(character_list) - 1])
+            for(j = [0 : 1])
+                flap_pos(i, j)
+                    flap_letter(character_list[i], 2-j, bleed);
 }

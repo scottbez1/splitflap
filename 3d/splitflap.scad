@@ -462,13 +462,21 @@ module draw_letter(letter) {
                 text(text=letter, size=flap_height * letter_height * 2, font=letter_font, halign="center");
 }
 
-module flap_letter(letter, half = 0) {
+module flap_letter(letter, half = 0, bleed = false) {
     color(letter_color)
     translate([0, 0, flap_thickness/2 + eps])
     linear_extrude(height=0.1, center=true) {
         if (half != 0) {  // trimming to top (1) or bottom (2)
             intersection() {
-                flap_2d();  // limit to bounds of flap
+                if (bleed) {
+                    minkowski()
+                    {
+                        flap_2d();
+                        circle(d=flap_gap);
+                    }
+                } else {
+                    flap_2d();  // limit to bounds of flap
+                }
                 translate([flap_width/2, -flap_pin_width/2, 0]) {
                     rotation = (half == 2) ? -180 : 0;  // flip upside-down for bottom
                     gap_comp = (letter_gap_comp == true) ? -flap_gap/2 : 0;
