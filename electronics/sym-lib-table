@@ -1,0 +1,10 @@
+(sym_lib_table
+  (lib (name splitflap-rescue)(type Legacy)(uri ${KIPRJMOD}/splitflap-rescue.lib)(options "")(descr ""))
+  (lib (name gp2s60)(type Legacy)(uri ${KIPRJMOD}/lib/gp2s60.lib)(options "")(descr ""))
+  (lib (name mount)(type Legacy)(uri ${KIPRJMOD}/lib/mount.lib)(options "")(descr ""))
+  (lib (name arduino_uno_shield)(type Legacy)(uri ${KIPRJMOD}/lib/arduino_uno_shield.lib)(options "")(descr ""))
+  (lib (name 74HC165)(type Legacy)(uri ${KIPRJMOD}/lib/74HC165.lib)(options "")(descr ""))
+  (lib (name MIC5842)(type Legacy)(uri ${KIPRJMOD}/lib/MIC5842.lib)(options "")(descr ""))
+  (lib (name ws2812b)(type Legacy)(uri ${KIPRJMOD}/lib/ws2812b.lib)(options "")(descr ""))
+  (lib (name no_pin)(type Legacy)(uri ${KIPRJMOD}/lib/no_pin.lib)(options "")(descr ""))
+)

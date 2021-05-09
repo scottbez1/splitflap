@@ -1,0 +1,4 @@
+(sym_lib_table
+  (lib (name mount)(type Legacy)(uri ${KIPRJMOD}/../lib/mount.lib)(options "")(descr ""))
+  (lib (name hall_effect)(type Legacy)(uri ${KIPRJMOD}/../lib/hall_effect.lib)(options "")(descr ""))
+)
