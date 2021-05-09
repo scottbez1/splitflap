@@ -18,7 +18,7 @@
 #include "config.h"
 #include "src/splitflap_module_data.h"
 
-#include "../core/task.h"
+#include "task.h"
 
 struct SplitflapModuleState {
     State state;
@@ -36,9 +36,12 @@ class SplitflapTask : public Task<SplitflapTask> {
     public:
         SplitflapTask(const uint8_t taskCore);
         ~SplitflapTask();
+        
         SplitflapState getState();
 
         void showString(const char *str, uint8_t length);
+        void resetAll();
+        bool testAllLoopbacks(bool loopback_result[NUM_LOOPBACKS][NUM_LOOPBACKS], bool loopback_off_result[NUM_LOOPBACKS]);
 
     protected:
         void run();
@@ -65,9 +68,10 @@ class SplitflapTask : public Task<SplitflapTask> {
         uint32_t last_sensor_print_millis_ = 0;
         bool sensor_test_ = SENSOR_TEST;
 
-        SemaphoreHandle_t semaphore_;
+        SemaphoreHandle_t module_semaphore_;
 
-        // Cached state. Protected by semaphore_
+        SemaphoreHandle_t state_semaphore_;
+        // Cached state. Protected by state_semaphore_
         SplitflapState state_cache_;
         void updateStateCache();
 };

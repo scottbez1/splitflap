@@ -18,7 +18,7 @@
 #include <Arduino.h>
 #include <TFT_eSPI.h>
 
-#include "splitflap_task.h"
+#include "../core/splitflap_task.h"
 #include "../core/task.h"
 
 class DisplayTask : public Task<DisplayTask> {

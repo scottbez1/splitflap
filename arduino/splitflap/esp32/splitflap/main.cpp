@@ -21,7 +21,7 @@
 #include "config.h"
 
 #include "display_task.h"
-#include "splitflap_task.h"
+#include "../core/splitflap_task.h"
 
 SplitflapTask splitflapTask(1);
 DisplayTask displayTask(splitflapTask, 0);
@@ -31,25 +31,14 @@ DisplayTask displayTask(splitflapTask, 0);
 MQTTTask mqttTask(splitflapTask, 0);
 #endif
 
-#ifdef CHAINLINK_DRIVER_TESTER
-#include "tester_task.h"
-TesterTask testerTask(splitflapTask, 0);
-#endif
-
 void setup() {
   Serial.begin(MONITOR_SPEED);
 
-  #ifndef CHAINLINK_DRIVER_TESTER
   splitflapTask.begin();
   displayTask.begin();
-  #endif
 
   #ifdef MQTT
   mqttTask.begin();
-  #endif
-
-  #ifdef CHAINLINK_DRIVER_TESTER
-  testerTask.begin();
   #endif
 
   // Delete the default Arduino loopTask to free up Core 1

@@ -18,13 +18,16 @@
 
 #include "config.h"
 
+#include "../core/splitflap_task.h"
 #include "tester_task.h"
 
-TesterTask testerTask(0);
+SplitflapTask splitflapTask(1);
+TesterTask testerTask(splitflapTask, 0);
 
 void setup() {
   Serial.begin(MONITOR_SPEED);
 
+  splitflapTask.begin();
   testerTask.begin();
 
   // Delete the default Arduino loopTask to free up Core 1
