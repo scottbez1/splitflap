@@ -1,0 +1,23 @@
+{
+    "layout": {
+        "type": "grid",
+        "rows": 2,
+        "cols": 1,
+        "hspace": "0mm",
+        "vspace": "0mm",
+        "rotation": "0deg",
+        "alternation": "none"
+    },
+    "source": {
+        "type": "auto",
+        // Large tolerance for Arduino Uno Shield footprint
+        "tolerance": "100mm"
+    },
+    "cuts": {
+        "type": "vcuts",
+        "layer": "Edge.Cuts"
+    },
+    "framing": {
+        "type": "none"
+    }
+}

@@ -1,0 +1,22 @@
+{
+    "layout": {
+        "type": "grid",
+        "rows": 5,
+        "cols": 5,
+        "hspace": "0mm",
+        "vspace": "0mm",
+        "rotation": "0deg",
+        "alternation": "none"
+    },
+    "source": {
+        "type": "auto",
+        "tolerance": "1mm"
+    },
+    "cuts": {
+        "type": "vcuts",
+        "layer": "Edge.Cuts"
+    },
+    "framing": {
+        "type": "none"
+    }
+}
