@@ -45,7 +45,7 @@ I'd love to hear your thoughts and questions about this project, and happy to in
 
 * Lasercut Vector File ([svg](https://s3.amazonaws.com/splitflap-artifacts/dev/sensorUpdate/3d/3d_laser_vector.svg))
 * Classic Controller electronics
-    * Bill of Materials ([csv](https://s3.amazonaws.com/splitflap-artifacts/dev/sensorUpdate/electronics-legacy/bom.csv))
+    * Bill of Materials ([csv](https://s3.amazonaws.com/splitflap-artifacts/dev/sensorUpdate/electronics/bom/splitflap-bom.csv), [interactive](https://s3.amazonaws.com/splitflap-artifacts/dev/sensorUpdate/electronics/bom/splitflap-ibom.html))
     * PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/sensorUpdate/electronics/classic-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/sensorUpdate/electronics/classic-pcb-packet.pdf))
     * Panelized PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/sensorUpdate/electronics/classic-panelized-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/sensorUpdate/electronics/classic-panelized-pcb-packet.pdf))
 * Sensor PCB, panelized ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/sensorUpdate/electronics/sensor-panelized-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/sensorUpdate/electronics/sensor-panelized-pcb-packet.pdf))
@@ -55,12 +55,12 @@ I'd love to hear your thoughts and questions about this project, and happy to in
     * PCB gerbers [zip](https://s3.amazonaws.com/splitflap-artifacts/dev/sensorUpdate/electronics/chainlinkDriver-jlc/gerbers.zip)
     * PCB bom (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/dev/sensorUpdate/electronics/chainlinkDriver-jlc/bom.csv)
     * PCB CPL (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/dev/sensorUpdate/electronics/chainlinkDriver-jlc/pos.csv)
-    * PCB bom (for manual assembly) [link](https://s3.amazonaws.com/splitflap-artifacts/dev/sensorUpdate/electronics/bom/chainlinkDriver-ibom.html)
+    * PCB bom (for manual assembly) [interactive](https://s3.amazonaws.com/splitflap-artifacts/dev/sensorUpdate/electronics/bom/chainlinkDriver-ibom.html)
 * Chainlink Base PCB
     * Schematic [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/sensorUpdate/electronics/chainlinkBase-schematic.pdf)
     * PCB overview [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/sensorUpdate/electronics/chainlinkBase-pcb-packet.pdf)
     * PCB gerbers [zip](https://s3.amazonaws.com/splitflap-artifacts/dev/sensorUpdate/electronics/chainlinkBase-jlc/gerbers.zip)
-    * PCB bom (for manual assembly) [link](https://s3.amazonaws.com/splitflap-artifacts/dev/sensorUpdate/electronics/bom/chainlinkBase-ibom.html)
+    * PCB bom (for manual assembly) [interactive](https://s3.amazonaws.com/splitflap-artifacts/dev/sensorUpdate/electronics/bom/chainlinkBase-ibom.html)
 If you are interested in building a display, I recommend using [one of the stable releases instead](https://github.com/scottbez1/splitflap/releases).
 
 ### Design Highlights

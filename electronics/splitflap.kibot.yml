@@ -16,7 +16,7 @@ outputs:
       layer_view: F
       dark_mode: true
       netlist_file: '%F.xml'
-      extra_fields: 'DK#'
+      extra_fields: 'DK#,BOM_Note'
   - name: 'bom_csv'
     comment: "Bill of Materials in CSV format"
     type: bom
@@ -27,3 +27,16 @@ outputs:
       aggregate:
         - file: electronics/sensor/sensor.sch
           number: 4
+      csv:
+        hide_pcb_info: true
+        hide_stats_info: true
+      columns:
+        - Row
+        - References
+        - Value
+        - DK#
+        - Quantity Per PCB
+        - Build Quantity
+        - BOM_Note
+        - Footprint
+        - Source BoM
