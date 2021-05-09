@@ -41,10 +41,13 @@ row_count = 1000;
 module flap_transform(row, col, flip) {
     x_pos = (flap_width + spacing_x) * col;
     y_pos = (flap_height * 2 + spacing_y + flap_gap/2) * row;
-    translate([x_pos, -y_pos, 0])
-        translate([flip * flap_width, (0.5 - flip) * (flap_pin_width + flap_gap), 0])
-            rotate([0, 0, flip * 180])
+    translate([x_pos, -y_pos, 0]) {
+        translate([flip * flap_width, (0.5 - flip) * (flap_pin_width + flap_gap), 0]) {
+            rotate([0, 0, flip * 180]) {
                 children();
+            }
+        }
+    }
 }
 
 module flap_pos(i, j) {
@@ -57,8 +60,9 @@ module flap_pos(i, j) {
         offsetted_row = row - start_row;
         flip = 1 - j;
         if (offsetted_row >= 0 && offsetted_row < row_count) {
-            flap_transform(offsetted_row, col, flip)
+            flap_transform(offsetted_row, col, flip) {
                 children();
+            }
         }
     } else {
         // double sided render
@@ -71,8 +75,9 @@ module flap_pos(i, j) {
             col = (char_side == 0) ? col_front : (cols - col_front - 1);
             offsetted_row = row - start_row;
             if (offsetted_row >= 0 && offsetted_row < row_count) {
-                flap_transform(offsetted_row, col, flip)
+                flap_transform(offsetted_row, col, flip) {
                     children();
+                }
             }
         }
     }
@@ -88,16 +93,22 @@ module fill_text() {
 render_index = -1;
 render_etch = false;
 
-projection_renderer(render_index = render_index, render_etch = render_etch, kerf_width = kerf_width, panel_height = 0, panel_horizontal = 0, panel_vertical = 0, bleed = bleed) {
-    for(i = [0 : len(character_list) - 1])
+projection_renderer(render_index = render_index, render_etch = render_etch, kerf_width = kerf_width, panel_height = 0, panel_horizontal = 0, panel_vertical = 0) {
+    for(i = [0 : len(character_list) - 1]) {
         for(j = [0 : 1]) {
-            flap_pos(i, j)
+            flap_pos(i, j) {
                 flap();
+            }
         }
+    }
 
-    fill_text()
-        for(i = [0 : len(character_list) - 1])
-            for(j = [0 : 1])
-                flap_pos(i, j)
+    fill_text() {
+        for(i = [0 : len(character_list) - 1]) {
+            for(j = [0 : 1]) {
+                flap_pos(i, j) {
                     flap_letter(character_list[i], 2-j, bleed);
+                }
+            }
+        }
+    }
 }

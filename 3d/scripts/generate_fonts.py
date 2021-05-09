@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #   Copyright 2020 Scott Bezek and the splitflap contributors
 #
@@ -34,6 +34,21 @@ sys.path.append(repo_root)
 
 from util import rev_info
 
+def render(extra_variables, skip_optimize, output_directory):
+    renderer = Renderer(os.path.join(source_parts_dir, 'font_generator.scad'), output_directory, extra_variables)
+    renderer.clean()
+    svg_output = renderer.render_svgs(panelize_quantity = 1)
+
+    processor = SvgProcessor(svg_output)
+
+    redundant_lines, merged_lines = None, None
+    if not skip_optimize:
+        logging.info('Removing redundant lines')
+        redundant_lines, merged_lines = processor.remove_redundant_lines()
+
+    processor.write(svg_output)
+    logging.info('\n\n\nDone rendering to SVG: ' + svg_output)
+
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
 
@@ -61,8 +76,6 @@ if __name__ == '__main__':
     parser.add_argument("--help", action="help", help="show this help message and exit")
 
     args = parser.parse_args()
-
-    output_directory = os.path.join(source_parts_dir, 'build', 'fonts')
 
     extra_variables = {
         'render_revision': rev_info.git_short_rev(),
@@ -99,27 +112,13 @@ if __name__ == '__main__':
     if args.bleed:
         extra_variables['bleed'] = True
 
-    def render():
-        renderer = Renderer(os.path.join(source_parts_dir, 'font_generator.scad'), output_directory, extra_variables)
-        renderer.clean()
-        svg_output = renderer.render_svgs(panelize_quantity = 1)
-
-        processor = SvgProcessor(svg_output)
-
-        redundant_lines, merged_lines = None, None
-        if not args.skip_optimize:
-            logging.info('Removing redundant lines')
-            redundant_lines, merged_lines = processor.remove_redundant_lines()
-
-        processor.write(svg_output)
-        logging.info('\n\n\nDone rendering to SVG: ' + svg_output)
+    fonts_directory = os.path.join(source_parts_dir, 'build', 'fonts')
 
     if args.double_sided:
-        output_directory = os.path.join(source_parts_dir, 'build', 'fonts', 'front')
         extra_variables['side'] = 1
-        render()
-        output_directory = os.path.join(source_parts_dir, 'build', 'fonts', 'back')
+        render(extra_variables, args.skip_optimize, os.path.join(fonts_directory, 'front'))
+
         extra_variables['side'] = 2
-        render()
+        render(extra_variables, args.skip_optimize, os.path.join(fonts_directory, 'back'))
     else:
-        render()
+        render(extra_variables, args.skip_optimize, fonts_directory)
