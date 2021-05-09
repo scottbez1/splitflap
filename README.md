@@ -461,9 +461,9 @@ This recalibrates all modules, including any that were in the `sensor_error` sta
 # License
 I'd love to hear your thoughts and questions about this project, and happy to incorporate any feedback you might have into these designs! Please feel free (and encouraged) to [open GitHub issues](https://github.com/scottbez1/splitflap/issues/new), email me directly, reach out [on Twitter](https://twitter.com/scottbez1), and [get involved](https://github.com/scottbez1/splitflap/pulls) in the open source development and let's keep chatting and building together!
 
-The vast majority of this project is licensed under Apache v2 (see [LICENSE.txt](LICENSE.txt) for full details).
+This project is licensed under Apache v2 (see [LICENSE.txt](LICENSE.txt)).
 
-    Copyright 2015-2018 Scott Bezek and the splitflap contributors
+    Copyright 2015-2021 Scott Bezek and the splitflap contributors
     
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
