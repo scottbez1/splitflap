@@ -1,12 +1,4 @@
-This project is made available under multiple licenses. Unless specifically
-excepted below, all files are licensed under Apache v2.
-
-Exceptions to the Apache v2 license:
-- electronics/bom/* (GPL v3, see electronics/bom/LICENSE.txt)
-
-----
-
-   splitflap - Copyright 2015-2016 Scott Bezek and the splitflap contributors
+   splitflap - Copyright 2015-2021 Scott Bezek and the splitflap contributors
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

@@ -1,47 +1,10 @@
-EESchema Schematic File Version 2
-LIBS:power
-LIBS:device
-LIBS:transistors
-LIBS:conn
-LIBS:linear
-LIBS:regul
-LIBS:74xx
-LIBS:cmos4000
-LIBS:adc-dac
-LIBS:memory
-LIBS:xilinx
-LIBS:microcontrollers
-LIBS:dsp
-LIBS:microchip
-LIBS:analog_switches
-LIBS:motorola
-LIBS:texas
-LIBS:intel
-LIBS:audio
-LIBS:interface
-LIBS:digital-audio
-LIBS:philips
-LIBS:display
-LIBS:cypress
-LIBS:siliconi
-LIBS:opto
-LIBS:atmel
-LIBS:contrib
-LIBS:valves
-LIBS:gp2s60
-LIBS:mount
-LIBS:arduino_uno_shield
-LIBS:74HC165
-LIBS:MIC5842
-LIBS:ws2812b
-LIBS:no_pin
-LIBS:splitflap-cache
-EELAYER 25 0
+EESchema Schematic File Version 4
+EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
-Title "Splitflap controller/sensor board"
+Title "Splitflap Classic Controller"
 Date ""
 Rev ""
 Comp "Scott Bezek"
@@ -51,7 +14,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L CONN_01X05 P1
+L Connector:Conn_01x05_Male P1
 U 1 1 5649AA03
 P 10850 2100
 F 0 "P1" H 10850 2400 50  0000 C CNN
@@ -60,21 +23,10 @@ F 2 "JST_XH_Connectors:JST_XH_2-5mm_5pin" H 10850 2100 60  0001 C CNN
 F 3 "" H 10850 2100 60  0000 C CNN
 F 4 "455-2270-ND" H 10850 2100 60  0001 C CNN "DK#"
 	1    10850 2100
-	1    0    0    -1  
+	-1   0    0    -1  
 $EndComp
 $Comp
-L VCC #PWR01
-U 1 1 5649B64E
-P 10850 2800
-F 0 "#PWR01" H 10850 2650 50  0001 C CNN
-F 1 "VCC" H 10850 2950 50  0000 C CNN
-F 2 "" H 10850 2800 60  0000 C CNN
-F 3 "" H 10850 2800 60  0000 C CNN
-	1    10850 2800
-	1    0    0    -1  
-$EndComp
-$Comp
-L BARREL_JACK CON1
+L Connector:Barrel_Jack_Switch CON1
 U 1 1 565BF7C7
 P 1400 5550
 F 0 "CON1" H 1400 5800 50  0000 C CNN
@@ -87,7 +39,7 @@ F 5 "Only needed on first board in chain (motor power transferred through ribbon
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR02
+L power:GND #PWR02
 U 1 1 565BF976
 P 1850 5700
 F 0 "#PWR02" H 1850 5450 50  0001 C CNN
@@ -98,57 +50,46 @@ F 3 "" H 1850 5700 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L VCC #PWR03
-U 1 1 565BFADB
-P 1850 5450
-F 0 "#PWR03" H 1850 5300 50  0001 C CNN
-F 1 "VCC" H 1850 5600 50  0000 C CNN
-F 2 "" H 1850 5450 50  0000 C CNN
-F 3 "" H 1850 5450 50  0000 C CNN
-	1    1850 5450
-	1    0    0    -1  
-$EndComp
-$Comp
-L CONN_01X04 P6
+L Connector:Conn_01x04_Male P6
 U 1 1 56634E4B
-P 2050 4600
-F 0 "P6" H 2050 4850 50  0000 C CNN
-F 1 "CONN_01X04" V 2150 4600 50  0000 C CNN
-F 2 "PinHeaders:Pin_Header_Straight_1x04" H 2050 4600 50  0001 C CNN
-F 3 "" H 2050 4600 50  0000 C CNN
-F 4 "S1012EC-04-ND" H 2050 4600 60  0001 C CNN "DK#"
-F 5 "Combine S1012EC-* male headers with other components and order a single, longer header (e.g. 1x40 and snap it apart)" H 2050 4600 60  0001 C CNN "BOM_Note"
-	1    2050 4600
-	1    0    0    -1  
+P 2050 4550
+F 0 "P6" H 2050 4800 50  0000 C CNN
+F 1 "CONN_01X04" V 2150 4550 50  0000 C CNN
+F 2 "PinHeaders:Pin_Header_Straight_1x04" H 2050 4550 50  0001 C CNN
+F 3 "" H 2050 4550 50  0000 C CNN
+F 4 "S1012EC-04-ND" H 2050 4550 60  0001 C CNN "DK#"
+F 5 "Combine S1012EC-* male headers with other components and order a single, longer header (e.g. 1x40 and snap it apart)" H 2050 4550 60  0001 C CNN "BOM_Note"
+	1    2050 4550
+	-1   0    0    -1  
 $EndComp
 $Comp
-L CONN_01X04 P7
+L Connector:Conn_01x04_Male P7
 U 1 1 5663509E
-P 2500 4600
-F 0 "P7" H 2500 4850 50  0000 C CNN
-F 1 "CONN_01X04" V 2600 4600 50  0000 C CNN
-F 2 "PinHeaders:Pin_Header_Straight_1x04" H 2500 4600 50  0001 C CNN
-F 3 "" H 2500 4600 50  0000 C CNN
-F 4 "S1012EC-04-ND" H 2500 4600 60  0001 C CNN "DK#"
-F 5 "Combine S1012EC-* male headers with other components and order a single, longer header (e.g. 1x40 and snap it apart)" H 2500 4600 60  0001 C CNN "BOM_Note"
-	1    2500 4600
-	1    0    0    -1  
+P 2500 4550
+F 0 "P7" H 2500 4800 50  0000 C CNN
+F 1 "CONN_01X04" V 2600 4550 50  0000 C CNN
+F 2 "PinHeaders:Pin_Header_Straight_1x04" H 2500 4550 50  0001 C CNN
+F 3 "" H 2500 4550 50  0000 C CNN
+F 4 "S1012EC-04-ND" H 2500 4550 60  0001 C CNN "DK#"
+F 5 "Combine S1012EC-* male headers with other components and order a single, longer header (e.g. 1x40 and snap it apart)" H 2500 4550 60  0001 C CNN "BOM_Note"
+	1    2500 4550
+	-1   0    0    -1  
 $EndComp
 $Comp
-L CONN_01X04 P8
+L Connector:Conn_01x04_Male P8
 U 1 1 566350EF
-P 2950 4600
-F 0 "P8" H 2950 4850 50  0000 C CNN
-F 1 "CONN_01X04" V 3050 4600 50  0000 C CNN
-F 2 "PinHeaders:Pin_Header_Straight_1x04" H 2950 4600 50  0001 C CNN
-F 3 "" H 2950 4600 50  0000 C CNN
-F 4 "S1012EC-04-ND" H 2950 4600 60  0001 C CNN "DK#"
-F 5 "Combine S1012EC-* male headers with other components and order a single, longer header (e.g. 1x40 and snap it apart)" H 2950 4600 60  0001 C CNN "BOM_Note"
-	1    2950 4600
-	1    0    0    -1  
+P 2950 4550
+F 0 "P8" H 2950 4800 50  0000 C CNN
+F 1 "CONN_01X04" V 3050 4550 50  0000 C CNN
+F 2 "PinHeaders:Pin_Header_Straight_1x04" H 2950 4550 50  0001 C CNN
+F 3 "" H 2950 4550 50  0000 C CNN
+F 4 "S1012EC-04-ND" H 2950 4550 60  0001 C CNN "DK#"
+F 5 "Combine S1012EC-* male headers with other components and order a single, longer header (e.g. 1x40 and snap it apart)" H 2950 4550 60  0001 C CNN "BOM_Note"
+	1    2950 4550
+	-1   0    0    -1  
 $EndComp
 $Comp
-L GND #PWR04
+L power:GND #PWR04
 U 1 1 566359BC
 P 2750 4850
 F 0 "#PWR04" H 2750 4600 50  0001 C CNN
@@ -159,7 +100,7 @@ F 3 "" H 2750 4850 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +5V #PWR05
+L power:+5V #PWR05
 U 1 1 5663AB70
 P 2300 4000
 F 0 "#PWR05" H 2300 3850 50  0001 C CNN
@@ -170,7 +111,7 @@ F 3 "" H 2300 4000 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L CP1_Small C1
+L Device:CP_Small C1
 U 1 1 56BC627A
 P 2050 5550
 F 0 "C1" H 2060 5620 50  0000 L CNN
@@ -182,7 +123,7 @@ F 4 "P5193-ND" H 2050 5550 60  0001 C CNN "DK#"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Led_Small D1
+L Device:LED_Small D1
 U 1 1 571479BE
 P 3350 5850
 F 0 "D1" V 3350 5950 50  0000 L CNN
@@ -194,7 +135,7 @@ F 4 "732-5010-ND" H 3350 5850 60  0001 C CNN "DK#"
 	0    -1   -1   0   
 $EndComp
 $Comp
-L R_Small R1
+L Device:R_Small R1
 U 1 1 57148460
 P 3350 5600
 F 0 "R1" H 3400 5600 50  0000 L CNN
@@ -206,7 +147,7 @@ F 4 "CF14JT2K20CT-ND" V 3350 5600 60  0001 C CNN "DK#"
 	-1   0    0    1   
 $EndComp
 $Comp
-L MIC5842 U2
+L MIC5842:MIC5842 U2
 U 1 1 59D00F46
 P 9150 2300
 F 0 "U2" H 9150 2200 50  0000 C CNN
@@ -218,7 +159,7 @@ F 4 "576-1309-ND" H 9150 2300 60  0001 C CNN "DK#"
 	1    0    0    -1  
 $EndComp
 $Comp
-L MIC5842 U4
+L MIC5842:MIC5842 U4
 U 1 1 59D01981
 P 9150 3700
 F 0 "U4" H 9150 3600 50  0000 C CNN
@@ -230,7 +171,7 @@ F 4 "576-1309-ND" H 9150 3700 60  0001 C CNN "DK#"
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74HC165 U3
+L splitflap-rescue:74HC165 U3
 U 1 1 59D01A9C
 P 6650 3100
 F 0 "U3" H 6650 3000 50  0000 C CNN
@@ -242,7 +183,7 @@ F 4 "296-8251-5-ND" H 6650 3100 60  0001 C CNN "DK#"
 	1    0    0    -1  
 $EndComp
 $Comp
-L arduino_uno_shield U1
+L arduino_uno_shield:arduino_uno_shield U1
 U 1 1 59D16939
 P 5850 1500
 F 0 "U1" H 5050 1250 60  0000 C CNN
@@ -255,7 +196,7 @@ F 5 "Arduino connections; only needed on *first* controller board in chain. Comb
 	0    1    1    0   
 $EndComp
 $Comp
-L WS2812B U5
+L ws2812b:WS2812B U5
 U 1 1 59D16B96
 P 5550 4500
 F 0 "U5" H 5550 4250 60  0000 C CNN
@@ -268,7 +209,7 @@ F 5 "DK part number is for 10. May be cheaper elsewhere (e.g. aliexpress)" H 555
 	0    -1   -1   0   
 $EndComp
 $Comp
-L WS2812B U6
+L ws2812b:WS2812B U6
 U 1 1 59D16CF3
 P 6050 4500
 F 0 "U6" H 6050 4250 60  0000 C CNN
@@ -281,7 +222,7 @@ F 5 "DK part number is for 10. May be cheaper elsewhere (e.g. aliexpress)" H 605
 	0    -1   -1   0   
 $EndComp
 $Comp
-L WS2812B U7
+L ws2812b:WS2812B U7
 U 1 1 59D16EA0
 P 6550 4500
 F 0 "U7" H 6550 4250 60  0000 C CNN
@@ -294,7 +235,7 @@ F 5 "DK part number is for 10. May be cheaper elsewhere (e.g. aliexpress)" H 655
 	0    -1   -1   0   
 $EndComp
 $Comp
-L WS2812B U8
+L ws2812b:WS2812B U8
 U 1 1 59D16EF1
 P 7050 4500
 F 0 "U8" H 7050 4250 60  0000 C CNN
@@ -327,7 +268,7 @@ SENSE3
 Text Label 7750 2950 2    60   ~ 0
 SENSE4
 $Comp
-L GND #PWR06
+L power:GND #PWR06
 U 1 1 59D1B3B6
 P 8300 2750
 F 0 "#PWR06" H 8300 2500 50  0001 C CNN
@@ -338,7 +279,7 @@ F 3 "" H 8300 2750 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR07
+L power:GND #PWR07
 U 1 1 59D1BDEB
 P 8300 4150
 F 0 "#PWR07" H 8300 3900 50  0001 C CNN
@@ -349,7 +290,7 @@ F 3 "" H 8300 4150 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +5V #PWR08
+L power:+5V #PWR08
 U 1 1 59D1BFA6
 P 8150 3700
 F 0 "#PWR08" H 8150 3550 50  0001 C CNN
@@ -360,7 +301,7 @@ F 3 "" H 8150 3700 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +5V #PWR09
+L power:+5V #PWR09
 U 1 1 59D1C078
 P 8150 2300
 F 0 "#PWR09" H 8150 2150 50  0001 C CNN
@@ -373,7 +314,7 @@ $EndComp
 Text Label 3850 2000 0    60   ~ 0
 SPI_CLOCK
 $Comp
-L R_Small R6
+L Device:R_Small R6
 U 1 1 59D1C78C
 P 1800 4200
 F 0 "R6" V 1800 4200 50  0000 C CNN
@@ -385,7 +326,7 @@ F 4 "CF14JT47K0CT-ND" V 1800 4200 60  0001 C CNN "DK#"
 	1    0    0    -1  
 $EndComp
 $Comp
-L R_Small R5
+L Device:R_Small R5
 U 1 1 59D1CCF2
 P 1650 4200
 F 0 "R5" V 1650 4200 50  0000 C CNN
@@ -397,7 +338,7 @@ F 4 "CF14JT47K0CT-ND" V 1650 4200 60  0001 C CNN "DK#"
 	1    0    0    -1  
 $EndComp
 $Comp
-L R_Small R4
+L Device:R_Small R4
 U 1 1 59D1CD54
 P 1500 4200
 F 0 "R4" V 1500 4200 50  0000 C CNN
@@ -409,7 +350,7 @@ F 4 "CF14JT47K0CT-ND" V 1500 4200 60  0001 C CNN "DK#"
 	1    0    0    -1  
 $EndComp
 $Comp
-L R_Small R3
+L Device:R_Small R3
 U 1 1 59D1CDB9
 P 1350 4200
 F 0 "R3" V 1350 4200 50  0000 C CNN
@@ -425,20 +366,20 @@ MOTOR_DATA_IN
 Text Label 3850 2200 0    60   ~ 0
 MOTOR_LATCH
 $Comp
-L CONN_02X07 J1
+L Connector_Generic:Conn_02x07_Odd_Even J1
 U 1 1 59D46D4B
-P 2050 1500
-F 0 "J1" H 2050 1900 50  0000 C CNN
-F 1 "EXP. IN" V 2050 1500 50  0000 C CNN
-F 2 "PinHeaders:Pin_Header_Straight_2x07_Pitch2.54mm_IDC_Shrouded" H 2050 300 50  0001 C CNN
-F 3 "" H 2050 300 50  0001 C CNN
-F 4 "S9170-ND" H 2050 1500 60  0001 C CNN "DK#"
-F 5 "J1 (Expansion In) is NOT needed on first board, and J2 (Expansion Out) is NOT needed on third/last board in chain." H 2050 1500 60  0001 C CNN "BOM_Note"
-	1    2050 1500
+P 2000 1500
+F 0 "J1" H 2000 1900 50  0000 C CNN
+F 1 "EXP. IN" V 2000 1500 50  0000 C CNN
+F 2 "PinHeaders:Pin_Header_Straight_2x07_Pitch2.54mm_IDC_Shrouded" H 2000 300 50  0001 C CNN
+F 3 "" H 2000 300 50  0001 C CNN
+F 4 "S9170-ND" H 2000 1500 60  0001 C CNN "DK#"
+F 5 "J1 (Expansion In) is NOT needed on first board, and J2 (Expansion Out) is NOT needed on third/last board in chain." H 2000 1500 60  0001 C CNN "BOM_Note"
+	1    2000 1500
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR010
+L power:GND #PWR010
 U 1 1 59D47141
 P 5750 3450
 F 0 "#PWR010" H 5750 3200 50  0001 C CNN
@@ -449,7 +390,7 @@ F 3 "" H 5750 3450 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +5V #PWR011
+L power:+5V #PWR011
 U 1 1 59D4718F
 P 7500 2700
 F 0 "#PWR011" H 7500 2550 50  0001 C CNN
@@ -460,7 +401,7 @@ F 3 "" H 7500 2700 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR012
+L power:GND #PWR012
 U 1 1 59D4728F
 P 7750 2600
 F 0 "#PWR012" H 7750 2350 50  0001 C CNN
@@ -471,7 +412,7 @@ F 3 "" H 7750 2600 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +5V #PWR013
+L power:+5V #PWR013
 U 1 1 59D490DB
 P 5800 1700
 F 0 "#PWR013" H 5800 1550 50  0001 C CNN
@@ -482,7 +423,7 @@ F 3 "" H 5800 1700 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR014
+L power:GND #PWR014
 U 1 1 59D49129
 P 5100 1800
 F 0 "#PWR014" H 5100 1550 50  0001 C CNN
@@ -493,7 +434,7 @@ F 3 "" H 5100 1800 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR015
+L power:GND #PWR015
 U 1 1 59D49C51
 P 7500 4000
 F 0 "#PWR015" H 7500 3750 50  0001 C CNN
@@ -504,7 +445,7 @@ F 3 "" H 7500 4000 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +5V #PWR016
+L power:+5V #PWR016
 U 1 1 59D49D6C
 P 5250 5000
 F 0 "#PWR016" H 5250 4850 50  0001 C CNN
@@ -531,29 +472,7 @@ SENSOR_DATA_IN
 Text Notes 9150 4600 2    60   ~ 0
 EXPANSION PORT
 $Comp
-L VCC #PWR017
-U 1 1 59D712A6
-P 1800 1050
-F 0 "#PWR017" H 1800 900 50  0001 C CNN
-F 1 "VCC" H 1800 1200 50  0000 C CNN
-F 2 "" H 1800 1050 50  0001 C CNN
-F 3 "" H 1800 1050 50  0001 C CNN
-	1    1800 1050
-	1    0    0    -1  
-$EndComp
-$Comp
-L VCC #PWR018
-U 1 1 59D71312
-P 2300 1050
-F 0 "#PWR018" H 2300 900 50  0001 C CNN
-F 1 "VCC" H 2300 1200 50  0000 C CNN
-F 2 "" H 2300 1050 50  0001 C CNN
-F 3 "" H 2300 1050 50  0001 C CNN
-	1    2300 1050
-	1    0    0    -1  
-$EndComp
-$Comp
-L GND #PWR019
+L power:GND #PWR019
 U 1 1 59D71550
 P 850 1300
 F 0 "#PWR019" H 850 1050 50  0001 C CNN
@@ -564,7 +483,7 @@ F 3 "" H 850 1300 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR020
+L power:GND #PWR020
 U 1 1 59D715BC
 P 3150 1300
 F 0 "#PWR020" H 3150 1050 50  0001 C CNN
@@ -575,7 +494,7 @@ F 3 "" H 3150 1300 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +5V #PWR021
+L power:+5V #PWR021
 U 1 1 59D71A83
 P 1550 1200
 F 0 "#PWR021" H 1550 1050 50  0001 C CNN
@@ -586,7 +505,7 @@ F 3 "" H 1550 1200 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +5V #PWR022
+L power:+5V #PWR022
 U 1 1 59D71AEF
 P 2550 1200
 F 0 "#PWR022" H 2550 1050 50  0001 C CNN
@@ -609,42 +528,20 @@ DBGLED_IN
 Text Label 950  1700 0    60   ~ 0
 SPI_CLOCK
 $Comp
-L CONN_02X07 J2
+L Connector_Generic:Conn_02x07_Odd_Even J2
 U 1 1 59D7346F
-P 2050 2600
-F 0 "J2" H 2050 3000 50  0000 C CNN
-F 1 "EXP. OUT" V 2050 2600 50  0000 C CNN
-F 2 "PinHeaders:Pin_Header_Straight_2x07_Pitch2.54mm_IDC_Shrouded" H 2050 1400 50  0001 C CNN
-F 3 "" H 2050 1400 50  0001 C CNN
-F 4 "S9170-ND" H 2050 2600 60  0001 C CNN "DK#"
-F 5 "J1 (Expansion In) is NOT needed on first board, and J2 (Expansion Out) is NOT needed on third/last board in chain." H 2050 2600 60  0001 C CNN "BOM_Note"
-	1    2050 2600
+P 2000 2600
+F 0 "J2" H 2000 3000 50  0000 C CNN
+F 1 "EXP. OUT" V 2000 2600 50  0000 C CNN
+F 2 "PinHeaders:Pin_Header_Straight_2x07_Pitch2.54mm_IDC_Shrouded" H 2000 1400 50  0001 C CNN
+F 3 "" H 2000 1400 50  0001 C CNN
+F 4 "S9170-ND" H 2000 2600 60  0001 C CNN "DK#"
+F 5 "J1 (Expansion In) is NOT needed on first board, and J2 (Expansion Out) is NOT needed on third/last board in chain." H 2000 2600 60  0001 C CNN "BOM_Note"
+	1    2000 2600
 	1    0    0    -1  
 $EndComp
 $Comp
-L VCC #PWR023
-U 1 1 59D73475
-P 1800 2150
-F 0 "#PWR023" H 1800 2000 50  0001 C CNN
-F 1 "VCC" H 1800 2300 50  0000 C CNN
-F 2 "" H 1800 2150 50  0001 C CNN
-F 3 "" H 1800 2150 50  0001 C CNN
-	1    1800 2150
-	1    0    0    -1  
-$EndComp
-$Comp
-L VCC #PWR024
-U 1 1 59D7347B
-P 2300 2150
-F 0 "#PWR024" H 2300 2000 50  0001 C CNN
-F 1 "VCC" H 2300 2300 50  0000 C CNN
-F 2 "" H 2300 2150 50  0001 C CNN
-F 3 "" H 2300 2150 50  0001 C CNN
-	1    2300 2150
-	1    0    0    -1  
-$EndComp
-$Comp
-L GND #PWR025
+L power:GND #PWR025
 U 1 1 59D73483
 P 850 2400
 F 0 "#PWR025" H 850 2150 50  0001 C CNN
@@ -655,7 +552,7 @@ F 3 "" H 850 2400 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR026
+L power:GND #PWR026
 U 1 1 59D73489
 P 3150 2400
 F 0 "#PWR026" H 3150 2150 50  0001 C CNN
@@ -666,7 +563,7 @@ F 3 "" H 3150 2400 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +5V #PWR027
+L power:+5V #PWR027
 U 1 1 59D73491
 P 1550 2300
 F 0 "#PWR027" H 1550 2150 50  0001 C CNN
@@ -677,7 +574,7 @@ F 3 "" H 1550 2300 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +5V #PWR028
+L power:+5V #PWR028
 U 1 1 59D73497
 P 2550 2300
 F 0 "#PWR028" H 2550 2150 50  0001 C CNN
@@ -702,7 +599,7 @@ SPI_CLOCK
 Text Notes 1650 750  0    60   ~ 0
 EXPANSION PORT
 $Comp
-L CONN_01X05 P2
+L Connector:Conn_01x05_Male P2
 U 1 1 5641B40C
 P 10300 2500
 F 0 "P2" H 10300 2800 50  0000 C CNN
@@ -711,21 +608,10 @@ F 2 "JST_XH_Connectors:JST_XH_2-5mm_5pin" H 10300 2500 60  0001 C CNN
 F 3 "" H 10300 2500 60  0000 C CNN
 F 4 "455-2270-ND" H 10300 2500 60  0001 C CNN "DK#"
 	1    10300 2500
-	1    0    0    -1  
+	-1   0    0    -1  
 $EndComp
 $Comp
-L VCC #PWR029
-U 1 1 59D19659
-P 10850 4200
-F 0 "#PWR029" H 10850 4050 50  0001 C CNN
-F 1 "VCC" H 10850 4350 50  0000 C CNN
-F 2 "" H 10850 4200 60  0000 C CNN
-F 3 "" H 10850 4200 60  0000 C CNN
-	1    10850 4200
-	1    0    0    -1  
-$EndComp
-$Comp
-L CONN_01X05 P3
+L Connector:Conn_01x05_Male P3
 U 1 1 59D19653
 P 10850 3500
 F 0 "P3" H 10850 3800 50  0000 C CNN
@@ -734,10 +620,10 @@ F 2 "JST_XH_Connectors:JST_XH_2-5mm_5pin" H 10850 3500 60  0001 C CNN
 F 3 "" H 10850 3500 60  0000 C CNN
 F 4 "455-2270-ND" H 10850 3500 60  0001 C CNN "DK#"
 	1    10850 3500
-	1    0    0    -1  
+	-1   0    0    -1  
 $EndComp
 $Comp
-L CONN_01X05 P4
+L Connector:Conn_01x05_Male P4
 U 1 1 59D1964C
 P 10300 3900
 F 0 "P4" H 10300 4200 50  0000 C CNN
@@ -746,7 +632,7 @@ F 2 "JST_XH_Connectors:JST_XH_2-5mm_5pin" H 10300 3900 60  0001 C CNN
 F 3 "" H 10300 3900 60  0000 C CNN
 F 4 "455-2270-ND" H 10300 3900 60  0001 C CNN "DK#"
 	1    10300 3900
-	1    0    0    -1  
+	-1   0    0    -1  
 $EndComp
 NoConn ~ 1800 1800
 NoConn ~ 2300 1800
@@ -755,7 +641,7 @@ NoConn ~ 2300 2900
 NoConn ~ 5900 3350
 NoConn ~ 5200 1700
 $Comp
-L Led_Small D2
+L Device:LED_Small D2
 U 1 1 59D78B15
 P 3850 5850
 F 0 "D2" V 3850 5950 50  0000 L CNN
@@ -767,7 +653,7 @@ F 4 "732-5008-ND" H 3850 5850 60  0001 C CNN "DK#"
 	0    -1   -1   0   
 $EndComp
 $Comp
-L R_Small R7
+L Device:R_Small R7
 U 1 1 59D78B1C
 P 3850 5600
 F 0 "R7" H 3900 5600 50  0000 L CNN
@@ -779,7 +665,7 @@ F 4 "CF14JT220RCT-ND" V 3850 5600 60  0001 C CNN "DK#"
 	-1   0    0    1   
 $EndComp
 $Comp
-L +5V #PWR030
+L power:+5V #PWR030
 U 1 1 59D78C12
 P 2650 5400
 F 0 "#PWR030" H 2650 5250 50  0001 C CNN
@@ -790,7 +676,7 @@ F 3 "" H 2650 5400 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR031
+L power:GND #PWR031
 U 1 1 59D78C68
 P 2650 5700
 F 0 "#PWR031" H 2650 5450 50  0001 C CNN
@@ -801,7 +687,7 @@ F 3 "" H 2650 5700 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C_Small C2
+L Device:C_Small C2
 U 1 1 59D7A147
 P 2450 5550
 F 0 "C2" H 2460 5620 50  0000 L CNN
@@ -813,7 +699,7 @@ F 4 "BC2665CT-ND" H 2450 5550 60  0001 C CNN "DK#"
 	1    0    0    -1  
 $EndComp
 $Comp
-L R_Small R9
+L Device:R_Small R9
 U 1 1 59DAC74F
 P 4700 1850
 F 0 "R9" V 4700 1850 50  0000 C CNN
@@ -826,20 +712,20 @@ F 5 "Only needed on first board in chain." V 4700 1850 60  0001 C CNN "BOM_Note"
 	1    0    0    -1  
 $EndComp
 $Comp
-L CONN_01X04 P10
+L Connector:Conn_01x04_Female P10
 U 1 1 59E1C132
-P 5700 3100
-F 0 "P10" H 5700 3350 50  0000 C CNN
-F 1 "CONN_01X04" V 5800 3100 50  0000 C CNN
-F 2 "PinHeaders:Pin_Header_Straight_1x04" H 5700 3100 50  0001 C CNN
-F 3 "" H 5700 3100 50  0000 C CNN
-F 4 "N/A" H 5700 3100 60  0001 C CNN "DK#"
-F 5 "Unused pins, leave unpopulated" H 5700 3100 60  0001 C CNN "BOM_Note"
-	1    5700 3100
+P 5700 3050
+F 0 "P10" H 5700 3300 50  0000 C CNN
+F 1 "CONN_01X04" V 5800 3050 50  0000 C CNN
+F 2 "PinHeaders:Pin_Header_Straight_1x04" H 5700 3050 50  0001 C CNN
+F 3 "" H 5700 3050 50  0000 C CNN
+F 4 "N/A" H 5700 3050 60  0001 C CNN "DK#"
+F 5 "Unused pins, leave unpopulated" H 5700 3050 60  0001 C CNN "BOM_Note"
+	1    5700 3050
 	-1   0    0    -1  
 $EndComp
 $Comp
-L CP1_Small C3
+L Device:CP_Small C3
 U 1 1 59E44C8C
 P 2650 5550
 F 0 "C3" H 2660 5620 50  0000 L CNN
@@ -851,7 +737,7 @@ F 4 "P5193-ND" H 2650 5550 60  0001 C CNN "DK#"
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR032
+L power:GND #PWR032
 U 1 1 5B693709
 P 7550 3650
 F 0 "#PWR032" H 7550 3400 50  0001 C CNN
@@ -862,7 +748,7 @@ F 3 "" H 7550 3650 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R_Small R10
+L Device:R_Small R10
 U 1 1 5B694203
 P 7550 3500
 F 0 "R10" V 7500 3500 50  0000 C CNN
@@ -874,7 +760,7 @@ F 4 "CF14JT47K0CT-ND" V 7550 3500 60  0001 C CNN "DK#"
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR033
+L power:GND #PWR033
 U 1 1 5B6D253E
 P 4300 1750
 F 0 "#PWR033" H 4300 1500 50  0001 C CNN
@@ -885,18 +771,7 @@ F 3 "" H 4300 1750 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L VCC #PWR034
-U 1 1 5B6D26FA
-P 3600 1700
-F 0 "#PWR034" H 3600 1550 50  0001 C CNN
-F 1 "VCC" H 3600 1850 50  0000 C CNN
-F 2 "" H 3600 1700 50  0001 C CNN
-F 3 "" H 3600 1700 50  0001 C CNN
-	1    3600 1700
-	1    0    0    -1  
-$EndComp
-$Comp
-L no_pin Z4
+L no_pin:no_pin Z4
 U 1 1 5B992FE3
 P 2050 3300
 F 0 "Z4" H 1700 3450 60  0000 C CNN
@@ -909,7 +784,7 @@ F 5 "Cable connects *between* controller boards in chain, so 2 are needed per 3 
 	1    0    0    -1  
 $EndComp
 $Comp
-L MOUNT_1pin Z1
+L mount:MOUNT_1pin Z1
 U 1 1 5B99526A
 P 1800 6250
 F 0 "Z1" H 1800 6400 60  0000 C CNN
@@ -922,7 +797,7 @@ F 5 "This is a mounting hole, not a component." H 1800 6250 60  0001 C CNN "BOM_
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR035
+L power:GND #PWR035
 U 1 1 5B995C93
 P 2150 6550
 F 0 "#PWR035" H 2150 6300 50  0001 C CNN
@@ -933,7 +808,7 @@ F 3 "" H 2150 6550 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L MOUNT_1pin Z2
+L mount:MOUNT_1pin Z2
 U 1 1 5B998432
 P 2150 6250
 F 0 "Z2" H 2150 6400 60  0000 C CNN
@@ -946,7 +821,7 @@ F 5 "This is a mounting hole, not a component." H 2150 6250 60  0001 C CNN "BOM_
 	1    0    0    -1  
 $EndComp
 $Comp
-L MOUNT_1pin Z3
+L mount:MOUNT_1pin Z3
 U 1 1 5B9984BA
 P 2500 6250
 F 0 "Z3" H 2500 6400 60  0000 C CNN
@@ -959,11 +834,11 @@ F 5 "This is a mounting hole, not a component." H 2500 6250 60  0001 C CNN "BOM_
 	1    0    0    -1  
 $EndComp
 $Comp
-L Jumper_NC_Small JP1
+L Device:Jumper_NC_Small JP1
 U 1 1 5B70A750
 P 3750 1750
 F 0 "JP1" H 3750 1830 50  0000 C CNN
-F 1 "VIN <-> VCC" H 3760 1690 50  0000 C CNN
+F 1 "VIN <-> 12V" H 3760 1690 50  0000 C CNN
 F 2 "Pin_Headers:Pin_Header_Straight_1x02_Pitch2.54mm" H 3750 1750 50  0001 C CNN
 F 3 "" H 3750 1750 50  0001 C CNN
 F 4 "S1012EC-02-ND, S9337-ND (Both optional)" H 3750 1750 60  0001 C CNN "DK#"
@@ -990,7 +865,7 @@ Connection ~ 10000 2700
 Wire Wire Line
 	10000 2700 10000 2800
 Wire Wire Line
-	9900 2700 10100 2700
+	9900 2700 10000 2700
 Wire Wire Line
 	2300 2600 3000 2600
 Wire Wire Line
@@ -1049,19 +924,19 @@ Wire Wire Line
 	1800 1050 1800 1200
 Connection ~ 4800 2450
 Wire Wire Line
-	4800 1700 4800 3850
+	4800 1700 4800 2450
 Connection ~ 4900 2200
 Wire Wire Line
 	4900 1700 4900 2200
 Wire Wire Line
-	3850 2450 5900 2450
+	3850 2450 4800 2450
 Wire Wire Line
 	5900 2450 5900 2750
 Connection ~ 5600 2350
 Wire Wire Line
 	3850 2350 5600 2350
 Wire Wire Line
-	3850 2200 8000 2200
+	3850 2200 4900 2200
 Wire Wire Line
 	8000 2500 8400 2500
 Connection ~ 5300 2100
@@ -1091,11 +966,11 @@ Connection ~ 7900 3400
 Wire Wire Line
 	7900 4750 9150 4750
 Wire Wire Line
-	4700 1950 4700 4000
+	4700 1950 4700 2600
 Wire Wire Line
-	3850 2100 8400 2100
+	3850 2100 5300 2100
 Wire Wire Line
-	3850 2000 8400 2000
+	3850 2000 5400 2000
 Wire Wire Line
 	4700 4000 5600 4000
 Wire Wire Line
@@ -1131,20 +1006,17 @@ Wire Wire Line
 Wire Wire Line
 	1700 5550 1850 5550
 Wire Wire Line
-	1850 5550 1850 5700
+	1850 5550 1850 5650
 Wire Wire Line
-	1700 5650 2050 5650
+	1700 5650 1850 5650
 Connection ~ 1850 5650
 Wire Wire Line
-	1700 5450 2050 5450
-Connection ~ 1850 5450
-Wire Wire Line
-	2300 4000 2300 4750
+	2300 4000 2300 4050
 Connection ~ 2300 4450
 Connection ~ 2300 4550
 Connection ~ 2300 4650
 Wire Wire Line
-	2750 4450 2750 4850
+	2750 4450 2750 4550
 Connection ~ 2750 4750
 Connection ~ 2750 4650
 Connection ~ 2750 4550
@@ -1185,7 +1057,7 @@ Wire Wire Line
 Wire Wire Line
 	6900 4050 7100 4050
 Wire Wire Line
-	5250 5000 7100 5000
+	5250 5000 5600 5000
 Wire Wire Line
 	5600 5000 5600 4950
 Wire Wire Line
@@ -1200,7 +1072,7 @@ Connection ~ 6600 5000
 Wire Wire Line
 	5700 4050 5700 4000
 Wire Wire Line
-	5700 4000 7500 4000
+	5700 4000 6200 4000
 Wire Wire Line
 	6200 4050 6200 4000
 Connection ~ 6200 4000
@@ -1211,7 +1083,7 @@ Wire Wire Line
 	7200 4000 7200 4050
 Connection ~ 7200 4000
 Wire Wire Line
-	10000 2800 10850 2800
+	10000 2800 10600 2800
 Connection ~ 10600 4200
 Wire Wire Line
 	9900 3700 10100 3700
@@ -1222,7 +1094,7 @@ Wire Wire Line
 Wire Wire Line
 	10100 4000 9900 4000
 Wire Wire Line
-	9900 4100 10100 4100
+	9900 4100 10000 4100
 Wire Wire Line
 	9900 3600 10650 3600
 Wire Wire Line
@@ -1234,24 +1106,24 @@ Wire Wire Line
 Wire Wire Line
 	10000 4100 10000 4200
 Wire Wire Line
-	10000 4200 10850 4200
+	10000 4200 10600 4200
 Connection ~ 10000 4100
 Wire Wire Line
 	10600 4200 10600 3700
 Wire Wire Line
 	10600 3700 10650 3700
 Wire Wire Line
-	850  4750 1850 4750
+	850  4750 1350 4750
 Wire Wire Line
-	850  4650 1850 4650
+	850  4650 1500 4650
 Wire Wire Line
-	850  4550 1850 4550
+	850  4550 1650 4550
 Wire Wire Line
-	850  4450 1850 4450
+	850  4450 1800 4450
 Wire Wire Line
 	8400 1900 8300 1900
 Wire Wire Line
-	8300 1900 8300 2750
+	8300 1900 8300 2200
 Wire Wire Line
 	8300 2700 8400 2700
 Connection ~ 8300 2700
@@ -1269,7 +1141,7 @@ Wire Wire Line
 Wire Wire Line
 	8400 3300 8300 3300
 Wire Wire Line
-	8300 3300 8300 4150
+	8300 3300 8300 3600
 Wire Wire Line
 	8300 4100 8400 4100
 Connection ~ 8300 4100
@@ -1289,11 +1161,11 @@ Wire Wire Line
 Wire Wire Line
 	8150 2300 8400 2300
 Wire Wire Line
-	7900 2000 7900 4750
+	7900 2000 7900 3400
 Wire Wire Line
 	7900 3400 8400 3400
 Wire Wire Line
-	8000 2200 8000 4950
+	8000 2200 8000 2500
 Wire Wire Line
 	8000 3900 8400 3900
 Connection ~ 7900 2000
@@ -1312,7 +1184,7 @@ Connection ~ 1350 4750
 Wire Wire Line
 	1350 4100 1350 4050
 Wire Wire Line
-	1350 4050 2300 4050
+	1350 4050 1500 4050
 Wire Wire Line
 	1500 4100 1500 4050
 Connection ~ 1500 4050
@@ -1339,9 +1211,9 @@ Connection ~ 8000 2500
 Wire Wire Line
 	5800 1800 5800 1700
 Wire Wire Line
-	5600 1700 5600 3750
+	5600 1700 5600 2350
 Wire Wire Line
-	7400 3350 7800 3350
+	7400 3350 7550 3350
 Wire Wire Line
 	7550 3350 7550 3400
 Connection ~ 7550 3350
@@ -1352,7 +1224,7 @@ Wire Wire Line
 Wire Wire Line
 	4400 1750 4400 1700
 Wire Wire Line
-	1800 6450 2500 6450
+	1800 6450 2150 6450
 Connection ~ 2150 6450
 Wire Wire Line
 	2150 6450 2150 6550
@@ -1361,18 +1233,7 @@ Wire Wire Line
 Wire Wire Line
 	2650 5450 2450 5450
 $Comp
-L VCC #PWR036
-U 1 1 5F7C6C91
-P 3350 5450
-F 0 "#PWR036" H 3350 5300 50  0001 C CNN
-F 1 "VCC" H 3350 5600 50  0000 C CNN
-F 2 "" H 3350 5450 50  0000 C CNN
-F 3 "" H 3350 5450 50  0000 C CNN
-	1    3350 5450
-	1    0    0    -1  
-$EndComp
-$Comp
-L +5V #PWR037
+L power:+5V #PWR037
 U 1 1 5F7C6D0B
 P 3850 5450
 F 0 "#PWR037" H 3850 5300 50  0001 C CNN
@@ -1387,12 +1248,12 @@ Wire Wire Line
 Wire Wire Line
 	3850 5500 3850 5450
 $Comp
-L Jumper_NC_Small JP2
+L Device:Jumper_NC_Small JP2
 U 1 1 5F7C7E7A
 P 3600 6150
 F 0 "JP2" V 3600 6300 50  0000 C CNN
 F 1 "LED_Jumper" V 3600 5850 50  0000 C CNN
-F 2 "SolderJumpers:SolderJumper-2_P1.3mm_Bridged_Pad1.0x1.5mm" H 3600 6150 50  0001 C CNN
+F 2 "Jumper:SolderJumper-2_P1.3mm_Bridged_Pad1.0x1.5mm" H 3600 6150 50  0001 C CNN
 F 3 "" H 3600 6150 50  0001 C CNN
 	1    3600 6150
 	0    -1   -1   0   
@@ -1400,14 +1261,14 @@ $EndComp
 Wire Wire Line
 	3350 5950 3350 6000
 Wire Wire Line
-	3350 6000 3850 6000
+	3350 6000 3600 6000
 Wire Wire Line
 	3850 6000 3850 5950
 Wire Wire Line
 	3600 6000 3600 6050
 Connection ~ 3600 6000
 $Comp
-L GND #PWR038
+L power:GND #PWR038
 U 1 1 5F7C83E7
 P 3600 6300
 F 0 "#PWR038" H 3600 6050 50  0001 C CNN
@@ -1425,4 +1286,225 @@ Wire Wire Line
 	3600 1700 3600 1750
 Wire Wire Line
 	3600 1750 3650 1750
+Wire Wire Line
+	10600 2800 10850 2800
+Wire Wire Line
+	10000 2700 10100 2700
+Wire Wire Line
+	4800 2450 4800 3850
+Wire Wire Line
+	4800 2450 5900 2450
+Wire Wire Line
+	4900 2200 8000 2200
+Wire Wire Line
+	5600 2350 5600 3750
+Wire Wire Line
+	5300 2100 8400 2100
+Wire Wire Line
+	5400 2000 5750 2000
+Wire Wire Line
+	8000 3900 8000 4950
+Wire Wire Line
+	7900 3400 7900 4750
+Wire Wire Line
+	5750 2000 7900 2000
+Wire Wire Line
+	4700 2600 4700 4000
+Wire Wire Line
+	1850 5650 1850 5700
+Wire Wire Line
+	1850 5650 2050 5650
+Wire Wire Line
+	2300 4450 2300 4550
+Wire Wire Line
+	2300 4550 2300 4650
+Wire Wire Line
+	2300 4650 2300 4750
+Wire Wire Line
+	2750 4750 2750 4850
+Wire Wire Line
+	2750 4650 2750 4750
+Wire Wire Line
+	2750 4550 2750 4650
+Wire Wire Line
+	5600 5000 6100 5000
+Wire Wire Line
+	6100 5000 6600 5000
+Wire Wire Line
+	6600 5000 7100 5000
+Wire Wire Line
+	6200 4000 6700 4000
+Wire Wire Line
+	6700 4000 7200 4000
+Wire Wire Line
+	7200 4000 7500 4000
+Wire Wire Line
+	10600 4200 10850 4200
+Wire Wire Line
+	10000 4100 10100 4100
+Wire Wire Line
+	8300 2700 8300 2750
+Wire Wire Line
+	8300 2200 8300 2600
+Wire Wire Line
+	8300 4100 8300 4150
+Wire Wire Line
+	8300 3600 8300 4000
+Wire Wire Line
+	8300 4000 8300 4100
+Wire Wire Line
+	8300 2600 8300 2700
+Wire Wire Line
+	7900 2000 8400 2000
+Wire Wire Line
+	1800 4450 1850 4450
+Wire Wire Line
+	1650 4550 1850 4550
+Wire Wire Line
+	1500 4650 1850 4650
+Wire Wire Line
+	1350 4750 1850 4750
+Wire Wire Line
+	1500 4050 1650 4050
+Wire Wire Line
+	1650 4050 1800 4050
+Wire Wire Line
+	1800 4050 2300 4050
+Wire Wire Line
+	2300 4050 2300 4450
+Wire Wire Line
+	8000 2500 8000 3900
+Wire Wire Line
+	7550 3350 7800 3350
+Wire Wire Line
+	2150 6450 2500 6450
+Wire Wire Line
+	3600 6000 3850 6000
+$Comp
+L power:PWR_FLAG #FLG0101
+U 1 1 60984B10
+P 1700 5450
+F 0 "#FLG0101" H 1700 5525 50  0001 C CNN
+F 1 "PWR_FLAG" V 1700 5750 50  0000 C CNN
+F 2 "" H 1700 5450 50  0001 C CNN
+F 3 "~" H 1700 5450 50  0001 C CNN
+	1    1700 5450
+	1    0    0    -1  
+$EndComp
+Connection ~ 1700 5450
+Wire Wire Line
+	1700 5450 1900 5450
+$Comp
+L power:+12V #PWR0101
+U 1 1 609B028E
+P 1800 1050
+F 0 "#PWR0101" H 1800 900 50  0001 C CNN
+F 1 "+12V" H 1815 1223 50  0000 C CNN
+F 2 "" H 1800 1050 50  0001 C CNN
+F 3 "" H 1800 1050 50  0001 C CNN
+	1    1800 1050
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+12V #PWR0102
+U 1 1 609B06F7
+P 2300 1050
+F 0 "#PWR0102" H 2300 900 50  0001 C CNN
+F 1 "+12V" H 2315 1223 50  0000 C CNN
+F 2 "" H 2300 1050 50  0001 C CNN
+F 3 "" H 2300 1050 50  0001 C CNN
+	1    2300 1050
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+12V #PWR0104
+U 1 1 609B0D28
+P 1800 2150
+F 0 "#PWR0104" H 1800 2000 50  0001 C CNN
+F 1 "+12V" H 1815 2323 50  0000 C CNN
+F 2 "" H 1800 2150 50  0001 C CNN
+F 3 "" H 1800 2150 50  0001 C CNN
+	1    1800 2150
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+12V #PWR0105
+U 1 1 609B139F
+P 2300 2150
+F 0 "#PWR0105" H 2300 2000 50  0001 C CNN
+F 1 "+12V" H 2315 2323 50  0000 C CNN
+F 2 "" H 2300 2150 50  0001 C CNN
+F 3 "" H 2300 2150 50  0001 C CNN
+	1    2300 2150
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+12V #PWR0103
+U 1 1 609B180E
+P 3600 1700
+F 0 "#PWR0103" H 3600 1550 50  0001 C CNN
+F 1 "+12V" H 3615 1873 50  0000 C CNN
+F 2 "" H 3600 1700 50  0001 C CNN
+F 3 "" H 3600 1700 50  0001 C CNN
+	1    3600 1700
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+12V #PWR0108
+U 1 1 609B29E9
+P 1900 5450
+F 0 "#PWR0108" H 1900 5300 50  0001 C CNN
+F 1 "+12V" H 1915 5623 50  0000 C CNN
+F 2 "" H 1900 5450 50  0001 C CNN
+F 3 "" H 1900 5450 50  0001 C CNN
+	1    1900 5450
+	1    0    0    -1  
+$EndComp
+Connection ~ 1900 5450
+Wire Wire Line
+	1900 5450 2050 5450
+$Comp
+L power:+12V #PWR0106
+U 1 1 609B4E44
+P 10850 2800
+F 0 "#PWR0106" H 10850 2650 50  0001 C CNN
+F 1 "+12V" H 10865 2973 50  0000 C CNN
+F 2 "" H 10850 2800 50  0001 C CNN
+F 3 "" H 10850 2800 50  0001 C CNN
+	1    10850 2800
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+12V #PWR0107
+U 1 1 609B599A
+P 10850 4200
+F 0 "#PWR0107" H 10850 4050 50  0001 C CNN
+F 1 "+12V" H 10865 4373 50  0000 C CNN
+F 2 "" H 10850 4200 50  0001 C CNN
+F 3 "" H 10850 4200 50  0001 C CNN
+	1    10850 4200
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+12V #PWR0109
+U 1 1 609B7CFD
+P 3350 5450
+F 0 "#PWR0109" H 3350 5300 50  0001 C CNN
+F 1 "+12V" H 3365 5623 50  0000 C CNN
+F 2 "" H 3350 5450 50  0001 C CNN
+F 3 "" H 3350 5450 50  0001 C CNN
+	1    3350 5450
+	1    0    0    -1  
+$EndComp
+$Comp
+L no_pin:no_pin Z101
+U 1 1 60982AC7
+P 1100 5950
+F 0 "Z101" H 800 6100 60  0000 C CNN
+F 1 "polarity marker" H 1100 5950 60  0000 C CNN
+F 2 "CustomSymbols:PolarityCenterPositive" H 1100 5950 60  0001 C CNN
+F 3 "" H 1100 5950 60  0001 C CNN
+	1    1100 5950
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC

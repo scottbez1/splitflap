@@ -1,9 +1,6 @@
-(kicad_pcb (version 4) (host pcbnew 4.0.7)
+(kicad_pcb (version 20171130) (host pcbnew 5.1.9-73d0e3b20d~88~ubuntu20.04.1)
 
   (general
-    (links 3)
-    (no_connects 0)
-    (area 19.924999 19.924999 36.331001 36.331001)
     (thickness 1.6)
     (drawings 18)
     (tracks 6)
@@ -49,8 +46,6 @@
     (zone_clearance 0.508)
     (zone_45_only yes)
     (trace_min 0.2)
-    (segment_width 0.2)
-    (edge_width 0.15)
     (via_size 0.6)
     (via_drill 0.4)
     (via_min_size 0.4)
@@ -60,6 +55,8 @@
     (uvias_allowed no)
     (uvia_min_size 0.2)
     (uvia_min_drill 0.1)
+    (edge_width 0.15)
+    (segment_width 0.2)
     (pcb_text_width 0.3)
     (pcb_text_size 1.5 1.5)
     (mod_edge_width 0.15)
@@ -74,6 +71,9 @@
     (pcbplotparams
       (layerselection 0x010f0_80000001)
       (usegerberextensions false)
+      (usegerberattributes true)
+      (usegerberadvancedattributes true)
+      (creategerberjobfile true)
       (excludeedgelayer false)
       (linewidth 0.100000)
       (plotframeref true)
@@ -82,8 +82,7 @@
       (useauxorigin false)
       (hpglpennumber 1)
       (hpglpenspeed 20)
-      (hpglpendiameter 15)
-      (hpglpenoverlay 2)
+      (hpglpendiameter 15.000000)
       (psnegative false)
       (psa4output false)
       (plotreference true)
@@ -95,7 +94,7 @@
       (mirror false)
       (drillshape 1)
       (scaleselection 1)
-      (outputdirectory build/))
+      (outputdirectory "build/"))
   )
 
   (net 0 "")
@@ -110,6 +109,7 @@
     (via_drill 0.4)
     (uvia_dia 0.3)
     (uvia_drill 0.1)
+    (add_net "Net-(H1-Pad1)")
     (add_net "Net-(P100-Pad1)")
     (add_net "Net-(P100-Pad2)")
     (add_net "Net-(P100-Pad3)")
@@ -142,15 +142,29 @@
     (uvia_drill 0.1)
   )
 
+  (module MountingHoles:M4_mount (layer F.Cu) (tedit 5B676D1C) (tstamp 5B63E58D)
+    (at 24.572 24.572)
+    (path /6052ED0C)
+    (fp_text reference H1 (at 0 1.7) (layer F.SilkS) hide
+      (effects (font (size 1 1) (thickness 0.15)))
+    )
+    (fp_text value MountingHole_Pad (at 0 -1.5) (layer F.Fab) hide
+      (effects (font (size 1 1) (thickness 0.15)))
+    )
+    (fp_circle (center 0 0) (end 4 0) (layer F.SilkS) (width 0.15))
+    (pad 1 thru_hole circle (at 0 0) (size 5.5 5.5) (drill 4.5) (layers *.Cu *.Mask F.SilkS)
+      (clearance 1.5))
+  )
+
   (module PinHeaders:Pin_Header_Straight_1x03 (layer F.Cu) (tedit 5B8F01C4) (tstamp 5B63BF29)
     (at 33.208 33.208 270)
     (descr "Through hole pin header")
     (tags "pin header")
     (path /56499725)
-    (fp_text reference P100 (at -2.032 0 360) (layer F.SilkS) hide
+    (fp_text reference P100 (at -2.032 0) (layer F.SilkS) hide
       (effects (font (size 1 1) (thickness 0.15)))
     )
-    (fp_text value SENSOR (at -2.032 4.318 360) (layer F.Fab) hide
+    (fp_text value SENSOR (at -2.032 4.318) (layer F.Fab) hide
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_line (start -1.2 6.28) (end 1.2 6.28) (layer F.SilkS) (width 0.15))
@@ -164,23 +178,10 @@
     (pad 3 thru_hole circle (at 0 5.08 270) (size 1.75 1.75) (drill 1) (layers *.Cu *.Mask F.SilkS)
       (net 3 "Net-(P100-Pad3)"))
     (model Pin_Headers.3dshapes/Pin_Header_Straight_1x03.wrl
-      (at (xyz 0 -0.1 0))
+      (offset (xyz 0 -2.539999961853027 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 90))
     )
-  )
-
-  (module MountingHoles:M4_mount (layer F.Cu) (tedit 5B676D1C) (tstamp 5B63E58D)
-    (at 24.572 24.572)
-    (fp_text reference Z1 (at 0 1.7) (layer F.SilkS) hide
-      (effects (font (size 1 1) (thickness 0.15)))
-    )
-    (fp_text value MOUNT (at 0 -1.5) (layer F.Fab) hide
-      (effects (font (size 1 1) (thickness 0.15)))
-    )
-    (fp_circle (center 0 0) (end 4 0) (layer F.SilkS) (width 0.15))
-    (pad 1 thru_hole circle (at 0 0) (size 5.5 5.5) (drill 4.5) (layers *.Cu *.Mask F.SilkS)
-      (clearance 1.5))
   )
 
   (module hall_effect:hall_effect (layer B.Cu) (tedit 5B8F01BA) (tstamp 5B63BF36)

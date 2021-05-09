@@ -1,0 +1,42 @@
+kibot:
+  version: 1
+
+preflight:
+  check_zone_fills: true
+  run_drc: true
+  run_erc: true
+  update_xml: true
+
+outputs:
+  - name: ibom
+    comment: 'Interactive BOM'
+    type: ibom
+    dir: bom
+    options:
+      layer_view: F
+      dark_mode: true
+      netlist_file: '%F.xml'
+      extra_fields: 'DK#,BOM_Note'
+  - name: 'bom_csv'
+    comment: "Bill of Materials in CSV format"
+    type: bom
+    dir: bom
+    options:
+      use_alt: true
+      number: 1
+      aggregate:
+        - file: electronics/sensor/sensor.sch
+          number: 4
+      csv:
+        hide_pcb_info: true
+        hide_stats_info: true
+      columns:
+        - Row
+        - References
+        - Value
+        - DK#
+        - Quantity Per PCB
+        - Build Quantity
+        - BOM_Note
+        - Footprint
+        - Source BoM
