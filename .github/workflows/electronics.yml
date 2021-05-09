@@ -105,13 +105,6 @@ jobs:
         env:
           PYTHONUNBUFFERED: 1
 
-# Merged BOM for Classic Controller + 4x sensors
-# - name: BOM
-#   run: |
-#     echo "TODO: FIXME! Sensor is no longer a kicad 4 project, so can't do a merged BOM here..."
-#     (cd electronics && python -u scripts/export_bom.py splitflap.sch && python -u scripts/export_bom.py sensor.sch && python -u bom/generate_bom_csv.py build/bom.csv splitflap.xml sensor.xml sensor.xml sensor.xml sensor.xml)
-#     cp electronics/build/bom.csv electronics/build/outputs/bom.csv
-
 # Chainlink Driver:
       - name: Export chainlinkDriver schematic
         run: |
