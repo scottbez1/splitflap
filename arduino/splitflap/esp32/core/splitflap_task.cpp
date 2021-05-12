@@ -26,12 +26,10 @@
 #include "task.h"
 #include "splitflap_task.h"
 
-SplitflapTask::SplitflapTask(const uint8_t taskCore) : Task{"Splitflap", 8192, 1, taskCore} {
-  module_semaphore_ = xSemaphoreCreateMutex();
+SplitflapTask::SplitflapTask(const uint8_t task_core, const LedMode led_mode) : Task("Splitflap", 8192, 1, task_core), led_mode_(led_mode), module_semaphore_(xSemaphoreCreateMutex()), state_semaphore_(xSemaphoreCreateMutex()) {
   assert(module_semaphore_ != NULL);
   xSemaphoreGive(module_semaphore_);
 
-  state_semaphore_ = xSemaphoreCreateMutex();
   assert(state_semaphore_ != NULL);
   xSemaphoreGive(state_semaphore_);
 }
@@ -53,17 +51,17 @@ void SplitflapTask::run() {
     {
         SemaphoreGuard lock(module_semaphore_);
         initialize_modules();
-    }
 
-    // Initialize shift registers before turning on shift register output-enable
-    motor_sensor_io();
+        // Initialize shift registers before turning on shift register output-enable
+        motor_sensor_io();
+    }
 
 #ifdef OUTPUT_ENABLE_PIN
     pinMode(OUTPUT_ENABLE_PIN, OUTPUT);
     digitalWrite(OUTPUT_ENABLE_PIN, LOW);
 #endif
 
-    // XXX REMOVEME
+    // XXX FIXME
     pinMode(13, OUTPUT);
     digitalWrite(13, HIGH);
 
@@ -76,8 +74,7 @@ void SplitflapTask::run() {
     Serial.print(NUM_MODULES);
     Serial.print("}\n");
 
-#ifdef CHAINLINK
-
+#if (defined(CHAINLINK) && !defined(CHAINLINK_DRIVER_TESTER))
     bool loopback_result[NUM_LOOPBACKS][NUM_LOOPBACKS];
     bool loopback_off_result[NUM_LOOPBACKS];
     bool loopback_success = testAllLoopbacks(loopback_result, loopback_off_result);
@@ -95,23 +92,28 @@ void SplitflapTask::run() {
           Serial.printf("Bad loopback at input %u when all outputs off - should have been 0\n", j);
         }
       }
-      // Loop forever
-      while(1) {
-          ESP_ERROR_CHECK(esp_task_wdt_reset());
-      }
+
+      // XXX FIXME
+      // // Loop forever
+      // while(1) {
+      //     ESP_ERROR_CHECK(esp_task_wdt_reset());
+      // }
     }
 
-    for (uint8_t r = 0; r < 3; r++) {
-      for (uint8_t i = 0; i < NUM_MODULES; i++) {
-        chainlink_set_led(i, 1);
-        motor_sensor_io();
-        delay(10);
-        chainlink_set_led(i, 0);
-        motor_sensor_io();
+    if (led_mode_ == LedMode::AUTO) {
+      SemaphoreGuard lock(module_semaphore_);
+      for (uint8_t r = 0; r < 3; r++) {
+        for (uint8_t i = 0; i < NUM_MODULES; i++) {
+          chainlink_set_led(i, 1);
+          motor_sensor_io();
+          delay(10);
+          chainlink_set_led(i, 0);
+          motor_sensor_io();
+        }
+        result = esp_task_wdt_reset();
+        ESP_ERROR_CHECK(result);
+        delay(500);
       }
-      result = esp_task_wdt_reset();
-      ESP_ERROR_CHECK(result);
-      delay(500);
     }
 #endif
 
@@ -119,7 +121,9 @@ void SplitflapTask::run() {
         SemaphoreGuard lock(module_semaphore_);
         for (uint8_t i = 0; i < NUM_MODULES; i++) {
             modules[i]->Init();
+#ifndef CHAINLINK_DRIVER_TESTER
             modules[i]->GoHome();
+#endif
         }
     }
 
@@ -131,6 +135,7 @@ void SplitflapTask::run() {
 }
 
 bool SplitflapTask::testAllLoopbacks(bool loopback_result[NUM_LOOPBACKS][NUM_LOOPBACKS], bool loopback_off_result[NUM_LOOPBACKS]) {
+    SemaphoreGuard lock(module_semaphore_);
     bool loopback_success = true;
 
     // Turn one loopback bit on at a time and make sure only that loopback bit is set
@@ -141,6 +146,14 @@ bool SplitflapTask::testAllLoopbacks(bool loopback_result[NUM_LOOPBACKS][NUM_LOO
     loopback_success &= chainlink_test_startup_loopback(loopback_off_result);
 
     return loopback_success;
+}
+
+void SplitflapTask::setLed(const uint8_t id, const bool on) {
+    assert(led_mode_ == LedMode::MANUAL);
+
+    SemaphoreGuard lock(module_semaphore_);
+    chainlink_set_led(id, on);
+    motor_sensor_io();
 }
 
 void SplitflapTask::runUpdate() {
@@ -168,7 +181,9 @@ void SplitflapTask::runUpdate() {
             || modules[i]->state == STATE_DISABLED
             || modules[i]->current_accel_step == 0;
 
-          chainlink_set_led(i, flashGroup < modules[i]->state && flashPhase == 0);
+          if (led_mode_ == LedMode::AUTO) {
+            chainlink_set_led(i, flashGroup < modules[i]->state && flashPhase == 0);
+          }
 
           all_idle &= is_idle;
           all_stopped &= is_stopped;
@@ -182,12 +197,13 @@ void SplitflapTask::runUpdate() {
         // Read sensor state
         motor_sensor_io();
 
-        for (uint8_t i = 0; i < NUM_MODULES; i++) {
-          chainlink_set_led(i, modules[i]->GetHomeState());
+        if (led_mode_ == LedMode::AUTO) {
+          for (uint8_t i = 0; i < NUM_MODULES; i++) {
+            chainlink_set_led(i, modules[i]->GetHomeState());
+          }
+          // Output LED state
+          motor_sensor_io();
         }
-
-        // Output LED state
-        motor_sensor_io();
 
         if (iterationStartMillis - last_sensor_print_millis_ > 200) {
           last_sensor_print_millis_ = iterationStartMillis;
@@ -199,6 +215,7 @@ void SplitflapTask::runUpdate() {
       }
       updateStateCache();
     }
+    taskYIELD();
 
     if (all_idle) {
       if (pending_no_op && all_stopped) {
@@ -301,6 +318,7 @@ void SplitflapTask::updateStateCache() {
     for (uint8_t i = 0; i < NUM_MODULES; i++) {
       new_state.modules[i].flapIndex = modules[i]->GetCurrentFlapIndex();
       new_state.modules[i].state = modules[i]->state;
+      new_state.modules[i].moving = modules[i]->current_accel_step > 0;
     }
     if (memcmp(&state_cache_, &new_state, sizeof(state_cache_))) {
         SemaphoreGuard lock(state_semaphore_);

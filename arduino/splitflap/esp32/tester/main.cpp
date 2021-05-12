@@ -21,7 +21,7 @@
 #include "../core/splitflap_task.h"
 #include "tester_task.h"
 
-SplitflapTask splitflapTask(1);
+SplitflapTask splitflapTask(1, LedMode::MANUAL);
 TesterTask testerTask(splitflapTask, 0);
 
 void setup() {

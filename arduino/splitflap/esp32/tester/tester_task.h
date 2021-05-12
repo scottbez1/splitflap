@@ -25,21 +25,24 @@
 #include "../core/splitflap_task.h"
 #include "../core/task.h"
 
-enum class TestState {
-    BOOT,
-    BOOT_POWER_TEST,
+enum class TestState : uint16_t {
+    BOOT                        = 0,
+    BOOT_POWER_TEST             = 1,
 
-    READY,
+    READY                       = 100,
 
-    TEST_LOOPBACK,
-    TEST_LEDS,
-    TEST_CHECK_MOTOR_POWER,
-    TEST_ENABLE_MOTOR_POWER,
-    TEST_HOME_ALL,
+    TEST_LOOPBACK               = 200,
+    TEST_LEDS                   = 210,
+    TEST_CHECK_MOTOR_POWER      = 220,
+    TEST_ENABLE_MOTOR_POWER     = 230,
+    TEST_HOME_ALL               = 240,
 
-    TEST_ABORTED,
-    TEST_PASSED,
-    TEST_FAILED,
+    TEST_MIN                    = TEST_LOOPBACK,
+    TEST_MAX                    = TEST_HOME_ALL,
+
+    RESULT_ABORTED                = 900,
+    RESULT_PASSED                 = 901,
+    RESULT_FAILED                 = 902,
 };
 
 
@@ -63,6 +66,8 @@ class TesterTask : public Task<TesterTask> {
 
         /** Full-size sprite used as a framebuffer */
         TFT_eSprite spr_ = TFT_eSprite(&tft_);
+
+        String message_;
 
         void initializeIo();
         void initializeMcp();

@@ -23,7 +23,7 @@
 #include "display_task.h"
 #include "../core/splitflap_task.h"
 
-SplitflapTask splitflapTask(1);
+SplitflapTask splitflapTask(1, LedMode::AUTO);
 DisplayTask displayTask(splitflapTask, 0);
 
 #ifdef MQTT
