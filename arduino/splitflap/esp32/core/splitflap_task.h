@@ -35,6 +35,10 @@ enum class LedMode {
     MANUAL,
 };
 
+struct Command {
+    uint8_t data[NUM_MODULES];
+};
+
 class SplitflapTask : public Task<SplitflapTask> {
     friend class Task<SplitflapTask>; // Allow base Task to invoke protected run()
 
@@ -44,9 +48,9 @@ class SplitflapTask : public Task<SplitflapTask> {
         
         SplitflapState getState();
 
+        bool testAllLoopbacks(bool loopback_result[NUM_LOOPBACKS][NUM_LOOPBACKS], bool loopback_off_result[NUM_LOOPBACKS]);
         void showString(const char *str, uint8_t length);
         void resetAll();
-        bool testAllLoopbacks(bool loopback_result[NUM_LOOPBACKS][NUM_LOOPBACKS], bool loopback_off_result[NUM_LOOPBACKS]);
         void setLed(uint8_t id, bool on);
 
     protected:
@@ -54,8 +58,9 @@ class SplitflapTask : public Task<SplitflapTask> {
 
     private:
         const LedMode led_mode_;
-        const SemaphoreHandle_t module_semaphore_;
         const SemaphoreHandle_t state_semaphore_;
+        QueueHandle_t queue_;
+        Command queue_receive_buffer_ = {};
 
         // TODO: move to serial task
         char recv_buffer[NUM_MODULES];
@@ -76,6 +81,7 @@ class SplitflapTask : public Task<SplitflapTask> {
         SplitflapState state_cache_;
         void updateStateCache();
 
+        void processQueue();
         void runUpdate();
         void sensorTestUpdate();
 
