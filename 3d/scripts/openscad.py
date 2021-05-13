@@ -67,7 +67,7 @@ def run(
 
     if variables is not None:
         for k, v in variables.items():
-            if isinstance(v, str) or isinstance(v, bytes):
+            if isinstance(v, basestring) or isinstance(v, bytes):
                 try:
                     v = v.decode('utf-8')
                 except (UnicodeDecodeError, AttributeError):
