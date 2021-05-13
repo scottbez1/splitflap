@@ -43,7 +43,10 @@ I'd love to hear your thoughts and questions about this project, and happy to in
 
 **Important:** the files linked below are EXPERIMENTAL and have been auto-generated from the latest commit. They may contain changes that are untested or outright broken. Do not use these unless you are actively making changes to the project and know what you're doing. Otherwise, use the [latest stable release](https://github.com/scottbez1/splitflap/releases/latest).
 
-* Lasercut Vector File ([svg](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector.svg))
+* Lasercut Vector File
+    * For Ponoko 3mm MDF ([svg](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-ponoko-3mm-mdf.svg))
+    * For Ponoko 3mm acrylic ([svg](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-ponoko-3mm-acrylic.svg))
+    * For generic material (0.18mm kerf correction) ([svg](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector.svg))
 * Classic Controller electronics
     * Bill of Materials ([csv](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/bom/splitflap-bom.csv), [interactive](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/bom/splitflap-ibom.html))
     * PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/classic-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/classic-pcb-packet.pdf))
