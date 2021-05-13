@@ -17,10 +17,10 @@ import os
 
 import subprocess
 
-MIN_PERIOD_MICROS = 1200
-MAX_PERIOD_MICROS = 20000
+MIN_PERIOD_MICROS = 1600
+MAX_PERIOD_MICROS = 10000
 ACCEL_TIME_MICROS = 200000
-IDLE_PERIOD_MICROS = 1200
+IDLE_PERIOD_MICROS = 1600
 
 _TEMPLATE = """/*
    Copyright 2020 Scott Bezek and the splitflap contributors
