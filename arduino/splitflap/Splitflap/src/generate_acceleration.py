@@ -52,16 +52,13 @@ namespace Acceleration {{
 """
 
 def get_git_root():
-    git_root = ''
     try:
-        git_root = subprocess.check_output(
+        return subprocess.check_output(
             ['git', 'rev-parse', '--show-toplevel'],
             cwd=os.path.dirname(os.path.abspath(__file__)),
         ).decode('utf-8').strip()
     except Exception:
         raise RuntimeError("Could not read git directory path. Make sure you have git installed and you're working with a git clone of the repository.")
-
-    return git_root
 
 def run(output_file_path):
     min_velocity = 1000000 / float(MAX_PERIOD_MICROS)
