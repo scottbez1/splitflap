@@ -15,13 +15,16 @@
 */
 
 include<flap_dimensions.scad>;
+use<flap.scad>;
 use<projection_renderer.scad>;
 use<splitflap.scad>;
 
-character_list = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.? ";
-num_columns = 10;  // 0 for infinite
+character_list = "ABCDEFGH";
+num_columns = 4;  // 0 for infinite
 
-spacing_x = 10;
+layout_full_flaps = false;
+
+spacing_x = 0;
 spacing_y = 10;
 
 kerf_width = 0;
@@ -33,7 +36,7 @@ flap_gap = get_flap_gap();
 // 1: render front
 // 2: render back
 side = 0;
-bleed = false;
+bleed = 0.2;
 
 start_row = 0;
 row_count = 1000;
@@ -97,7 +100,7 @@ projection_renderer(render_index = render_index, render_etch = render_etch, kerf
     for(i = [0 : len(character_list) - 1]) {
         for(j = [0 : 1]) {
             flap_pos(i, j) {
-                flap();
+                flap([1,1,1]);
             }
         }
     }
@@ -106,7 +109,7 @@ projection_renderer(render_index = render_index, render_etch = render_etch, kerf
         for(i = [0 : len(character_list) - 1]) {
             for(j = [0 : 1]) {
                 flap_pos(i, j) {
-                    flap_letter(character_list[i], 2-j, bleed);
+                    flap_letter(character_list[i], [0,0,0], flap_gap, j, bleed);
                 }
             }
         }

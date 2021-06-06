@@ -17,6 +17,7 @@
 use<roboto/RobotoCondensed-Regular.ttf>;
 include<flap_dimensions.scad>;
 
+/*
 letter_font = "RobotoCondensed";
 letter_height = 0.75;  // aspect, 0-1
 letter_width  =  0.8;  // aspect, 0-1
@@ -24,3 +25,23 @@ letter_gap_comp = true;  // shifts letter positions to compensate for gap betwee
 
 letter_offset_x = -0.78;  // offset from center (mm)
 letter_offset_y = 0.5;
+*/
+
+letter_font = "Bangers";
+letter_height = 0.85;  // aspect, 0-1
+letter_width  =  0.7;  // aspect, 0-1
+letter_gap_comp = true;  // shifts letter positions to compensate for gap between flaps
+
+letter_offset_x = -5.5;  // offset from center (mm)
+letter_offset_y = -1;
+
+_letter_overrides = [
+    ["M", 2.5, 0],
+    ["Q", 0, 1, 0.82],
+    ["W", -2, 0],
+    [",", 0, -4, 0.6, .8],
+    ["'", 0, 6, 0.65, .8],
+];
+
+function get_letter_overrides(letter) =
+    _letter_overrides[search([letter], _letter_overrides)[0]];

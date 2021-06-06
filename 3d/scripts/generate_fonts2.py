@@ -35,7 +35,7 @@ sys.path.append(repo_root)
 from util import rev_info
 
 def render(extra_variables, skip_optimize, output_directory):
-    renderer = Renderer(os.path.join(source_parts_dir, 'font_generator.scad'), output_directory, extra_variables)
+    renderer = Renderer(os.path.join(source_parts_dir, 'font_generator2.scad'), output_directory, extra_variables)
     renderer.clean()
     svg_output = renderer.render_svgs(panelize_quantity = 1)
 
@@ -68,7 +68,7 @@ if __name__ == '__main__':
     parser.add_argument('--ncolumns', type=int, help='Number of columns / characters per row')
     parser.add_argument('--no-comp', action='store_true', default=False, help='Don\'t compensate for the gap between top and bottom flaps')
 
-    parser.add_argument('--bleed', type=int, default=0, help='Bleed amount for letters, in mm')
+    parser.add_argument('--bleed', type=float, default=0, help='Bleed amount for letters, in mm')
     parser.add_argument('--kerf', type=float, help='Override kerf_width value')
     parser.add_argument('--fill', action='store_true', help='Fill the text solid (disables optimization)')
     parser.add_argument('--skip-optimize', action='store_true', help='Don\'t remove redundant/overlapping cut lines')
