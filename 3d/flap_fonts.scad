@@ -35,6 +35,15 @@ letter_gap_comp = true;  // shifts letter positions to compensate for gap betwee
 letter_offset_x = -5.5;  // offset from center (mm)
 letter_offset_y = -1;
 
+// Per-letter position/size overrides. Each entry is a set of overrides for a single letter specified in
+// an array with entries:
+//
+// - Letter to override (e.g. "M"). Case must match for the override to apply.
+// - Additional X position offset, in mm (e.g. -5). Can be undef or 0 to omit.
+// - Additional Y position offset, in mm (e.g. 2.5). Can be undef or 0 to omit.
+// - Height override, as a value relative to flap height (e.g. 0.7). Replaces letter_height for this letter. Can be undef to omit.
+// - Width override, as a value relative to default font width (e.g. 0.7). Replaces letter_width for this letter. Can be undef to omit.
+
 _letter_overrides = [
     ["M", 2.5, 0],
     ["Q", 0, 1, 0.82],
