@@ -17,11 +17,21 @@ include<flap_dimensions.scad>;
 include<flap_fonts.scad>;
 include<global_constants.scad>;
 
+// TODO: fix circular use - extract core flap spool dimensions used for vertical_keepout_size
+use<splitflap.scad>;
+
 character_list = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,'";
+
+// Vertical keepout refers to the portion of bottom flaps that are visible stacked behind the frontmost flap.
+vertical_keepout_mode = 0;              // 0=ignore; 1=highlight; 2=cut
+vertical_keepout_size_factor = 1.1;     // Expand calculated keepout region by this factor. 1=no expansion, 1.5=50% expansion, etc
+
+
+vertical_keepout_size = get_flap_arc_separation() * vertical_keepout_size_factor;
 
 function get_character_list() = character_list;
 function get_flap_index_for_letter(letter) = search(letter, character_list)[0];
-function get_letter_for_front(flap_index) = 
+function get_letter_for_front(flap_index) =
     flap_index >= len(character_list) ? get_letter_for_front(flap_index - len(character_list)) :
     flap_index < 0 ? get_letter_for_front(flap_index + len(character_list)) :
     character_list[flap_index];
@@ -79,13 +89,24 @@ module _draw_letter(letter) {
     }
 }
 
-module _flap_letter(letter, letter_color, flap_gap, front=true, bleed = 0, render_keepout_violations = 0) {
+module _flap_without_keepout(bleed) {
+}
+
+module _flap_letter(letter, letter_color, flap_gap, front=true, bleed = 0) {
     color(letter_color) {
         translate([0, 0, front ? flap_thickness/2 + eps : -flap_thickness/2 - eps]) {
             linear_extrude(height=0.1, center=true) {
                 intersection() {
-                    offset(r=bleed) {
-                        flap_2d();
+                    difference() {
+                        offset(r=bleed) {
+                            flap_2d();
+                        }
+                        if (vertical_keepout_mode > 0) {
+                            vertical_keepout_width = flap_width + bleed*2; // keepout must expand by "bleed" on the left and right
+                            translate([-bleed, flap_height - flap_pin_width/2 - vertical_keepout_size, 0]) {
+                                square([vertical_keepout_width, vertical_keepout_size]);
+                            }
+                        }
                     }
                     translate([flap_width/2, -flap_pin_width/2, 0]) {
                         rotation = front ? 0 : -180;  // flip upside-down for back
@@ -100,7 +121,9 @@ module _flap_letter(letter, letter_color, flap_gap, front=true, bleed = 0, rende
             }
         }
     }
-    if (render_keepout_violations > 0) {
+
+    // Highlight any portion of the letter within the keepout region in red, if desired.
+    if (vertical_keepout_mode == 1) {
         color([1,0,0]) {
             translate([0, 0, front ? flap_thickness/2 + eps : -flap_thickness/2 - eps]) {
                 linear_extrude(height=1, center=true) {
@@ -108,8 +131,8 @@ module _flap_letter(letter, letter_color, flap_gap, front=true, bleed = 0, rende
                         offset(r=bleed) {
                             flap_2d();
                         }
-                        translate([0, flap_height - flap_pin_width/2 -render_keepout_violations, 0]) {
-                            square([flap_width, render_keepout_violations]);
+                        translate([0, flap_height - flap_pin_width/2 - vertical_keepout_size, 0]) {
+                            square([flap_width, vertical_keepout_size]);
                         }
                         translate([flap_width/2, -flap_pin_width/2, 0]) {
                             rotation = front ? 0 : -180;  // flip upside-down for back
@@ -127,15 +150,15 @@ module _flap_letter(letter, letter_color, flap_gap, front=true, bleed = 0, rende
     }
 }
 
-module flap_with_letters(flap_color, letter_color, flap_index, flap_gap, flap=true, front_letter=true, back_letter=true, bleed=0, render_keepout_violations=0) {
+module flap_with_letters(flap_color, letter_color, flap_index, flap_gap, flap=true, front_letter=true, back_letter=true, bleed=0) {
     if (flap) {
         _flap(flap_color);
     }
     if (front_letter) {
-        _flap_letter(get_letter_for_front(flap_index), letter_color, flap_gap, front=true, bleed=bleed, render_keepout_violations=render_keepout_violations);
+        _flap_letter(get_letter_for_front(flap_index), letter_color, flap_gap, front=true, bleed=bleed);
     }
     if (back_letter) {
-        _flap_letter(get_letter_for_back(flap_index), letter_color, flap_gap, front=false, bleed=bleed, render_keepout_violations=render_keepout_violations); 
+        _flap_letter(get_letter_for_back(flap_index), letter_color, flap_gap, front=false, bleed=bleed); 
     }
 }
 
