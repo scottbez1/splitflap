@@ -17,7 +17,7 @@ include<flap_dimensions.scad>;
 include<flap_fonts.scad>;
 include<global_constants.scad>;
 
-// TODO: fix circular use - extract core flap spool dimensions used for vertical_keepout_size
+// TODO: extract core flap spool dimensions used for vertical_keepout_size instead of using the full splitflap file
 use<splitflap.scad>;
 
 character_list = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,'";
@@ -101,12 +101,18 @@ module _flap_letter(letter, letter_color, flap_gap, front=true, bleed = 0) {
                         offset(r=bleed) {
                             flap_2d();
                         }
+
+                        // Note that the verticle keepout (if applicable) is subtracted *after* the bleed is applied; otherwise
+                        // text would bleed into the keepout zone.
                         if (vertical_keepout_mode > 0) {
                             vertical_keepout_width = flap_width + bleed*2; // keepout must expand by "bleed" on the left and right
                             translate([-bleed, flap_height - flap_pin_width/2 - vertical_keepout_size, 0]) {
                                 square([vertical_keepout_width, vertical_keepout_size]);
                             }
                         }
+
+                        // TODO: consider adding horizontal keepout; it may be undesirable for text to meet the sides of the flaps
+                        // (or possibly extend beyond the sides if bleed > 0).
                     }
                     translate([flap_width/2, -flap_pin_width/2, 0]) {
                         rotation = front ? 0 : -180;  // flip upside-down for back

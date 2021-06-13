@@ -1,5 +1,5 @@
 /*
-   Copyright 2020 Scott Bezek and the splitflap contributors
+   Copyright 2020-2021 Scott Bezek and the splitflap contributors
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -14,9 +14,10 @@
    limitations under the License.
 */
 
-use<roboto/RobotoCondensed-Regular.ttf>;
 include<flap_dimensions.scad>;
 
+
+use<roboto/RobotoCondensed-Regular.ttf>;
 letter_font = "RobotoCondensed";
 letter_height = 0.75;  // aspect, 0-1
 letter_width  =  0.8;  // aspect, 0-1
