@@ -28,7 +28,7 @@ num_columns = 4;                // Number of columns for layout; 0 for infinite
 start_row = 0;                  // First row to render
 row_count = 1000;               // Number of rows to render
 
-only_side = 1;                  // 0=both, 1=front only, 2=back only
+only_side = 0;                  // 0=both, 1=front only, 2=back only
 
 // If you want to view the full font with each letter as it appears when at the front of the display,
 // it requires rendering twice as many flaps and a special layout with the bottom flaps flipped over.
@@ -46,7 +46,7 @@ bleed = 0.5;                    // Amount of bleed (in mm) for text to expand be
 flap_color = [1,1,1];
 letter_color = [0,0,0];
 
-render_alignment_marks = true; // Whether to render markings to help with alignment/registration (e.g. for screenprinting)
+render_alignment_marks = false; // Whether to render markings to help with alignment/registration (e.g. for screenprinting)
 
 // ---------------------------
 // End configurable parameters

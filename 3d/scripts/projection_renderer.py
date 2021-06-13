@@ -49,6 +49,7 @@ class Renderer(object):
             os.path.join(self.output_folder, 'dummy.png'),
             output_size=[1,1],
             variables = self._get_variables({
+                '_is_projection_rendering': True,
                 'render_3d': False,
                 'render_index': 0,
             }),
