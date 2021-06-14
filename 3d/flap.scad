@@ -89,9 +89,6 @@ module _draw_letter(letter) {
     }
 }
 
-module _flap_without_keepout(bleed) {
-}
-
 module _flap_letter(letter, letter_color, flap_gap, front=true, bleed = 0) {
     color(letter_color) {
         translate([0, 0, front ? flap_thickness/2 + eps : -flap_thickness/2 - eps]) {

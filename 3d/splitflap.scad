@@ -39,7 +39,7 @@ render_enclosure = 2; // 0=invisible; 1=translucent; 2=opaque color;
 render_flaps = 2; // 0=invisible; 1=front flap only; 2=all flaps
 render_flap_area = 0; // 0=invisible; 1=collapsed flap exclusion; 2=collapsed+extended flap exclusion
 render_letters = 2;  // 0=invisible; 1=front flap only; 2=all flaps
-render_string = "QUERY";
+render_string = "44";
 render_units = len(render_string);
 render_unit_separation = 0;
 render_spool = true;
