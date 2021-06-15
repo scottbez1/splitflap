@@ -73,7 +73,8 @@ class ColoredStlExporter(object):
 
         def render_color(color):
             file_name = self._export_stl(color)
-            manifest[file_name] = ColoredStlExporter.parse_openscad_color(color)
+            if file_name is not None:
+                manifest[file_name] = ColoredStlExporter.parse_openscad_color(color)
 
         pool = Pool()
         for _ in pool.imap_unordered(render_color, color_values):
@@ -152,12 +153,19 @@ module color_extractor(c) {
 
         self.logger.info('Exporting STL for color {} as {}...'.format(color, file_name))
 
-        openscad.run(
-            os.path.join(intermediate_subfolder, ColoredStlExporter.get_transformed_file_path(self.input_file)),
-            os.path.join(self.output_folder, file_name),
-            variables=self.openscad_variables,
-            capture_output=True
-        )
+        try:
+            openscad.run(
+                os.path.join(intermediate_subfolder, ColoredStlExporter.get_transformed_file_path(self.input_file)),
+                os.path.join(self.output_folder, file_name),
+                variables=self.openscad_variables,
+                capture_output=True
+            )
+        except openscad.OpenSCADException as e:
+            if b'Current top level object is empty.' in e.stderr:
+                # No geometry in this color
+                return None
+            else:
+                raise
 
         return file_name
 
