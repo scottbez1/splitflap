@@ -14,8 +14,9 @@
    limitations under the License.
 */
 include<flap_dimensions.scad>;
-include<flap_fonts.scad>;
 include<global_constants.scad>;
+
+use<flap_fonts.scad>;
 
 // TODO: extract core flap spool dimensions used for vertical_keepout_size instead of using the full splitflap file
 use<splitflap.scad>;
@@ -23,7 +24,7 @@ use<splitflap.scad>;
 character_list = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,'";
 
 // Vertical keepout refers to the portion of bottom flaps that are visible stacked behind the frontmost flap.
-vertical_keepout_mode = 0;              // 0=ignore; 1=highlight; 2=cut
+vertical_keepout_mode = 1;              // 0=ignore; 1=highlight; 2=cut
 vertical_keepout_size_factor = 1.1;     // Expand calculated keepout region by this factor. 1=no expansion, 1.5=50% expansion, etc
 
 
@@ -76,14 +77,14 @@ module _flap(flap_color) {
 
 module _draw_letter(letter) {
     overrides = get_letter_overrides(letter);
-    height = is_undef(overrides[3]) ? letter_height : overrides[3];
-    width = is_undef(overrides[4]) ? letter_width : overrides[4];
+    height = is_undef(overrides[3]) ? get_font_setting("height") : overrides[3];
+    width = is_undef(overrides[4]) ? get_font_setting("width") : overrides[4];
     translate([0, -flap_height * height, 0]) {  // valign compensation
         scale([width, 1, 1]) {
-            offset_x = is_undef(overrides[1]) ? letter_offset_x : letter_offset_x + overrides[1];
-            offset_y = is_undef(overrides[2]) ? letter_offset_y : letter_offset_y + overrides[2];
+            offset_x = is_undef(overrides[1]) ? get_font_setting("offset_x") : get_font_setting("offset_x") + overrides[1];
+            offset_y = is_undef(overrides[2]) ? get_font_setting("offset_y") : get_font_setting("offset_y") + overrides[2];
             translate([offset_x, offset_y]) {
-                text(text=letter, size=flap_height * height * 2, font=letter_font, halign="center");
+                text(text=letter, size=flap_height * height * 2, font=get_font_setting("font"), halign="center");
             }
         }
     }
@@ -113,7 +114,7 @@ module _flap_letter(letter, letter_color, flap_gap, front=true, bleed = 0) {
                     }
                     translate([flap_width/2, -flap_pin_width/2, 0]) {
                         rotation = front ? 0 : -180;  // flip upside-down for back
-                        gap_comp = (letter_gap_comp == true) ? -flap_gap/2 : 0;
+                        gap_comp = (use_letter_gap_compensation() == true) ? -flap_gap/2 : 0;
                         translate([0, gap_comp, 0]) {
                             rotate([rotation, 0, 0]) {
                                 _draw_letter(letter);
@@ -139,7 +140,7 @@ module _flap_letter(letter, letter_color, flap_gap, front=true, bleed = 0) {
                         }
                         translate([flap_width/2, -flap_pin_width/2, 0]) {
                             rotation = front ? 0 : -180;  // flip upside-down for back
-                            gap_comp = (letter_gap_comp == true) ? -flap_gap/2 : 0;
+                            gap_comp = (use_letter_gap_compensation() == true) ? -flap_gap/2 : 0;
                             translate([0, gap_comp, 0]) {
                                 rotate([rotation, 0, 0]) {
                                     _draw_letter(letter);

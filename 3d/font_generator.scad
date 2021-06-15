@@ -24,7 +24,7 @@ use<splitflap.scad>;
 // Configurable parameters
 // -----------------------
 
-num_columns = 4;                // Number of columns for layout; 0 for infinite
+num_columns = 8;                // Number of columns for layout; 0 for infinite
 start_row = 0;                  // First row to render
 row_count = 1000;               // Number of rows to render
 
@@ -33,15 +33,15 @@ only_side = 0;                  // 0=both, 1=front only, 2=back only
 // If you want to view the full font with each letter as it appears when at the front of the display,
 // it requires rendering twice as many flaps and a special layout with the bottom flaps flipped over.
 // You also probably want to set only_side to 1 when using this layout.
-layout_double_flaps_for_full_font = false;
+layout_double_flaps_for_full_font = true;
 
 flip_over = false;              // Flip the entire layout of flaps over (e.g. when exporting the back sizes)
 
 // Gap between flaps
-spacing_x = 0;
+spacing_x = 5;
 spacing_y = 5;
 
-bleed = 0.5;                    // Amount of bleed (in mm) for text to expand beyond the flap boundary
+bleed = 0;                      // Amount of bleed (in mm) for text to expand beyond the flap boundary
 
 flap_color = [1,1,1];
 letter_color = [0,0,0];
