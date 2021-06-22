@@ -174,6 +174,9 @@ module hull_slide() {
 }
 
 function pcb_to_sensor(pcb_to_spool) = pcb_to_spool - sensor_spool_distance - hall_effect_thickness;  // using sensor rear face
+function pcb_hole_to_sensor_x() = pcb_hole_to_sensor_x;
+function pcb_hole_to_sensor_y() = pcb_hole_to_sensor_y;
+function pcb_thickness() = pcb_thickness;
 function sensor_jig_height(pcb_to_spool) = pcb_to_sensor(pcb_to_spool) - pcb_jig_depth_clearance + pcb_jig_align_length + pcb_thickness;
 function sensor_jig_width(pcb_to_spool) = pcb_length + (pcb_jig_align_thickness + pcb_jig_align_clearance) * 2;
 
