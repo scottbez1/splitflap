@@ -59,6 +59,8 @@ _font_settings = [
         "offset_y", 0.5,
         "overrides", [],
     ],
+
+    // https://fonts.google.com/specimen/Bangers
     "Bangers", [
         "font", "Bangers",
         "height", 0.85,
@@ -72,6 +74,15 @@ _font_settings = [
             [",", 0, -4, 0.6, .8],
             ["'", 0, 6, 0.65, .8],
         ],
+    ],
+
+    "OCR-A", [
+        "font", "OCRAStd",
+        "height", 0.7,
+        "width", 1,
+        "offset_x", -0.78,
+        "offset_y", 0,
+        "overrides", [],
     ],
 ];
 

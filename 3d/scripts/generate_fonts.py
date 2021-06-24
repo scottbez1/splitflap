@@ -71,6 +71,7 @@ if __name__ == '__main__':
 
     parser.add_argument('--no-comp', action='store_true', default=False, help='Don\'t compensate for the gap between top and bottom flaps')
     parser.add_argument('--alignment', action='store_true', help='Render alignment markers for registration when printing onto flaps')
+    parser.add_argument('--flip', action='store_true', help='Flip the design over')
 
     parser.add_argument('--bleed', type=float, help='Bleed amount for letters, in mm')
     parser.add_argument('--kerf', type=float, help='Override kerf_width value')
@@ -118,14 +119,16 @@ if __name__ == '__main__':
         extra_variables['render_alignment_marks'] = args.alignment
 
         extra_variables['only_side'] = 1
+        extra_variables['flip_over'] = args.flip
         render(extra_variables, args.skip_optimize, os.path.join(fonts_directory, 'front'))
 
         extra_variables['only_side'] = 2
-        extra_variables['flip_over'] = True
+        extra_variables['flip_over'] = not args.flip
         render(extra_variables, args.skip_optimize, os.path.join(fonts_directory, 'back'))
     else:
         if args.alignment:
             raise RuntimeError('Alignment markers are incompatible with full font rendering')
         extra_variables['layout_double_flaps_for_full_font'] = True
         extra_variables['only_side'] = 1
+        extra_variables['flip_over'] = args.flip
         render(extra_variables, args.skip_optimize, fonts_directory)
