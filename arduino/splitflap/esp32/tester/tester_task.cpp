@@ -43,12 +43,26 @@ void TesterTask::drawSimpleText(uint32_t foreground, uint32_t background, String
     spr_.fillRect(0,0, TFT_HEIGHT, TFT_WIDTH, background);
     spr_.setTextColor(foreground);
 
-    spr_.setTextSize(2);
+    uint8_t title_size = 5;
+    if (title.length() > 12) {
+        title_size = 2;
+    } else if (title.length() > 7) {
+        title_size = 3;
+    }
+    spr_.setTextSize(title_size);
     spr_.setCursor(0, 0);
     spr_.printf(title.c_str());
 
-    spr_.setTextSize(0);
-    spr_.setCursor(0, 30);
+    uint8_t detail_size = 3;
+    if (details.length() > 30) {
+        detail_size = 0;
+    } else if (details.length() > 20) {
+        detail_size = 1;
+    } else if (details.length() > 12) {
+        detail_size = 2;
+    }
+    spr_.setTextSize(detail_size);
+    spr_.setCursor(0, title_size * 9);
     spr_.printf(details.c_str());
 
     spr_.pushSprite(0, 0);
@@ -85,8 +99,9 @@ Result TesterTask::doTestMaintenance() {
     }
     if (!clamped_) {
         disableHardware();
-        return Result::abort("Board was removed during test!");
+        return Result::fail("Board was removed during test!");
     }
+    return Result::pass("");
 }
 
 Status TesterTask::waitForBoardInserted() {
@@ -135,13 +150,48 @@ Status TesterTask::waitForBoardRemoved() {
     }
 }
 
-String TesterTask::readSerial() {
+Result TesterTask::readSerial() {
     Serial.println("Reading board serial...");
-    return "DUMMY";
+
+    for (uint8_t i = 0; i < 3; i++) {
+        // Trigger scan
+        Serial1.print("~T.");
+
+        String buffer;
+        bool got_ack = false;
+
+        uint32_t start = millis();
+        while (millis() - start < 3000) {
+            Result maintenanceResult = doTestMaintenance();
+            if (!maintenanceResult.canContinue()) {
+                return maintenanceResult;
+            }
+
+            if (Serial1.available()) {
+                int b = Serial1.read();
+                if (!got_ack) {
+                    if (b == 6) {
+                        got_ack = true;
+                    }
+                } else {
+                    if (b != -1) {
+                        Serial.println((char)b);
+                        buffer.concat((char)b);
+                        if (buffer.length() == String("ABC_CD12345_XYZ").length()) {
+                            if (buffer.startsWith("ABC_CD") && buffer.endsWith("_XYZ")) {
+                                return Result::pass(buffer.substring(4, 11));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        Serial.println("Timed out waiting for serial from scanner");
+    }
+    return Result::fail("Unable to read serial number");
 }
 
 Result TesterTask::testLeds() {
-    reporter_.testStarted("leds");
     const String test_name = "Test: LEDs";
 
     drawSimpleText(TFT_WHITE, TFT_BLACK, test_name, "");
@@ -229,8 +279,12 @@ void TesterTask::run() {
 
     Status status = runTestSuitesForever();
     if (!status.isOk()) {
-        disableHardware();  // Should be called by whoever threw fatal error, but disable again just to be safe
+        disableHardware();  // Should have already been called by whoever threw fatal error, but disable again just to be safe
         drawSimpleText(TFT_WHITE, TFT_RED, "FATAL ERROR", status.message_);
+    }
+    while(1) {
+        esp_err_t result = esp_task_wdt_reset();
+        ESP_ERROR_CHECK(result);
     }
 }
 
@@ -271,10 +325,20 @@ Status TesterTask::runTestSuitesForever() {
             }
         }
 
-        String serial = readSerial();
-        if (serial.length() == 0) {
-            continue;
+        String serial;
+        {
+            Result result = readSerial();
+            if (result.result_code_ == Result::Code::ABORT) {
+                return Status::fatal(result.message_);
+            } else if (result.result_code_ == Result::Code::FAIL) {
+                continue;
+            } else {
+                serial = result.message_;
+            }
         }
+
+        drawSimpleText(TFT_WHITE, TFT_BLACK, "Serial:", serial);
+        delay(1000);
 
         reporter_.testSuiteStarted(serial);
         Result result = runTestSuite();
@@ -474,6 +538,8 @@ void TesterTask::initializeIo() {
 
     Wire.begin();
     Wire.setClock(400000);
+
+    Serial1.begin(9600, SERIAL_8N1, 38, 15);
 
     mcp_.begin(0, &Wire);
     ina219_.begin();

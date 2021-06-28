@@ -71,7 +71,7 @@ class Status {
         }
 
     private:
-        Status(const Code code, const String message) : code_(code), message_(message) {};
+        Status(Code code, String message) : code_(code), message_(message) {};
 };
 
 
@@ -121,7 +121,7 @@ class TesterTask : public Task<TesterTask> {
 
         Status waitForBoardInserted();
         Status waitForBoardRemoved();
-        String readSerial();
+        Result readSerial();
         Result testLeds();
 
 
