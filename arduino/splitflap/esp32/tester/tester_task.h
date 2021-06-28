@@ -22,27 +22,56 @@
 #include "Adafruit_MCP23017.h"
 #include "src/Adafruit_INA219.h"
 
+#include "reporter.h"
+#include "result.h"
 #include "../core/splitflap_task.h"
 #include "../core/task.h"
 
-enum class TestState : uint16_t {
-    BOOT                        = 0,
-    BOOT_POWER_TEST             = 1,
+// enum class TestState : uint16_t {
+//     BOOT                        = 0,
+//     BOOT_POWER_TEST             = 1,
 
-    READY                       = 100,
+//     READY                       = 100,
 
-    TEST_LOOPBACK               = 200,
-    TEST_LEDS                   = 210,
-    TEST_CHECK_MOTOR_POWER      = 220,
-    TEST_ENABLE_MOTOR_POWER     = 230,
-    TEST_HOME_ALL               = 240,
+//     TEST_LOOPBACK               = 200,
+//     TEST_LEDS                   = 210,
+//     TEST_CHECK_MOTOR_POWER      = 220,
+//     TEST_ENABLE_MOTOR_POWER     = 230,
+//     TEST_HOME_ALL               = 240,
 
-    TEST_MIN                    = TEST_LOOPBACK,
-    TEST_MAX                    = TEST_HOME_ALL,
+//     TEST_MIN                    = TEST_LOOPBACK,
+//     TEST_MAX                    = TEST_HOME_ALL,
 
-    RESULT_ABORTED                = 900,
-    RESULT_PASSED                 = 901,
-    RESULT_FAILED                 = 902,
+//     RESULT_ABORTED                = 900,
+//     RESULT_PASSED                 = 901,
+//     RESULT_FAILED                 = 902,
+// };
+
+
+class Status {
+    public:
+        enum class Code : uint8_t {
+            OK = 0,
+            FATAL_ERROR = 1,
+        };
+
+        const Code code_;
+        const String message_;
+
+        bool isOk() {
+            return code_ == Code::OK;
+        }
+
+        static Status fatal(String message) {
+            return Status(Code::FATAL_ERROR, message);
+        }
+
+        static Status ok() {
+            return Status(Code::OK, "");
+        }
+
+    private:
+        Status(const Code code, const String message) : code_(code), message_(message) {};
 };
 
 
@@ -60,12 +89,19 @@ class TesterTask : public Task<TesterTask> {
         Adafruit_MCP23017 mcp_;
         Adafruit_INA219 ina219_;
 
-        TestState state_ = TestState::BOOT;
-
         TFT_eSPI tft_ = TFT_eSPI();
+
+        const uint32_t COLOR_ACTION = tft_.color565(20, 20, 200);
 
         /** Full-size sprite used as a framebuffer */
         TFT_eSprite spr_ = TFT_eSprite(&tft_);
+
+        Reporter reporter_;
+
+        // General state
+        float voltage_;
+        float current_;
+        bool clamped_;
 
         String message_;
 
@@ -73,9 +109,21 @@ class TesterTask : public Task<TesterTask> {
         void initializeMcp();
         void initializeDisplay();
 
-        void abort(String message);
-        void pass();
-        void fail(String message);
+        void disableHardware();
+        void drawSimpleText(uint32_t background, uint32_t foreground, String title, String details);
 
-        void disablePower();
+        Status doMaintenance();
+        Result doTestMaintenance();
+        Status runStartupSelfTest();
+
+        Result runTestSuite();
+        Status runTestSuitesForever();
+
+        Status waitForBoardInserted();
+        Status waitForBoardRemoved();
+        String readSerial();
+        Result testLeds();
+
+
+
 };
