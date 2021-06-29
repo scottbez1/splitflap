@@ -22,6 +22,7 @@
 #define PIN_MOTOR_POWER 13
 #define PIN_MOTOR_TEST_FEED 27
 #define PIN_MCP_NRESET 26
+#define PIN_3V3_FUSED 36
 #define PIN_BUTTON_BOTTOM 0
 
 #define MCP_PIN_LED_SENSOR_0 0
@@ -31,6 +32,8 @@
 // Number of modules being tested (different than NUM_MODULES since we only need to test 1 module on the chained board)
 #define TEST_MODULES 7
 
+#define TEST_SUITE_VERSION 0
+
 TesterTask::TesterTask(SplitflapTask& splitflap_task, const uint8_t task_core) : Task{"Tester", 8192, 1, task_core}, splitflap_task_{splitflap_task} {
 }
 
@@ -39,9 +42,10 @@ void TesterTask::disableHardware() {
     digitalWrite(PIN_MOTOR_TEST_FEED, LOW);
 }
 
-void TesterTask::drawSimpleText(uint32_t foreground, uint32_t background, String title, String details) {
+void TesterTask::drawSimpleText(uint32_t foreground, uint32_t background, String title, String details, String bottom_button_label = "") {
     spr_.fillRect(0,0, TFT_HEIGHT, TFT_WIDTH, background);
     spr_.setTextColor(foreground);
+    spr_.setTextDatum(TL_DATUM);
 
     uint8_t title_size = 5;
     if (title.length() > 12) {
@@ -51,7 +55,7 @@ void TesterTask::drawSimpleText(uint32_t foreground, uint32_t background, String
     }
     spr_.setTextSize(title_size);
     spr_.setCursor(0, 0);
-    spr_.printf(title.c_str());
+    spr_.print(title.c_str());
 
     uint8_t detail_size = 3;
     if (details.length() > 30) {
@@ -63,7 +67,13 @@ void TesterTask::drawSimpleText(uint32_t foreground, uint32_t background, String
     }
     spr_.setTextSize(detail_size);
     spr_.setCursor(0, title_size * 9);
-    spr_.printf(details.c_str());
+    spr_.print(details.c_str());
+
+    if (bottom_button_label.length() > 0) {
+        spr_.setTextDatum(BR_DATUM);
+        spr_.setTextSize(1);
+        spr_.drawString(bottom_button_label, TFT_HEIGHT - 2, TFT_WIDTH - 2);
+    }
 
     spr_.pushSprite(0, 0);
 }
@@ -78,16 +88,18 @@ Status TesterTask::doMaintenance() {
         disableHardware();
         return Status::fatal("Over-voltage: " + String(voltage_));
     } else if (current_ > 2000) {
-        disableHardware();
-        return Status::fatal("Over-current: " + String(current_));
+        if (first_over_current_millis_ == 0) {
+            first_over_current_millis_ = millis();
+        } else if (millis() - first_over_current_millis_ > 50) {
+            disableHardware();
+            return Status::fatal("Over-current: " + String(current_));
+        }
+    } else {
+        first_over_current_millis_ = 0;
     }
-
-    // TODO: check 3v3_fused status
-
     clamped_ = !mcp_.digitalRead(MCP_PIN_CLAMP);
 
-    bool new_button_state_bottom = !digitalRead(PIN_BUTTON_BOTTOM);
-    // TODO: debounce
+    button_bottom_pressed_ = !digitalRead(PIN_BUTTON_BOTTOM);
 
     return Status::ok();
 }
@@ -100,6 +112,23 @@ Result TesterTask::doTestMaintenance() {
     if (!clamped_) {
         disableHardware();
         return Result::fail("Board was removed during test!");
+    }
+
+    if (!digitalRead(PIN_3V3_FUSED)) {
+        disableHardware();
+        return Result::fail("3.3v failure");
+    }
+
+    return Result::pass("");
+}
+
+Result TesterTask::delayWithMaintenance(uint32_t delay_millis) {
+    uint32_t start = millis();
+    while (millis() - start < delay_millis) {
+        Result maintenanceResult = doTestMaintenance();
+        if (!maintenanceResult.canContinue()) {
+            return maintenanceResult;
+        }
     }
     return Result::pass("");
 }
@@ -138,7 +167,7 @@ Status TesterTask::waitForBoardRemoved() {
             return status;
         }
 
-        if (clamped_) {
+        if (clamped_ && !button_bottom_pressed_) {
             time_unclamped = 0;
         } else {
             if (time_unclamped == 0) {
@@ -161,7 +190,7 @@ Result TesterTask::readSerial() {
         bool got_ack = false;
 
         uint32_t start = millis();
-        while (millis() - start < 3000) {
+        while (millis() - start < 1500) {
             Result maintenanceResult = doTestMaintenance();
             if (!maintenanceResult.canContinue()) {
                 return maintenanceResult;
@@ -175,7 +204,6 @@ Result TesterTask::readSerial() {
                     }
                 } else {
                     if (b != -1) {
-                        Serial.println((char)b);
                         buffer.concat((char)b);
                         if (buffer.length() == String("ABC_CD12345_XYZ").length()) {
                             if (buffer.startsWith("ABC_CD") && buffer.endsWith("_XYZ")) {
@@ -192,10 +220,6 @@ Result TesterTask::readSerial() {
 }
 
 Result TesterTask::testLeds() {
-    const String test_name = "Test: LEDs";
-
-    drawSimpleText(TFT_WHITE, TFT_BLACK, test_name, "");
-
     String failure = "Led test failure(s):\n";
     bool success = true;
     for (uint8_t led = 0; led < 6; led++) {
@@ -204,8 +228,7 @@ Result TesterTask::testLeds() {
             return maintenanceResult;
         }
 
-        Serial.printf("Setting LED %u\n", led);
-        drawSimpleText(TFT_WHITE, TFT_BLACK, test_name, "LED " + String(led));
+        testStatus("Checking LED " + String(led));
         for (uint8_t i = 0; i < 6; i++) {
             splitflap_task_.setLed(i, led == i);
         }
@@ -240,6 +263,231 @@ Result TesterTask::testLeds() {
     }
 }
 
+Result TesterTask::testPowerPreCheck() {
+    uint32_t start = millis();
+    while (1) {
+        Result result = doTestMaintenance();
+        if (!result.canContinue()) {
+            return result;
+        }
+
+        if (voltage_ < 1.5) {
+            break;
+        }
+        testStatus("Waiting for voltage to drop... V=" + String(voltage_));
+        if (millis() - start > 10000) {
+            disableHardware();
+            return Result::fail("Timeout waiting for power");
+        }
+        delay(100);
+    }
+
+    testStatus("Checking test feed");
+    digitalWrite(PIN_MOTOR_TEST_FEED, HIGH);
+
+    start = millis();
+    while (1) {
+        Result result = doTestMaintenance();
+        if (!result.canContinue()) {
+            return result;
+        }
+
+        testStatus("Checking test feed\n" + String(voltage_) + "V\n" + String(current_) + "mA");
+
+        if (voltage_ > 3.3) {
+            disableHardware();
+            return Result::abort("Over-voltage during test feed: " + String(voltage_));
+        }
+        if (millis() - start > 1000) {
+            disableHardware();
+            return Result::fail("Timeout waiting for power");
+        }
+        if (millis() - start > 200 && current_ > 10) {
+            disableHardware();
+            return Result::fail("Over-current during test feed: " + String(current_));
+        }
+        if (millis() - start > 200 && voltage_ > 2.5) {
+            digitalWrite(PIN_MOTOR_TEST_FEED, LOW);
+            return Result::pass("Power pre-check OK. " + String(voltage_) + "V, " + String(current_) + "mA");
+        }
+
+        delay(10);
+    }
+}
+
+Result TesterTask::testPower() {
+    testStatus("Checking power");
+    digitalWrite(PIN_MOTOR_POWER, HIGH);
+
+    uint32_t start = millis();
+    while (1) {
+        Result result = doTestMaintenance();
+        if (!result.canContinue()) {
+            return result;
+        }
+
+        testStatus("Checking power\n" + String(voltage_) + "V\n" + String(current_) + "mA");
+
+        if (millis() - start > 1000) {
+            disableHardware();
+            return Result::fail("Timeout waiting for power");
+        }
+        if (millis() - start > 500 && current_ > 10) {
+            disableHardware();
+            return Result::fail("Over-current during test: " + String(current_));
+        }
+        if (millis() - start > 500 && voltage_ > 11.8) {
+            return Result::pass("Power OK. V=" + String(voltage_) + "v, A=" + String(current_) + "ma");
+        }
+
+        delay(10);
+    }
+}
+
+Result TesterTask::testHoming() {
+    testStatus("Homing...");
+    splitflap_task_.resetAll();
+
+    uint32_t start = millis();
+
+    while (1) {
+        Result result = doTestMaintenance();
+        if (!result.canContinue()) {
+            return result;
+        }
+
+        SplitflapState splitflap_state = splitflap_task_.getState();
+        bool ready = true;
+        String description = "Homing...\n";
+        for (uint8_t i = 0; i < TEST_MODULES; i++) {
+            bool module_ready = splitflap_state.modules[i].state == NORMAL
+                    && splitflap_state.modules[i].count_missed_home == 0
+                    && splitflap_state.modules[i].count_unexpected_home == 0
+                    && splitflap_state.modules[i].moving == false;
+            ready &= module_ready;
+            description += String(i) + ": ";
+            if (ready) {
+                description += "OK\n";
+            } else {
+                description += "...\n";
+            }
+        }
+        testStatus(description);
+
+        uint32_t duration = millis() - start;
+
+        if (ready) {
+            return Result::pass("All modules homed successfully");
+        } else if (duration > 1000 && duration < 20000) {
+            // Failure if all modules have stopped moving but aren't all ready (checked above)
+            // Note: we could fail sooner (if any module has an error state), but it is more useful to identify
+            // *all* module failures instead of just the first.
+            bool any_moving = false;
+            for (uint8_t i = 0; i < TEST_MODULES; i++) {
+                any_moving |= splitflap_state.modules[i].moving;
+            }
+            if (!any_moving) {
+                String failure = "Some modules failed home calibration:\n";
+                for (uint8_t i = 0; i < TEST_MODULES; i++) {
+                    if (splitflap_state.modules[i].state != NORMAL || splitflap_state.modules[i].count_missed_home != 0 || splitflap_state.modules[i].count_unexpected_home != 0) {
+                        failure.concat("Module ");
+                        failure.concat(i);
+                        if (splitflap_state.modules[i].state != NORMAL) {
+                            failure.concat(" is in incorrect state ");
+                            failure.concat(splitflap_state.modules[i].state);
+                        }
+                        if (splitflap_state.modules[i].count_missed_home != 0 || splitflap_state.modules[i].count_unexpected_home != 0) {
+                            failure.concat(" has errors: missed_home=");
+                            failure.concat(splitflap_state.modules[i].count_missed_home);
+                            failure.concat(" unexpected_home=");
+                            failure.concat(splitflap_state.modules[i].count_unexpected_home);
+                        }
+                        failure.concat("\n");
+                    }
+                }
+                return Result::fail(failure);
+            }
+        } else if (duration > 20000) {
+            return Result::fail("Timeout waiting for home calibration to complete.");
+        }
+        delay(100);
+    }
+}
+
+Result TesterTask::testRevolutions() {
+    char test_string_a[TEST_MODULES];
+    char test_string_b[TEST_MODULES];
+    for (uint8_t i = 0; i < TEST_MODULES; i++) {
+        test_string_a[i] = 'd' + i*2;
+        test_string_b[i] = 'd' + TEST_MODULES*2 - i*2;
+    }
+
+    const uint8_t revolutions = 6;
+
+    for (uint8_t revolution = 0; revolution < revolutions; revolution++) {
+        uint32_t start = millis();
+        splitflap_task_.showString(((revolution % 2) == 0) ? test_string_a : test_string_b, TEST_MODULES);
+        testStatus("Running iteration " + String(revolution));
+
+        while (1) {
+            Result result = doTestMaintenance();
+            if (!result.canContinue()) {
+                return result;
+            }
+
+            SplitflapState splitflap_state = splitflap_task_.getState();
+            bool ready = true;
+            for (uint8_t i = 0; i < TEST_MODULES; i++) {
+                ready &= splitflap_state.modules[i].state == NORMAL
+                        && splitflap_state.modules[i].count_missed_home == 0
+                        && splitflap_state.modules[i].count_unexpected_home == 0
+                        && splitflap_state.modules[i].moving == false;
+            }
+
+            uint32_t duration = millis() - start;
+
+            if (ready) {
+                break;
+            } else if (duration > 1000 && duration < 10000) {
+                // Failure if all modules have stopped moving but aren't all ready (checked above)
+                // Note: we could fail sooner (if any module has an error state), but it is more useful to identify
+                // *all* module failures instead of just the first.
+                bool any_moving = false;
+                for (uint8_t i = 0; i < TEST_MODULES; i++) {
+                    any_moving |= splitflap_state.modules[i].moving;
+                }
+                if (!any_moving) {
+                    String failure = "Some modules failed movement on iteration " + String(revolution) + ":\n";
+                    for (uint8_t i = 0; i < TEST_MODULES; i++) {
+                        if (splitflap_state.modules[i].state != NORMAL || splitflap_state.modules[i].count_missed_home != 0 || splitflap_state.modules[i].count_unexpected_home != 0) {
+                            failure.concat("Module ");
+                            failure.concat(i);
+                            if (splitflap_state.modules[i].state != NORMAL) {
+                                failure.concat(" is in incorrect state ");
+                                failure.concat(splitflap_state.modules[i].state);
+                            }
+                            if (splitflap_state.modules[i].count_missed_home != 0 || splitflap_state.modules[i].count_unexpected_home != 0) {
+                                failure.concat(" has errors: missed_home=");
+                                failure.concat(splitflap_state.modules[i].count_missed_home);
+                                failure.concat(" unexpected_home=");
+                                failure.concat(splitflap_state.modules[i].count_unexpected_home);
+                            }
+                            failure.concat("\n");
+                        }
+                    }
+                    return Result::fail(failure);
+                }
+            } else if (duration > 10000) {
+                return Result::fail("Timeout waiting for movement to complete on iteration " + String(revolution) + ".");
+            }
+            delay(50);
+        }
+        delay(50);
+    }
+    return Result::pass("All modules completed " + String(revolutions) + " iterations successfully");
+}
+
+
 Status TesterTask::runStartupSelfTest() {
     // Check power on startup
     drawSimpleText(TFT_WHITE, TFT_BLACK, "Starting", "Waiting for power...");
@@ -257,7 +505,7 @@ Status TesterTask::runStartupSelfTest() {
             } else if (millis() - voltage_detected_millis > 200) {
                 if (current_ > 10) {
                     disableHardware();
-                    return Status::fatal("Over-current: " + String(current_));
+                    return Status::fatal("Over-current during startup: " + String(current_));
                 } else {
                     // Good voltage and current; disable motor power for now and continue with startup
                     digitalWrite(PIN_MOTOR_POWER, LOW);
@@ -277,24 +525,71 @@ void TesterTask::run() {
     ina219_.setCalibrationSplitflap();
     initializeDisplay();
 
+    drawSimpleText(TFT_WHITE, TFT_PURPLE, "Tester", "v" + String(TEST_SUITE_VERSION));
+    delay(1500);
+
     Status status = runTestSuitesForever();
     if (!status.isOk()) {
         disableHardware();  // Should have already been called by whoever threw fatal error, but disable again just to be safe
         drawSimpleText(TFT_WHITE, TFT_RED, "FATAL ERROR", status.message_);
     }
+
     while(1) {
         esp_err_t result = esp_task_wdt_reset();
         ESP_ERROR_CHECK(result);
+        delay(10);
     }
 }
 
 Result TesterTask::runTestSuite() {
-    reporter_.testStarted("LEDs");
-    Result result = testLeds();
-    reporter_.testFinished(result);
+    {
+        testStarted("LEDs");
+        Result result = testLeds();
+        testFinished(result);
 
-    if (!result.canContinue()) {
-        return result;
+        if (!result.canContinue()) {
+            return result;
+        }
+    }
+
+    {
+        testStarted("Power pre-check");
+        Result result = testPowerPreCheck();
+        testFinished(result);
+
+        if (!result.canContinue()) {
+            return result;
+        }
+    }
+
+    {
+        testStarted("Power");
+        Result result = testPower();
+        testFinished(result);
+
+        if (!result.canContinue()) {
+            return result;
+        }
+    }
+
+    {
+        testStarted("Homing");
+        Result result = testHoming();
+        testFinished(result);
+
+        if (!result.canContinue()) {
+            return result;
+        }
+    }
+
+    {
+        testStarted("Revolutions");
+        Result result = testRevolutions();
+        testFinished(result);
+
+        if (!result.canContinue()) {
+            return result;
+        }
     }
 
     // More tests...
@@ -340,17 +635,29 @@ Status TesterTask::runTestSuitesForever() {
         drawSimpleText(TFT_WHITE, TFT_BLACK, "Serial:", serial);
         delay(1000);
 
-        reporter_.testSuiteStarted(serial);
+        testSuiteStarted(serial);
         Result result = runTestSuite();
-        reporter_.testSuiteFinished();
+        testSuiteFinished();
+
+        disableHardware();
+
         switch (result.result_code_) {
             case Result::Code::ABORT:
                 return Status::fatal(result.message_);
             case Result::Code::PASS:
-                drawSimpleText(TFT_WHITE, tft_.color565(30, 150, 30), "PASS", result.message_);
+                drawSimpleText(TFT_WHITE, tft_.color565(30, 150, 30), "PASS", result.message_, "Hold to re-run");
+                for (uint8_t i = 0; i < 2; i++) {
+                    mcp_.digitalWrite(MCP_PIN_BUZZER, HIGH);
+                    delay(100);
+                    mcp_.digitalWrite(MCP_PIN_BUZZER, LOW);
+                    delay(150);
+                }
                 break;
             case Result::Code::FAIL:
-                drawSimpleText(TFT_WHITE, TFT_RED, "FAIL", result.message_);
+                drawSimpleText(TFT_WHITE, TFT_RED, "FAIL", result.message_, "Hold to re-run");
+                mcp_.digitalWrite(MCP_PIN_BUZZER, HIGH);
+                delay(1500);
+                mcp_.digitalWrite(MCP_PIN_BUZZER, LOW);
                 break;
         }
         
@@ -397,141 +704,13 @@ Status TesterTask::runTestSuitesForever() {
         //     fail(failure);
         // } else {
         // }
-
-    //             break;
-    //         }
-    //         case TestState::TEST_CHECK_MOTOR_POWER:
-    //             spr_.setTextColor(TFT_WHITE, TFT_BLACK);
-    //             spr_.setTextSize(2);
-    //             spr_.setCursor(0, 0);
-    //             spr_.printf("Preparing power...");
-    //             if (voltage > 3.3) {
-    //                 fail("Over-voltage during test feed: " + String(voltage));
-    //             } else if (time_in_state > 200 && current > 10) {
-    //                 fail("Over-current during test feed: " + String(current));
-    //             } else if (time_in_state > 200 && voltage > 2.5) {
-    //                 state_ = TestState::TEST_ENABLE_MOTOR_POWER;
-    //                 digitalWrite(PIN_MOTOR_TEST_FEED, LOW);
-    //                 digitalWrite(PIN_MOTOR_POWER, HIGH);
-    //             } else if (time_in_state > 1000) {
-    //                 fail("Timeout waiting for power");
-    //             }
-    //             break;
-    //         case TestState::TEST_ENABLE_MOTOR_POWER:
-    //             spr_.setTextColor(TFT_WHITE, TFT_BLACK);
-    //             spr_.setTextSize(2);
-    //             spr_.setCursor(0, 0);
-    //             spr_.printf("Checking power...");
-    //             if (voltage > 11.8) {
-    //                 state_ = TestState::TEST_HOME_ALL;
-    //                 splitflap_task_.resetAll();
-    //             } else if (time_in_state > 200 && current > 10) {
-    //                 fail("Over-current: " + String(current));
-    //             } else if (time_in_state > 1000) {
-    //                 fail("Timeout waiting for power");
-    //             }
-    //             break;
-            
-    //         case TestState::TEST_HOME_ALL: {
-    //             spr_.setTextColor(TFT_WHITE, TFT_BLACK);
-    //             spr_.setTextSize(2);
-    //             spr_.setCursor(0, 0);
-    //             spr_.printf("Home calibration...");
-
-    //             bool ready = true;
-    //             SplitflapState splitflap_state = splitflap_task_.getState();
-    //             for (uint8_t i = 0; i < TEST_MODULES; i++) {
-    //                 // TODO: also check error counters
-    //                 ready &= splitflap_state.modules[i].state == NORMAL;
-    //             }
-
-    //             if (ready) {
-    //                 pass();
-    //             } else if (time_in_state > 1000 && time_in_state < 20000) {
-    //                 // Failure if all modules have stopped moving but aren't all ready (checked above)
-    //                 // Note: we could fail sooner (if any module has an error state), but it is more useful to identify
-    //                 // *all* module failures instead of just the first.
-    //                 bool any_moving = false;
-    //                 for (uint8_t i = 0; i < TEST_MODULES; i++) {
-    //                     any_moving |= splitflap_state.modules[i].moving;
-    //                 }
-    //                 if (!any_moving) {
-    //                     String failure = "Some modules failed calibration:\n";
-    //                     for (uint8_t i = 0; i < TEST_MODULES; i++) {
-    //                         if (splitflap_state.modules[i].state != NORMAL) {
-    //                             failure.concat("Module ");
-    //                             failure.concat(i);
-    //                             failure.concat(" is in incorrect state ");
-    //                             failure.concat(splitflap_state.modules[i].state);
-    //                             failure.concat("\n");
-    //                         }
-    //                     }
-    //                     fail(failure);
-    //                 }
-    //             } else if (time_in_state > 20000) {
-    //                 fail("Timeout waiting for home calibration to complete");
-    //             }
-    //             break;
-    //         }
-    //         case TestState::RESULT_ABORTED:
-    //             bg = spr_.color565(200, 25, 0);
-    //             spr_.fillSprite(bg);
-    //             spr_.setTextColor(TFT_WHITE, bg);
-    //             spr_.setTextSize(3);
-    //             spr_.setCursor(0, 0);
-    //             spr_.printf("Aborted!");
-    //             spr_.setTextSize(0);
-    //             spr_.setCursor(0, 30);
-    //             spr_.printf(message_.c_str());
-    //             break;
-
-    //         case TestState::RESULT_PASSED:
-    //             bg = spr_.color565(30, 150, 30);
-    //             spr_.fillSprite(bg);
-    //             spr_.setTextColor(TFT_WHITE, bg);
-    //             spr_.setTextSize(3);
-    //             spr_.setCursor(0, 0);
-    //             spr_.printf("PASS");
-    //             break;
-
-    //         case TestState::RESULT_FAILED:
-    //             bg = spr_.color565((millis() % 1024 > 512) ? 200 : 100, 0, 0);
-    //             spr_.fillSprite(bg);
-    //             spr_.setTextColor(TFT_WHITE, bg);
-    //             spr_.setTextSize(3);
-    //             spr_.setCursor(0, 0);
-    //             spr_.printf("FAIL!");
-    //             spr_.setTextSize(0);
-    //             spr_.setCursor(0, 30);
-    //             spr_.printf(message_.c_str());
-    //             break;
-
-    //         default:
-    //             assert(false);
-    //     }
-
-    //     if (state_ != last_state) {
-    //         last_state = state_;
-    //         last_state_change = millis();
-
-    //         if (state_ == TestState::RESULT_PASSED) {
-    //             mcp_.digitalWrite(MCP_PIN_BUZZER, HIGH);
-    //             delay(50);
-    //             mcp_.digitalWrite(MCP_PIN_BUZZER, LOW);
-    //         } else if (state_ == TestState::RESULT_FAILED) {
-    //             mcp_.digitalWrite(MCP_PIN_BUZZER, HIGH);
-    //             delay(800);
-    //             mcp_.digitalWrite(MCP_PIN_BUZZER, LOW);
-    //         }
-    //     }
-    //     delay(10);
-    // }
 }
 
 void TesterTask::initializeIo() {
     pinMode(PIN_MOTOR_POWER, OUTPUT);
     pinMode(PIN_MOTOR_TEST_FEED, OUTPUT);
     pinMode(PIN_BUTTON_BOTTOM, INPUT_PULLUP);
+    pinMode(PIN_3V3_FUSED, INPUT);
 
     pinMode(PIN_MCP_NRESET, OUTPUT);
     digitalWrite(PIN_MCP_NRESET, HIGH);
@@ -567,4 +746,37 @@ void TesterTask::initializeDisplay() {
 
     spr_.setColorDepth(16);
     spr_.createSprite(TFT_HEIGHT, TFT_WIDTH);
+}
+
+
+void TesterTask::testSuiteStarted(String serial) {
+    Serial.printf("Test suite started: %s\n", serial.c_str());
+    test_suite_start_millis_ = millis();
+    // TODO
+}
+void TesterTask::testSuiteFinished() {
+    uint32_t test_suite_duration = millis() - test_suite_start_millis_;
+    Serial.printf("Test suite finished in %u millis\n", test_suite_duration);
+    test_suite_start_millis_ = 0;
+    current_test_id_ = "";
+    // TODO
+}
+void TesterTask::testStarted(String id) {
+    Serial.printf("Test started: %s\n", id.c_str());
+    current_test_id_ = id;
+    test_start_millis_ = millis();
+    drawSimpleText(TFT_WHITE, TFT_BLACK, "Test: " + current_test_id_, "Started");
+    // TODO
+}
+void TesterTask::testFinished(Result result) {
+    uint32_t test_duration = millis() - test_start_millis_;
+    Serial.printf("Test took %u millis. Result: %u -> %s\n", test_duration, result.result_code_, result.message_.c_str());
+    test_start_millis_ = 0;
+    current_test_id_ = "";
+    // TODO
+}
+
+void TesterTask::testStatus(String message) {
+    Serial.println(message);
+    drawSimpleText(TFT_WHITE, TFT_BLACK, "Test: " + current_test_id_, message);
 }

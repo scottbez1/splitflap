@@ -22,8 +22,10 @@
 
 struct SplitflapModuleState {
     State state;
-    uint8_t flapIndex;
+    uint8_t flap_index;
     bool moving;
+    uint8_t count_unexpected_home;
+    uint8_t count_missed_home;
 };
 
 struct SplitflapState {

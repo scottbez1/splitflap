@@ -332,9 +332,11 @@ void SplitflapTask::dumpStatus() {
 void SplitflapTask::updateStateCache() {
     SplitflapState new_state;
     for (uint8_t i = 0; i < NUM_MODULES; i++) {
-      new_state.modules[i].flapIndex = modules[i]->GetCurrentFlapIndex();
+      new_state.modules[i].flap_index = modules[i]->GetCurrentFlapIndex();
       new_state.modules[i].state = modules[i]->state;
       new_state.modules[i].moving = modules[i]->current_accel_step > 0;
+      new_state.modules[i].count_missed_home = modules[i]->count_missed_home;
+      new_state.modules[i].count_unexpected_home = modules[i]->count_unexpected_home;
     }
     if (memcmp(&state_cache_, &new_state, sizeof(state_cache_))) {
         SemaphoreGuard lock(state_semaphore_);

@@ -22,7 +22,6 @@
 #include "Adafruit_MCP23017.h"
 #include "src/Adafruit_INA219.h"
 
-#include "reporter.h"
 #include "result.h"
 #include "../core/splitflap_task.h"
 #include "../core/task.h"
@@ -96,12 +95,12 @@ class TesterTask : public Task<TesterTask> {
         /** Full-size sprite used as a framebuffer */
         TFT_eSprite spr_ = TFT_eSprite(&tft_);
 
-        Reporter reporter_;
-
         // General state
         float voltage_;
         float current_;
         bool clamped_;
+        bool button_bottom_pressed_;
+        uint32_t first_over_current_millis_ = 0;
 
         String message_;
 
@@ -110,10 +109,12 @@ class TesterTask : public Task<TesterTask> {
         void initializeDisplay();
 
         void disableHardware();
-        void drawSimpleText(uint32_t background, uint32_t foreground, String title, String details);
+        void drawSimpleText(uint32_t background, uint32_t foreground, String title, String details, String bottom_button_label);
 
         Status doMaintenance();
         Result doTestMaintenance();
+        Result delayWithMaintenance(uint32_t delay_millis);
+
         Status runStartupSelfTest();
 
         Result runTestSuite();
@@ -122,8 +123,24 @@ class TesterTask : public Task<TesterTask> {
         Status waitForBoardInserted();
         Status waitForBoardRemoved();
         Result readSerial();
+
+        // Tests:
         Result testLeds();
+        Result testPowerPreCheck();
+        Result testPower();
+        Result testHoming();
+        Result testRevolutions();
 
-
+        // Test Reporting
+        // TODO: refactor - extract to separate interface
+        String current_test_id_;
+        uint32_t test_suite_start_millis_;
+        uint32_t test_start_millis_;
+        void testSuiteStarted(String serial);
+        void testSuiteFinished();
+        
+        void testStarted(String id);
+        void testFinished(Result result);
+        void testStatus(String message);
 
 };
