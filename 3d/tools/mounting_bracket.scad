@@ -40,6 +40,7 @@ module position_mounting_bracket() {
 
 function mounting_bracket_width(side_clearance) = enclosure_wall_to_wall_width - 2 * thickness - 2 * side_clearance;
 function mounting_bracket_length(front_clearance) = enclosure_length_right - front_clearance; 
+function mounting_bracket_height(height_clearance) = enclosure_vertical_inset - height_clearance;
 
 module mounting_bracket_2d(hole_diameter, clearance) {
     function unpack(val, pos) = (val[pos] == undef) ? 0 : val[pos];  // use vector if possible, 0 otherwise
@@ -102,7 +103,7 @@ module mounting_bracket_t_slot(hole_diameter=m4_hole_diameter, slot_width=6, slo
 
     side_clearance  = unpack(clearance, 0);  // X clearance between the mount and the sides of the enclosure (each side)
 
-    boss_width = mounting_bracket_width(side_clearance) - 2;
+    boss_width = mounting_bracket_width(side_clearance) - 2;  // arbitrary, giving it some breathing room
     fillet_radius = slot_width - 1;
 
     union() {
@@ -135,4 +136,70 @@ module mounting_bracket_t_slot(hole_diameter=m4_hole_diameter, slot_width=6, slo
 }
 
 
-mounting_bracket_t_slot();
+module mounting_bracket_screw_holes(hole_diameter=m4_hole_diameter, screw_diameter=m4_hole_diameter, num_screws=2, screw_clearance=4, screw_inset=8, countersink=8.5, r=2.5, clearance=[0.1, 0.1, 0.2]) {
+    function unpack(val, pos) = (val[pos] == undef) ? 0 : val[pos];  // use vector if possible, 0 otherwise
+
+    side_clearance  = unpack(clearance, 0);  // X clearance between the mount and the sides of the enclosure (each side)
+    height_clearance = unpack(clearance, 2);  // Z clearance between the mount and the 'bottom' piece of the enclosure
+
+    width = mounting_bracket_width(side_clearance);  // width of the mount
+    height = mounting_bracket_height(height_clearance) + thickness;  // height of the mount, including screw area
+
+    screw_area_radius = r;  // radius for the fillet on the screw area extension
+    screw_area_depth = screw_diameter + 2*screw_clearance + screw_area_radius;  // Y distance of the screw area extension
+
+    screw_left_inset = max(screw_inset, screw_clearance) + screw_diameter/2;  // inset from edge of the mount to the edge of the hole
+    screw_area_width = (width - 2*screw_left_inset);  // area for screws to be placed in (accounting for diameter and inset)
+    screw_spacing = (num_screws > 1) ? screw_area_width / (num_screws - 1) : screw_area_width/2;  // spacing between screws, on center
+
+    module screw_hole() {
+        union() {
+            // holes
+            linear_extrude(height=height + 2*eps)
+                circle(r=screw_diameter/2, $fn=60);
+
+            // countersinks
+            if(countersink > 0) {
+                translate([0, 0, height + 2*eps])
+                    rotate([0, 180, 0])
+                        cone(angle=82, base=countersink, $fn=60);
+            }
+        }
+    }
+
+    union() {
+        // 3D base geometry
+        mounting_bracket_base(hole_diameter, clearance);
+
+        // screw area boss
+        translate([0, -screw_area_depth, 0]) {
+            difference() {
+                // boss geometry
+                linear_extrude(height=height)
+                    square([width, screw_area_depth]);
+
+                // rounded edge
+                if(screw_area_radius > 0) {
+                    translate([-eps, 0, height])
+                        rotate([0, 90, 0])
+                            linear_extrude(height=width + 2*eps)
+                                fillet_tool(r=screw_area_radius, $fn=60);
+                }
+
+                // screw holes
+                translate([screw_left_inset, 2*screw_area_radius + screw_clearance, -eps]) {
+                    if(num_screws == 1) {
+                        translate([screw_spacing, 0, 0])
+                            screw_hole();
+                    }
+                    else if(num_screws > 1) {
+                        for ( i = [0 : num_screws - 1] ) {
+                            translate([screw_spacing * i, 0, 0])
+                                screw_hole();
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -165,3 +165,23 @@ module square_fillet_3d(size, r, r_corner=0.0, center=false, $fn=$fn) {
         }
     }
 }
+
+module cone(angle, base, height=undef, center=false, $fn=$fn) {
+    // where:
+    // * angle is the angle at the top of the cone, looking towards the base
+    // * base is the diameter at the bottom of the cone
+    // * height is the total height from base to top, if given
+
+    base_radius = base/2;  // convert base diameter to radius
+    full_height = base_radius / tan(angle/2);  // height to a point at the given angle
+
+    // if no height is provided or height is out of scale, extrude up to a point
+    if(height == undef || abs(height) >= full_height) {
+        cylinder(h=full_height, r1=base_radius, r2=0, center=center);
+    }
+    // if height is provided, calculate top radius for given angle
+    else {
+        top_radius = tan(angle/2) * (full_height - height);
+        cylinder(h=height, r1=base_radius, r2=top_radius, center=center);
+    }
+}
