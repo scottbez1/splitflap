@@ -108,6 +108,9 @@ class TesterTask : public Task<TesterTask> {
         void initializeMcp();
         void initializeDisplay();
 
+        void connectWifi();
+        void syncTime();
+
         void disableHardware();
         void drawSimpleText(uint32_t background, uint32_t foreground, String title, String details, String bottom_button_label);
 

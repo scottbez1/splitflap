@@ -14,9 +14,13 @@
    limitations under the License.
 */
 #include <esp_task_wdt.h>
+#include <lwip/apps/sntp.h>
+
+#include <WiFi.h>
 
 #include "config.h"
-
+#include "jwt.h"
+#include "secrets.h"
 #include "tester_task.h"
 
 #define PIN_MOTOR_POWER 13
@@ -516,6 +520,56 @@ Status TesterTask::runStartupSelfTest() {
     }
 }
 
+void TesterTask::connectWifi() {
+    WiFi.mode(WIFI_STA);
+    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+
+    while (WiFi.status() != WL_CONNECTED) {
+        esp_err_t result = esp_task_wdt_reset();
+        ESP_ERROR_CHECK(result);
+
+        String waitString = "Connecting";
+        uint8_t dots = (millis() / 1000) % 4;
+        for (uint8_t i = 0; i < 4; i++) {
+            if (i < dots) {
+                waitString += ".";
+            } else {
+                waitString += " ";
+            }
+        }
+        drawSimpleText(TFT_WHITE, TFT_ORANGE, "Wifi", waitString);
+
+        delay(1000);
+    }
+}
+
+void TesterTask::syncTime() {
+    sntp_setoperatingmode(SNTP_OPMODE_POLL);
+    sntp_setservername(0, "time-a-g.nist.gov");
+    sntp_init();
+    time_t now = 0;
+    while(time(&now), now < 1625099485) {
+        esp_err_t result = esp_task_wdt_reset();
+        ESP_ERROR_CHECK(result);
+
+        String waitString = "Please wait";
+        uint8_t dots = (millis() / 1000) % 4;
+        for (uint8_t i = 0; i < 4; i++) {
+            if (i < dots) {
+                waitString += ".";
+            } else {
+                waitString += " ";
+            }
+        }
+        drawSimpleText(TFT_WHITE, TFT_ORANGE, "Syncing time", waitString);
+        delay(1000);
+    }
+
+    char buf[20];
+    strftime(buf, 20, "%Y-%m-%d %H:%M:%S", localtime(&now));
+    Serial.printf("Got time: %s\n", buf);
+}
+
 void TesterTask::run() {
     esp_err_t result = esp_task_wdt_add(NULL);
     ESP_ERROR_CHECK(result);
@@ -527,6 +581,15 @@ void TesterTask::run() {
 
     drawSimpleText(TFT_WHITE, TFT_PURPLE, "Tester", "v" + String(TEST_SUITE_VERSION));
     delay(1500);
+
+    connectWifi();
+    syncTime();
+
+    char* jwt = Jwt::createGCPJWT("splitflapfactory", service_private_key, service_private_key_len, time(NULL));
+    if (jwt != nullptr) {
+        Serial.println(jwt);
+        free(jwt);
+    }
 
     Status status = runTestSuitesForever();
     if (!status.isOk()) {
