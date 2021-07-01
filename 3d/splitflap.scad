@@ -228,10 +228,6 @@ connector_bracket_overlap = 4;
 connector_bracket_clearance = 0.40;
 connector_bracket_depth_clearance = 0.20;
 
-// 'get' functions to extract these values for when this file is 'used' and not 'included'
-function connector_bracket_length() = connector_bracket_length_outer;
-function connector_bracket_width() = connector_bracket_width;
-
 mounting_hole_inset = m4_button_head_diameter/2 + 2;
 
 enclosure_indicator_inset = 3.0;  // inset on both X and Y
@@ -256,6 +252,21 @@ alignment_bar_fillet_radius = 1.25;
 
 alignment_bar_cutout_width = alignment_bar_diameter + (2 * alignment_bar_clearance);
 alignment_bar_center = (enclosure_length - enclosure_length_right) - alignment_bar_cutout_width/2;
+
+// 'get' functions to extract values for when this file is 'used' and not 'included'
+function thickness() = thickness; 
+function front_forward_offset() = front_forward_offset;
+function enclosure_length_right() = enclosure_length_right;
+function enclosure_height_lower() = enclosure_height_lower;
+function enclosure_wall_to_wall_width() = enclosure_wall_to_wall_width;
+function enclosure_vertical_inset() = enclosure_vertical_inset;
+function captive_nut_inset() = captive_nut_inset;
+function mounting_hole_inset() = mounting_hole_inset;
+function side_tab_width() = side_tab_width;
+
+function connector_bracket_length() = connector_bracket_length_outer;
+function connector_bracket_width() = connector_bracket_width;
+
 
 
 echo(kerf_width=kerf_width);
@@ -1340,108 +1351,3 @@ if (render_3d) {
         }
     }
 }
-
-
-module position_mounting_bracket() {
-    translate([thickness, -enclosure_length_right + front_forward_offset, -enclosure_height_lower]) {
-        children();
-    }
-}
-
-function mounting_bracket_width(side_clearance) = enclosure_wall_to_wall_width - 2 * thickness - 2 * side_clearance;
-function mounting_bracket_length(front_clearance) = enclosure_length_right - front_clearance; 
-
-module mounting_bracket_2d(hole_diameter, clearance) {
-    function unpack(val, pos) = (val[pos] == undef) ? 0 : val[pos];  // use vector if possible, 0 otherwise
-
-    side_clearance  = unpack(clearance, 0);  // X clearance between the mount and the sides of the enclosure (each side)
-    front_clearance = unpack(clearance, 1);  // Y clearance between the mount and the front of the enclosure
-
-    difference() {
-        // base geometry
-        translate([side_clearance, 0, 0])
-            square([mounting_bracket_width(side_clearance), mounting_bracket_length(front_clearance)]);
-
-        // mounting hole
-        translate([(enclosure_wall_to_wall_width - 2 * thickness)/2, mounting_hole_inset]) {
-            circle(r=hole_diameter/2, $fn=30);
-        }
-    }
-}
-
-module mounting_bracket_base(hole_diameter=m4_hole_diameter, clearance=[0.1, 0.1, 0.2]) {
-    module bolt_negative() {
-        bolt_negative_scale = [1.2, 1.2, 1];
-        bolt_negative_length = 13;
-
-        scale(bolt_negative_scale)
-            standard_m4_bolt(captive_nut_inset, bolt_negative_length);
-    }
-
-    function unpack(val, pos) = (val[pos] == undef) ? 0 : val[pos];  // use vector if possible, 0 otherwise
-    height_clearance = unpack(clearance, 2);  // Z clearance between the mount and the 'bottom' piece of the enclosure
-
-    difference() {
-        // Base geometry, 3D
-        linear_extrude(height=enclosure_vertical_inset - height_clearance, convexity=10)
-            mounting_bracket_2d(hole_diameter, clearance);
-
-        bolt_y_offset = enclosure_length_right - (thickness + 1.5 * side_tab_width);
-        bolt_z_offset = enclosure_vertical_inset + thickness/2;
-
-        // Left side bolt
-        translate([-thickness + enclosure_wall_to_wall_width, bolt_y_offset, bolt_z_offset])
-            rotate([180, 90, 0])
-                bolt_negative();
-
-        // Right side bolt
-        translate([-thickness, bolt_y_offset, bolt_z_offset])
-            rotate([0, 90, 0])
-                bolt_negative();
-
-        // Front Bolt
-        translate([enclosure_wall_to_wall_width/2 - thickness, enclosure_length_right + thickness, bolt_z_offset]) {
-            rotate([0, 90, -90])
-                bolt_negative();
-        }
-    }
-}
-
-module mounting_bracket_t_slot(hole_diameter=m4_hole_diameter, slot_width=6, slot_depth=5, nut_length=12.5, clearance=[0.1, 0.1, 0.2]) {
-    function unpack(val, pos) = (val[pos] == undef) ? 0 : val[pos];  // use vector if possible, 0 otherwise
-    side_clearance  = unpack(clearance, 0);  // X clearance between the mount and the sides of the enclosure (each side)
-
-    union() {
-        mounting_bracket_base(hole_diameter, clearance);
-
-        difference() {
-            // T-Slot Boss
-            mirror([0, 0, 1])
-            difference() {
-            linear_extrude(height=slot_depth)
-                difference() {
-                    // Base Geometry
-                    translate([(enclosure_wall_to_wall_width - 2 * thickness)/2, mounting_hole_inset])
-                        rounded_square([mounting_bracket_width(side_clearance), slot_width], center=true, r=5, $fn=60);
-
-                    // T-Nut Subtraction
-                    translate([(enclosure_wall_to_wall_width - 2 * thickness)/2, mounting_hole_inset])
-                        square([nut_length, slot_width + eps], center=true);
-                }
-            
-
-            }
-            // Fillet
-            translate([(enclosure_wall_to_wall_width - 2 * thickness)/2, mounting_hole_inset])
-                translate([0, 0, -slot_depth])
-                    mirror([0, 0, 1])
-                        square_fillet_3d([mounting_bracket_width(side_clearance), slot_width], r=5/2, r_corner=5, center=true, $fn=60);
-        }
-    }
-}
-
-
-position_mounting_bracket() {
-    mounting_bracket_t_slot();
-}
-
