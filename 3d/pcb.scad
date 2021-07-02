@@ -138,8 +138,8 @@ module pcb(pcb_to_spool, render_jig=false) {
 }
 
 // 2D cutouts needed to mount the PCB module, origin at the center of the mounting hole
-module pcb_cutouts() {
-    hull_slide() {
+module pcb_cutouts(adjustment_range=pcb_adjustment_range) {
+    hull_slide(delta=adjustment_range) {
         // Bolt slot
         hull() {
             circle(r=m4_hole_diameter/2, $fn=30);
@@ -160,13 +160,13 @@ module pcb_cutouts() {
     }
 }
 
-module hull_slide() {
+module hull_slide(delta) {
     for (i = [0:$children - 1]) {
         hull() {
-            translate([-pcb_adjustment_range, 0]) {
+            translate([-delta, 0]) {
                 children(i);
             }
-            translate([pcb_adjustment_range, 0]) {
+            translate([delta, 0]) {
                 children(i);
             }
         }
@@ -206,3 +206,6 @@ module sensor_jig(pcb_to_spool) {
         }
     }
 }
+
+// Example usage:
+pcb(10);

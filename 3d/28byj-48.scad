@@ -34,6 +34,15 @@
 28byj48_backpack_extent = 18; // seen values from 17-18
 28byj48_backpack_height = 16;
 
+// Exports for use in other files:
+function 28byj48_mount_bracket_height() = 28byj48_mount_bracket_height;
+function 28byj48_shaft_radius() = 28byj48_shaft_radius;
+function 28byj48_mount_center_offset() = 28byj48_mount_center_offset;
+function 28byj48_chassis_radius() = 28byj48_chassis_radius;
+function 28byj48_shaft_offset() = 28byj48_shaft_offset;
+function 28byj48_chassis_height() = 28byj48_chassis_height;
+function 28byj48_backpack_extent() = 28byj48_backpack_extent;
+
 // Basic 28BYJ-48 model based on various dimensioned drawings.
 // Origin is centered on the shaft, on the front face of the motor, with the shaft in the +z direction
 module Stepper28BYJ48() {
@@ -90,7 +99,7 @@ module Stepper28BYJ48() {
             translate([0, 0, -28byj48_chassis_height]) {
                 cylinder(r=28byj48_chassis_radius, h=28byj48_chassis_height);
             }
-            translate([0, 0, -28byj48_mount_bracket_height]) {
+            translate([0, 0, -28byj48_mount_bracket_height - eps]) {
                 mounting_holes();
             }
             translate([0, 28byj48_shaft_offset, -eps]) {
@@ -117,3 +126,6 @@ module Stepper28BYJ48() {
         }
     }
 }
+
+// Example usage:
+Stepper28BYJ48();
