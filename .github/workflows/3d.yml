@@ -27,13 +27,34 @@ jobs:
 
       - name: Generate 2d output (Ponoko 3mm MDF)
         run: |
-          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python3 -u 3d/scripts/generate_2d.py --render-raster --kerf-preset ponoko-3mm-mdf
-          cp 3d/build/laser_parts/combined.svg 3d/build/outputs/3d_laser_vector-ponoko-3mm-mdf.svg
+          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python3 -u 3d/scripts/generate_2d.py --calculate-dimensions --kerf-preset ponoko-3mm-mdf
+          cp 3d/build/laser_parts/combined.svg 3d/build/outputs/3d_laser_vector-ponoko-3mm-mdf_1x.svg
+          cp 3d/build/laser_parts/combined_dimensions.txt 3d/build/outputs/3d_laser_vector-ponoko-3mm-mdf_1x_dimensions.txt
 
       - name: Generate 2d output (Ponoko 3mm Acrylic)
         run: |
-          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python3 -u 3d/scripts/generate_2d.py --render-raster --kerf-preset ponoko-3mm-acrylic
-          cp 3d/build/laser_parts/combined.svg 3d/build/outputs/3d_laser_vector-ponoko-3mm-acrylic.svg
+          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python3 -u 3d/scripts/generate_2d.py --calculate-dimensions --kerf-preset ponoko-3mm-acrylic
+          cp 3d/build/laser_parts/combined.svg 3d/build/outputs/3d_laser_vector-ponoko-3mm-acrylic_1x.svg
+          cp 3d/build/laser_parts/combined_dimensions.txt 3d/build/outputs/3d_laser_vector-ponoko-3mm-acrylic_1x_dimensions.txt
+
+      - name: Generate 2d output (Ponoko 3mm MDF - 4x)
+        run: |
+          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python3 -u 3d/scripts/generate_2d.py --calculate-dimensions --kerf-preset ponoko-3mm-mdf --panelize 4
+          cp 3d/build/laser_parts/combined.svg 3d/build/outputs/3d_laser_vector-ponoko-3mm-mdf_4x.svg
+          cp 3d/build/laser_parts/combined_dimensions.txt 3d/build/outputs/3d_laser_vector-ponoko-3mm-mdf_4x.txt
+
+      - name: Generate 2d output (Ponoko 3mm Acrylic - 4x)
+        run: |
+          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python3 -u 3d/scripts/generate_2d.py --calculate-dimensions --kerf-preset ponoko-3mm-acrylic --panelize 4
+          cp 3d/build/laser_parts/combined.svg 3d/build/outputs/3d_laser_vector-ponoko-3mm-acrylic_4x.svg
+          cp 3d/build/laser_parts/combined_dimensions.txt 3d/build/outputs/3d_laser_vector-ponoko-3mm-acrylic_4x_dimensions.txt
+
+      - name: Generate 2d output (Elecrow 3mm Wood)
+        run: |
+          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python3 -u 3d/scripts/generate_2d.py --kerf-preset elecrow-3mm-wood --render-elecrow
+          cp 3d/build/laser_parts/combined.svg 3d/build/outputs/3d_laser_vector-elecrow-3mm-wood_1x.svg
+          cp 3d/build/laser_parts/combined_dimensions.txt 3d/build/outputs/3d_laser_vector-elecrow-3mm-wood_1x_dimensions.txt
+          cp 3d/build/laser_parts/elecrow.zip 3d/build/outputs/3d_laser_vector-elecrow-3mm-wood_1x.zip
 
       - name: Generate animated gif
         run: |
