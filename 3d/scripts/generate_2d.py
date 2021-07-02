@@ -21,6 +21,7 @@ import logging
 import os
 import subprocess
 import sys
+import zipfile
 
 from svg_processor import SvgProcessor
 from projection_renderer import Renderer
@@ -125,6 +126,7 @@ if __name__ == '__main__':
         elecrow_svg = os.path.join(laser_parts_directory, 'elecrow.svg')
         elecrow_intermediate_pdf = os.path.join(laser_parts_directory, 'elecrow_intermediate.pdf')
         elecrow_pdf = os.path.join(laser_parts_directory, 'elecrow.pdf')
+        elecrow_zip = os.path.join(laser_parts_directory, 'elecrow.zip')
 
         processor.apply_elecrow_style()
         processor.add_dimensions(width_mm, height_mm)
@@ -159,6 +161,10 @@ if __name__ == '__main__':
             elecrow_pdf,
             elecrow_intermediate_pdf,
         ])
+
+        logging.info('Zip')
+        with zipfile.ZipFile(elecrow_zip, 'w', zipfile.ZIP_DEFLATED) as zip:
+            zip.write(elecrow_pdf, 'elecrow.pdf')
 
     if args.render_raster:
         # Export to png
