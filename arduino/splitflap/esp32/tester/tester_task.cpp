@@ -17,6 +17,7 @@
 #include <lwip/apps/sntp.h>
 
 #include <WiFi.h>
+#include <HTTPClient.h>
 
 #include "config.h"
 #include "jwt.h"
@@ -38,7 +39,7 @@
 
 #define TEST_SUITE_VERSION 0
 
-TesterTask::TesterTask(SplitflapTask& splitflap_task, const uint8_t task_core) : Task{"Tester", 8192, 1, task_core}, splitflap_task_{splitflap_task} {
+TesterTask::TesterTask(SplitflapTask& splitflap_task, const uint8_t task_core) : Task{"Tester", 12000, 1, task_core}, splitflap_task_{splitflap_task} {
 }
 
 void TesterTask::disableHardware() {
@@ -582,15 +583,6 @@ void TesterTask::run() {
     drawSimpleText(TFT_WHITE, TFT_PURPLE, "Tester", "v" + String(TEST_SUITE_VERSION));
     delay(1500);
 
-    connectWifi();
-    syncTime();
-
-    char* jwt = Jwt::createGCPJWT("splitflapfactory", service_private_key, service_private_key_len, time(NULL));
-    if (jwt != nullptr) {
-        Serial.println(jwt);
-        free(jwt);
-    }
-
     Status status = runTestSuitesForever();
     if (!status.isOk()) {
         disableHardware();  // Should have already been called by whoever threw fatal error, but disable again just to be safe
@@ -661,6 +653,29 @@ Result TesterTask::runTestSuite() {
 }
 
 Status TesterTask::runTestSuitesForever() {
+    connectWifi();
+    syncTime();
+
+    Jwt jwt("https://firestore.googleapis.com/", service_key_id, service_email, service_private_key, service_private_key_len);
+
+    esp_err_t result = esp_task_wdt_delete(NULL);
+    ESP_ERROR_CHECK(result);
+
+    HTTPClient http;
+    http.begin("https://firestore.googleapis.com/v1/projects/splitflapfactory/databases/(default)/documents/qcResults");
+    http.addHeader("Authorization", "Bearer " + jwt.get());
+    int httpCode = http.GET();
+    if (httpCode > 0) {
+        String payload = http.getString();
+        Serial.println(httpCode);
+        Serial.println(payload);
+    } else {
+        Serial.println("Error on HTTP request");
+    }
+    http.end();
+
+    result = esp_task_wdt_add(NULL);
+    ESP_ERROR_CHECK(result);
 
     drawSimpleText(TFT_WHITE, COLOR_ACTION, "Remove board", "");
     {

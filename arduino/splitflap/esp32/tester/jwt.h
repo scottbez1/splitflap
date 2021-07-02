@@ -4,6 +4,9 @@
 
 class Jwt {
     public:
+        Jwt(const char* audience, const char* service_key_id, const char* email, uint8_t* private_key, size_t private_key_size);
+
+        String get();
 
         /**
          * Create a JWT token for GCP.
@@ -19,9 +22,18 @@ class Jwt {
          * @param privateKeySize The size in bytes of the private key.
          * @returns A JWT token for transmission to GCP.
          */
-        static char* createGCPJWT(const char* projectId, uint8_t* privateKey, size_t privateKeySize, time_t now);
+        static char* createGCPJWT(const char* audience, const char* service_key_id, const char* email, uint8_t* privateKey, size_t privateKeySize, time_t now);
     
     private:
+        const char* audience_;
+        const char* service_key_id_;
+        const char* email_;
+
+        uint8_t* private_key_;
+        size_t private_key_size_;
+        time_t last_refresh_ = 0;
+        String last_jwt_;
+
         /**
          * Return a string representation of an mbedtls error code
          */

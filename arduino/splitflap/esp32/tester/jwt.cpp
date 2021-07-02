@@ -6,6 +6,26 @@
 #include "jwt.h"
 #include "base64url.h"
 
+Jwt::Jwt(const char* audience, const char* service_key_id, const char* email, uint8_t* private_key, size_t private_key_size) : audience_(audience), service_key_id_(service_key_id), email_(email), private_key_(private_key), private_key_size_(private_key_size) {}
+
+String Jwt::get() {
+    time_t now = time(NULL);
+    if (now - last_refresh_ > 50 * 60) {
+        Serial.println("Regenerating JWT.");
+        char* jwt = createGCPJWT(audience_, service_key_id_, email_, private_key_, private_key_size_, now);
+        if (jwt == nullptr) {
+            return "";
+        } else {
+            last_refresh_ = now;
+            last_jwt_ = String(jwt);
+            free(jwt);
+            return last_jwt_;
+        }
+    } else {
+        return last_jwt_;
+    }
+}
+
 char* Jwt::mbedtlsError(int errnum) {
     static char buffer[200];
     mbedtls_strerror(errnum, buffer, sizeof(buffer));
@@ -13,9 +33,10 @@ char* Jwt::mbedtlsError(int errnum) {
 } // mbedtlsError
 
 
-char* Jwt::createGCPJWT(const char* projectId, uint8_t* privateKey, size_t privateKeySize, time_t now) {
+char* Jwt::createGCPJWT(const char* audience, const char* service_key_id, const char* email, uint8_t* privateKey, size_t privateKeySize, time_t now) {
     char base64Header[100];
-    const char header[] = "{\"alg\":\"RS256\",\"typ\":\"JWT\"}";
+    char header[100];
+    sprintf(header, "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"%s\"}", service_key_id);
     base64url_encode(
         (unsigned char *)header,   // Data to encode.
         strlen(header),            // Length of data to encode.
@@ -24,10 +45,10 @@ char* Jwt::createGCPJWT(const char* projectId, uint8_t* privateKey, size_t priva
     uint32_t iat = now;              // Set the time now.
     uint32_t exp = iat + 60*60;      // Set the expiry time.
 
-    char payload[100];
-    sprintf(payload, "{\"iat\":%d,\"exp\":%d,\"aud\":\"%s\"}", iat, exp, projectId);
+    char payload[400];
+    sprintf(payload, "{\"iat\":%d,\"exp\":%d,\"aud\":\"%s\",\"iss\":\"%s\",\"sub\":\"%s\"}", iat, exp, audience, email, email);
 
-    char base64Payload[100];
+    char base64Payload[400];
     base64url_encode(
         (unsigned char *)payload,  // Data to encode.
         strlen(payload),           // Length of data to encode.
