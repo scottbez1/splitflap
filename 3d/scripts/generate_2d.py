@@ -61,12 +61,14 @@ if __name__ == '__main__':
     parser.add_argument('--render-elecrow', action='store_true', help='Render an additional zipped pdf with labeled '
                                                                       'dimensions and only cut lines, for Elecrow. '
                                                                       'Requires Inkscape and pdfjam. Implies '
-                                                                      '--no-etch and --calculate-dimensions')
+                                                                      '--no-etch, --calculate-dimensions, and '
+                                                                      '--skip-optimize')
 
     args = parser.parse_args()
     if args.render_elecrow:
         args.no_etch = True
         args.calculate_dimensions = True
+        args.skip_optimize = True
 
     laser_parts_directory = os.path.join(source_parts_dir, 'build', 'laser_parts')
 
