@@ -62,11 +62,25 @@ module mounting_bracket_2d(hole_diameter, clearance) {
 
 module mounting_bracket_base(hole_diameter=m4_hole_diameter, clearance=[0.1, 0.1, 0.2]) {
     module bolt_negative() {
-        bolt_negative_scale = [1.2, 1.2, 1];
-        bolt_negative_length = 13;
+        cutout_negative_scale = [1.2, 1.2, 1];  // scale factors for the increased sizes
+        bolt_negative_length = 13;  // length of the bolt cutout
+        nut_negative_excess_thickness = 1;  // extra thickness around the nut negative
 
-        scale(bolt_negative_scale)
-            standard_m4_bolt(captive_nut_inset, bolt_negative_length);
+        union() {
+            scale(cutout_negative_scale) {
+                // bolt negative
+                standard_m4_bolt(bolt_length=bolt_negative_length);
+            
+                // nut negative
+                translate([0, 0, captive_nut_inset - nut_negative_excess_thickness/2])
+                    // note that we're using projection and linear extrusion here so
+                    // that we can center the extra thickness on both sides of the nut,
+                    // rather than putting it all just on one side as with 'scale()'
+                    linear_extrude(height=m4_nut_length + nut_negative_excess_thickness)
+                        projection()
+                            standard_m4_nut(hole=false);
+            }
+        }
     }
 
     function unpack(val, pos) = (val[pos] == undef) ? 0 : val[pos];  // use vector if possible, 0 otherwise

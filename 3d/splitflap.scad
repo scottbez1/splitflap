@@ -301,7 +301,7 @@ module standard_m4_bolt(nut_distance=-1, bolt_length=10) {
     }
 }
 
-module standard_m4_nut(hole=false) {
+module standard_m4_nut(hole=true) {
     color(nut_color) {
         linear_extrude(m4_nut_length) {
             difference() {
