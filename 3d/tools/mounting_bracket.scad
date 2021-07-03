@@ -157,7 +157,7 @@ module mounting_bracket_screw_holes(hole_diameter=m4_hole_diameter, screw_diamet
     height_clearance = unpack(clearance, 2);  // Z clearance between the mount and the 'bottom' piece of the enclosure
 
     width = mounting_bracket_width(side_clearance);  // width of the mount
-    height = mounting_bracket_height(height_clearance) + thickness;  // height of the mount, including screw area
+    height = mounting_bracket_height(height_clearance) + thickness + height_clearance;  // height of the screw area on the mount
 
     screw_area_radius = r;  // radius for the fillet on the screw area extension
     screw_area_depth = screw_diameter + 2*screw_clearance + screw_area_radius;  // Y distance of the screw area extension
