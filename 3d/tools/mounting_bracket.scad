@@ -150,7 +150,7 @@ module mounting_bracket_t_slot(hole_diameter=m4_hole_diameter, slot_width=6, slo
 }
 
 
-module mounting_bracket_screw_holes(hole_diameter=m4_hole_diameter, screw_diameter=m4_hole_diameter, num_screws=2, screw_clearance=4, screw_inset=8, countersink=8.5, r=2.5, clearance=[0.1, 0.1, 0.2]) {
+module mounting_bracket_screw_holes(hole_diameter=m4_hole_diameter, screw_diameter=m4_hole_diameter, num_screws=2, screw_clearance=4, screw_inset=8, csk=9, csk_angle=82, r=2.5, clearance=[0.1, 0.1, 0.2]) {
     function unpack(val, pos) = (val[pos] == undef) ? 0 : val[pos];  // use vector if possible, 0 otherwise
 
     side_clearance  = unpack(clearance, 0);  // X clearance between the mount and the sides of the enclosure (each side)
@@ -173,10 +173,10 @@ module mounting_bracket_screw_holes(hole_diameter=m4_hole_diameter, screw_diamet
                 circle(r=screw_diameter/2, $fn=60);
 
             // countersinks
-            if(countersink > 0) {
+            if(csk > 0) {
                 translate([0, 0, height + 2*eps])
                     rotate([0, 180, 0])
-                        cone(angle=82, base=countersink, $fn=60);
+                        cone(angle=csk_angle, base=csk, $fn=60);
             }
         }
     }
