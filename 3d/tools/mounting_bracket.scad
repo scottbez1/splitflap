@@ -201,7 +201,7 @@ module mounting_bracket_screw_holes(hole_diameter=m4_hole_diameter, screw_diamet
                 }
 
                 // screw holes
-                translate([screw_left_inset, 2*screw_area_radius + screw_clearance, -eps]) {
+                translate([screw_left_inset, screw_area_depth/2 + screw_area_radius/2, -eps]) {
                     if(num_screws == 1) {
                         translate([screw_spacing, 0, 0])
                             screw_hole();
