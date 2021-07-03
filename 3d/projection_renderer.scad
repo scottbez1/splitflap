@@ -1,5 +1,5 @@
 /*
-   Copyright 2015-2016 Scott Bezek and the splitflap contributors
+   Copyright 2015-2021 Scott Bezek and the splitflap contributors
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -14,8 +14,12 @@
    limitations under the License.
 */
 
+_is_projection_rendering = false;   // DO NOT MODIFY - this is set by the projection_renderer.py script
+
 module projection_renderer(render_index = -1, render_etch = false, kerf_width = 0, panel_height, panel_horizontal, panel_vertical) {
-    echo(num_components=$children);
+    if (is_projection_rendering()) {
+        echo(num_components=$children);
+    }
 
     if (render_index == -1) {
         children();
@@ -32,3 +36,5 @@ module projection_renderer(render_index = -1, render_etch = false, kerf_width = 
         }
     }
 }
+
+function is_projection_rendering() = _is_projection_rendering;

@@ -15,69 +15,90 @@
 */
 
 include<flap_dimensions.scad>;
+use<flap.scad>;
 use<projection_renderer.scad>;
 use<splitflap.scad>;
 
-character_list = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.? ";
-num_columns = 10;  // 0 for infinite
 
-spacing_x = 10;
-spacing_y = 10;
+// -----------------------
+// Configurable parameters
+// -----------------------
+
+num_columns = 8;                // Number of columns for layout; 0 for infinite
+start_row = 0;                  // First row to render
+row_count = 1000;               // Number of rows to render
+
+only_side = 0;                  // 0=both, 1=front only, 2=back only
+
+// If you want to view the full font with each letter as it appears when at the front of the display,
+// it requires rendering twice as many flaps and a special layout with the bottom flaps flipped over.
+// You also probably want to set only_side to 1 when using this layout.
+layout_double_flaps_for_full_font = true;
+
+flip_over = false;              // Flip the entire layout of flaps over (e.g. when exporting the back sizes)
+
+// Gap between flaps
+spacing_x = 5;
+spacing_y = 5;
+
+bleed = 0;                      // Amount of bleed (in mm) for text to expand beyond the flap boundary
+
+flap_color = [1,1,1];
+letter_color = [0,0,0];
+
+render_alignment_marks = false; // Whether to render markings to help with alignment/registration (e.g. for screen printing)
+
+// ---------------------------
+// End configurable parameters
+// ---------------------------
+
+
+character_list = get_character_list();
+
+cols = (num_columns == 0) ? len(character_list) : num_columns;
+total_rows = floor((len(character_list)-1+cols) / cols);
+visible_rows = min(row_count, total_rows - start_row);
 
 kerf_width = 0;
 render_fill = false;
 
 flap_gap = get_flap_gap();
 
-// 0: do not do double-sided render
-// 1: render front
-// 2: render back
-side = 0;
-bleed = false;
+assert(!(layout_double_flaps_for_full_font && render_alignment_marks), "Alignment marks are not supported with double-flap full font layout mode");
 
-start_row = 0;
-row_count = 1000;
+if (!is_projection_rendering()) {
+    echo("Info: this model is intended for use via generate_fonts.py in order to export flap font files.");
+}
 
-module flap_transform(row, col, flip) {
+module flap_transform(row, col) {
     x_pos = (flap_width + spacing_x) * col;
-    y_pos = (flap_height * 2 + spacing_y + flap_gap/2) * row;
+    y_pos = layout_double_flaps_for_full_font ?
+        (flap_height*2 + flap_gap + spacing_y) * row:
+        (flap_height + spacing_y) * row;
+
     translate([x_pos, -y_pos, 0]) {
-        translate([flip * flap_width, (0.5 - flip) * (flap_pin_width + flap_gap), 0]) {
-            rotate([0, 0, flip * 180]) {
-                children();
-            }
+        children();
+    }
+}
+
+module flap_pos(i) {
+    col = i % cols;
+    row = floor(i / cols);
+    offsetted_row = row - start_row;
+    if (offsetted_row >= 0 && offsetted_row < row_count) {
+        flap_transform(offsetted_row, col) {
+            children();
         }
     }
 }
 
-module flap_pos(i, j) {
-    // i: character id, j = 0: bottom-of-letter, j = 1: top-of-letter
-    cols = (num_columns == 0) ? len(character_list) : num_columns;
-    if (side == 0) {
-        // regular render
-        col = i % cols;
-        row = floor(i / cols);
-        offsetted_row = row - start_row;
-        flip = 1 - j;
-        if (offsetted_row >= 0 && offsetted_row < row_count) {
-            flap_transform(offsetted_row, col, flip) {
-                children();
-            }
-        }
-    } else {
-        // double sided render
-        char_side = i % 2; // 0: front, 1: back
-        if (char_side + 1 == side) {
-            k = (floor(i / 2) * 2 + j + char_side) % len(character_list);
-            flip = (char_side == 0) ? (1 - j) : j;
-            row = floor(k / 2 / cols);
-            col_front = floor(k / 2) % cols;
-            col = (char_side == 0) ? col_front : (cols - col_front - 1);
-            offsetted_row = row - start_row;
-            if (offsetted_row >= 0 && offsetted_row < row_count) {
-                flap_transform(offsetted_row, col, flip) {
-                    children();
-                }
+module configured_flap(index, flap, front_letter, back_letter) {
+    flap_with_letters(flap_color, letter_color, index, flap_gap, flap=flap, front_letter=front_letter, back_letter=back_letter, bleed=bleed);
+
+    if (layout_double_flaps_for_full_font) {
+        translate([0, -flap_pin_width -flap_gap, 0]) {
+            rotate([180,0,0]) {
+                flap_with_letters(flap_color, letter_color, index - 1, flap_gap, flap=flap, front_letter=back_letter, back_letter=front_letter, bleed=bleed);
             }
         }
     }
@@ -90,24 +111,84 @@ module fill_text() {
     }
 }
 
+module alignment_marks() {
+    alignment_offset = 5;
+    secondary_alignment_offset = 15;
+    alignment_diameter = 5;
+
+    // Holes in each corner, intended for alignment pins when building a flap tray, which register the flap tray to the printing platen for repeatability
+    color([1,0,0]) {
+        linear_extrude(height=5) {
+        translate([0, flap_height + alignment_offset - flap_pin_width/2]) {
+            circle(d=alignment_diameter, $fn=30);
+        }
+        translate([0, -(flap_height + spacing_y)*(visible_rows - 1) - alignment_offset - flap_pin_width/2]) {
+            circle(d=alignment_diameter, $fn=30);
+        }
+        translate([cols * flap_width + (cols - 1) * spacing_x, flap_height + alignment_offset - flap_pin_width/2]) {
+            circle(d=alignment_diameter, $fn=30);
+        }
+        translate([cols * flap_width + (cols - 1) * spacing_x, -(flap_height + spacing_y)*(visible_rows - 1) - alignment_offset - flap_pin_width/2]) {
+            circle(d=alignment_diameter, $fn=30);
+        }
+        }
+    }
+
+    // Additional alignment holes in each corner, intended as registration marks for aligning the screen/image to the flap tray during initial setup
+    color([0,0,1]) {
+        linear_extrude(height=5) {
+        translate([secondary_alignment_offset, flap_height + alignment_offset - flap_pin_width/2]) {
+            circle(d=alignment_diameter, $fn=30);
+        }
+        translate([secondary_alignment_offset, -(flap_height + spacing_y)*(visible_rows - 1) - alignment_offset - flap_pin_width/2]) {
+            circle(d=alignment_diameter, $fn=30);
+        }
+        translate([cols * flap_width + (cols - 1) * spacing_x - secondary_alignment_offset, flap_height + alignment_offset - flap_pin_width/2]) {
+            circle(d=alignment_diameter, $fn=30);
+        }
+        translate([cols * flap_width + (cols - 1) * spacing_x - secondary_alignment_offset, -(flap_height + spacing_y)*(visible_rows - 1) - alignment_offset - flap_pin_width/2]) {
+            circle(d=alignment_diameter, $fn=30);
+        }
+        }
+    }
+}
+
+module _flip() {
+    translate([flip_over ? cols*flap_width + (cols-1)*spacing_x : 0, 0, 0]) {
+        rotate([0, flip_over ? 180 : 0, 0]) {
+            children();
+        }
+    }
+}
+
 render_index = -1;
 render_etch = false;
 
 projection_renderer(render_index = render_index, render_etch = render_etch, kerf_width = kerf_width, panel_height = 0, panel_horizontal = 0, panel_vertical = 0) {
-    for(i = [0 : len(character_list) - 1]) {
-        for(j = [0 : 1]) {
-            flap_pos(i, j) {
-                flap();
+    _flip() {
+        for(i = [0 : len(character_list) - 1]) {
+            flap_pos(i) {
+                configured_flap(i, flap=true, front_letter=false, back_letter=false);
             }
         }
     }
 
     fill_text() {
-        for(i = [0 : len(character_list) - 1]) {
-            for(j = [0 : 1]) {
-                flap_pos(i, j) {
-                    flap_letter(character_list[i], 2-j, bleed);
+        _flip() {
+            for(i = [0 : len(character_list) - 1]) {
+                show_front = only_side == 0 || only_side == 1;
+                show_back = only_side == 0 || only_side == 2;
+                flap_pos(i) {
+                    configured_flap(i, flap=false, front_letter=show_front, back_letter=show_back);
                 }
+            }
+        }
+    }
+
+    if (render_alignment_marks) {
+        fill_text() {
+            _flip() {
+                alignment_marks();
             }
         }
     }
