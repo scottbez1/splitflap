@@ -13,7 +13,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+
 include<flap_dimensions.scad>;
+use<flap.scad>;
 use<projection_renderer.scad>;
 use<splitflap.scad>;
 
@@ -34,7 +36,7 @@ gap_y = undef;
 render_index = -1;
 render_etch = false;
 
-kerf_width = 0.18;
+kerf_width = 0;
 
 
 
@@ -52,39 +54,19 @@ module centered_front() {
     }
 }
 
-//projection_renderer(render_index = render_index, render_etch = render_etch, kerf_width = kerf_width, panel_height = 0, panel_horizontal = 0, panel_vertical = 0) {
+projection_renderer(render_index = render_index, render_etch = render_etch, kerf_width = kerf_width, panel_height = 0, panel_horizontal = 0, panel_vertical = 0) {
+    linear_extrude(height=get_thickness()) {
+        difference() {
+            translate([(cols-1)/2 * layout_center_center_x, -(rows-1)/2 * layout_center_center_y]) {
+                square([frame_width, frame_height], center=true);
+            }
 
-//}
-
-color("red")
-translate([(cols-1)/2 * layout_center_center_x - center_center_x*6*1.5, -(rows-1)/2 * layout_center_center_y, -1.1]) {
-    square([center_center_x*6, frame_height], center=true);
-}
-color("green")
-translate([(cols-1)/2 * layout_center_center_x - center_center_x*6*0.5, -(rows-1)/2 * layout_center_center_y, -1.1]) {
-    square([center_center_x*6, frame_height], center=true);
-}
-color("pink")
-translate([(cols-1)/2 * layout_center_center_x + center_center_x*6*0.5, -(rows-1)/2 * layout_center_center_y, -1.1]) {
-    square([center_center_x*6, frame_height], center=true);
-}
-color("orange")
-translate([(cols-1)/2 * layout_center_center_x + center_center_x*6*1.5, -(rows-1)/2 * layout_center_center_y, -1.1]) {
-    square([center_center_x*6, frame_height], center=true);
-}
-
-color([0.5, 0.5, 0.5, 0.2])
-render(convexity = 2) {
-    difference() {
-        translate([(cols-1)/2 * layout_center_center_x, -(rows-1)/2 * layout_center_center_y]) {
-            square([frame_width, frame_height], center=true);
-        }
-
-        for (i=[0:cols-1]) {
-            for (j=[0:rows-1]) {
-                translate([i * layout_center_center_x, -j * layout_center_center_y]) {
-                    centered_front() {
-                        enclosure_front_cutouts_2d();
+            for (i=[0:cols-1]) {
+                for (j=[0:rows-1]) {
+                    translate([i * layout_center_center_x, -j * layout_center_center_y]) {
+                        centered_front() {
+                            enclosure_front_cutouts_2d();
+                        }
                     }
                 }
             }
@@ -92,15 +74,16 @@ render(convexity = 2) {
     }
 }
 
+%
 for (i=[0:cols-1]) {
     for (j=[0:rows-1]) {
         translate([i * layout_center_center_x, -j * layout_center_center_y]) {
             translate([-flap_width/2, get_flap_gap()/2]) {
-                flap();
+                flap_with_letters([1, 1, 1], [0, 0, 0], 1, get_flap_gap());
             }
             translate([-flap_width/2, -get_flap_gap()/2]) {
                 rotate([-180, 0, 0])
-                    flap();
+                    flap_with_letters([1, 1, 1], [0, 0, 0], 0, get_flap_gap());
             }
         }
     }
