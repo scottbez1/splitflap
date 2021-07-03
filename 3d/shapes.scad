@@ -14,7 +14,34 @@
    limitations under the License.
 */
 
-module rounded_square(size, center=false, r=0.0, $fn=$fn) {
+module rounded_square(size, center=false, r=0.0, corners=[0,1,2,3], $fn=$fn) {
+    translation_matrix = [
+        [-1, -1],
+        [-1,  1],
+        [ 1,  1],
+        [ 1, -1],
+    ];
+
+    module add_corner(index, center, r) {
+        // this is tiny because the geometry is 'hull'ed and we need to get out
+        // of the way of the rounds at larger radii
+        square_size = 0.001;
+
+        function circle_offset(axis) =
+            center[axis] * translation_matrix[index][axis];
+
+        function square_offset(axis) = 
+            center[axis] * translation_matrix[index][axis] + r * translation_matrix[index][axis] + (translation_matrix[index][axis] >= 1 ? -square_size : 0);
+
+        if(len(search(index, corners)) > 0)
+            translate([circle_offset(0), circle_offset(1)])
+                circle(r=r, $fn=$fn);
+        else {
+            translate([square_offset(0), square_offset(1)])
+                square(square_size);
+        }
+    }
+
     width  = size[0] == undef ? size : size[0];  // unpack vector if present
     height = size[1] == undef ? size : size[1];
 
@@ -25,16 +52,14 @@ module rounded_square(size, center=false, r=0.0, $fn=$fn) {
         center_x = center ? 0 : width/2;
         center_y = center ? 0 : height/2;
 
-        translate([center_x, center_y])
+        translate([center_x, center_y]) {
             hull() {
                 x =  width/2 - radius;
                 y = height/2 - radius;
-
-                translate([ x,  y]) circle(r=radius, $fn=$fn);
-                translate([ x, -y]) circle(r=radius, $fn=$fn);
-                translate([-x, -y]) circle(r=radius, $fn=$fn);
-                translate([-x,  y]) circle(r=radius, $fn=$fn);
+                for(i = [0:3])
+                    add_corner(i, [x, y], radius);
             }
+        }
     }
 }
 
