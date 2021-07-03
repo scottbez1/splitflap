@@ -178,6 +178,12 @@ enclosure_height_upper = exclusion_radius + enclosure_vertical_margin + thicknes
 enclosure_height_lower = flap_pitch_radius + flap_height + enclosure_vertical_margin + thickness + enclosure_vertical_inset;
 enclosure_height = enclosure_height_upper + enclosure_height_lower;
 
+function get_enclosure_width() = enclosure_width;
+function get_enclosure_height() = enclosure_height;
+function get_enclosure_height_lower() = enclosure_height_lower;
+function get_front_window_right_inset() = front_window_right_inset;
+function get_front_window_width() = front_window_width;
+
 enclosure_horizontal_rear_margin = thickness; // minumum distance between the farthest feature and the rear
 
 enclosure_length = front_forward_offset + 28byj48_mount_center_offset() + m4_hole_diameter/2 + enclosure_horizontal_rear_margin;
@@ -482,24 +488,31 @@ module enclosure_etch_style() {
                 children();
 }
 
+module enclosure_front_base_2d() {
+    translate([-enclosure_horizontal_inset, 0, 0]) {
+        square([enclosure_width, enclosure_height]);
+    }
+}
+
+module enclosure_front_cutouts_2d() {
+    // Viewing window cutout
+    translate([front_window_right_inset, enclosure_height_lower - front_window_lower])
+        square([front_window_width, front_window_lower + front_window_upper]);
+
+    // Front lower tabs
+    translate([0, thickness * 0.5 + enclosure_vertical_inset, 0])
+        front_tabs_negative();
+
+    // Front upper tabs
+    translate([0, enclosure_height - thickness * 0.5 - enclosure_vertical_inset, 0])
+        front_tabs_negative();
+}
+
 module enclosure_front() {
     linear_extrude(height=thickness) {
         difference() {
-            translate([-enclosure_horizontal_inset, 0, 0]) {
-                square([enclosure_width, enclosure_height]);
-            }
-
-            // Viewing window cutout
-            translate([front_window_right_inset, enclosure_height_lower - front_window_lower])
-                square([front_window_width, front_window_lower + front_window_upper]);
-
-            // Front lower tabs
-            translate([0, thickness * 0.5 + enclosure_vertical_inset, 0])
-                front_tabs_negative();
-
-            // Front upper tabs
-            translate([0, enclosure_height - thickness * 0.5 - enclosure_vertical_inset, 0])
-                front_tabs_negative();
+            enclosure_front_base_2d();
+            enclosure_front_cutouts_2d();
         }
     }
 }
