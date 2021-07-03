@@ -63,7 +63,7 @@ module mounting_bracket_2d(hole_diameter, clearance) {
 module mounting_bracket_base(hole_diameter=m4_hole_diameter, clearance=[0.1, 0.1, 0.2]) {
     module bolt_negative() {
         cutout_negative_scale = [1.2, 1.2, 1];  // scale factors for the increased sizes
-        bolt_negative_length = 13;  // length of the bolt cutout
+        bolt_negative_length = get_captive_nut_bolt_length();  // length of the bolt cutout
         nut_negative_excess_thickness = 1;  // extra thickness around the nut negative
 
         union() {
@@ -216,4 +216,10 @@ module mounting_bracket_screw_holes(hole_diameter=m4_hole_diameter, screw_diamet
             }
         }
     }
+}
+
+// Examples:
+mounting_bracket_t_slot();
+translate([80, 0]) {
+    mounting_bracket_screw_holes();
 }
