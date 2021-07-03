@@ -1,5 +1,5 @@
 /*
-   Copyright 2015-2020 Scott Bezek and the splitflap contributors
+   Copyright 2015-2021 Scott Bezek and the splitflap contributors
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -14,18 +14,19 @@
    limitations under the License.
 */
 
+use<28byj-48.scad>;
 use<assert.scad>;
+use<color_util.scad>;
+use<flap.scad>;
 use<label.scad>;
 use<pcb.scad>;
 use<projection_renderer.scad>;
-use<roboto/RobotoCondensed-Regular.ttf>;
 use<rough7380.scad>;
 use<spool.scad>;
 use<shapes.scad>;
 
-include<28byj-48.scad>;
 include<flap_dimensions.scad>;
-include<flap_fonts.scad>;
+include<global_constants.scad>;
 include<m4_dimensions.scad>;
 
 // ##### RENDERING OPTIONS #####
@@ -36,8 +37,9 @@ render_3d = true;
 render_enclosure = 2; // 0=invisible; 1=translucent; 2=opaque color;
 render_flaps = 2; // 0=invisible; 1=front flap only; 2=all flaps
 render_flap_area = 0; // 0=invisible; 1=collapsed flap exclusion; 2=collapsed+extended flap exclusion
-render_letters = "44";
-render_units = len(render_letters);
+render_letters = 1;  // 0=invisible; 1=front flap only; 2=all flaps
+render_string = "44";
+render_units = len(render_string);
 render_unit_separation = 0;
 render_spool = true;
 render_pcb = true;
@@ -77,9 +79,9 @@ kerf_width = 0.2 - 0.02;
 // MDF, .120in nominal
 // https://www.ponoko.com/materials/mdf-fiberboard
 thickness = 3.0;
+function get_thickness() = thickness;
 
 etch_depth = 0.1;  // for render
-eps=.01;
 
 captive_nut_inset=6;
 
@@ -95,14 +97,6 @@ hardware_color = [0.75, 0.75, 0.8];  // steel, "bfbfcc"
 flap_color = [1, 1, 1];  // white, "ffffff"
 
 
-// multiply two equal matricies by each element, limiting to a max of 1.0
-function color_multiply(x, y) =
-    [ for(j=[0:len(x) - 1]) min(x[j] * y[j], 1.0) ];
-
-// inverts a color matrix by subtracting the input channel values from 1.0
-function color_invert(x) =
-    [ for(j=[0:len(x) - 1]) (1.0 - x[j]) ];
-
 assembly_color1 = color_multiply(assembly_color, [1.161, 1.157, 1.157, 1.0]);  // "e1b17c" with MDF
 assembly_color2 = color_multiply(assembly_color, [0.897, 0.895, 0.895, 1.0]);  // "ae8960" with MDF
 assembly_color3 = color_multiply(assembly_color, [0.547, 0.542, 0.540, 1.0]);  // "6a533a" with MDF
@@ -112,9 +106,6 @@ bolt_color = hardware_color;
 nut_color = color_multiply(hardware_color, [0.933, 0.933, 0.9, 1.0]);  // "b2b2b7" with steel
 
 letter_color = color_invert(flap_color);  // inverse of the flap color, for contrast
-
-
-flap_rendered_angle = 90;
 
 
 flap_width_slop = 0.5;  // amount of slop of the flap side to side between the 2 spools
@@ -132,6 +123,7 @@ flap_hole_radius = (flap_pin_width + 1) / 2;
 flap_hole_separation = 1;  // additional spacing between hole edges
 flap_gap = (flap_hole_radius * 2 - flap_pin_width) + flap_hole_separation;
 function get_flap_gap() = flap_gap;  // for exposing this value when this file is 'used' and not 'included' in other files
+function get_flap_arc_separation() = (flap_hole_radius*2 + flap_hole_separation);  // for exposing this value when this file is 'used' and not 'included' in other files
 
 flap_spool_outset = flap_hole_radius;
 flap_pitch_radius = flap_spool_pitch_radius(num_flaps, flap_hole_radius, flap_hole_separation); //num_flaps * (flap_hole_radius*2 + flap_hole_separation) / (2*PI);
@@ -143,8 +135,6 @@ exclusion_radius = sqrt(flap_height*flap_height + flap_pitch_radius*flap_pitch_r
 outer_exclusion_radius = flap_pitch_radius + flap_height + 2;
 
 front_forward_offset = flap_pitch_radius + flap_thickness/2;
-
-flap_notch_height = (flap_notch_height_auto == true) ? sqrt(spool_outer_radius*spool_outer_radius - flap_pitch_radius*flap_pitch_radius) : flap_notch_height_default;
 
 spool_width = flap_width - flap_notch_depth*2 + flap_width_slop + thickness*2;  // spool width, outside face (spool to spool)
 spool_width_clearance = max(spool_width, flap_width + flap_width_slop);  // width clearance for the spool, either for the spool itself or the flaps
@@ -162,9 +152,11 @@ spool_strut_exclusion_radius = sqrt((spool_strut_tab_outset+thickness/2)*(spool_
 
 
 magnet_diameter = 4;
+function get_magnet_diameter() = magnet_diameter;
 magnet_hole_clearance = -0.07;  // interference fit
 magnet_hole_radius = (magnet_diameter + magnet_hole_clearance)/2;
 magnet_hole_offset = (spool_strut_exclusion_radius + flap_pitch_radius)/2;
+function get_magnet_hole_offset() = magnet_hole_offset;
 
 // Clearance between the motor chassis and the outside right wall of the previous module
 28byj48_chassis_height_clearance = 1.4;
@@ -174,10 +166,10 @@ motor_slop_radius = 3;
 
 
 // Width measured from the outside of the walls
-enclosure_wall_to_wall_width = thickness + spool_width_slop/2 + spool_width_clearance + spool_width_slop/2 + max(28byj48_mount_bracket_height + m4_button_head_length, 4 + 28byj48_mount_bracket_height - spool_width_slop/2) + thickness;
+enclosure_wall_to_wall_width = thickness + spool_width_slop/2 + spool_width_clearance + spool_width_slop/2 + max(28byj48_mount_bracket_height() + m4_button_head_length, 4 + 28byj48_mount_bracket_height() - spool_width_slop/2) + thickness;
 
 // Width of the front panel
-enclosure_width = enclosure_wall_to_wall_width + 28byj48_chassis_height + 28byj48_chassis_height_clearance - thickness - 28byj48_mount_bracket_height;
+enclosure_width = enclosure_wall_to_wall_width + 28byj48_chassis_height() + 28byj48_chassis_height_clearance - thickness - 28byj48_mount_bracket_height();
 enclosure_horizontal_inset = (enclosure_width - enclosure_wall_to_wall_width)/2;
 front_window_upper_base = (flap_height - flap_pin_width/2);
 front_window_overhang = 3;
@@ -194,11 +186,11 @@ enclosure_height = enclosure_height_upper + enclosure_height_lower;
 
 enclosure_horizontal_rear_margin = thickness; // minumum distance between the farthest feature and the rear
 
-enclosure_length = front_forward_offset + 28byj48_mount_center_offset + m4_hole_diameter/2 + enclosure_horizontal_rear_margin;
+enclosure_length = front_forward_offset + 28byj48_mount_center_offset() + m4_hole_diameter/2 + enclosure_horizontal_rear_margin;
 
 // distance from the outside spool face to the inside of the left enclosure
 pcb_to_spool = enclosure_wall_to_wall_width - front_window_width - thickness + spool_width_slop/2;
-
+function get_pcb_to_spool() = pcb_to_spool;  // for exposing this value when this file is 'used' and not 'included' in other files
 
 // Enclosure tabs: front/back
 enclosure_tab_clearance = 0.10;
@@ -216,7 +208,7 @@ backstop_bolt_vertical_offset = - (exclusion_radius + outer_exclusion_radius)/2;
 backstop_bolt_forward_range = 14;
 
 motor_mount_hole_radius = m4_hole_diameter/2;
-motor_backpack_extent = 28byj48_backpack_extent + 2; // Add 2mm to make sure there's room for the wires
+motor_backpack_extent = 28byj48_backpack_extent() + 2; // Add 2mm to make sure there's room for the wires
 motor_hole_slop = 1;
 motor_window_radius = 5;
 
@@ -437,85 +429,14 @@ module spool_retaining_wall(m4_bolt_hole=false) {
     }
 }
 
-
-module flap_2d(cut_tabs = true) {
-    translate([0, -flap_pin_width/2, 0])
-    difference() {
-        union() {
-            square([flap_width, flap_height - flap_corner_radius]);
-
-            // rounded corners
-            hull() {
-                translate([flap_corner_radius, flap_height - flap_corner_radius])
-                    circle(r=flap_corner_radius, $fn=40);
-                translate([flap_width - flap_corner_radius, flap_height - flap_corner_radius])
-                    circle(r=flap_corner_radius, $fn=40);
-            }
-        }
-        // spool tabs
-        if(cut_tabs) {
-            translate([-eps, flap_pin_width])
-                square([eps + flap_notch_depth, flap_notch_height]);
-            translate([flap_width - flap_notch_depth, flap_pin_width])
-                square([eps + flap_notch_depth, flap_notch_height]);
-        }
-    }
-}
-
-module flap() {
-    color(flap_color)
-    translate([0, 0, -flap_thickness/2])
-    linear_extrude(height=flap_thickness) {
-        flap_2d();
-    }
-}
-
-module draw_letter(letter) {
-    translate([0, -flap_height * letter_height, 0])  // valign compensation
-        scale([letter_width, 1, 1])
-            translate([letter_offset_x, letter_offset_y])
-                text(text=letter, size=flap_height * letter_height * 2, font=letter_font, halign="center");
-}
-
-module flap_letter(letter, half = 0, bleed = false) {
-    color(letter_color)
-    translate([0, 0, flap_thickness/2 + eps])
-    linear_extrude(height=0.1, center=true) {
-        if (half != 0) {  // trimming to top (1) or bottom (2)
-            intersection() {
-                if (bleed) {
-                    minkowski()
-                    {
-                        flap_2d();
-                        circle(d=flap_gap);
-                    }
-                } else {
-                    flap_2d();  // limit to bounds of flap
-                }
-                translate([flap_width/2, -flap_pin_width/2, 0]) {
-                    rotation = (half == 2) ? -180 : 0;  // flip upside-down for bottom
-                    gap_comp = (letter_gap_comp == true) ? -flap_gap/2 : 0;
-                    translate([0, gap_comp, 0])
-                        rotate([0,0,rotation])
-                            draw_letter(letter);
-                }
-            }
-        } else {
-            translate([flap_width/2, -flap_pin_width/2 - flap_gap/2, 0])
-                draw_letter(letter);
-        }
-    }
-}
-
-
 // double-flatted motor shaft of 28byj-48 motor (2D)
 module motor_shaft() {
     union() {
         intersection() {
-            circle(r=28byj48_shaft_radius-motor_shaft_under_radius, $fn=50);
-            square([28byj48_shaft_radius*2, 3], center=true);
+            circle(r=28byj48_shaft_radius()-motor_shaft_under_radius, $fn=50);
+            square([28byj48_shaft_radius()*2, 3], center=true);
         }
-        square([28byj48_shaft_radius/3, 28byj48_shaft_radius*4], center=true);
+        square([28byj48_shaft_radius()/3, 28byj48_shaft_radius()*4], center=true);
     }
 }
 
@@ -599,18 +520,17 @@ module enclosure_front_etch() {
 
 // holes for 28byj-48 motor, centered around motor shaft
 module motor_mount() {
-    circle(r=28byj48_shaft_radius+motor_slop_radius, $fn=30);
-    translate([-28byj48_mount_center_offset, -8]) {
+    translate([-28byj48_mount_center_offset(), -28byj48_shaft_offset()]) {
         circle(r=motor_mount_hole_radius, $fn=30);
     }
-    translate([28byj48_mount_center_offset, -8]) {
+    translate([28byj48_mount_center_offset(), -28byj48_shaft_offset()]) {
         circle(r=motor_mount_hole_radius, $fn=30);
     }
 
     hull() {
-        x = -28byj48_chassis_radius - motor_hole_slop/2 + motor_window_radius;
-        y = [-28byj48_shaft_offset - motor_backpack_extent - motor_hole_slop/2 + motor_window_radius,
-            -28byj48_shaft_offset + 28byj48_chassis_radius + motor_hole_slop/2 - motor_window_radius];
+        x = -28byj48_chassis_radius() - motor_hole_slop/2 + motor_window_radius;
+        y = [-28byj48_shaft_offset() - motor_backpack_extent - motor_hole_slop/2 + motor_window_radius,
+            -28byj48_shaft_offset() + 28byj48_chassis_radius() + motor_hole_slop/2 - motor_window_radius];
 
         translate([ x, y[0], 0]) circle(r=motor_window_radius, $fn=40);
         translate([-x, y[1], 0]) circle(r=motor_window_radius, $fn=40);
@@ -655,7 +575,7 @@ module alignment_bar() {
     color(assembly_color1)
         translate([enclosure_width - enclosure_horizontal_inset, -enclosure_length_right + front_forward_offset - alignment_bar_diameter/2, -enclosure_height_lower + alignment_bar_diameter/2])
             rotate([0, -90, 0])
-                linear_extrude(height=enclosure_width * len(render_letters))
+                linear_extrude(height=enclosure_width * render_units)
                     circle(r=alignment_bar_diameter/2, $fn=60);
 }
 
@@ -743,7 +663,7 @@ module enclosure_left_etch() {
 
 module shaft_centered_motor_hole() {
     margin = 5;
-    width = 28byj48_mount_center_offset*2 + 3.5*2 + margin*2;
+    width = 28byj48_mount_center_offset()*2 + 3.5*2 + margin*2;
     length = 18 + 14 + margin*2;
 
     translate([-width/2, -(margin + 18 + 8)])
@@ -926,7 +846,7 @@ module enclosure_bottom_etch() {
         }
 }
 
-module split_flap_3d(letter, include_connector) {
+module split_flap_3d(front_flap_index, include_connector) {
     module position_front() {
         translate([0, front_forward_offset + thickness, -enclosure_height_lower])
             rotate([90, 0, 0])
@@ -1140,29 +1060,25 @@ module split_flap_3d(letter, include_connector) {
                 // Collapsed flaps on the top
                 for (i=[0:num_flaps/2 - 1]) {
                     if (i == 0 || render_flaps == 2) {
+                        show_letters = render_letters == 2 || (render_letters == 1 && i == 0);
                         rotate([360/num_flaps * i, 0, 0]) {
                             translate([flap_width, flap_pitch_radius, 0]) {
-                                rotate([flap_rendered_angle, 0, 180]) {
-                                    flap();
-                                    if (i == 0) { 
-                                        flap_letter(letter, 1);  // 1 = top
-                                    }
+                                rotate([90, 0, 180]) {
+                                    flap_with_letters(flap_color, letter_color, front_flap_index + i, flap_gap, front_letter=show_letters, back_letter=show_letters);
                                 }
                             }
                         }
                     }
                 }
-
                 // Hanging flaps on the bottom
                 for (i=[1:num_flaps/2]) {
+                    flap_index = num_flaps - i;
                     angle = -360/num_flaps*i;
-                    translate([0, flap_pitch_radius*cos(angle), flap_pitch_radius * sin(angle)]) {
+                    translate([flap_width, flap_pitch_radius*cos(angle), flap_pitch_radius * sin(angle)]) {
                         if (i == 1 || render_flaps == 2) {
-                            rotate([-90, 0, 0]) {
-                                flap();
-                                if (i == 1) {
-                                    flap_letter(letter, 2);  // 2 = bottom
-                                }
+                            show_letters = render_letters == 2 || (render_letters == 1 && i == 1);
+                            rotate([-90, 0, 180]) {
+                                flap_with_letters(flap_color, letter_color, front_flap_index + flap_index, flap_gap, front_letter=show_letters, back_letter=show_letters);
                             }
                         }
                     }
@@ -1207,25 +1123,25 @@ module split_flap_3d(letter, include_connector) {
     }
 
     if (render_motor) {
-        translate([enclosure_wall_to_wall_width - thickness - 28byj48_mount_bracket_height, 0, 0]) {
+        translate([enclosure_wall_to_wall_width - thickness - 28byj48_mount_bracket_height(), 0, 0]) {
 
             rotate([-90, 0, 0]) {
 
                 rotate([0, -90, 0]) {
                     Stepper28BYJ48();
                 }
-                translate([0, -28byj48_shaft_offset, 0]) {
-                    translate([0, 0, -28byj48_mount_center_offset]) {
+                translate([0, -28byj48_shaft_offset(), 0]) {
+                    translate([0, 0, -28byj48_mount_center_offset()]) {
                         rotate([0, 90, 0]) {
                             rotate([0, 0, 90]) {
-                                standard_m4_bolt(nut_distance=thickness+28byj48_mount_bracket_height);
+                                standard_m4_bolt(nut_distance=thickness+28byj48_mount_bracket_height());
                             }
                         }
                     }
-                    translate([0, 0, 28byj48_mount_center_offset]) {
+                    translate([0, 0, 28byj48_mount_center_offset()]) {
                         rotate([0, 90, 0]) {
                             rotate([0, 0, 90]) {
-                                standard_m4_bolt(nut_distance=thickness+28byj48_mount_bracket_height);
+                                standard_m4_bolt(nut_distance=thickness+28byj48_mount_bracket_height());
                             }
                         }
                     }
@@ -1254,7 +1170,7 @@ module laser_mirror() {
 if (render_3d) {
     for (i = [0 : render_units - 1]) {
         translate([-enclosure_width/2 + (-(render_units-1) / 2 + i)*(enclosure_width + render_unit_separation), 0, 0])
-            split_flap_3d(render_letters[render_units - 1 - i], include_connector=(i != render_units - 1));
+            split_flap_3d(get_flap_index_for_letter(render_string[render_units - 1 - i]), include_connector=(i != render_units - 1));
     }
 } else {
     laser_mirror() {
@@ -1341,11 +1257,11 @@ if (render_3d) {
             }
 
             // Spool retaining wall in motor window
-            translate([enclosure_height_lower + 28byj48_shaft_offset - 28byj48_chassis_radius + (28byj48_chassis_radius + motor_backpack_extent)/2, enclosure_length - front_forward_offset - 28byj48_chassis_radius - motor_hole_slop/2 + spool_strut_width/2 + kerf_width])
+            translate([enclosure_height_lower + 28byj48_shaft_offset() - 28byj48_chassis_radius() + (28byj48_chassis_radius() + motor_backpack_extent)/2, enclosure_length - front_forward_offset - 28byj48_chassis_radius() - motor_hole_slop/2 + spool_strut_width/2 + kerf_width])
                 spool_retaining_wall(m4_bolt_hole=true);
 
             // Sensor soldering jig
-            translate([enclosure_height_lower + 28byj48_shaft_offset - 28byj48_chassis_radius + (28byj48_chassis_radius + motor_backpack_extent)/2 + sensor_jig_width(pcb_to_spool)/2, enclosure_length - front_forward_offset + 28byj48_chassis_radius + motor_hole_slop/2 - kerf_width])
+            translate([enclosure_height_lower + 28byj48_shaft_offset() - 28byj48_chassis_radius() + (28byj48_chassis_radius() + motor_backpack_extent)/2 + sensor_jig_width(pcb_to_spool)/2, enclosure_length - front_forward_offset + 28byj48_chassis_radius() + motor_hole_slop/2 - kerf_width])
                 rotate([0, 0, 180])
                     sensor_jig(pcb_to_spool);
         }
