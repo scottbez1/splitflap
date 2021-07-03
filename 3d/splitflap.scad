@@ -79,7 +79,6 @@ kerf_width = 0.2 - 0.02;
 // MDF, .120in nominal
 // https://www.ponoko.com/materials/mdf-fiberboard
 thickness = 3.0;
-function get_thickness() = thickness;
 
 etch_depth = 0.1;  // for render
 
@@ -122,8 +121,6 @@ num_flaps = 40;
 flap_hole_radius = (flap_pin_width + 1) / 2;
 flap_hole_separation = 1;  // additional spacing between hole edges
 flap_gap = (flap_hole_radius * 2 - flap_pin_width) + flap_hole_separation;
-function get_flap_gap() = flap_gap;  // for exposing this value when this file is 'used' and not 'included' in other files
-function get_flap_arc_separation() = (flap_hole_radius*2 + flap_hole_separation);  // for exposing this value when this file is 'used' and not 'included' in other files
 
 flap_spool_outset = flap_hole_radius;
 flap_pitch_radius = flap_spool_pitch_radius(num_flaps, flap_hole_radius, flap_hole_separation); //num_flaps * (flap_hole_radius*2 + flap_hole_separation) / (2*PI);
@@ -152,11 +149,9 @@ spool_strut_exclusion_radius = sqrt((spool_strut_tab_outset+thickness/2)*(spool_
 
 
 magnet_diameter = 4;
-function get_magnet_diameter() = magnet_diameter;
 magnet_hole_clearance = -0.07;  // interference fit
 magnet_hole_radius = (magnet_diameter + magnet_hole_clearance)/2;
 magnet_hole_offset = (spool_strut_exclusion_radius + flap_pitch_radius)/2;
-function get_magnet_hole_offset() = magnet_hole_offset;
 
 // Clearance between the motor chassis and the outside right wall of the previous module
 28byj48_chassis_height_clearance = 1.4;
@@ -190,7 +185,6 @@ enclosure_length = front_forward_offset + 28byj48_mount_center_offset() + m4_hol
 
 // distance from the outside spool face to the inside of the left enclosure
 pcb_to_spool = enclosure_wall_to_wall_width - front_window_width - thickness + spool_width_slop/2;
-function get_pcb_to_spool() = pcb_to_spool;  // for exposing this value when this file is 'used' and not 'included' in other files
 
 // Enclosure tabs: front/back
 enclosure_tab_clearance = 0.10;
@@ -245,19 +239,25 @@ alignment_bar_fillet_radius = 1.25;
 alignment_bar_cutout_width = alignment_bar_diameter + (2 * alignment_bar_clearance);
 alignment_bar_center = (enclosure_length - enclosure_length_right) - alignment_bar_cutout_width/2;
 
-// 'get' functions to extract values for when this file is 'used' and not 'included'
-function thickness() = thickness; 
-function front_forward_offset() = front_forward_offset;
-function enclosure_length_right() = enclosure_length_right;
-function enclosure_height_lower() = enclosure_height_lower;
-function enclosure_wall_to_wall_width() = enclosure_wall_to_wall_width;
-function enclosure_vertical_inset() = enclosure_vertical_inset;
-function captive_nut_inset() = captive_nut_inset;
-function mounting_hole_inset() = mounting_hole_inset;
-function side_tab_width() = side_tab_width;
 
-function connector_bracket_length() = connector_bracket_length_outer;
-function connector_bracket_width() = connector_bracket_width;
+// Exported values
+// (Functions allow other files to reference these values when this file is 'used' and not 'included')
+function get_captive_nut_inset() = captive_nut_inset;
+function get_connector_bracket_length() = connector_bracket_length_outer;
+function get_connector_bracket_width() = connector_bracket_width;
+function get_enclosure_height_lower() = enclosure_height_lower;
+function get_enclosure_length_right() = enclosure_length_right;
+function get_enclosure_vertical_inset() = enclosure_vertical_inset;
+function get_enclosure_wall_to_wall_width() = enclosure_wall_to_wall_width;
+function get_flap_arc_separation() = (flap_hole_radius*2 + flap_hole_separation);
+function get_flap_gap() = flap_gap;
+function get_front_forward_offset() = front_forward_offset;
+function get_magnet_diameter() = magnet_diameter;
+function get_magnet_hole_offset() = magnet_hole_offset;
+function get_mounting_hole_inset() = mounting_hole_inset;
+function get_pcb_to_spool() = pcb_to_spool;
+function get_side_tab_width() = side_tab_width;
+function get_thickness() = thickness;
 
 
 

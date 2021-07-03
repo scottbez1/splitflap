@@ -20,15 +20,15 @@ use<../shapes.scad>;
 include<../m4_dimensions.scad>;
 
 // Constants from splitflap.scad, using functions to extract
-thickness = thickness();
-front_forward_offset = front_forward_offset();
-enclosure_length_right = enclosure_length_right();
-enclosure_height_lower = enclosure_height_lower();
-enclosure_wall_to_wall_width = enclosure_wall_to_wall_width();
-enclosure_vertical_inset = enclosure_vertical_inset();
-captive_nut_inset = captive_nut_inset();
-mounting_hole_inset = mounting_hole_inset();
-side_tab_width = side_tab_width();
+thickness = get_thickness();
+front_forward_offset = get_front_forward_offset();
+enclosure_length_right = get_enclosure_length_right();
+enclosure_height_lower = get_enclosure_height_lower();
+enclosure_wall_to_wall_width = get_enclosure_wall_to_wall_width();
+enclosure_vertical_inset = get_enclosure_vertical_inset();
+captive_nut_inset = get_captive_nut_inset();
+mounting_hole_inset = get_mounting_hole_inset();
+side_tab_width = get_side_tab_width();
 
 eps = 0.01;
 
