@@ -232,6 +232,8 @@ enclosure_left_zip_bottom_inset = 22.5;  // inset from bottom for the bottom zip
 
 enclosure_left_zip_top_inset = 22.5;  // inset from top for the top zip tie holes, edge to group center
 
+captive_nut_bolt_length = m4_bolt_length + 3; // 1mm tolerance + 2mm flexibility in bolt length
+
 alignment_bar_diameter = 6.35;  // 1/4"
 alignment_bar_clearance = 0.25;
 alignment_bar_fillet_radius = 1.25;
@@ -258,6 +260,8 @@ function get_mounting_hole_inset() = mounting_hole_inset;
 function get_pcb_to_spool() = pcb_to_spool;
 function get_side_tab_width() = side_tab_width;
 function get_thickness() = thickness;
+
+function get_captive_nut_bolt_length() = captive_nut_bolt_length;
 
 
 
@@ -317,8 +321,8 @@ module captive_nut(bolt_diameter, bolt_length, nut_width, nut_length, nut_inset)
             square([nut_width, nut_length]);
     }
 }
-module m4_captive_nut(bolt_length=m4_bolt_length) {
-    captive_nut(m4_hole_diameter, bolt_length + 1, m4_nut_width_flats, m4_nut_length_padded, captive_nut_inset);
+module m4_captive_nut() {
+    captive_nut(m4_hole_diameter, captive_nut_bolt_length, m4_nut_width_flats, m4_nut_length_padded, captive_nut_inset);
 }
 
 

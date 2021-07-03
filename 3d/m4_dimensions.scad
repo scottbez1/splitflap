@@ -16,7 +16,7 @@
 
 // M4 bolts
 m4_hole_diameter = 4.5;
-m4_bolt_length = 12;
+m4_bolt_length = 10;
 m4_button_head_diameter = 7.6 + .2;
 m4_button_head_length = 2.2 + .2;
 m4_nut_width_flats = 7 + .2;
