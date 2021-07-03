@@ -1,5 +1,5 @@
 /*
-   Copyright 2018 Scott Bezek and the splitflap contributors
+   Copyright 2015-2021 Scott Bezek and the splitflap contributors
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -14,17 +14,10 @@
    limitations under the License.
 */
 
-flap_width = 54;
-flap_height = 43;
-flap_thickness = 30 / 1000 * 25.4; // 30 mil
-flap_corner_radius = 3.1; // 2.88-3.48mm (used just for display)
+// multiply two equal matricies by each element, limiting to a max of 1.0
+function color_multiply(x, y) =
+    [ for(j=[0:len(x) - 1]) min(x[j] * y[j], 1.0) ];
 
-flap_notch_height_auto = false;
-flap_notch_height_default = 15;
-
-flap_notch_height = (flap_notch_height_auto == true) ? sqrt(spool_outer_radius*spool_outer_radius - flap_pitch_radius*flap_pitch_radius) : flap_notch_height_default;
-
-flap_notch_depth = 3.2;
-
-flap_pin_width = 1.4;
-
+// inverts a color matrix by subtracting the input channel values from 1.0
+function color_invert(x) =
+    [ for(j=[0:len(x) - 1]) (1.0 - x[j]) ];
