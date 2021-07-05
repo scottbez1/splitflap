@@ -115,7 +115,7 @@ module fillet_tool_3d(r, r_corner=undef, overlap=0.01, $fn=$fn) {
             rotate_extrude(angle=90, convexity=10, $fn=$fn)
                 translate([corner_radius, 0, 0])
                     rotate([0, 0, 90])
-                        fillet_tool(r, $fn);
+                        fillet_tool(r, $fn=$fn);
 }
 
 module square_fillet_3d(size, r, r_corner=0.0, center=false, $fn=$fn) {
@@ -147,44 +147,44 @@ module square_fillet_3d(size, r, r_corner=0.0, center=false, $fn=$fn) {
                 translate([corner_radius, 0, 0])
                     rotate([0, 90, 0])
                         linear_extrude(height=width - 2*corner_radius)
-                            fillet_tool(radius, $fn);
+                            fillet_tool(radius, $fn=$fn);
 
                 // X Straight, At Length
                 translate([width - corner_radius, length, 0])
                     rotate([0, 90, 180])
                         linear_extrude(height=width - 2*corner_radius)
-                            fillet_tool(radius, $fn);
+                            fillet_tool(radius, $fn=$fn);
 
                 // Y Straight, Origin
                 translate([0, length - corner_radius, 0])
                     rotate([0, 90, 270])
                         linear_extrude(height=length - 2*corner_radius)
-                            fillet_tool(radius, $fn);
+                            fillet_tool(radius, $fn=$fn);
 
                 // Y Straight, At Width
                 translate([width, corner_radius, 0])
                     rotate([0, 90, 90])
                         linear_extrude(height=length - 2*corner_radius)
-                            fillet_tool(radius, $fn);
+                            fillet_tool(radius, $fn=$fn);
 
                 if(corner_radius > 0) {
                     // Corner: Bottom Left
-                    fillet_tool_3d(radius, corner_radius, $fn);
+                    fillet_tool_3d(radius, corner_radius, $fn=$fn);
 
                     // Corner: Bottom Right
                     translate([width, 0, 0])
                         rotate([0, 0, 90])
-                            fillet_tool_3d(radius, corner_radius, $fn);
+                            fillet_tool_3d(radius, corner_radius, $fn=$fn);
 
                     // Corner: Top Left
                     translate([0, length, 0])
                         rotate([0, 0, 270])
-                            fillet_tool_3d(radius, corner_radius, $fn);
+                            fillet_tool_3d(radius, corner_radius, $fn=$fn);
 
                     // Corner: Top Right
                     translate([width, length, 0])
                         rotate([0, 0, 180])
-                            fillet_tool_3d(radius, corner_radius, $fn);
+                            fillet_tool_3d(radius, corner_radius, $fn=$fn);
                 }
             }
         }
