@@ -108,17 +108,17 @@ module fillet_tool(r, overlap=0.01, $fn=$fn) {
             }
 }
 
-module fillet_tool_3d(r, r_corner=undef, overlap=0.01, $fn=$fn) {
+module fillet_tool_3d(r, r_corner=undef, overlap=0.01, additive=false, $fn=$fn) {
     corner_radius = (r_corner == undef) ? r : r_corner;  // use fillet radius if corner radius not provided
     translate([corner_radius, corner_radius, 0])
         rotate([0, 180, 90])
             rotate_extrude(angle=90, convexity=10, $fn=$fn)
                 translate([corner_radius, 0, 0])
-                    rotate([0, 0, 90])
+                    rotate([0, 0, additive ? -90 : 90])
                         fillet_tool(r, overlap=overlap, $fn=$fn);
 }
 
-module square_fillet_3d(size, r, r_corner=0.0, overlap=0.01, center=false, corners=[0,1,2,3], edges=[0,1,2,3], $fn=$fn) {
+module square_fillet_3d(size, r, r_corner=0.0, overlap=0.01, center=false, additive=false, corners=[0,1,2,3], edges=[0,1,2,3], $fn=$fn) {
     function in_list(x, list) = len(search(x, list)) > 0 ? true : false;
 
     width  = size[0] == undef ? size : size[0];  // unpack vector if present
@@ -151,60 +151,64 @@ module square_fillet_3d(size, r, r_corner=0.0, overlap=0.01, center=false, corne
                 // Y Straight, Origin
                 if(in_list(0, edges)) {
                     translate([0, length - corner_offset_single(1), 0])
-                        rotate([0, 90, 270])
-                            linear_extrude(height=length - corner_offset(0))
-                                fillet_tool(radius, overlap=overlap, $fn=$fn);
+                        rotate([0, additive ? 180 : 0, 0])
+                            rotate([0, 90, 270])
+                                linear_extrude(height=length - corner_offset(0))
+                                    fillet_tool(radius, overlap=overlap, $fn=$fn);
                 }
 
                 // X Straight, At Length
                 if(in_list(1, edges)) {
                     translate([width - corner_offset_single(2), length, 0])
-                        rotate([0, 90, 180])
-                            linear_extrude(height=width - corner_offset(1))
-                                fillet_tool(radius, overlap=overlap, $fn=$fn);
+                        rotate([additive ? 180 : 0, 0, 0])
+                            rotate([0, 90, 180])
+                                linear_extrude(height=width - corner_offset(1))
+                                    fillet_tool(radius, overlap=overlap, $fn=$fn);
                 }
 
                 // Y Straight, At Width
                 if(in_list(2, edges)) {
                     translate([width, corner_offset_single(3), 0])
-                        rotate([0, 90, 90])
-                            linear_extrude(height=length - corner_offset(2))
-                                fillet_tool(radius, overlap=overlap, $fn=$fn);
+                        rotate([0, additive ? 180 : 0, 0])
+                            rotate([0, 90, 90])
+                                linear_extrude(height=length - corner_offset(2))
+                                    fillet_tool(radius, overlap=overlap, $fn=$fn);
                 }
 
                 // X Straight, Origin
                 if(in_list(3, edges)) {
                     translate([corner_offset_single(0), 0, 0])
-                        rotate([0, 90, 0])
-                            linear_extrude(height=width - corner_offset(3))
-                                fillet_tool(radius, overlap=overlap, $fn=$fn);
+                        rotate([additive ? 180 : 0, 0, 0])
+                            rotate([0, 90, 0])
+                                linear_extrude(height=width - corner_offset(3))
+                                    fillet_tool(radius, overlap=overlap, $fn=$fn);
                 }
 
                 if(corner_radius > 0) {
                     // Corner: Bottom Left
                     if(in_list(0, corners)) {
-                        fillet_tool_3d(radius, corner_radius, overlap=overlap, $fn=$fn);
+                        fillet_tool_3d(radius, corner_radius, overlap=overlap, additive=additive, $fn=$fn);
                     }
 
                     // Corner: Top Left
                     if(in_list(1, corners)) {
                         translate([0, length, 0])
                             rotate([0, 0, 270])
-                                fillet_tool_3d(radius, corner_radius, overlap=overlap, $fn=$fn);
+                                fillet_tool_3d(radius, corner_radius, overlap=overlap, additive=additive, $fn=$fn);
                     }
 
                     // Corner: Top Right
                     if(in_list(2, corners)) {
                     translate([width, length, 0])
                         rotate([0, 0, 180])
-                            fillet_tool_3d(radius, corner_radius, overlap=overlap, $fn=$fn);
+                            fillet_tool_3d(radius, corner_radius, overlap=overlap, additive=additive, $fn=$fn);
                     }
 
                     // Corner: Bottom Right
                     if(in_list(3, corners)) {
                         translate([width, 0, 0])
                             rotate([0, 0, 90])
-                                fillet_tool_3d(radius, corner_radius, overlap=overlap, $fn=$fn);
+                                fillet_tool_3d(radius, corner_radius, overlap=overlap, additive=additive, $fn=$fn);
                     }
                 }
             }
