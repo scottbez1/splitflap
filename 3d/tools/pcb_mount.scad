@@ -28,11 +28,13 @@ wall_top_radius = 1.5;  // radius for the 3D fillet on the top edge of mount
 mounting_hole_diameter = 6;  // diameter of the holes in the mount, large enough for heat-set inserts
 mounting_hole_clearance = 5;  // body clearance around the holes in the mount, XY
 mounting_hole_boss_radius = 5;  // radius for the inside corners of the mounting hole bosses
+mounting_hole_3d_fillet = 2;  // radius of the 3D fillet on top of the boss
 
 support_boss_width = 15;  // total width of the boss, along X
 support_boss_length = 6;  // total length of the boss, along Y
 support_boss_y_offset = 10;  // offset of the boss from the top PCB edge, along Y
 support_boss_fillet_radius = 2;  // radius of the support boss corners
+support_boss_3d_fillet = 1;  // radius of the 3D fillet on top of the boss
 
 screw_hole_diameter = 4;  // diameter of the holes on either side for screwing into a surface
 screw_hole_head_diameter = 8.5;  // diameter of the bolt used for the screw hole (for counter-bore)
@@ -101,8 +103,14 @@ module mounting_holes() {
 }
 
 module board_support_boss() {
-    translate([total_width - wall_thickness - support_boss_width, total_length - wall_xy_offset - support_boss_length - support_boss_y_offset])
-        rounded_square([support_boss_width, support_boss_length], r=support_boss_fillet_radius, corners=[0, 1], $fn=30);
+    translate([total_width - wall_thickness - support_boss_width, total_length - wall_xy_offset - support_boss_length - support_boss_y_offset]) {
+        difference() {
+            linear_extrude(height=height_to_pcb)
+                rounded_square([support_boss_width + eps, support_boss_length], r=support_boss_fillet_radius, corners=[0, 1], $fn=60);
+            translate([0, 0, height_to_pcb])
+                square_fillet_3d([support_boss_width, support_boss_length], r=support_boss_3d_fillet, r_corner=support_boss_fillet_radius, overlap=0.1, corners=[0,1], edges=[0,1,3], $fn=30);
+        }
+    }
 }
 
 module screw_mount_2d(fillet_radius) {
@@ -178,32 +186,49 @@ difference() {
         }
 
         // Mounting Holes Bosses
-        linear_extrude(height=height_to_pcb) {
-            translate([wall_thickness, wall_thickness]) {
-                // Bottom Left
-                translate([0, 0]) {
-                    x = pcb_hole_coordinates[0][0] + pcb_xy_clearance + mounting_hole_boss_offset;
-                    y = pcb_hole_coordinates[0][1] + pcb_xy_clearance + mounting_hole_boss_offset;
-                    rounded_square([x, y], r=mounting_hole_boss_radius, corners=[2], $fn=60);
-                }
+        translate([wall_thickness, wall_thickness]) {
+            // Bottom Left
+            translate([-eps, -eps]) {
+                x = pcb_hole_coordinates[0][0] + pcb_xy_clearance + mounting_hole_boss_offset + eps;
+                y = pcb_hole_coordinates[0][1] + pcb_xy_clearance + mounting_hole_boss_offset + eps;
 
-                // Top Left
-                translate([0, pcb_hole_coordinates[1][1] + pcb_xy_clearance - mounting_hole_boss_offset]) {
-                    x = pcb_hole_coordinates[1][0] + pcb_xy_clearance + mounting_hole_boss_offset;
-                    y = 2*pcb_xy_clearance + pcb_length - pcb_hole_coordinates[1][1] + mounting_hole_boss_offset;
-                    rounded_square([x, y], r=mounting_hole_boss_radius, corners=[3], $fn=60);
-                }
-
-                // Bottom Right
-                translate([pcb_hole_coordinates[2][0] + pcb_xy_clearance - mounting_hole_boss_offset, 0]) {
-                    x = pcb_width - pcb_hole_coordinates[2][0] + pcb_xy_clearance + mounting_hole_boss_offset;
-                    y = pcb_hole_coordinates[2][1] + pcb_xy_clearance + mounting_hole_boss_offset;
-                    rounded_square([x, y], r=mounting_hole_boss_radius, corners=[1], $fn=60);
+                difference() {
+                    linear_extrude(height=height_to_pcb)
+                        rounded_square([x, y], r=mounting_hole_boss_radius, corners=[2], $fn=60);
+                    translate([0, 0, height_to_pcb])
+                        square_fillet_3d([x, y], r=mounting_hole_3d_fillet, r_corner=mounting_hole_boss_radius, overlap=0.1, corners=[2], edges=[1,2], $fn=30);
                 }
             }
-            // Board Support Boss
-            board_support_boss();
+
+            // Top Left
+            translate([-eps, pcb_hole_coordinates[1][1] + pcb_xy_clearance - mounting_hole_boss_offset]) {
+                x = pcb_hole_coordinates[1][0] + pcb_xy_clearance + mounting_hole_boss_offset + eps;
+                y = 2*pcb_xy_clearance + pcb_length - pcb_hole_coordinates[1][1] + mounting_hole_boss_offset + eps;
+
+                difference() {
+                    linear_extrude(height=height_to_pcb)
+                        rounded_square([x, y], r=mounting_hole_boss_radius, corners=[3], $fn=60);
+                    translate([0, 0, height_to_pcb])
+                        square_fillet_3d([x, y], r=mounting_hole_3d_fillet, r_corner=mounting_hole_boss_radius, overlap=0.1, corners=[3], edges=[2,3], $fn=30);
+                }
+            }
+
+            // Bottom Right
+            translate([pcb_hole_coordinates[2][0] + pcb_xy_clearance - mounting_hole_boss_offset, -eps]) {
+                x = pcb_width - pcb_hole_coordinates[2][0] + pcb_xy_clearance + mounting_hole_boss_offset + eps;
+                y = pcb_hole_coordinates[2][1] + pcb_xy_clearance + mounting_hole_boss_offset + eps;
+                
+                difference() {
+                    linear_extrude(height=height_to_pcb)
+                        rounded_square([x, y], r=mounting_hole_boss_radius, corners=[1], $fn=60);
+                    translate([0, 0, height_to_pcb])
+                        square_fillet_3d([x, y], r=mounting_hole_3d_fillet, r_corner=mounting_hole_boss_radius, overlap=0.1, corners=[1], edges=[0,1], $fn=30);
+                }
+            }
         }
+
+        // Board Support Boss
+        board_support_boss();
 
         // Left screw mount
         screw_mount();
