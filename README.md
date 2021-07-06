@@ -77,9 +77,9 @@ If you are interested in building a display, I recommend using [one of the stabl
 
 # Build Your Own
 
-* [**Ordering guide (v0.5/0.6)**](https://paper.dropbox.com/doc/Ordering-Splitflap-v0.5--AS8OCZ~75DLuHBGHhxn94YAMAg-iCwwMo0hRkkAlwdutccWf)
+* [**Ordering guide (v0.5/0.6/0.7)**](https://paper.dropbox.com/doc/Ordering-Splitflap-v0.5--AS8OCZ~75DLuHBGHhxn94YAMAg-iCwwMo0hRkkAlwdutccWf)
 * [**Latest stable release**](https://github.com/scottbez1/splitflap/releases/latest)
-* [**Assembly instructions (v0.5/0.6)**](https://paper.dropbox.com/doc/Splitflap-Kit-v0.5v1.0-Instructions--ASQDu1uoa6n4_t1pva1bM1MgAg-bxXJlke5ROmamcx4OH44r)
+* [**Assembly instructions (v0.5/0.6/0.7)**](https://paper.dropbox.com/doc/Splitflap-Kit-v0.5v1.0-Instructions--ASQDu1uoa6n4_t1pva1bM1MgAg-bxXJlke5ROmamcx4OH44r)
 
 ## Rough Cost Breakdown
 
