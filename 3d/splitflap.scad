@@ -449,14 +449,40 @@ module motor_shaft() {
     }
 }
 
-module front_tabs_negative() {
+module front_tabs_negative(upper, tool_diameter=undef) {
+    // tool_diameter is an optional parameter to adjust these cutouts to compensate for a rotary cutting tool, which
+    // requires "dog-bones" for corners and adjustment of the cutout if the tool is larger than thickness. This will
+    // generally not look good if cut all the way through the material, but with a CNC router these can be cut as
+    // pockets which are not visible from the front.
+    tool_diameter_param = is_undef(tool_diameter) ? 0 : tool_diameter;
+    assert(tool_diameter_param <= m4_hole_diameter, "Tool diameter is too large to cut M4 holes");
+
+    cutout_height = max(thickness, tool_diameter_param);
+
+    // Offset is inverted on upper vs lower so that larger cutouts from tool diameter don't allow vertical movement freedom
+    cutout_offset = (upper ? 1 : -1) * (cutout_height - thickness)/2;
+
     for (i = [0 : num_front_tabs-1]) {
-        translate([thickness + (i*2+0.5) * front_tab_width, 0, 0])
-            square([front_tab_width + enclosure_tab_clearance, thickness + enclosure_tab_clearance], center=true);
+        translate([thickness + (i*2+0.5) * front_tab_width, cutout_offset, 0]) {
+            square([front_tab_width + enclosure_tab_clearance, cutout_height + enclosure_tab_clearance], center=true);
+            translate([(front_tab_width + enclosure_tab_clearance)/2 - tool_diameter_param/2, (cutout_height + enclosure_tab_clearance)/2]) {
+                circle(d=tool_diameter_param, $fn=30);
+            }
+            translate([(front_tab_width + enclosure_tab_clearance)/2 - tool_diameter_param/2, -(cutout_height + enclosure_tab_clearance)/2]) {
+                circle(d=tool_diameter_param, $fn=30);
+            }
+            translate([-(front_tab_width + enclosure_tab_clearance)/2 + tool_diameter_param/2, (cutout_height + enclosure_tab_clearance)/2]) {
+                circle(d=tool_diameter_param, $fn=30);
+            }
+            translate([-(front_tab_width + enclosure_tab_clearance)/2 + tool_diameter_param/2, -(cutout_height + enclosure_tab_clearance)/2]) {
+                circle(d=tool_diameter_param, $fn=30);
+            }
+        }
     }
     for (i = [0 : num_front_tabs-2]) {
-        translate([thickness + (i*2+1.5) * front_tab_width, 0, 0])
+        translate([thickness + (i*2+1.5) * front_tab_width, 0, 0]) {
             circle(r=m4_hole_diameter/2, $fn=30);
+        }
     }
 }
 
@@ -494,18 +520,18 @@ module enclosure_front_base_2d() {
     }
 }
 
-module enclosure_front_cutouts_2d() {
+module enclosure_front_cutouts_2d(tool_diameter=undef) {
     // Viewing window cutout
     translate([front_window_right_inset, enclosure_height_lower - front_window_lower])
         square([front_window_width, front_window_lower + front_window_upper]);
 
     // Front lower tabs
     translate([0, thickness * 0.5 + enclosure_vertical_inset, 0])
-        front_tabs_negative();
+        front_tabs_negative(upper=false, tool_diameter=tool_diameter);
 
     // Front upper tabs
     translate([0, enclosure_height - thickness * 0.5 - enclosure_vertical_inset, 0])
-        front_tabs_negative();
+        front_tabs_negative(upper=true, tool_diameter=tool_diameter);
 }
 
 module enclosure_front() {

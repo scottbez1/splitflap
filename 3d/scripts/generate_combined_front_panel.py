@@ -60,6 +60,8 @@ if __name__ == '__main__':
     width = parser.add_argument('--width', type=float, help='Width of the panel')
     height = parser.add_argument('--height', type=float, help='Height of the panel')
 
+    tool_diameter = parser.add_argument('--tool-diameter', type=float, help='Diameter of cutting tool')
+
     args = parser.parse_args()
 
     extra_variables = {
@@ -88,6 +90,9 @@ if __name__ == '__main__':
         extra_variables['frame_width'] = args.width
     if args.height is not None:
         extra_variables['frame_height'] = args.height
+
+    if args.tool_diameter is not None:
+        extra_variables['tool_diameter'] = args.tool_diameter
 
     output_dir = os.path.join(source_parts_dir, 'build', 'front_panel')
 

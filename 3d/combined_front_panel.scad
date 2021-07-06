@@ -19,6 +19,10 @@ use<flap.scad>;
 use<projection_renderer.scad>;
 use<splitflap.scad>;
 
+// -----------------------
+// Configurable parameters
+// -----------------------
+
 rows = 6;
 cols = 18;
 
@@ -32,13 +36,31 @@ center_center_y = 7.25*25.4;
 gap_x = undef;
 gap_y = undef;
 
+// Use tool_diameter for rotary/milling cutters, or kerf_width for laser.
+// kerf_width applies a naive offset that is only valid for very small kerf from a laser cutter (e.g. 0.2mm)
+// tool_diameter will modify a few parts of the design for milling bits, but will not handle all sizes well; use caution and review the design carefully.
+tool_diameter = 1/8*25.4 * 1.1; // 1/8 inch bit, plus 10%
+kerf_width = 0;
+
+display_text = [
+    "THIS IS SOME TEXT ",
+    "",
+    "    SPLIT     FLAP",
+    "           HI     ",
+    "WOW               ",
+    "                 .",
+];
+
+flap_color = [0.9, 0.9, 0.9];
+text_color = [0.15, 0.15, 0.15];
+
+// ---------------------------
+// End configurable parameters
+// ---------------------------
+
 
 render_index = -1;
 render_etch = false;
-
-kerf_width = 0;
-
-
 
 assert(is_undef(center_center_x) || center_center_x >= get_enclosure_width(), "Horizontal center-to-center value must be at least the enclosure width");
 assert(is_undef(center_center_y) || center_center_y >= get_enclosure_height(), "Vertical center-to-center value must be at least the enclosure height");
@@ -55,6 +77,7 @@ module centered_front() {
 }
 
 projection_renderer(render_index = render_index, render_etch = render_etch, kerf_width = kerf_width, panel_height = 0, panel_horizontal = 0, panel_vertical = 0) {
+    color([0.1, 0.1, 0.1])
     linear_extrude(height=get_thickness()) {
         difference() {
             translate([(cols-1)/2 * layout_center_center_x, -(rows-1)/2 * layout_center_center_y]) {
@@ -65,7 +88,7 @@ projection_renderer(render_index = render_index, render_etch = render_etch, kerf
                 for (j=[0:rows-1]) {
                     translate([i * layout_center_center_x, -j * layout_center_center_y]) {
                         centered_front() {
-                            enclosure_front_cutouts_2d();
+                            enclosure_front_cutouts_2d(tool_diameter=tool_diameter);
                         }
                     }
                 }
@@ -77,13 +100,14 @@ projection_renderer(render_index = render_index, render_etch = render_etch, kerf
 %
 for (i=[0:cols-1]) {
     for (j=[0:rows-1]) {
+        index = i + j*cols;
         translate([i * layout_center_center_x, -j * layout_center_center_y]) {
             translate([-flap_width/2, get_flap_gap()/2]) {
-                flap_with_letters([1, 1, 1], [0, 0, 0], 1, get_flap_gap());
+                flap_with_letters(text_color, flap_color, get_flap_index_for_letter(display_text[j][i]), get_flap_gap());
             }
             translate([-flap_width/2, -get_flap_gap()/2]) {
                 rotate([-180, 0, 0])
-                    flap_with_letters([1, 1, 1], [0, 0, 0], 0, get_flap_gap());
+                    flap_with_letters(text_color, flap_color, get_flap_index_for_letter(display_text[j][i])-1, get_flap_gap());
             }
         }
     }
