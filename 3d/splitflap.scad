@@ -254,6 +254,7 @@ function get_enclosure_wall_to_wall_width() = enclosure_wall_to_wall_width;
 function get_enclosure_width() = enclosure_width;
 function get_flap_arc_separation() = (flap_hole_radius*2 + flap_hole_separation);
 function get_flap_gap() = flap_gap;
+function get_flap_pin_width() = flap_pin_width;
 function get_front_forward_offset() = front_forward_offset;
 function get_front_window_right_inset() = front_window_right_inset;
 function get_front_window_width() = front_window_width;

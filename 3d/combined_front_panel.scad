@@ -102,10 +102,10 @@ for (i=[0:cols-1]) {
     for (j=[0:rows-1]) {
         index = i + j*cols;
         translate([i * layout_center_center_x, -j * layout_center_center_y]) {
-            translate([-flap_width/2, get_flap_gap()/2]) {
+            translate([-flap_width/2, 0]) {
                 flap_with_letters(text_color, flap_color, get_flap_index_for_letter(display_text[j][i]), get_flap_gap());
             }
-            translate([-flap_width/2, -get_flap_gap()/2]) {
+            translate([-flap_width/2, -(get_flap_gap() + get_flap_pin_width())]) {
                 rotate([-180, 0, 0])
                     flap_with_letters(text_color, flap_color, get_flap_index_for_letter(display_text[j][i])-1, get_flap_gap());
             }
