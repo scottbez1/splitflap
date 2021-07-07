@@ -178,12 +178,6 @@ enclosure_height_upper = exclusion_radius + enclosure_vertical_margin + thicknes
 enclosure_height_lower = flap_pitch_radius + flap_height + enclosure_vertical_margin + thickness + enclosure_vertical_inset;
 enclosure_height = enclosure_height_upper + enclosure_height_lower;
 
-function get_enclosure_width() = enclosure_width;
-function get_enclosure_height() = enclosure_height;
-function get_enclosure_height_lower() = enclosure_height_lower;
-function get_front_window_right_inset() = front_window_right_inset;
-function get_front_window_width() = front_window_width;
-
 enclosure_horizontal_rear_margin = thickness; // minumum distance between the farthest feature and the rear
 
 enclosure_length = front_forward_offset + 28byj48_mount_center_offset() + m4_hole_diameter/2 + enclosure_horizontal_rear_margin;
@@ -252,13 +246,17 @@ alignment_bar_center = (enclosure_length - enclosure_length_right) - alignment_b
 function get_captive_nut_inset() = captive_nut_inset;
 function get_connector_bracket_length() = connector_bracket_length_outer;
 function get_connector_bracket_width() = connector_bracket_width;
+function get_enclosure_height() = enclosure_height;
 function get_enclosure_height_lower() = enclosure_height_lower;
 function get_enclosure_length_right() = enclosure_length_right;
 function get_enclosure_vertical_inset() = enclosure_vertical_inset;
 function get_enclosure_wall_to_wall_width() = enclosure_wall_to_wall_width;
+function get_enclosure_width() = enclosure_width;
 function get_flap_arc_separation() = (flap_hole_radius*2 + flap_hole_separation);
 function get_flap_gap() = flap_gap;
 function get_front_forward_offset() = front_forward_offset;
+function get_front_window_right_inset() = front_window_right_inset;
+function get_front_window_width() = front_window_width;
 function get_magnet_diameter() = magnet_diameter;
 function get_magnet_hole_offset() = magnet_hole_offset;
 function get_mounting_hole_inset() = mounting_hole_inset;
@@ -465,17 +463,21 @@ module front_tabs_negative(upper, tool_diameter=undef) {
     for (i = [0 : num_front_tabs-1]) {
         translate([thickness + (i*2+0.5) * front_tab_width, cutout_offset, 0]) {
             square([front_tab_width + enclosure_tab_clearance, cutout_height + enclosure_tab_clearance], center=true);
-            translate([(front_tab_width + enclosure_tab_clearance)/2 - tool_diameter_param/2, (cutout_height + enclosure_tab_clearance)/2]) {
-                circle(d=tool_diameter_param, $fn=30);
-            }
-            translate([(front_tab_width + enclosure_tab_clearance)/2 - tool_diameter_param/2, -(cutout_height + enclosure_tab_clearance)/2]) {
-                circle(d=tool_diameter_param, $fn=30);
-            }
-            translate([-(front_tab_width + enclosure_tab_clearance)/2 + tool_diameter_param/2, (cutout_height + enclosure_tab_clearance)/2]) {
-                circle(d=tool_diameter_param, $fn=30);
-            }
-            translate([-(front_tab_width + enclosure_tab_clearance)/2 + tool_diameter_param/2, -(cutout_height + enclosure_tab_clearance)/2]) {
-                circle(d=tool_diameter_param, $fn=30);
+
+            // Dog-bones
+            if (!is_undef(tool_diameter)) {
+                translate([(front_tab_width + enclosure_tab_clearance)/2 - tool_diameter_param/2, (cutout_height + enclosure_tab_clearance)/2]) {
+                    circle(d=tool_diameter_param, $fn=30);
+                }
+                translate([(front_tab_width + enclosure_tab_clearance)/2 - tool_diameter_param/2, -(cutout_height + enclosure_tab_clearance)/2]) {
+                    circle(d=tool_diameter_param, $fn=30);
+                }
+                translate([-(front_tab_width + enclosure_tab_clearance)/2 + tool_diameter_param/2, (cutout_height + enclosure_tab_clearance)/2]) {
+                    circle(d=tool_diameter_param, $fn=30);
+                }
+                translate([-(front_tab_width + enclosure_tab_clearance)/2 + tool_diameter_param/2, -(cutout_height + enclosure_tab_clearance)/2]) {
+                    circle(d=tool_diameter_param, $fn=30);
+                }
             }
         }
     }
