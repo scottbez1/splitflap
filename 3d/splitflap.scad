@@ -165,14 +165,13 @@ enclosure_wall_to_wall_width = thickness + spool_width_slop/2 + spool_width_clea
 
 // Width of the front panel
 enclosure_width = enclosure_wall_to_wall_width + 28byj48_chassis_height() + 28byj48_chassis_height_clearance - thickness - 28byj48_mount_bracket_height();
-enclosure_horizontal_inset = (enclosure_width - enclosure_wall_to_wall_width)/2;
 front_window_upper_base = (flap_height - flap_pin_width/2);
 front_window_overhang = 3;
 front_window_upper = front_window_upper_base - front_window_overhang;
 front_window_lower = sqrt(outer_exclusion_radius*outer_exclusion_radius - front_forward_offset*front_forward_offset);
-front_window_slop = 0;
-front_window_width = spool_width_slop + spool_width_clearance + front_window_slop;
-front_window_right_inset = thickness - front_window_slop/2;
+front_window_width = spool_width_slop + spool_width_clearance;
+front_window_right_inset = thickness;
+enclosure_horizontal_inset = (enclosure_width - front_window_width)/2 - front_window_right_inset; // center the window in the front face (the inset is measured with respect to the *outside* of the wall, hence the "front_window_right_inset" correction)
 enclosure_vertical_margin = 10; // gap between top/bottom of flaps and top/bottom of enclosure
 enclosure_vertical_inset = max(thickness*1.5, m4_nut_width_corners_padded/2); // distance from top of sides to top of the top piece
 enclosure_height_upper = exclusion_radius + enclosure_vertical_margin + thickness + enclosure_vertical_inset;
@@ -190,7 +189,7 @@ pcb_to_spool = enclosure_wall_to_wall_width - front_window_width - thickness + s
 enclosure_tab_clearance = 0.10;
 
 num_front_tabs = 2;
-front_tab_width = (enclosure_wall_to_wall_width - 2*thickness) / (num_front_tabs*2 - 1);
+front_tab_width = (front_window_width) / (num_front_tabs*2 - 1);
 
 enclosure_length_right = front_forward_offset + m4_hole_diameter/2 + 2;
 
@@ -518,7 +517,7 @@ module enclosure_front_etch() {
 
     // position indicator, 'up' arrow
     enclosure_etch_style()
-        translate([enclosure_width - enclosure_horizontal_inset * 1.5, enclosure_height - enclosure_indicator_arrow_height/2 - enclosure_indicator_inset])
+        translate([enclosure_wall_to_wall_width + ((enclosure_width - enclosure_horizontal_inset) - enclosure_wall_to_wall_width)/2, enclosure_height - enclosure_indicator_arrow_height/2 - enclosure_indicator_inset])
             arrow([enclosure_indicator_arrow_width, enclosure_indicator_arrow_height], center=true);
 }
 
@@ -966,14 +965,14 @@ module split_flap_3d(front_flap_index, include_connector) {
 
     module positioned_front_bolts() {
         // Top
-        translate([enclosure_wall_to_wall_width/2, front_forward_offset + thickness, enclosure_height_upper - enclosure_vertical_inset - thickness/2]) {
+        translate([front_window_right_inset + 1.5*front_tab_width, front_forward_offset + thickness, enclosure_height_upper - enclosure_vertical_inset - thickness/2]) {
             rotate([0, 90, -90]) {
                 standard_m4_bolt(nut_distance=captive_nut_inset);
             }
         }
 
         // Bottom
-        translate([enclosure_wall_to_wall_width/2, front_forward_offset + thickness, -enclosure_height_lower + enclosure_vertical_inset + thickness/2]) {
+        translate([front_window_right_inset + 1.5*front_tab_width, front_forward_offset + thickness, -enclosure_height_lower + enclosure_vertical_inset + thickness/2]) {
             rotate([0, 90, -90]) {
                 standard_m4_bolt(nut_distance=captive_nut_inset);
             }
