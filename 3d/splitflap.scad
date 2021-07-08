@@ -94,17 +94,17 @@ etch_color = [0, 0, 0];  // black, "000000"
 hardware_color = [0.75, 0.75, 0.8];  // steel, "bfbfcc"
 
 flap_color = [1, 1, 1];  // white, "ffffff"
+letter_color = color_invert(flap_color);  // inverse of the flap color, for contrast
 
-
-assembly_color1 = color_multiply(assembly_color, [1.161, 1.157, 1.157, 1.0]);  // "e1b17c" with MDF
-assembly_color2 = color_multiply(assembly_color, [0.897, 0.895, 0.895, 1.0]);  // "ae8960" with MDF
-assembly_color3 = color_multiply(assembly_color, [0.547, 0.542, 0.540, 1.0]);  // "6a533a" with MDF
-assembly_color4 = color_multiply(assembly_color, [0.268, 0.268, 0.271, 1.0]);  // "34291d" with MDF
+assembly_colors = [
+    color_multiply(assembly_color, [1.161, 1.157, 1.157, 1.0]),  // "e1b17c" with MDF
+    color_multiply(assembly_color, [0.897, 0.895, 0.895, 1.0]),  // "ae8960" with MDF
+    color_multiply(assembly_color, [0.547, 0.542, 0.540, 1.0]),  // "6a533a" with MDF
+    color_multiply(assembly_color, [0.268, 0.268, 0.271, 1.0]),  // "34291d" with MDF
+];
 
 bolt_color = hardware_color;
 nut_color = color_multiply(hardware_color, [0.933, 0.933, 0.9, 1.0]);  // "b2b2b7" with steel
-
-letter_color = color_invert(flap_color);  // inverse of the flap color, for contrast
 
 
 flap_width_slop = 0.5;  // amount of slop of the flap side to side between the 2 spools
@@ -243,6 +243,7 @@ alignment_bar_center = (enclosure_length - enclosure_length_right) - alignment_b
 
 // Exported values
 // (Functions allow other files to reference these values when this file is 'used' and not 'included')
+function get_assembly_colors() = assembly_colors;
 function get_captive_nut_inset() = captive_nut_inset;
 function get_connector_bracket_length() = connector_bracket_length_outer;
 function get_connector_bracket_width() = connector_bracket_width;
@@ -253,11 +254,13 @@ function get_enclosure_vertical_inset() = enclosure_vertical_inset;
 function get_enclosure_wall_to_wall_width() = enclosure_wall_to_wall_width;
 function get_enclosure_width() = enclosure_width;
 function get_flap_arc_separation() = (flap_hole_radius*2 + flap_hole_separation);
+function get_flap_color() = flap_color;
 function get_flap_gap() = flap_gap;
 function get_flap_pin_width() = flap_pin_width;
 function get_front_forward_offset() = front_forward_offset;
 function get_front_window_right_inset() = front_window_right_inset;
 function get_front_window_width() = front_window_width;
+function get_letter_color() = letter_color;
 function get_magnet_diameter() = magnet_diameter;
 function get_magnet_hole_offset() = magnet_hole_offset;
 function get_mounting_hole_inset() = mounting_hole_inset;
@@ -387,7 +390,7 @@ module spool_struts() {
     for (i=[0:3]) {
         angle = 90*i;
         //color([i < 2 ? 0 : 1, i == 0 || i == 2 ? 0 : 1, 0])
-        color(i % 2 == 0 ? assembly_color2 : assembly_color3)
+        color(i % 2 == 0 ? assembly_colors[1] : assembly_colors[2])
         translate([0, sin(angle)*(spool_strut_tab_outset + spool_strut_explosion), cos(angle)*(spool_strut_tab_outset + spool_strut_explosion)])
             rotate([-angle, 0, 0])
                 spool_strut();
@@ -617,7 +620,7 @@ module connector_bracket_side_holes() {
 }
 
 module alignment_bar() {
-    color(assembly_color1)
+    color(assembly_colors[0])
         translate([enclosure_width - enclosure_horizontal_inset, -enclosure_length_right + front_forward_offset - alignment_bar_diameter/2, -enclosure_height_lower + alignment_bar_diameter/2])
             rotate([0, -90, 0])
                 linear_extrude(height=enclosure_width * render_units)
@@ -891,11 +894,13 @@ module enclosure_bottom_etch() {
         }
 }
 
-module split_flap_3d(front_flap_index, include_connector) {
+module split_flap_3d(front_flap_index, include_connector, include_front_panel=true) {
     module position_front() {
-        translate([0, front_forward_offset + thickness, -enclosure_height_lower])
-            rotate([90, 0, 0])
-                children();
+        if (include_front_panel) {
+            translate([0, front_forward_offset + thickness, -enclosure_height_lower])
+                rotate([90, 0, 0])
+                    children();
+        }
     }
 
     module positioned_front() {
@@ -1023,24 +1028,24 @@ module split_flap_3d(front_flap_index, include_connector) {
 
     module positioned_enclosure() {
         if (render_enclosure == 2) {
-            color(assembly_color1)
+            color(assembly_colors[0])
                 positioned_front();
-            color(assembly_color2)
+            color(assembly_colors[1])
                 positioned_left();
-            color(assembly_color2)
+            color(assembly_colors[1])
                 positioned_right();
-            color(assembly_color3)
+            color(assembly_colors[2])
                 positioned_top();
-            color(assembly_color3)
+            color(assembly_colors[2])
                 positioned_bottom();
             positioned_front_etch();
             positioned_left_etch();
             positioned_right_etch();
             positioned_bottom_etch();
             if (include_connector) {
-                color(assembly_color4)
+                color(assembly_colors[3])
                     positioned_top_connector();
-                color(assembly_color4)
+                color(assembly_colors[3])
                     positioned_bottom_connector();
             }
             if (render_bolts) {
@@ -1145,7 +1150,7 @@ module split_flap_3d(front_flap_index, include_connector) {
                         flap_spool_etch();
                 }
             }
-            color(assembly_color1) {
+            color(assembly_colors[0]) {
                 translate([thickness - 3*spool_horizontal_explosion, 0, 0]) {
                     rotate([0, 90, 0]) {
                         spool_retaining_wall(m4_bolt_hole=true);
