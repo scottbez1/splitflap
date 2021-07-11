@@ -16,10 +16,12 @@
 #include <esp_task_wdt.h>
 #include <lwip/apps/sntp.h>
 
+#include <ArduinoJson.h>
 #include <WiFi.h>
 #include <HTTPClient.h>
 
 #include "config.h"
+#include "firestore.h"
 #include "jwt.h"
 #include "secrets.h"
 #include "tester_task.h"
@@ -39,7 +41,7 @@
 
 #define TEST_SUITE_VERSION 0
 
-TesterTask::TesterTask(SplitflapTask& splitflap_task, const uint8_t task_core) : Task{"Tester", 12000, 1, task_core}, splitflap_task_{splitflap_task} {
+TesterTask::TesterTask(SplitflapTask& splitflap_task, const uint8_t task_core) : Task{"Tester", 16000, 1, task_core}, splitflap_task_{splitflap_task} {
 }
 
 void TesterTask::disableHardware() {
@@ -546,7 +548,9 @@ void TesterTask::connectWifi() {
 
 void TesterTask::syncTime() {
     sntp_setoperatingmode(SNTP_OPMODE_POLL);
-    sntp_setservername(0, "time-a-g.nist.gov");
+
+    char server[] = "time-a-g.nist.gov"; // sntp_setservername takes a non-const char*, so use a non-const variable to avoid warning
+    sntp_setservername(0, server);
     sntp_init();
     time_t now = 0;
     while(time(&now), now < 1625099485) {
@@ -658,24 +662,16 @@ Status TesterTask::runTestSuitesForever() {
 
     Jwt jwt("https://firestore.googleapis.com/", service_key_id, service_email, service_private_key, service_private_key_len);
 
+    Firestore firestore("bezeklabsonline", jwt);
+    
+
     esp_err_t result = esp_task_wdt_delete(NULL);
     ESP_ERROR_CHECK(result);
-
-    HTTPClient http;
-    http.begin("https://firestore.googleapis.com/v1/projects/splitflapfactory/databases/(default)/documents/qcResults");
-    http.addHeader("Authorization", "Bearer " + jwt.get());
-    int httpCode = http.GET();
-    if (httpCode > 0) {
-        String payload = http.getString();
-        Serial.println(httpCode);
-        Serial.println(payload);
-    } else {
-        Serial.println("Error on HTTP request");
-    }
-    http.end();
-
+    DynamicJsonDocument r = firestore.get("dummy/dummy", 1024);
     result = esp_task_wdt_add(NULL);
     ESP_ERROR_CHECK(result);
+
+    serializeJsonPretty(r, Serial);
 
     drawSimpleText(TFT_WHITE, COLOR_ACTION, "Remove board", "");
     {
