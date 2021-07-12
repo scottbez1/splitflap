@@ -11,7 +11,8 @@ Jwt::Jwt(const char* audience, const char* service_key_id, const char* email, ui
 String Jwt::get() {
     time_t now = time(NULL);
     if (now - last_refresh_ > 50 * 60) {
-        Serial.println("Regenerating JWT.");
+        Serial.println("Regenerating JWT...");
+        uint32_t start = millis();
         char* jwt = createGCPJWT(audience_, service_key_id_, email_, private_key_, private_key_size_, now);
         if (jwt == nullptr) {
             return "";
@@ -19,6 +20,7 @@ String Jwt::get() {
             last_refresh_ = now;
             last_jwt_ = String(jwt);
             free(jwt);
+            Serial.printf("Finished JWT in %lu millis.\n", millis() - start);
             return last_jwt_;
         }
     } else {

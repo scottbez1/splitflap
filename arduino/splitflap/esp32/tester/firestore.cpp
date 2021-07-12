@@ -5,7 +5,7 @@
 #include "json11.hpp"
 #include "firestore.h"
 
-const String FIRESTORE_BASE_URL = "https://firestore.googleapis.com/v1";
+const String FIRESTORE_BASE_URL = "https://firestore.googleapis.com/v1/";
 
 using namespace json11;
 
@@ -13,11 +13,13 @@ Firestore::Firestore(String project_id, Jwt jwt) : project_id_(project_id), jwt_
 
 }
 
-DynamicJsonDocument Firestore::get(String path, size_t json_capacity=1024) {
+Json Firestore::get(String path, size_t json_capacity=1024) {
+    uint32_t start = millis();
     HTTPClient http;
-    http.begin(FIRESTORE_BASE_URL + "/projects/" + project_id_ + "/databases/(default)/documents/" + path);
+    http.begin(FIRESTORE_BASE_URL + doc_path(path));
     http.addHeader("Authorization", "Bearer " + jwt_.get());
     int http_code = http.GET();
+    Serial.printf("Finished request in %lu millis.\n", millis() - start);
     if (http_code > 0) {
         Serial.println(http_code);
         
@@ -29,32 +31,72 @@ DynamicJsonDocument Firestore::get(String path, size_t json_capacity=1024) {
         } else {
             Serial.printf("Error parsing response! %s", err.c_str());
         }
-
-        DynamicJsonDocument result(json_capacity);
-        // deserializeJson(result, http.getString());
-        return result;
+        http.end();
+        return json;
     } else {
         Serial.println("Error on HTTP request");
     }
     http.end();
-    return DynamicJsonDocument(0);
+    return Json();
 }
 
-int Firestore::set(String path, JsonDocument data) {
-    DynamicJsonDocument request_data(1024);
-
-    JsonObject update = request_data.createNestedObject("update");
-    // update.set(data);
-    
-    String request_data_str;
-    serializeJson(request_data, request_data_str);
+bool Firestore::set(String path, Json fields) {
+    uint32_t start = millis();
+    Json body = Json::object {
+        {"writes", Json::array {
+            Json::object {
+                {"update", Json::object {
+                    {"name", std::string(doc_path(path).c_str())},
+                    {"fields", fields},
+                }},
+            },
+        }},
+    };
+    String body_str = String(body.dump().c_str());
+    Serial.println(body_str);
 
     HTTPClient http;
-    http.begin(FIRESTORE_BASE_URL + "/projects/" + project_id_ + "/databases/(default)/documents/" + path);
+    http.begin(FIRESTORE_BASE_URL + base_path() + ":batchWrite");
     http.addHeader("Authorization", "Bearer " + jwt_.get());
-    int http_code = http.POST(request_data_str);
-    Serial.println(http_code);
-    Serial.println(http.getString());
-    http.end();
-    return http_code;
+    int http_code = http.POST(body_str);
+    Serial.printf("Finished request in %lu millis.\n", millis() - start);
+    if (http_code > 0) {
+        Serial.println(http_code);
+
+        std::string err;
+        Json json = Json::parse(http.getString().c_str(), err);
+        http.end();
+
+        if (err.empty()) {
+            // TODO: Check result for errors!
+            Serial.println(json.dump().c_str());
+            return true;
+        } else {
+            Serial.printf("Error parsing response! %s", err.c_str());
+            return false;
+        }
+    } else {
+        http.end();
+        Serial.println("Error on HTTP request");
+        return false;
+    }
+}
+
+const String Firestore::auto_id_chars_ = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+// Based on the JS auto-id implementation: https://github.com/firebase/firebase-js-sdk/blob/4f446f0a1c00f080fb58451b086efa899be97a08/packages/firestore/src/util/misc.ts#L24-L34
+String Firestore::gen_auto_id() {
+    String s;
+    for (uint8_t i = 0; i < 20; i++) {
+        s += auto_id_chars_[random(auto_id_chars_.length())];
+    }
+    return s;
+}
+
+String Firestore::base_path() {
+    return "projects/" + project_id_ + "/databases/(default)/documents";
+}
+
+String Firestore::doc_path(String path) {
+    return base_path() + "/" + path;
 }

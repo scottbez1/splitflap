@@ -16,7 +16,6 @@
 #include <esp_task_wdt.h>
 #include <lwip/apps/sntp.h>
 
-#include <ArduinoJson.h>
 #include <WiFi.h>
 #include <HTTPClient.h>
 
@@ -40,6 +39,8 @@
 #define TEST_MODULES 7
 
 #define TEST_SUITE_VERSION 0
+
+using namespace json11;
 
 TesterTask::TesterTask(SplitflapTask& splitflap_task, const uint8_t task_core) : Task{"Tester", 16000, 1, task_core}, splitflap_task_{splitflap_task} {
 }
@@ -662,16 +663,27 @@ Status TesterTask::runTestSuitesForever() {
 
     Jwt jwt("https://firestore.googleapis.com/", service_key_id, service_email, service_private_key, service_private_key_len);
 
-    Firestore firestore("bezeklabsonline", jwt);
+    Firestore firestore(project_id, jwt);
     
-
     esp_err_t result = esp_task_wdt_delete(NULL);
     ESP_ERROR_CHECK(result);
-    DynamicJsonDocument r = firestore.get("dummy/dummy", 1024);
+    Json r = firestore.get("dummy/dummy", 1024);
+    if (r["fields"]["test"]["integerValue"].string_value() != "123") {
+        return Status::fatal("Bad response from Firestore!");
+    }
+
+    bool success = firestore.set("qcResults/" + Firestore::gen_auto_id(), Json::object {
+        {"serial", Json::object {
+            {"stringValue", "foobar"},
+        }},
+        {"startEpochSeconds", Json::object {
+            {"integerValue", std::string(String(time(nullptr)).c_str())},
+        }},
+    });
+
     result = esp_task_wdt_add(NULL);
     ESP_ERROR_CHECK(result);
 
-    serializeJsonPretty(r, Serial);
 
     drawSimpleText(TFT_WHITE, COLOR_ACTION, "Remove board", "");
     {
