@@ -25,6 +25,7 @@
 #include "result.h"
 #include "../core/splitflap_task.h"
 #include "../core/task.h"
+#include "firestore_test_reporter.h"
 
 // enum class TestState : uint16_t {
 //     BOOT                        = 0,
@@ -139,8 +140,13 @@ class TesterTask : public Task<TesterTask> {
         String current_test_id_;
         uint32_t test_suite_start_millis_;
         uint32_t test_start_millis_;
+
+        Jwt jwt_;
+        Firestore firestore_;
+        FirestoreTestReporter firestore_test_reporter_;
+
         void testSuiteStarted(String serial);
-        void testSuiteFinished();
+        bool testSuiteFinished(Result::Code result_code);
         
         void testStarted(String id);
         void testFinished(Result result);

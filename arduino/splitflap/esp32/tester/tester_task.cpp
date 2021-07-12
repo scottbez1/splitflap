@@ -21,6 +21,7 @@
 
 #include "config.h"
 #include "firestore.h"
+#include "firestore_test_reporter.h"
 #include "jwt.h"
 #include "secrets.h"
 #include "tester_task.h"
@@ -42,7 +43,12 @@
 
 using namespace json11;
 
-TesterTask::TesterTask(SplitflapTask& splitflap_task, const uint8_t task_core) : Task{"Tester", 16000, 1, task_core}, splitflap_task_{splitflap_task} {
+TesterTask::TesterTask(SplitflapTask& splitflap_task, const uint8_t task_core) :
+        Task{"Tester", 16000, 1, task_core},
+        splitflap_task_{splitflap_task},
+        jwt_("https://firestore.googleapis.com/", service_key_id, service_email, service_private_key, service_private_key_len),
+        firestore_(project_id, jwt_),
+        firestore_test_reporter_(firestore_) {
 }
 
 void TesterTask::disableHardware() {
@@ -660,27 +666,12 @@ Result TesterTask::runTestSuite() {
 Status TesterTask::runTestSuitesForever() {
     connectWifi();
     syncTime();
-
-    Jwt jwt("https://firestore.googleapis.com/", service_key_id, service_email, service_private_key, service_private_key_len);
-
-    Firestore firestore(project_id, jwt);
     
     esp_err_t result = esp_task_wdt_delete(NULL);
     ESP_ERROR_CHECK(result);
-    Json r = firestore.get("dummy/dummy", 1024);
-    if (r["fields"]["test"]["integerValue"].string_value() != "123") {
-        return Status::fatal("Bad response from Firestore!");
+    if (!firestore_test_reporter_.checkFirestoreAccess()) {
+        return Status::fatal("Failed Firestore startup self-test!");
     }
-
-    bool success = firestore.set("qcResults/" + Firestore::gen_auto_id(), Json::object {
-        {"serial", Json::object {
-            {"stringValue", "foobar"},
-        }},
-        {"startEpochSeconds", Json::object {
-            {"integerValue", std::string(String(time(nullptr)).c_str())},
-        }},
-    });
-
     result = esp_task_wdt_add(NULL);
     ESP_ERROR_CHECK(result);
 
@@ -723,7 +714,7 @@ Status TesterTask::runTestSuitesForever() {
 
         testSuiteStarted(serial);
         Result result = runTestSuite();
-        testSuiteFinished();
+        testSuiteFinished(result.result_code_);
 
         disableHardware();
 
@@ -838,28 +829,38 @@ void TesterTask::initializeDisplay() {
 void TesterTask::testSuiteStarted(String serial) {
     Serial.printf("Test suite started: %s\n", serial.c_str());
     test_suite_start_millis_ = millis();
-    // TODO
+    firestore_test_reporter_.testSuiteStarted(serial);
 }
-void TesterTask::testSuiteFinished() {
+
+bool TesterTask::testSuiteFinished(Result::Code result_code) {
     uint32_t test_suite_duration = millis() - test_suite_start_millis_;
     Serial.printf("Test suite finished in %u millis\n", test_suite_duration);
     test_suite_start_millis_ = 0;
     current_test_id_ = "";
-    // TODO
+
+    // Report to Firestore
+    esp_err_t result = esp_task_wdt_delete(NULL);
+    ESP_ERROR_CHECK(result);
+    bool success = firestore_test_reporter_.testSuiteFinished(result_code);
+    result = esp_task_wdt_add(NULL);
+    ESP_ERROR_CHECK(result);
+
+    return success;
 }
+
 void TesterTask::testStarted(String id) {
     Serial.printf("Test started: %s\n", id.c_str());
     current_test_id_ = id;
     test_start_millis_ = millis();
     drawSimpleText(TFT_WHITE, TFT_BLACK, "Test: " + current_test_id_, "Started");
-    // TODO
+    firestore_test_reporter_.testStarted(id);
 }
 void TesterTask::testFinished(Result result) {
     uint32_t test_duration = millis() - test_start_millis_;
     Serial.printf("Test took %u millis. Result: %u -> %s\n", test_duration, result.result_code_, result.message_.c_str());
     test_start_millis_ = 0;
     current_test_id_ = "";
-    // TODO
+    firestore_test_reporter_.testFinished(result);
 }
 
 void TesterTask::testStatus(String message) {

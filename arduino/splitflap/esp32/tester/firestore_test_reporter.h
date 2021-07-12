@@ -18,23 +18,28 @@
 #include <Arduino.h>
 
 #include "json11.hpp"
-#include "jwt.h"
 
-class Firestore {
+#include "firestore.h"
+#include "result.h"
 
+class FirestoreTestReporter {
     public:
-        Firestore(String project_id, Jwt jwt);
+        FirestoreTestReporter(Firestore firestore);
 
-        json11::Json get(String path, size_t json_capacity);
-        bool set(String path, json11::Json fields);
-        static String gen_auto_id();
+        bool checkFirestoreAccess();
+
+        void testSuiteStarted(String serial);
+        bool testSuiteFinished(Result::Code result_code);
+
+        void testStarted(String id);
+        void testFinished(Result result);
 
     private:
-        static const String auto_id_chars_;
+        static std::string resultCodeToString(Result::Code result_code);
 
-        String project_id_;
-        Jwt jwt_;
-
-        String base_path();
-        String doc_path(String path);
+        Firestore firestore_;
+        json11::Json::object test_suite_document_;
+        uint32_t test_suite_start_millis_;
+        String current_test_id_;
+        json11::Json::array test_results_;
 };
