@@ -28,7 +28,7 @@ class FirestoreTestReporter {
 
         bool checkFirestoreAccess();
 
-        void testSuiteStarted(String serial);
+        void testSuiteStarted(String serial, uint32_t test_suite_version);
         bool testSuiteFinished(Result::Code result_code);
 
         void testStarted(String id);
@@ -40,6 +40,7 @@ class FirestoreTestReporter {
         Firestore firestore_;
         json11::Json::object test_suite_document_;
         uint32_t test_suite_start_millis_;
+        uint32_t test_start_millis_;
         String current_test_id_;
         json11::Json::array test_results_;
 };

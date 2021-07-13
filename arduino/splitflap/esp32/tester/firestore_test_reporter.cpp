@@ -43,7 +43,7 @@ bool FirestoreTestReporter::checkFirestoreAccess() {
     return false;
 }
 
-void FirestoreTestReporter::testSuiteStarted(String serial) {
+void FirestoreTestReporter::testSuiteStarted(String serial, uint32_t test_suite_version) {
     test_suite_start_millis_ = millis();
     test_results_.clear();
     test_suite_document_ = Json::object {
@@ -55,6 +55,9 @@ void FirestoreTestReporter::testSuiteStarted(String serial) {
         }},
         {"start_seconds", Json::object {
             {"integerValue", std::string(String(time(nullptr)).c_str())},
+        }},
+        {"test_suite_version", Json::object {
+            {"integerValue", std::string(String(test_suite_version).c_str())},
         }},
     };
 }
@@ -83,6 +86,7 @@ bool FirestoreTestReporter::testSuiteFinished(Result::Code result_code) {
 
 void FirestoreTestReporter::testStarted(String id) {
     current_test_id_ = id;
+    test_start_millis_ = millis();
 }
 
 void FirestoreTestReporter::testFinished(Result result) {
@@ -98,8 +102,12 @@ void FirestoreTestReporter::testFinished(Result result) {
                 {"message", Json::object {
                     {"stringValue", std::string(result.message_.c_str())},
                 }},
+                {"duration_millis", Json::object {
+                    {"integerValue", std::string(String(millis() - test_start_millis_).c_str())},
+                }},
             }},
         }},
     });
     current_test_id_ = "";
+    test_start_millis_ = 0;
 }

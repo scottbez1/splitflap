@@ -133,7 +133,7 @@ class TesterTask : public Task<TesterTask> {
         Result testPowerPreCheck();
         Result testPower();
         Result testHoming();
-        Result testRevolutions();
+        Result testMovements();
 
         // Test Reporting
         // TODO: refactor - extract to separate interface

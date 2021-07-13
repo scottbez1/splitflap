@@ -39,7 +39,7 @@
 // Number of modules being tested (different than NUM_MODULES since we only need to test 1 module on the chained board)
 #define TEST_MODULES 7
 
-#define TEST_SUITE_VERSION 0
+#define TEST_SUITE_VERSION 4
 
 using namespace json11;
 
@@ -291,7 +291,7 @@ Result TesterTask::testPowerPreCheck() {
         testStatus("Waiting for voltage to drop... V=" + String(voltage_));
         if (millis() - start > 10000) {
             disableHardware();
-            return Result::fail("Timeout waiting for power");
+            return Result::fail("Timeout waiting for power to reset");
         }
         delay(100);
     }
@@ -312,9 +312,9 @@ Result TesterTask::testPowerPreCheck() {
             disableHardware();
             return Result::abort("Over-voltage during test feed: " + String(voltage_));
         }
-        if (millis() - start > 1000) {
+        if (millis() - start > 5000) {
             disableHardware();
-            return Result::fail("Timeout waiting for power");
+            return Result::fail("Timeout waiting for power test feed");
         }
         if (millis() - start > 200 && current_ > 10) {
             disableHardware();
@@ -342,7 +342,7 @@ Result TesterTask::testPower() {
 
         testStatus("Checking power\n" + String(voltage_) + "V\n" + String(current_) + "mA");
 
-        if (millis() - start > 1000) {
+        if (millis() - start > 5000) {
             disableHardware();
             return Result::fail("Timeout waiting for power");
         }
@@ -386,11 +386,12 @@ Result TesterTask::testHoming() {
                 description += "...\n";
             }
         }
+        description += String(current_);
         testStatus(description);
 
         uint32_t duration = millis() - start;
 
-        if (ready) {
+        if (ready & duration > 1000) {
             return Result::pass("All modules homed successfully");
         } else if (duration > 1000 && duration < 20000) {
             // Failure if all modules have stopped moving but aren't all ready (checked above)
@@ -428,7 +429,7 @@ Result TesterTask::testHoming() {
     }
 }
 
-Result TesterTask::testRevolutions() {
+Result TesterTask::testMovements() {
     char test_string_a[TEST_MODULES];
     char test_string_b[TEST_MODULES];
     for (uint8_t i = 0; i < TEST_MODULES; i++) {
@@ -436,12 +437,12 @@ Result TesterTask::testRevolutions() {
         test_string_b[i] = 'd' + TEST_MODULES*2 - i*2;
     }
 
-    const uint8_t revolutions = 6;
+    const uint8_t movements = 6;
 
-    for (uint8_t revolution = 0; revolution < revolutions; revolution++) {
+    for (uint8_t movement = 0; movement < movements; movement++) {
         uint32_t start = millis();
-        splitflap_task_.showString(((revolution % 2) == 0) ? test_string_a : test_string_b, TEST_MODULES);
-        testStatus("Running iteration " + String(revolution));
+        splitflap_task_.showString(((movement % 2) == 0) ? test_string_a : test_string_b, TEST_MODULES);
+        testStatus("Running iteration " + String(movement));
 
         while (1) {
             Result result = doTestMaintenance();
@@ -471,7 +472,7 @@ Result TesterTask::testRevolutions() {
                     any_moving |= splitflap_state.modules[i].moving;
                 }
                 if (!any_moving) {
-                    String failure = "Some modules failed movement on iteration " + String(revolution) + ":\n";
+                    String failure = "Some modules failed movement on iteration " + String(movement) + ":\n";
                     for (uint8_t i = 0; i < TEST_MODULES; i++) {
                         if (splitflap_state.modules[i].state != NORMAL || splitflap_state.modules[i].count_missed_home != 0 || splitflap_state.modules[i].count_unexpected_home != 0) {
                             failure.concat("Module ");
@@ -492,13 +493,13 @@ Result TesterTask::testRevolutions() {
                     return Result::fail(failure);
                 }
             } else if (duration > 10000) {
-                return Result::fail("Timeout waiting for movement to complete on iteration " + String(revolution) + ".");
+                return Result::fail("Timeout waiting for movement to complete on iteration " + String(movement) + ".");
             }
             delay(50);
         }
         delay(50);
     }
-    return Result::pass("All modules completed " + String(revolutions) + " iterations successfully");
+    return Result::pass("All modules completed " + String(movements) + " iterations successfully");
 }
 
 
@@ -538,8 +539,8 @@ void TesterTask::connectWifi() {
         esp_err_t result = esp_task_wdt_reset();
         ESP_ERROR_CHECK(result);
 
-        String waitString = "Connecting";
-        uint8_t dots = (millis() / 1000) % 4;
+        String waitString = "Wifi connecting";
+        uint8_t dots = (millis() / 200) % 4;
         for (uint8_t i = 0; i < 4; i++) {
             if (i < dots) {
                 waitString += ".";
@@ -547,7 +548,7 @@ void TesterTask::connectWifi() {
                 waitString += " ";
             }
         }
-        drawSimpleText(TFT_WHITE, TFT_ORANGE, "Wifi", waitString);
+        drawSimpleText(TFT_WHITE, TFT_ORANGE, "Starting", waitString);
 
         delay(1000);
     }
@@ -564,8 +565,8 @@ void TesterTask::syncTime() {
         esp_err_t result = esp_task_wdt_reset();
         ESP_ERROR_CHECK(result);
 
-        String waitString = "Please wait";
-        uint8_t dots = (millis() / 1000) % 4;
+        String waitString = "Syncing time";
+        uint8_t dots = (millis() / 200) % 4;
         for (uint8_t i = 0; i < 4; i++) {
             if (i < dots) {
                 waitString += ".";
@@ -573,7 +574,7 @@ void TesterTask::syncTime() {
                 waitString += " ";
             }
         }
-        drawSimpleText(TFT_WHITE, TFT_ORANGE, "Syncing time", waitString);
+        drawSimpleText(TFT_WHITE, TFT_ORANGE, "Starting", waitString);
         delay(1000);
     }
 
@@ -649,8 +650,8 @@ Result TesterTask::runTestSuite() {
     }
 
     {
-        testStarted("Revolutions");
-        Result result = testRevolutions();
+        testStarted("Movements");
+        Result result = testMovements();
         testFinished(result);
 
         if (!result.canContinue()) {
@@ -667,6 +668,7 @@ Status TesterTask::runTestSuitesForever() {
     connectWifi();
     syncTime();
     
+    drawSimpleText(TFT_WHITE, TFT_ORANGE, "Starting", "Checking Firestore access...");
     esp_err_t result = esp_task_wdt_delete(NULL);
     ESP_ERROR_CHECK(result);
     if (!firestore_test_reporter_.checkFirestoreAccess()) {
@@ -714,9 +716,9 @@ Status TesterTask::runTestSuitesForever() {
 
         testSuiteStarted(serial);
         Result result = runTestSuite();
-        testSuiteFinished(result.result_code_);
-
         disableHardware();
+
+        testSuiteFinished(result.result_code_);
 
         switch (result.result_code_) {
             case Result::Code::ABORT:
@@ -829,7 +831,7 @@ void TesterTask::initializeDisplay() {
 void TesterTask::testSuiteStarted(String serial) {
     Serial.printf("Test suite started: %s\n", serial.c_str());
     test_suite_start_millis_ = millis();
-    firestore_test_reporter_.testSuiteStarted(serial);
+    firestore_test_reporter_.testSuiteStarted(serial, TEST_SUITE_VERSION);
 }
 
 bool TesterTask::testSuiteFinished(Result::Code result_code) {
@@ -839,6 +841,7 @@ bool TesterTask::testSuiteFinished(Result::Code result_code) {
     current_test_id_ = "";
 
     // Report to Firestore
+    drawSimpleText(TFT_WHITE, TFT_BLACK, "Saving...", "Recording results to Firestore...");
     esp_err_t result = esp_task_wdt_delete(NULL);
     ESP_ERROR_CHECK(result);
     bool success = firestore_test_reporter_.testSuiteFinished(result_code);

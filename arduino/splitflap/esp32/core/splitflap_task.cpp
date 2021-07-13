@@ -66,10 +66,6 @@ void SplitflapTask::run() {
     digitalWrite(OUTPUT_ENABLE_PIN, LOW);
 #endif
 
-    // XXX FIXME
-    pinMode(13, OUTPUT);
-    digitalWrite(13, HIGH);
-
     // TODO: Move to serial task
     for (uint8_t i = 0; i < NUM_MODULES; i++) {
       recv_buffer[i] = 0;
@@ -158,7 +154,7 @@ void SplitflapTask::processQueue() {
                     // No-op
                     break;
                 case QCMD_RESET_AND_HOME:
-                    modules[i]->ResetErrorCounters();
+                    modules[i]->ResetState();
                     modules[i]->GoHome();
                     break;
                 case QCMD_LED_ON:
@@ -370,8 +366,6 @@ void SplitflapTask::showString(const char* str, uint8_t length) {
 }
 
 void SplitflapTask::resetAll() {
-    // XXX This is very dangerous to call from within our own task, as we risk deadlock, but allow it for now to ease development. It will be safe once serial processing is moved to another task
-    // assert(xTaskGetCurrentTaskHandle() != getHandle());
     Command command = {};
     for (uint8_t i = 0; i < NUM_MODULES; i++) {
         command.data[i] = QCMD_RESET_AND_HOME;
