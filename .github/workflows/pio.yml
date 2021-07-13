@@ -74,5 +74,6 @@ jobs:
       # Run regardless of other build step failures, as long as setup steps completed
       if: always() && steps.pio_install.outcome == 'success'
       run: |
+        cp arduino/splitflap/esp32/tester/secrets.h.example arduino/splitflap/esp32/tester/secrets.h &&
         pio run -d ./arduino/splitflap \
           -e chainlinkDriverTester

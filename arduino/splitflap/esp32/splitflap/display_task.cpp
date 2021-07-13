@@ -66,7 +66,7 @@ void DisplayTask::run() {
             char c;
             switch (s.state) {
                 case NORMAL:
-                    c = flaps[s.flapIndex];
+                    c = flaps[s.flap_index];
                     break;
                 case PANIC:
                     c = '~';
