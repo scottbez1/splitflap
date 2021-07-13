@@ -94,11 +94,9 @@ void SplitflapTask::run() {
         }
       }
 
-      // XXX FIXME
-      // // Loop forever
-      // while(1) {
-      //     ESP_ERROR_CHECK(esp_task_wdt_reset());
-      // }
+      while(1) {
+          ESP_ERROR_CHECK(esp_task_wdt_reset());
+      }
     }
 
     if (led_mode_ == LedMode::AUTO) {
@@ -137,7 +135,10 @@ bool SplitflapTask::testAllLoopbacks(bool loopback_result[NUM_LOOPBACKS][NUM_LOO
 
     // Turn one loopback bit on at a time and make sure only that loopback bit is set
     for (uint8_t loop_out_index = 0; loop_out_index < NUM_LOOPBACKS; loop_out_index++) {
-      loopback_success &= chainlink_test_loopback(loop_out_index, loopback_result[loop_out_index]);
+      chainlink_set_loopback(loop_out_index);
+      motor_sensor_io();
+      motor_sensor_io();
+      loopback_success &= chainlink_validate_loopback(loop_out_index, loopback_result[loop_out_index]);
     }
 
     loopback_success &= chainlink_test_startup_loopback(loopback_off_result);
@@ -232,6 +233,39 @@ void SplitflapTask::runUpdate() {
         Serial.println();
       }
     }
+
+    // We test loopbacks iteratively, so as not to waste too many cycles/IO-roundtrips all at once. There are
+    // two levels of iteration - loopback_step_index_ tracks the small intermediate steps of testing a single
+    // loopback, and loopback_current_out_index_ tracks which loopback we're currently testing.
+    loopback_step_index_++;
+    if (loopback_step_index_ == 1) {
+      chainlink_set_loopback(loopback_current_out_index_);
+    } else if (loopback_step_index_ == 3) {
+      bool ok = chainlink_validate_loopback(loopback_current_out_index_, nullptr);
+      loopback_current_ok_ &= ok;
+
+      if (!ok && loopback_all_ok_) {
+        // Publish failures immediately
+        loopback_all_ok_ = false;
+        Serial.println("Loopback status changed to 0");
+      }
+    } else if (loopback_step_index_ == 50) {
+      loopback_step_index_ = 0;
+      loopback_current_out_index_ += 1;
+
+      // If we've iterated through all loopbacks, save the results of this run and restart
+      // from the first loopback again.
+      if (loopback_current_out_index_ >= NUM_LOOPBACKS) {
+        if (loopback_all_ok_ != loopback_current_ok_) {
+          Serial.println("Loopback status changed to " + String((int)loopback_current_ok_));
+        }
+        loopback_all_ok_ = loopback_current_ok_;
+        loopback_current_ok_ = true;
+        loopback_current_out_index_ = 0;
+      }
+    }
+    // TODO: handle loopback failures
+
     updateStateCache();
 
     if (all_idle) {
@@ -334,6 +368,7 @@ void SplitflapTask::updateStateCache() {
       new_state.modules[i].count_missed_home = modules[i]->count_missed_home;
       new_state.modules[i].count_unexpected_home = modules[i]->count_unexpected_home;
     }
+    new_state.loopbacks_ok = loopback_all_ok_;
     if (memcmp(&state_cache_, &new_state, sizeof(state_cache_))) {
         SemaphoreGuard lock(state_semaphore_);
         memcpy(&state_cache_, &new_state, sizeof(state_cache_));
@@ -376,7 +411,7 @@ void SplitflapTask::resetAll() {
 void SplitflapTask::setLed(const uint8_t id, const bool on) {
     assert(xTaskGetCurrentTaskHandle() != getHandle());
     assert(led_mode_ == LedMode::MANUAL);
-    
+
     Command command = {};
     command.data[id] = on ? QCMD_LED_ON : QCMD_LED_OFF;
     assert(xQueueSendToBack(queue_, &command, portMAX_DELAY) == pdTRUE);

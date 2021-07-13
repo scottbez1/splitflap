@@ -30,6 +30,7 @@ struct SplitflapModuleState {
 
 struct SplitflapState {
     SplitflapModuleState modules[NUM_MODULES];
+    bool loopbacks_ok = false;
 };
 
 enum class LedMode {
@@ -78,6 +79,11 @@ class SplitflapTask : public Task<SplitflapTask> {
         // bool disabled = false;
         uint32_t last_sensor_print_millis_ = 0;
         bool sensor_test_ = SENSOR_TEST;
+
+        uint8_t loopback_current_out_index_ = 0;
+        uint16_t loopback_step_index_ = 0;
+        bool loopback_current_ok_ = true;
+        bool loopback_all_ok_ = false;
 
         // Cached state. Protected by state_semaphore_
         SplitflapState state_cache_;

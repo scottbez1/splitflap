@@ -129,6 +129,7 @@ class TesterTask : public Task<TesterTask> {
         Result readSerial();
 
         // Tests:
+        Result testLoopbacks();
         Result testLeds();
         Result testPowerPreCheck();
         Result testPower();

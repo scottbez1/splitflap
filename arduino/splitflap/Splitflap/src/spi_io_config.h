@@ -310,25 +310,31 @@ bool chainlink_test_startup_loopback(bool results[NUM_LOOPBACKS]) {
     return success;
 }
 
-bool chainlink_test_loopback(uint8_t loop_out_index, bool results[NUM_LOOPBACKS]) {
-    bool success = true;
-
+void chainlink_set_loopback(uint8_t loop_out_index) {
     // Turn on loopback output
-    motor_buffer[chainlink_loopbackMotorByte(loop_out_index)] = chainlink_loopbackMotorBitMask(loop_out_index);
-    motor_sensor_io();
-    motor_sensor_io();
+    motor_buffer[chainlink_loopbackMotorByte(loop_out_index)] |= chainlink_loopbackMotorBitMask(loop_out_index);
+}
 
+/**
+ * Validate that the loopback from loop_out_index can be read successfully. There must be AT LEAST 2 motor_sensor_io() invocations
+ * between setting the loopback and validating it - one for turning on the shift register output and another to read in the shift
+ * register input.
+ */
+bool chainlink_validate_loopback(uint8_t loop_out_index, bool results[NUM_LOOPBACKS]) {
+    bool success = true;
     for (uint8_t loop_in_index = 0; loop_in_index < NUM_LOOPBACKS; loop_in_index++) {
       uint8_t expected_bit_mask = (loop_out_index == loop_in_index) ? chainlink_loopbackSensorBitMask(loop_in_index) : 0;
       uint8_t actual_bit_mask = sensor_buffer[chainlink_loopbackSensorByte(loop_in_index)] & chainlink_loopbackSensorBitMask(loop_in_index);
-      results[loop_in_index] = actual_bit_mask == expected_bit_mask;
-      success &= results[loop_in_index];
+
+      bool ok = actual_bit_mask == expected_bit_mask;
+      success &= ok;
+      if (results != nullptr) {
+        results[loop_in_index] = ok;
+      }
     }
 
     // Turn off loopback output
     motor_buffer[chainlink_loopbackMotorByte(loop_out_index)] &= ~chainlink_loopbackMotorBitMask(loop_out_index);
-    motor_sensor_io();
-
     return success;
 }
 

@@ -39,7 +39,7 @@
 // Number of modules being tested (different than NUM_MODULES since we only need to test 1 module on the chained board)
 #define TEST_MODULES 7
 
-#define TEST_SUITE_VERSION 4
+#define TEST_SUITE_VERSION 6
 
 using namespace json11;
 
@@ -233,6 +233,17 @@ Result TesterTask::readSerial() {
     return Result::fail("Unable to read serial number");
 }
 
+Result TesterTask::testLoopbacks() {
+    SplitflapState splitflap_state = splitflap_task_.getState();
+    if (splitflap_state.loopbacks_ok) {
+        return Result::pass("Loopbacks are ok");
+    } else {
+        // TODO: Get more information about which loopback(s) failed and in what way
+        disableHardware();
+        return Result::fail("One or more bad loopback");
+    }
+}
+
 Result TesterTask::testLeds() {
     String failure = "Led test failure(s):\n";
     bool success = true;
@@ -312,9 +323,9 @@ Result TesterTask::testPowerPreCheck() {
             disableHardware();
             return Result::abort("Over-voltage during test feed: " + String(voltage_));
         }
-        if (millis() - start > 5000) {
+        if (millis() - start > 15000) {
             disableHardware();
-            return Result::fail("Timeout waiting for power test feed");
+            return Result::fail("Timeout waiting for power test feed. Current voltage: " + String(voltage_));
         }
         if (millis() - start > 200 && current_ > 10) {
             disableHardware();
@@ -362,6 +373,9 @@ Result TesterTask::testHoming() {
     testStatus("Homing...");
     splitflap_task_.resetAll();
 
+    // Delay to make sure we don't read cached state from before the reset
+    delay(100);
+
     uint32_t start = millis();
 
     while (1) {
@@ -391,7 +405,7 @@ Result TesterTask::testHoming() {
 
         uint32_t duration = millis() - start;
 
-        if (ready & duration > 1000) {
+        if (ready && duration > 1000) {
             return Result::pass("All modules homed successfully");
         } else if (duration > 1000 && duration < 20000) {
             // Failure if all modules have stopped moving but aren't all ready (checked above)
@@ -609,6 +623,16 @@ void TesterTask::run() {
 }
 
 Result TesterTask::runTestSuite() {
+    {
+        testStarted("Loopbacks");
+        Result result = testLoopbacks();
+        testFinished(result);
+
+        if (!result.canContinue()) {
+            return result;
+        }
+    }
+
     {
         testStarted("LEDs");
         Result result = testLeds();
