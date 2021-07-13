@@ -338,6 +338,22 @@ bool chainlink_validate_loopback(uint8_t loop_out_index, bool results[NUM_LOOPBA
     return success;
 }
 
+bool chainlink_test_all_loopbacks(bool loopback_result[NUM_LOOPBACKS][NUM_LOOPBACKS], bool loopback_off_result[NUM_LOOPBACKS]) {
+    bool loopback_success = true;
+
+    // Turn one loopback bit on at a time and make sure only that loopback bit is set
+    for (uint8_t loop_out_index = 0; loop_out_index < NUM_LOOPBACKS; loop_out_index++) {
+      chainlink_set_loopback(loop_out_index);
+      motor_sensor_io();
+      motor_sensor_io();
+      loopback_success &= chainlink_validate_loopback(loop_out_index, loopback_result[loop_out_index]);
+    }
+
+    loopback_success &= chainlink_test_startup_loopback(loopback_off_result);
+
+    return loopback_success;
+}
+
 #endif
 
 #endif

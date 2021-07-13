@@ -78,7 +78,7 @@ void SplitflapTask::run() {
 #if (defined(CHAINLINK) && !defined(CHAINLINK_DRIVER_TESTER))
     bool loopback_result[NUM_LOOPBACKS][NUM_LOOPBACKS];
     bool loopback_off_result[NUM_LOOPBACKS];
-    bool loopback_success = testAllLoopbacks(loopback_result, loopback_off_result);
+    bool loopback_success = chainlink_test_all_loopbacks(loopback_result, loopback_off_result);
 
     if (!loopback_success) {
       for (uint8_t i = 0; i < NUM_LOOPBACKS; i++) {
@@ -130,22 +130,6 @@ void SplitflapTask::run() {
     }
 }
 
-bool SplitflapTask::testAllLoopbacks(bool loopback_result[NUM_LOOPBACKS][NUM_LOOPBACKS], bool loopback_off_result[NUM_LOOPBACKS]) {
-    bool loopback_success = true;
-
-    // Turn one loopback bit on at a time and make sure only that loopback bit is set
-    for (uint8_t loop_out_index = 0; loop_out_index < NUM_LOOPBACKS; loop_out_index++) {
-      chainlink_set_loopback(loop_out_index);
-      motor_sensor_io();
-      motor_sensor_io();
-      loopback_success &= chainlink_validate_loopback(loop_out_index, loopback_result[loop_out_index]);
-    }
-
-    loopback_success &= chainlink_test_startup_loopback(loopback_off_result);
-
-    return loopback_success;
-}
-
 void SplitflapTask::processQueue() {
     if (xQueueReceive(queue_, &queue_receive_buffer_, 0) == pdTRUE) {
         bool any_leds = false;
@@ -160,11 +144,15 @@ void SplitflapTask::processQueue() {
                     break;
                 case QCMD_LED_ON:
                     any_leds = true;
+#ifdef CHAINLINK
                     chainlink_set_led(i, true);
+#endif
                     break;
                 case QCMD_LED_OFF:
                     any_leds = true;
+#ifdef CHAINLINK
                     chainlink_set_led(i, false);
+#endif
                     break;
                 default:
                     assert(queue_receive_buffer_.data[i] >= QCMD_FLAP && queue_receive_buffer_.data[i] < QCMD_FLAP + NUM_FLAPS);
@@ -201,9 +189,11 @@ void SplitflapTask::runUpdate() {
           || modules[i]->state == STATE_DISABLED
           || modules[i]->current_accel_step == 0;
 
+#ifdef CHAINLINK
         if (led_mode_ == LedMode::AUTO) {
           chainlink_set_led(i, flashGroup < modules[i]->state && flashPhase == 0);
         }
+#endif
 
         all_idle &= is_idle;
         all_stopped &= is_stopped;
@@ -217,6 +207,7 @@ void SplitflapTask::runUpdate() {
       // Read sensor state
       motor_sensor_io();
 
+#ifdef CHAINLINK
       if (led_mode_ == LedMode::AUTO) {
         for (uint8_t i = 0; i < NUM_MODULES; i++) {
           chainlink_set_led(i, modules[i]->GetHomeState());
@@ -224,6 +215,7 @@ void SplitflapTask::runUpdate() {
         // Output LED state
         motor_sensor_io();
       }
+#endif
 
       if (iterationStartMillis - last_sensor_print_millis_ > 200) {
         last_sensor_print_millis_ = iterationStartMillis;
@@ -234,6 +226,8 @@ void SplitflapTask::runUpdate() {
       }
     }
 
+
+#ifdef CHAINLINK
     // We test loopbacks iteratively, so as not to waste too many cycles/IO-roundtrips all at once. There are
     // two levels of iteration - loopback_step_index_ tracks the small intermediate steps of testing a single
     // loopback, and loopback_current_out_index_ tracks which loopback we're currently testing.
@@ -265,6 +259,7 @@ void SplitflapTask::runUpdate() {
       }
     }
     // TODO: handle loopback failures
+#endif
 
     updateStateCache();
 
@@ -368,7 +363,10 @@ void SplitflapTask::updateStateCache() {
       new_state.modules[i].count_missed_home = modules[i]->count_missed_home;
       new_state.modules[i].count_unexpected_home = modules[i]->count_unexpected_home;
     }
+
+#ifdef CHAINLINK
     new_state.loopbacks_ok = loopback_all_ok_;
+#endif
     if (memcmp(&state_cache_, &new_state, sizeof(state_cache_))) {
         SemaphoreGuard lock(state_semaphore_);
         memcpy(&state_cache_, &new_state, sizeof(state_cache_));
