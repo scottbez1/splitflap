@@ -5,8 +5,8 @@ on:
   pull_request:
 
 jobs:
-  export-electronics:
-    name: Export Electronics
+  export-electronics-classic:
+    name: Export Electronics (Classic + Sensor)
     runs-on: ubuntu-20.04
 
     steps:
@@ -105,6 +105,54 @@ jobs:
         env:
           PYTHONUNBUFFERED: 1
 
+      # Note: These kibot scripts are run last because they mess with file permissions which breaks other scripts, not sure why
+      - name: Export BOM [classic + sensors]
+        uses: INTI-CMNB/KiBot@2ddbea3e681de09147cb1677890694857def32a8
+        with:
+          config: electronics/splitflap.kibot.yml
+          dir: electronics/build
+          schema: 'electronics/splitflap.sch'
+          board: 'electronics/splitflap.kicad_pcb'
+
+      - name: Copy BOM outputs
+        run: cp -r electronics/build/bom electronics/build/outputs
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: electronics-classic
+          path: |
+            electronics/build
+
+      - name: Configure AWS Credentials
+        if: github.event_name == 'push' && github.repository_owner == 'scottbez1'
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Sync artifacts to S3
+        if: github.event_name == 'push' && github.repository_owner == 'scottbez1'
+        run: |
+          aws s3 sync electronics/build/outputs s3://splitflap-artifacts/${GITHUB_REF#refs/heads/}/electronics-classic --delete --acl public-read --cache-control max-age=0,no-cache
+
+
+  export-electronics-chainlink:
+    name: Export Electronics (Chainlink Driver)
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up outputs directory
+        run: mkdir -p electronics/build/outputs
+
+      - name: Install dependencies
+        run: ./electronics/scripts/dependencies.sh
+
 # Chainlink Driver:
       - name: Export chainlinkDriver schematic
         run: |
@@ -142,6 +190,56 @@ jobs:
         env:
           PYTHONUNBUFFERED: 1
 
+      # Note: These kibot scripts are run last because they mess with file permissions which breaks other scripts, not sure why
+      - name: Export BOM [chainlinkDriver]
+        uses: INTI-CMNB/KiBot@2ddbea3e681de09147cb1677890694857def32a8
+        with:
+          config: electronics/chainlinkDriver/chainlinkDriver.kibot.yml
+          dir: electronics/build
+          schema: 'electronics/chainlinkDriver/chainlinkDriver.sch'
+          board: 'electronics/chainlinkDriver/chainlinkDriver.kicad_pcb'
+
+      - name: Copy BOM outputs
+        run: cp -r electronics/build/bom electronics/build/outputs
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: electronics-chainlink
+          path: |
+            electronics/build
+
+      - name: Configure AWS Credentials
+        if: github.event_name == 'push' && github.repository_owner == 'scottbez1'
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Sync artifacts to S3
+        if: github.event_name == 'push' && github.repository_owner == 'scottbez1'
+        run: |
+          aws s3 sync electronics/build/outputs s3://splitflap-artifacts/${GITHUB_REF#refs/heads/}/electronics-chainlink --delete --acl public-read --cache-control max-age=0,no-cache
+
+
+
+
+  export-electronics-chainlink-tester:
+    name: Export Electronics (Chainlink Driver Tester)
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up outputs directory
+        run: mkdir -p electronics/build/outputs
+
+      - name: Install dependencies
+        run: ./electronics/scripts/dependencies.sh
+
 # Chainlink Driver Tester:
       - name: Export schematic [chainlinkDriverTester]
         run: |
@@ -178,6 +276,54 @@ jobs:
           ./scripts/annotate_image.sh electronics/build/outputs/chainlinkDriverTester-pcb-raster.png
         env:
           PYTHONUNBUFFERED: 1
+
+      # Note: These kibot scripts are run last because they mess with file permissions which breaks other scripts, not sure why
+      - name: Export BOM [chainlinkDriverTester]
+        uses: INTI-CMNB/KiBot@2ddbea3e681de09147cb1677890694857def32a8
+        with:
+          config: electronics/chainlinkDriverTester/chainlinkDriverTester.kibot.yml
+          dir: electronics/build
+          schema: 'electronics/chainlinkDriverTester/chainlinkDriverTester.sch'
+          board: 'electronics/chainlinkDriverTester/chainlinkDriverTester.kicad_pcb'
+
+      - name: Copy BOM outputs
+        run: cp -r electronics/build/bom electronics/build/outputs
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: electronics-chainlink-tester
+          path: |
+            electronics/build
+
+      - name: Configure AWS Credentials
+        if: github.event_name == 'push' && github.repository_owner == 'scottbez1'
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Sync artifacts to S3
+        if: github.event_name == 'push' && github.repository_owner == 'scottbez1'
+        run: |
+          aws s3 sync electronics/build/outputs s3://splitflap-artifacts/${GITHUB_REF#refs/heads/}/electronics-chainlink-tester --delete --acl public-read --cache-control max-age=0,no-cache
+
+
+  export-electronics-chainlink-base:
+    name: Export Electronics (Chainlink Base)
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up outputs directory
+        run: mkdir -p electronics/build/outputs
+
+      - name: Install dependencies
+        run: ./electronics/scripts/dependencies.sh
 
 # Chainlink Base:
       - name: Export schematic [chainlinkBase]
@@ -217,22 +363,6 @@ jobs:
           PYTHONUNBUFFERED: 1
 
       # Note: These kibot scripts are run last because they mess with file permissions which breaks other scripts, not sure why
-      - name: Export BOM [classic + sensors]
-        uses: INTI-CMNB/KiBot@2ddbea3e681de09147cb1677890694857def32a8
-        with:
-          config: electronics/splitflap.kibot.yml
-          dir: electronics/build
-          schema: 'electronics/splitflap.sch'
-          board: 'electronics/splitflap.kicad_pcb'
-
-      - name: Export BOM [chainlinkDriver]
-        uses: INTI-CMNB/KiBot@2ddbea3e681de09147cb1677890694857def32a8
-        with:
-          config: electronics/chainlinkDriver/chainlinkDriver.kibot.yml
-          dir: electronics/build
-          schema: 'electronics/chainlinkDriver/chainlinkDriver.sch'
-          board: 'electronics/chainlinkDriver/chainlinkDriver.kicad_pcb'
-
       - name: Export BOM [chainlinkBase]
         uses: INTI-CMNB/KiBot@2ddbea3e681de09147cb1677890694857def32a8
         with:
@@ -241,23 +371,14 @@ jobs:
           schema: 'electronics/chainlinkBase/chainlinkBase.sch'
           board: 'electronics/chainlinkBase/chainlinkBase.kicad_pcb'
 
-      - name: Export BOM [chainlinkDriverTester]
-        uses: INTI-CMNB/KiBot@2ddbea3e681de09147cb1677890694857def32a8
-        with:
-          config: electronics/chainlinkDriverTester/chainlinkDriverTester.kibot.yml
-          dir: electronics/build
-          schema: 'electronics/chainlinkDriverTester/chainlinkDriverTester.sch'
-          board: 'electronics/chainlinkDriverTester/chainlinkDriverTester.kicad_pcb'
-
       - name: Copy BOM outputs
         run: cp -r electronics/build/bom electronics/build/outputs
-
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
         if: always()
         with:
-          name: electronics
+          name: electronics-chainlink-base
           path: |
             electronics/build
 
@@ -272,4 +393,4 @@ jobs:
       - name: Sync artifacts to S3
         if: github.event_name == 'push' && github.repository_owner == 'scottbez1'
         run: |
-          aws s3 sync electronics/build/outputs s3://splitflap-artifacts/${GITHUB_REF#refs/heads/}/electronics --delete --acl public-read --cache-control max-age=0,no-cache
+          aws s3 sync electronics/build/outputs s3://splitflap-artifacts/${GITHUB_REF#refs/heads/}/electronics-chainlink-base --delete --acl public-read --cache-control max-age=0,no-cache
