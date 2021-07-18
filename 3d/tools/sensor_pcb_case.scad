@@ -14,7 +14,9 @@
    limitations under the License.
 */
 
-include<../pcb.scad>;
+use <../pcb.scad>;
+include <../sensor_pcb_dimensions.scad>;
+include <../m4_dimensions.scad>;
 
 render_pcb = false;  // draw PCB in position in case
 cases_per_row = 1;  // number of cases per each row
