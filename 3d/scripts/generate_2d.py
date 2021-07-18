@@ -23,6 +23,7 @@ import subprocess
 import sys
 import zipfile
 
+from kerf_presets import KERF_PRESETS
 from svg_processor import SvgProcessor
 from projection_renderer import Renderer
 
@@ -32,12 +33,6 @@ repo_root = os.path.dirname(source_parts_dir)
 sys.path.append(repo_root)
 
 from util import rev_info
-
-KERF_PRESETS = {
-    'ponoko-3mm-mdf': 0.18,
-    'ponoko-3mm-acrylic': 0.1,
-    'elecrow-3mm-wood': 0.185,
-}
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)

@@ -94,17 +94,17 @@ etch_color = [0, 0, 0];  // black, "000000"
 hardware_color = [0.75, 0.75, 0.8];  // steel, "bfbfcc"
 
 flap_color = [1, 1, 1];  // white, "ffffff"
+letter_color = color_invert(flap_color);  // inverse of the flap color, for contrast
 
-
-assembly_color1 = color_multiply(assembly_color, [1.161, 1.157, 1.157, 1.0]);  // "e1b17c" with MDF
-assembly_color2 = color_multiply(assembly_color, [0.897, 0.895, 0.895, 1.0]);  // "ae8960" with MDF
-assembly_color3 = color_multiply(assembly_color, [0.547, 0.542, 0.540, 1.0]);  // "6a533a" with MDF
-assembly_color4 = color_multiply(assembly_color, [0.268, 0.268, 0.271, 1.0]);  // "34291d" with MDF
+assembly_colors = [
+    color_multiply(assembly_color, [1.161, 1.157, 1.157, 1.0]),  // "e1b17c" with MDF
+    color_multiply(assembly_color, [0.897, 0.895, 0.895, 1.0]),  // "ae8960" with MDF
+    color_multiply(assembly_color, [0.547, 0.542, 0.540, 1.0]),  // "6a533a" with MDF
+    color_multiply(assembly_color, [0.268, 0.268, 0.271, 1.0]),  // "34291d" with MDF
+];
 
 bolt_color = hardware_color;
 nut_color = color_multiply(hardware_color, [0.933, 0.933, 0.9, 1.0]);  // "b2b2b7" with steel
-
-letter_color = color_invert(flap_color);  // inverse of the flap color, for contrast
 
 
 flap_width_slop = 0.5;  // amount of slop of the flap side to side between the 2 spools
@@ -243,16 +243,24 @@ alignment_bar_center = (enclosure_length - enclosure_length_right) - alignment_b
 
 // Exported values
 // (Functions allow other files to reference these values when this file is 'used' and not 'included')
+function get_assembly_colors() = assembly_colors;
 function get_captive_nut_inset() = captive_nut_inset;
 function get_connector_bracket_length() = connector_bracket_length_outer;
 function get_connector_bracket_width() = connector_bracket_width;
+function get_enclosure_height() = enclosure_height;
 function get_enclosure_height_lower() = enclosure_height_lower;
 function get_enclosure_length_right() = enclosure_length_right;
 function get_enclosure_vertical_inset() = enclosure_vertical_inset;
 function get_enclosure_wall_to_wall_width() = enclosure_wall_to_wall_width;
+function get_enclosure_width() = enclosure_width;
 function get_flap_arc_separation() = (flap_hole_radius*2 + flap_hole_separation);
+function get_flap_color() = flap_color;
 function get_flap_gap() = flap_gap;
+function get_flap_pin_width() = flap_pin_width;
 function get_front_forward_offset() = front_forward_offset;
+function get_front_window_right_inset() = front_window_right_inset;
+function get_front_window_width() = front_window_width;
+function get_letter_color() = letter_color;
 function get_magnet_diameter() = magnet_diameter;
 function get_magnet_hole_offset() = magnet_hole_offset;
 function get_mounting_hole_inset() = mounting_hole_inset;
@@ -382,7 +390,7 @@ module spool_struts() {
     for (i=[0:3]) {
         angle = 90*i;
         //color([i < 2 ? 0 : 1, i == 0 || i == 2 ? 0 : 1, 0])
-        color(i % 2 == 0 ? assembly_color2 : assembly_color3)
+        color(i % 2 == 0 ? assembly_colors[1] : assembly_colors[2])
         translate([0, sin(angle)*(spool_strut_tab_outset + spool_strut_explosion), cos(angle)*(spool_strut_tab_outset + spool_strut_explosion)])
             rotate([-angle, 0, 0])
                 spool_strut();
@@ -443,14 +451,44 @@ module motor_shaft() {
     }
 }
 
-module front_tabs_negative() {
+module front_tabs_negative(upper, tool_diameter=undef) {
+    // tool_diameter is an optional parameter to adjust these cutouts to compensate for a rotary cutting tool, which
+    // requires "dog-bones" for corners and adjustment of the cutout if the tool is larger than thickness. This will
+    // generally not look good if cut all the way through the material, but with a CNC router these can be cut as
+    // pockets which are not visible from the front.
+    tool_diameter_param = is_undef(tool_diameter) ? 0 : tool_diameter;
+    assert(tool_diameter_param <= m4_hole_diameter, "Tool diameter is too large to cut M4 holes");
+
+    cutout_height = max(thickness, tool_diameter_param);
+
+    // Offset is inverted on upper vs lower so that larger cutouts from tool diameter don't allow vertical movement freedom
+    cutout_offset = (upper ? 1 : -1) * (cutout_height - thickness)/2;
+
     for (i = [0 : num_front_tabs-1]) {
-        translate([thickness + (i*2+0.5) * front_tab_width, 0, 0])
-            square([front_tab_width + enclosure_tab_clearance, thickness + enclosure_tab_clearance], center=true);
+        translate([thickness + (i*2+0.5) * front_tab_width, cutout_offset, 0]) {
+            square([front_tab_width + enclosure_tab_clearance, cutout_height + enclosure_tab_clearance], center=true);
+
+            // Dog-bones
+            if (!is_undef(tool_diameter)) {
+                translate([(front_tab_width + enclosure_tab_clearance)/2 - tool_diameter_param/2, (cutout_height + enclosure_tab_clearance)/2]) {
+                    circle(d=tool_diameter_param, $fn=30);
+                }
+                translate([(front_tab_width + enclosure_tab_clearance)/2 - tool_diameter_param/2, -(cutout_height + enclosure_tab_clearance)/2]) {
+                    circle(d=tool_diameter_param, $fn=30);
+                }
+                translate([-(front_tab_width + enclosure_tab_clearance)/2 + tool_diameter_param/2, (cutout_height + enclosure_tab_clearance)/2]) {
+                    circle(d=tool_diameter_param, $fn=30);
+                }
+                translate([-(front_tab_width + enclosure_tab_clearance)/2 + tool_diameter_param/2, -(cutout_height + enclosure_tab_clearance)/2]) {
+                    circle(d=tool_diameter_param, $fn=30);
+                }
+            }
+        }
     }
     for (i = [0 : num_front_tabs-2]) {
-        translate([thickness + (i*2+1.5) * front_tab_width, 0, 0])
+        translate([thickness + (i*2+1.5) * front_tab_width, 0, 0]) {
             circle(r=m4_hole_diameter/2, $fn=30);
+        }
     }
 }
 
@@ -482,24 +520,31 @@ module enclosure_etch_style() {
                 children();
 }
 
+module enclosure_front_base_2d() {
+    translate([-enclosure_horizontal_inset, 0, 0]) {
+        square([enclosure_width, enclosure_height]);
+    }
+}
+
+module enclosure_front_cutouts_2d(tool_diameter=undef) {
+    // Viewing window cutout
+    translate([front_window_right_inset, enclosure_height_lower - front_window_lower])
+        square([front_window_width, front_window_lower + front_window_upper]);
+
+    // Front lower tabs
+    translate([0, thickness * 0.5 + enclosure_vertical_inset, 0])
+        front_tabs_negative(upper=false, tool_diameter=tool_diameter);
+
+    // Front upper tabs
+    translate([0, enclosure_height - thickness * 0.5 - enclosure_vertical_inset, 0])
+        front_tabs_negative(upper=true, tool_diameter=tool_diameter);
+}
+
 module enclosure_front() {
     linear_extrude(height=thickness) {
         difference() {
-            translate([-enclosure_horizontal_inset, 0, 0]) {
-                square([enclosure_width, enclosure_height]);
-            }
-
-            // Viewing window cutout
-            translate([front_window_right_inset, enclosure_height_lower - front_window_lower])
-                square([front_window_width, front_window_lower + front_window_upper]);
-
-            // Front lower tabs
-            translate([0, thickness * 0.5 + enclosure_vertical_inset, 0])
-                front_tabs_negative();
-
-            // Front upper tabs
-            translate([0, enclosure_height - thickness * 0.5 - enclosure_vertical_inset, 0])
-                front_tabs_negative();
+            enclosure_front_base_2d();
+            enclosure_front_cutouts_2d();
         }
     }
 }
@@ -575,7 +620,7 @@ module connector_bracket_side_holes() {
 }
 
 module alignment_bar() {
-    color(assembly_color1)
+    color(assembly_colors[0])
         translate([enclosure_width - enclosure_horizontal_inset, -enclosure_length_right + front_forward_offset - alignment_bar_diameter/2, -enclosure_height_lower + alignment_bar_diameter/2])
             rotate([0, -90, 0])
                 linear_extrude(height=enclosure_width * render_units)
@@ -849,11 +894,13 @@ module enclosure_bottom_etch() {
         }
 }
 
-module split_flap_3d(front_flap_index, include_connector) {
+module split_flap_3d(front_flap_index, include_connector, include_front_panel=true) {
     module position_front() {
-        translate([0, front_forward_offset + thickness, -enclosure_height_lower])
-            rotate([90, 0, 0])
-                children();
+        if (include_front_panel) {
+            translate([0, front_forward_offset + thickness, -enclosure_height_lower])
+                rotate([90, 0, 0])
+                    children();
+        }
     }
 
     module positioned_front() {
@@ -981,24 +1028,24 @@ module split_flap_3d(front_flap_index, include_connector) {
 
     module positioned_enclosure() {
         if (render_enclosure == 2) {
-            color(assembly_color1)
+            color(assembly_colors[0])
                 positioned_front();
-            color(assembly_color2)
+            color(assembly_colors[1])
                 positioned_left();
-            color(assembly_color2)
+            color(assembly_colors[1])
                 positioned_right();
-            color(assembly_color3)
+            color(assembly_colors[2])
                 positioned_top();
-            color(assembly_color3)
+            color(assembly_colors[2])
                 positioned_bottom();
             positioned_front_etch();
             positioned_left_etch();
             positioned_right_etch();
             positioned_bottom_etch();
             if (include_connector) {
-                color(assembly_color4)
+                color(assembly_colors[3])
                     positioned_top_connector();
-                color(assembly_color4)
+                color(assembly_colors[3])
                     positioned_bottom_connector();
             }
             if (render_bolts) {
@@ -1103,7 +1150,7 @@ module split_flap_3d(front_flap_index, include_connector) {
                         flap_spool_etch();
                 }
             }
-            color(assembly_color1) {
+            color(assembly_colors[0]) {
                 translate([thickness - 3*spool_horizontal_explosion, 0, 0]) {
                     rotate([0, 90, 0]) {
                         spool_retaining_wall(m4_bolt_hole=true);
