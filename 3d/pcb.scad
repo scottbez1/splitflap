@@ -29,7 +29,7 @@ module pcb_outline_2d(hole=true) {
 }
 
 // 3D PCB module, origin at the center of the mounting hole on the bottom surface of the PCB
-module pcb(pcb_to_spool, render_jig=false) {
+module pcb(pcb_to_spool, render_jig=false, jig_thickness=0) {
     color([0, 0.5, 0]) {
         linear_extrude(height=pcb_thickness) {
             pcb_outline_2d();
@@ -86,7 +86,7 @@ module pcb(pcb_to_spool, render_jig=false) {
         color([1, 1, 0])
         translate([-pcb_edge_to_hole_x - pcb_jig_align_thickness - pcb_jig_align_clearance, pcb_hole_to_sensor_pin_1_y + pcb_sensor_pin_width/2 + thickness, -pcb_to_sensor(pcb_to_spool) + pcb_jig_depth_clearance])
         rotate([90, 0, 0])
-            sensor_jig(pcb_to_spool);
+            sensor_jig(pcb_to_spool, jig_thickness);
     }
 }
 
@@ -133,7 +133,7 @@ function pcb_thickness() = pcb_thickness;
 function sensor_jig_height(pcb_to_spool) = pcb_to_sensor(pcb_to_spool) - pcb_jig_depth_clearance + pcb_jig_align_length + pcb_thickness;
 function sensor_jig_width(pcb_to_spool) = pcb_length + (pcb_jig_align_thickness + pcb_jig_align_clearance) * 2;
 
-module sensor_jig(pcb_to_spool) {
+module sensor_jig(pcb_to_spool, thickness) {
     module fillet() {
         eps = 0.01;
         difference() {
