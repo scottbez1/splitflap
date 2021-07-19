@@ -73,7 +73,8 @@ if __name__ == '__main__':
     parser.add_argument('--no-connectors', action='store_true', help='Do not include inter-module connector pieces.')
     parser.add_argument('--no-sensor-jig', action='store_true', help='Do not include the sensor spacing jig.')
     parser.add_argument('--no-source-info', action='store_true', help='Do not include the source info - revision, date, url.')
-    parser.add_argument('--zip-tie', choices=ZIP_TIE_MODES.keys(), help='Where to place zip-tie holes for wire management.')
+    parser.add_argument('--zip-tie', choices=ZIP_TIE_MODES.keys(), default='STANDARD', help='Where to place zip-tie '
+                                                                                            'holes for wire management.')
     parser.add_argument('--cut-home-indicator', action='store_true', help='Cut, instead of etch, the home position '
                                                                           'indicator on the spool.')
 
