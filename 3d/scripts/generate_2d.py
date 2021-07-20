@@ -34,6 +34,12 @@ sys.path.append(repo_root)
 
 from util import rev_info
 
+ZIP_TIE_MODES = {
+    'NONE': 0,
+    'STANDARD': 1,
+    'UPDOWN': 2,
+}
+
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
 
@@ -58,6 +64,19 @@ if __name__ == '__main__':
                                                                       'Requires Inkscape and pdfjam. Implies '
                                                                       '--no-etch, --calculate-dimensions, and '
                                                                       '--skip-optimize')
+    parser.add_argument('--no-alignment-bar', action='store_true', help='Do not include features for the alignment bar')
+    parser.add_argument('--no-front-panel', action='store_true', help='Do not include the front face of the enclosure, '
+                                                                      'e.g. if you will use '
+                                                                      'generate_combined_front_panel.py instead.')
+    parser.add_argument('--no-mounting-holes', action='store_true', help='Do not include mounting hole on top/bottom '
+                                                                         'enclosure pieces.')
+    parser.add_argument('--no-connectors', action='store_true', help='Do not include inter-module connector pieces.')
+    parser.add_argument('--no-sensor-jig', action='store_true', help='Do not include the sensor spacing jig.')
+    parser.add_argument('--no-source-info', action='store_true', help='Do not include the source info: revision, date, url.')
+    parser.add_argument('--zip-tie', choices=ZIP_TIE_MODES.keys(), default='STANDARD', help='Where to place zip-tie '
+                                                                                            'holes for wire management.')
+    parser.add_argument('--cut-home-indicator', action='store_true', help='Cut, instead of etch, the home position '
+                                                                          'indicator on the spool.')
 
     args = parser.parse_args()
     if args.render_elecrow:
@@ -72,6 +91,14 @@ if __name__ == '__main__':
         'render_date': rev_info.current_date(),
         'render_etch': not args.no_etch,
         'render_2d_mirror': args.mirror,
+        'enable_alignment_bar': not args.no_alignment_bar,
+        'render_front_panel': not args.no_front_panel,
+        'enable_mounting_holes': not args.no_mounting_holes,
+        'enable_connectors': not args.no_connectors,
+        'enable_sensor_jig': not args.no_sensor_jig,
+        'enable_source_info': not args.no_source_info,
+        'zip_tie_mode': ZIP_TIE_MODES[args.zip_tie],
+        'render_home_indicator_as_cut': args.cut_home_indicator,
     }
     if args.kerf is not None:
         extra_variables['kerf_width'] = args.kerf
