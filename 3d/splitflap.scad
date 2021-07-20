@@ -59,7 +59,7 @@ enable_alignment_bar = true;
 enable_mounting_holes = true;
 enable_sensor_jig = true;
 enable_source_info = true;
-zip_tie_mode = 2; // 0=none; 1=standard; 2=up&down
+zip_tie_mode = 1; // 0=none; 1=standard; 2=up&down
 
 // Panelization:
 panel_vertical = 0;
