@@ -24,7 +24,7 @@ class Splitflap(object):
 
         self.has_inited = False
         self.num_modules = 0
-        self.character_list = ""
+        self.character_list = _ALPHABET
 
         self.last_command = None
         self.last_status = None
