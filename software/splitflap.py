@@ -97,6 +97,13 @@ class Splitflap(object):
         self.serial.write(b'@')
         return self._loop_for_status()
 
+    def get_text(self):
+        text = ""
+        if self.last_status != None:
+            for module in self.last_status:
+                text += module['flap']
+        return text
+
     def get_status(self):
         return self.last_status
 
