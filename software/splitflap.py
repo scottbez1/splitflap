@@ -129,7 +129,7 @@ class Splitflap(object):
 
 @contextmanager
 def splitflap(serial_port):
-    with serial.Serial(serial_port, 38400) as ser:
+    with serial.Serial(serial_port, 38400, timeout=1.0) as ser:
         s = Splitflap(ser)
         s._loop_for_status()
         yield s
