@@ -21,7 +21,7 @@ def run():
     with splitflap(port) as s:
         while True:
             word = random.choice(words)
-            print('Going to {}'.format(word))
+            print('Going to \'{}\''.format(word))
             status = s.set_text(word)
             s.print_status(status)
             time.sleep(10)

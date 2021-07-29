@@ -30,7 +30,7 @@ def run():
                 break
             string = filter_string(string, s)  # filter characters to displayable ones
             string = string.ljust(s.get_num_modules(), ' ')  # pad to the right with spaces
-            print('Going to {}'.format(string))
+            print('Going to \'{}\''.format(string))
             status = s.set_text(string)
             s.print_status(status)
 
