@@ -57,10 +57,13 @@ if __name__ == '__main__':
     y_group.add_argument('--spacing-y', type=float, help='Vertical gap between modules')
     y_group.add_argument('--center-center-y', type=float, help='Vertical center-to-center distance between modules')
 
-    width = parser.add_argument('--width', type=float, help='Width of the panel')
-    height = parser.add_argument('--height', type=float, help='Height of the panel')
+    parser.add_argument('--width', type=float, help='Width of the panel')
+    parser.add_argument('--height', type=float, help='Height of the panel')
 
-    tool_diameter = parser.add_argument('--tool-diameter', type=float, help='Diameter of cutting tool')
+    parser.add_argument('--tool-diameter', type=float, help='Diameter of cutting tool')
+    parser.add_argument('--center-window', action='store_true', help='Vertically center the window instead of the '
+                                                                     'default of vertically centering the front '
+                                                                     'flap/letter.')
 
     args = parser.parse_args()
 
@@ -82,9 +85,9 @@ if __name__ == '__main__':
     if args.spacing_y is not None:
         extra_variables['gap_y'] = args.spacing_y
     if args.center_center_x is not None:
-        extra_variables['center_center_x'] = center_center_x
+        extra_variables['center_center_x'] = args.center_center_x
     if args.center_center_y is not None:
-        extra_variables['center_center_y'] = center_center_y
+        extra_variables['center_center_y'] = args.center_center_y
 
     if args.width is not None:
         extra_variables['frame_width'] = args.width
@@ -93,6 +96,8 @@ if __name__ == '__main__':
 
     if args.tool_diameter is not None:
         extra_variables['tool_diameter'] = args.tool_diameter
+
+    extra_variables['center_window'] = args.center_window
 
     output_dir = os.path.join(source_parts_dir, 'build', 'front_panel')
 

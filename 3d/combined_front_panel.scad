@@ -56,6 +56,9 @@ display_text = [
 // Number of full modules, rather than just flaps, to render in 3d
 render_full_modules_count = 4;
 
+
+center_window = false;
+
 // ---------------------------
 // End configurable parameters
 // ---------------------------
@@ -72,8 +75,10 @@ assert(is_undef(gap_y) || gap_y >= 0);
 layout_center_center_x = is_undef(center_center_x) ? get_enclosure_width() + gap_x : center_center_x;
 layout_center_center_y = is_undef(center_center_y) ? get_enclosure_height() + gap_y : center_center_y;
 
+y_offset = center_window ? get_front_window_lower() - (get_front_window_upper() + get_front_window_lower())/2 : 0;
+
 module centered_front() {
-    translate([-get_front_window_right_inset() - get_front_window_width()/2, -get_enclosure_height_lower()]) {
+    translate([-get_front_window_right_inset() - get_front_window_width()/2, -get_enclosure_height_lower() + y_offset]) {
         children();
     }
 }
@@ -105,25 +110,26 @@ projection_renderer(render_index = render_index, render_etch = render_etch, kerf
     }
 }
 
-%
-for (i=[0:cols-1]) {
-    for (j=[0:rows-1]) {
-        index = i + j*cols;
-        translate([i * layout_center_center_x, -j * layout_center_center_y]) {
-            if (index < render_full_modules_count) {
-                translate([get_front_window_right_inset() + get_front_window_width()/2, 0, -get_front_forward_offset()]) {
-                    rotate([90, 0, 180]) {
-                        split_flap_3d(get_flap_index_for_letter(display_text[j][i]), false, false);
+if (!is_projection_rendering()) {
+    for (i=[0:cols-1]) {
+        for (j=[0:rows-1]) {
+            index = i + j*cols;
+            translate([i * layout_center_center_x, -j * layout_center_center_y]) {
+                if (index < render_full_modules_count) {
+                    translate([get_front_window_right_inset() + get_front_window_width()/2, y_offset, -get_front_forward_offset()]) {
+                        rotate([90, 0, 180]) {
+                            split_flap_3d(get_flap_index_for_letter(display_text[j][i]), false, false);
+                        }
                     }
-                }
-            } else {
-                // Render just a flap
-                translate([-flap_width/2, 0]) {
-                    flap_with_letters(flap_color, letter_color, get_flap_index_for_letter(display_text[j][i]), get_flap_gap());
-                }
-                translate([-flap_width/2, -(get_flap_gap() + get_flap_pin_width())]) {
-                    rotate([-180, 0, 0]) {
-                        flap_with_letters(flap_color, letter_color, get_flap_index_for_letter(display_text[j][i])-1, get_flap_gap());
+                } else {
+                    // Render just a flap
+                    translate([-flap_width/2, 0]) {
+                        flap_with_letters(flap_color, letter_color, get_flap_index_for_letter(display_text[j][i]), get_flap_gap());
+                    }
+                    translate([-flap_width/2, -(get_flap_gap() + get_flap_pin_width())]) {
+                        rotate([-180, 0, 0]) {
+                            flap_with_letters(flap_color, letter_color, get_flap_index_for_letter(display_text[j][i])-1, get_flap_gap());
+                        }
                     }
                 }
             }
