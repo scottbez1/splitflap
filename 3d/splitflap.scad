@@ -267,7 +267,9 @@ function get_flap_color() = flap_color;
 function get_flap_gap() = flap_gap;
 function get_flap_pin_width() = flap_pin_width;
 function get_front_forward_offset() = front_forward_offset;
+function get_front_window_lower() = front_window_lower;
 function get_front_window_right_inset() = front_window_right_inset;
+function get_front_window_upper() = front_window_upper;
 function get_front_window_width() = front_window_width;
 function get_letter_color() = letter_color;
 function get_magnet_diameter() = magnet_diameter;
@@ -482,24 +484,29 @@ module front_tabs_negative(upper, tool_diameter=undef) {
 
             // Dog-bones
             if (!is_undef(tool_diameter)) {
+                // Dog-bones are rendered as squares to simplify the number of lines in the final SVG output
                 translate([(front_tab_width + enclosure_tab_clearance)/2 - tool_diameter_param/2, (cutout_height + enclosure_tab_clearance)/2]) {
-                    circle(d=tool_diameter_param, $fn=30);
+                    square([tool_diameter_param, tool_diameter_param], center=true);
                 }
                 translate([(front_tab_width + enclosure_tab_clearance)/2 - tool_diameter_param/2, -(cutout_height + enclosure_tab_clearance)/2]) {
-                    circle(d=tool_diameter_param, $fn=30);
+                    square([tool_diameter_param, tool_diameter_param], center=true);
                 }
                 translate([-(front_tab_width + enclosure_tab_clearance)/2 + tool_diameter_param/2, (cutout_height + enclosure_tab_clearance)/2]) {
-                    circle(d=tool_diameter_param, $fn=30);
+                    square([tool_diameter_param, tool_diameter_param], center=true);
                 }
                 translate([-(front_tab_width + enclosure_tab_clearance)/2 + tool_diameter_param/2, -(cutout_height + enclosure_tab_clearance)/2]) {
-                    circle(d=tool_diameter_param, $fn=30);
+                    square([tool_diameter_param, tool_diameter_param], center=true);
                 }
             }
         }
     }
     for (i = [0 : num_front_tabs-2]) {
         translate([thickness + (i*2+1.5) * front_tab_width, 0, 0]) {
-            circle(r=m4_hole_diameter/2, $fn=30);
+            if (is_undef(tool_diameter)) {
+                circle(r=m4_hole_diameter/2, $fn=30);
+            } else {
+                square([m4_hole_diameter, m4_hole_diameter], center=true);
+            }
         }
     }
 }
