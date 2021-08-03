@@ -28,21 +28,34 @@ use<splitflap.scad>;
 rows = 6;
 cols = 18;
 
+// Set either frame_width/height, or frame_margin_x/y to set the overall frame dimensions. margin_x/y will calculate the necessary frame width
+// based on the number of modules and spacing and add the margin onto both sides.
 frame_width = 96*25.4;
 frame_height = 48*25.4;
+frame_margin_x = undef;
+frame_margin_y = undef;
 
-// Set either the center_center_* or gap_* values to distribute modules based on center-to-center distance or a gap between modules
+// Set either the center_center_* or gap_* values to distribute modules based on center-to-center distance or a gap between modules.
+// You can set gap_x and gap_y to 0 to get the closest possible spacing of modules.
 center_center_x = 4*25.4;
 center_center_y = 7.25*25.4;
-
 gap_x = undef;
 gap_y = undef;
+
+// Vertical centering mode
+//   0 = center based on letter/flap center
+//   1 = center based on window cutout center
+//   2 = center based on module overall center
+center_mode = 0;
 
 // Use tool_diameter for rotary/milling cutters, or kerf_width for laser.
 // kerf_width applies a naive offset that is only valid for very small kerf from a laser cutter (e.g. 0.2mm)
 // tool_diameter will modify a few parts of the design for milling bits, but will not handle all sizes well; use caution and review the design carefully.
-tool_diameter = 1/8*25.4 * 1.1; // 1/8 inch bit, plus 10%
+tool_diameter = 0; // e.g. set to "1/8*25.4 * 1.1" for a 1/8 inch bit, plus 10%
 kerf_width = 0;
+
+
+// Preview-only paramters:
 
 display_text = [
     "THIS IS SOME TEXT ",
@@ -53,11 +66,8 @@ display_text = [
     "                 .",
 ];
 
-// Number of full modules, rather than just flaps, to render in 3d
+// Number of full modules to render in 3d preview
 render_full_modules_count = 4;
-
-
-center_window = false;
 
 // ---------------------------
 // End configurable parameters
@@ -75,7 +85,13 @@ assert(is_undef(gap_y) || gap_y >= 0);
 layout_center_center_x = is_undef(center_center_x) ? get_enclosure_width() + gap_x : center_center_x;
 layout_center_center_y = is_undef(center_center_y) ? get_enclosure_height() + gap_y : center_center_y;
 
-y_offset = center_window ? get_front_window_lower() - (get_front_window_upper() + get_front_window_lower())/2 : 0;
+layout_frame_width = is_undef(frame_margin_x) ? frame_width : layout_center_center_x * (cols - 1) + get_enclosure_width() + frame_margin_x*2;
+layout_frame_height = is_undef(frame_margin_y) ? frame_height : layout_center_center_y * (rows - 1) + get_enclosure_height() + frame_margin_y*2;
+
+y_offset = center_mode == 0 ? 0 :
+            center_mode == 1 ? get_front_window_lower() - (get_front_window_upper() + get_front_window_lower())/2 :
+            center_mode == 2 ? get_enclosure_height_lower() - get_enclosure_height()/2:
+            0;
 
 module centered_front() {
     translate([-get_front_window_right_inset() - get_front_window_width()/2, -get_enclosure_height_lower() + y_offset]) {
@@ -93,7 +109,7 @@ projection_renderer(render_index = render_index, render_etch = render_etch, kerf
         linear_extrude(height=get_thickness()) {
             difference() {
                 translate([(cols-1)/2 * layout_center_center_x, -(rows-1)/2 * layout_center_center_y]) {
-                    square([frame_width, frame_height], center=true);
+                    square([layout_frame_width, layout_frame_height], center=true);
                 }
 
                 for (i=[0:cols-1]) {
@@ -110,7 +126,7 @@ projection_renderer(render_index = render_index, render_etch = render_etch, kerf
     }
 }
 
-if (!is_projection_rendering()) {
+if (render_index == -1 && !is_projection_rendering()) {
     for (i=[0:cols-1]) {
         for (j=[0:rows-1]) {
             index = i + j*cols;

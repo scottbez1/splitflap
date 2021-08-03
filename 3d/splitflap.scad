@@ -465,15 +465,14 @@ module motor_shaft() {
     }
 }
 
-module front_tabs_negative(upper, tool_diameter=undef) {
+module front_tabs_negative(upper, tool_diameter=0) {
     // tool_diameter is an optional parameter to adjust these cutouts to compensate for a rotary cutting tool, which
     // requires "dog-bones" for corners and adjustment of the cutout if the tool is larger than thickness. This will
     // generally not look good if cut all the way through the material, but with a CNC router these can be cut as
     // pockets which are not visible from the front.
-    tool_diameter_param = is_undef(tool_diameter) ? 0 : tool_diameter;
-    assert(tool_diameter_param <= m4_hole_diameter, "Tool diameter is too large to cut M4 holes");
+    assert(tool_diameter <= m4_hole_diameter, "Tool diameter is too large to cut M4 holes");
 
-    cutout_height = max(thickness, tool_diameter_param);
+    cutout_height = max(thickness, tool_diameter);
 
     // Offset is inverted on upper vs lower so that larger cutouts from tool diameter don't allow vertical movement freedom
     cutout_offset = (upper ? 1 : -1) * (cutout_height - thickness)/2;
@@ -483,26 +482,26 @@ module front_tabs_negative(upper, tool_diameter=undef) {
             square([front_tab_width + enclosure_tab_clearance, cutout_height + enclosure_tab_clearance], center=true);
 
             // Dog-bones
-            if (!is_undef(tool_diameter)) {
-                // Dog-bones are rendered as squares to simplify the number of lines in the final SVG output
-                translate([(front_tab_width + enclosure_tab_clearance)/2 - tool_diameter_param/2, (cutout_height + enclosure_tab_clearance)/2]) {
-                    square([tool_diameter_param, tool_diameter_param], center=true);
+            if (tool_diameter > 0) {
+                // Dog-bones are rendered as squares to simplify the number of line segments in the final SVG output
+                translate([(front_tab_width + enclosure_tab_clearance)/2 - tool_diameter/2, (cutout_height + enclosure_tab_clearance)/2]) {
+                    square([tool_diameter, tool_diameter], center=true);
                 }
-                translate([(front_tab_width + enclosure_tab_clearance)/2 - tool_diameter_param/2, -(cutout_height + enclosure_tab_clearance)/2]) {
-                    square([tool_diameter_param, tool_diameter_param], center=true);
+                translate([(front_tab_width + enclosure_tab_clearance)/2 - tool_diameter/2, -(cutout_height + enclosure_tab_clearance)/2]) {
+                    square([tool_diameter, tool_diameter], center=true);
                 }
-                translate([-(front_tab_width + enclosure_tab_clearance)/2 + tool_diameter_param/2, (cutout_height + enclosure_tab_clearance)/2]) {
-                    square([tool_diameter_param, tool_diameter_param], center=true);
+                translate([-(front_tab_width + enclosure_tab_clearance)/2 + tool_diameter/2, (cutout_height + enclosure_tab_clearance)/2]) {
+                    square([tool_diameter, tool_diameter], center=true);
                 }
-                translate([-(front_tab_width + enclosure_tab_clearance)/2 + tool_diameter_param/2, -(cutout_height + enclosure_tab_clearance)/2]) {
-                    square([tool_diameter_param, tool_diameter_param], center=true);
+                translate([-(front_tab_width + enclosure_tab_clearance)/2 + tool_diameter/2, -(cutout_height + enclosure_tab_clearance)/2]) {
+                    square([tool_diameter, tool_diameter], center=true);
                 }
             }
         }
     }
     for (i = [0 : num_front_tabs-2]) {
         translate([thickness + (i*2+1.5) * front_tab_width, 0, 0]) {
-            if (is_undef(tool_diameter)) {
+            if (tool_diameter == 0) {
                 circle(r=m4_hole_diameter/2, $fn=30);
             } else {
                 square([m4_hole_diameter, m4_hole_diameter], center=true);
@@ -545,7 +544,7 @@ module enclosure_front_base_2d() {
     }
 }
 
-module enclosure_front_cutouts_2d(tool_diameter=undef) {
+module enclosure_front_cutouts_2d(tool_diameter=0) {
     // Viewing window cutout
     translate([front_window_right_inset, enclosure_height_lower - front_window_lower])
         square([front_window_width, front_window_lower + front_window_upper]);
