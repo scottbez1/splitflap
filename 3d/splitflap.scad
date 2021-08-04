@@ -120,7 +120,7 @@ flap_width_slop = 0.5;  // amount of slop of the flap side to side between the 2
 
 spool_width_slop = 1.4;  // amount of slop for the spool assembly side-to-side inside the enclosure
 
-spool_tab_clearance = -0.06;  // for the tabs connecting the struts to the spool ends (interference fit)
+spool_tab_clearance = 0;  // for the tabs connecting the struts to the spool ends (interference fit)
 spool_retaining_clearance = 0.10;  // for the notches in the spool retaining wall
 spool_joint_clearance = 0.10;  // for the notched joints on the spool struts
 
@@ -156,16 +156,17 @@ spool_strut_inner_length = spool_width - 3 * thickness;
 
 spool_strut_exclusion_radius = sqrt((spool_strut_tab_outset+thickness/2)*(spool_strut_tab_outset+thickness/2) + (spool_strut_tab_width/2)*(spool_strut_tab_width/2));
 
+m4_axle_hole_diameter = 4.3;    // Slightly closer fit than the standard m4_hole_diameter, since a loose fit here will cause the spool to sit at a slight angle
 
 magnet_diameter = 4;
-magnet_hole_clearance = -0.07;  // interference fit
+magnet_hole_clearance = -0.05;  // interference fit
 magnet_hole_radius = (magnet_diameter + magnet_hole_clearance)/2;
 magnet_hole_offset = (spool_strut_exclusion_radius + flap_pitch_radius)/2;
 
 // Clearance between the motor chassis and the outside right wall of the previous module
 28byj48_chassis_height_clearance = 1.4;
 
-motor_shaft_under_radius = 0.08;  // interference fit
+motor_shaft_under_radius = 0.05;  // interference fit
 motor_slop_radius = 3;
 
 
@@ -757,7 +758,7 @@ module enclosure_right() {
         difference() {
             square([enclosure_height, enclosure_length_right]);
             translate([enclosure_height_upper, enclosure_length_right - front_forward_offset, 0])
-                circle(r=m4_hole_diameter/2, $fn=30);
+                circle(r=m4_axle_hole_diameter/2, $fn=30);
 
             // backstop bolt slot
             translate([enclosure_height_upper - backstop_bolt_vertical_offset, enclosure_length_right - front_forward_offset, 0]) {
