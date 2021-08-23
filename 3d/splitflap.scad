@@ -166,7 +166,7 @@ magnet_hole_offset = (spool_strut_exclusion_radius + flap_pitch_radius)/2;
 // Clearance between the motor chassis and the outside right wall of the previous module
 28byj48_chassis_height_clearance = 1.4;
 
-motor_shaft_under_radius = 0.05;  // interference fit
+motor_shaft_under_radius = 0.08;  // interference fit
 motor_slop_radius = 3;
 
 
