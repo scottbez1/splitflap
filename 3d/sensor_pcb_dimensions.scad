@@ -59,7 +59,7 @@ pcb_connector_height = 3.2;
 pcb_connector_width = 8.2;
 pcb_connector_length = 18;
 pcb_connector_pin_width = 0.64;
-pcb_connector_pin_slop = 0.1;
+pcb_connector_pin_slop = 0.4;
 pcb_connector_pin_tail_length = 3.05 + 2.5/2;
 
 pcb_sensor_pin_width = 0.43;
