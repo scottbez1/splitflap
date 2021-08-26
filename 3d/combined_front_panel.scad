@@ -85,6 +85,9 @@ assert(is_undef(gap_y) || gap_y >= 0);
 layout_center_center_x = is_undef(center_center_x) ? get_enclosure_width() + gap_x : center_center_x;
 layout_center_center_y = is_undef(center_center_y) ? get_enclosure_height() + gap_y : center_center_y;
 
+echo(debug_gap_x = layout_center_center_x - get_enclosure_width());
+echo(debug_gap_y = layout_center_center_y - get_enclosure_height());
+
 layout_frame_width = is_undef(frame_margin_x) ? frame_width : layout_center_center_x * (cols - 1) + get_enclosure_width() + frame_margin_x*2;
 layout_frame_height = is_undef(frame_margin_y) ? frame_height : layout_center_center_y * (rows - 1) + get_enclosure_height() + frame_margin_y*2;
 
@@ -92,6 +95,9 @@ y_offset = center_mode == 0 ? 0 :
             center_mode == 1 ? get_front_window_lower() - (get_front_window_upper() + get_front_window_lower())/2 :
             center_mode == 2 ? get_enclosure_height_lower() - get_enclosure_height()/2:
             0;
+
+echo(debug_frame_margin_top = (layout_frame_height - layout_center_center_y * (rows - 1))/2 - get_enclosure_height_upper() - y_offset);
+echo(debug_frame_margin_bottom = (layout_frame_height - layout_center_center_y * (rows - 1))/2 - get_enclosure_height_lower() + y_offset);
 
 module centered_front() {
     translate([-get_front_window_right_inset() - get_front_window_width()/2, -get_enclosure_height_lower() + y_offset]) {
