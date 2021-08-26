@@ -259,6 +259,7 @@ function get_connector_bracket_length() = connector_bracket_length_outer;
 function get_connector_bracket_width() = connector_bracket_width;
 function get_enclosure_height() = enclosure_height;
 function get_enclosure_height_lower() = enclosure_height_lower;
+function get_enclosure_height_upper() = enclosure_height_upper;
 function get_enclosure_length_right() = enclosure_length_right;
 function get_enclosure_vertical_inset() = enclosure_vertical_inset;
 function get_enclosure_wall_to_wall_width() = enclosure_wall_to_wall_width;

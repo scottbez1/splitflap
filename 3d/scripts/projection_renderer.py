@@ -55,7 +55,11 @@ class Renderer(object):
             }),
             capture_output=True,
         )
-        return openscad.extract_values(stderr)['num_components']
+        outputs = openscad.extract_values(stderr)
+        for key, value in outputs.items():
+            if key.startswith('debug_'):
+                logging.debug('DEBUG VALUE %r = %r', key, value)
+        return outputs['num_components']
 
     def _get_component_file(self, i):
         return os.path.join(self.output_folder, 'component_%05d.svg' % i)
