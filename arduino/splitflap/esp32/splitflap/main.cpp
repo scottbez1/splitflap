@@ -13,27 +13,39 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#pragma once
 
 #include <Arduino.h>
 #include <TFT_eSPI.h>
+#include <Wire.h>
 
-#include "splitflap_task.h"
-#include "task.h"
+#include "config.h"
 
-class DisplayTask : public Task<DisplayTask> {
-    friend class Task<DisplayTask>; // Allow base Task to invoke protected run()
+#include "display_task.h"
+#include "../core/splitflap_task.h"
 
-    public:
-        DisplayTask(SplitflapTask& splitflapTask, const uint8_t taskCore);
+SplitflapTask splitflapTask(1, LedMode::AUTO);
+DisplayTask displayTask(splitflapTask, 0);
 
-    protected:
-        void run();
+#ifdef MQTT
+#include "mqtt_task.h"
+MQTTTask mqttTask(splitflapTask, 0);
+#endif
 
-    private:
-        SplitflapTask& splitflap_task_;
-        TFT_eSPI tft_ = TFT_eSPI();
+void setup() {
+  Serial.begin(MONITOR_SPEED);
 
-        /** Full-size sprite used as a framebuffer */
-        TFT_eSprite spr_ = TFT_eSprite(&tft_);
-};
+  splitflapTask.begin();
+  displayTask.begin();
+
+  #ifdef MQTT
+  mqttTask.begin();
+  #endif
+
+  // Delete the default Arduino loopTask to free up Core 1
+  vTaskDelete(NULL);
+}
+
+
+void loop() {
+  assert(false);
+}

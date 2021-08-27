@@ -1,4 +1,4 @@
-18629043349326931
+18635441724400137
 BK-6013
 BK-6013
 
@@ -58358,6 +58358,13 @@ DIL DIP PDIP 2.54mm 7.62mm 300mil
 0
 4
 4
+PJ-202A
+PJ-202A
+CONN POWER JACK 2.1MM PCB
+CONN POWER JACK 2.1MM PCB BARREL JACK
+0
+3
+3
 Package_BGA
 Analog_BGA-28_4.0x6.25mm_Layout4x7_P0.8mm_Ball0.45mm_Pad0.4
 Analog BGA-28 4.0mm x 6.25mm package, pitch 0.4mm pad, based on https://www.analog.com/media/en/technical-documentation/data-sheets/8063fa.pdf
@@ -75039,6 +75046,13 @@ https://www.farnell.com/cad/316865.pdf?_ga=2.37208032.177107060.1530611323-24901
 0
 48
 48
+SwitchESE13
+ESE13V01D
+
+
+0
+4
+4
 Symbol
 CE-Logo_8.5x6mm_SilkScreen
 CE marking
@@ -81059,3 +81073,17 @@ varistor SIOV
 0
 2
 2
+pogoPins
+pogo1mm
+
+
+0
+1
+1
+pogoPins
+pogo2mm
+
+
+0
+1
+1

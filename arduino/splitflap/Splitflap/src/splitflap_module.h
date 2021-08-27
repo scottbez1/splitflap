@@ -127,6 +127,7 @@ class SplitflapModule {
   uint8_t GetTargetFlapIndex();
   void GoHome();
   void ResetErrorCounters();
+  void ResetState();
   inline void Update();
   void Init();
   bool GetHomeState();
@@ -358,7 +359,7 @@ inline void SplitflapModule::UpdateExpectedHome() {
 
 __attribute__((always_inline))
 inline void SplitflapModule::GoToFlapIndex(uint8_t index) {
-    if (state != NORMAL || current_accel_step != 0) {
+    if (state != NORMAL) {
         return;
     }
     target_flap_index = index;
@@ -536,6 +537,21 @@ inline void SplitflapModule::Update() {
 void SplitflapModule::ResetErrorCounters() {
   count_unexpected_home = 0;
   count_missed_home = 0;
+}
+
+void SplitflapModule::ResetState() {
+    ResetErrorCounters();
+
+    target_flap_index = 0;
+    current_step = 0;
+    delta_steps = 0;
+
+#if HOME_CALIBRATION_ENABLED
+    home_state = IGNORE;
+    unexpected_home_start_step = 0;
+    unexpected_home_end_step = 0;
+    missed_home_step = 0;
+#endif
 }
 
 void SplitflapModule::Init() {
