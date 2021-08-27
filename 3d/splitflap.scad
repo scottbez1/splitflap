@@ -51,6 +51,15 @@ render_motor = true;
 render_index = -1;
 render_etch = false;
 render_2d_mirror = false;
+render_home_indicator_as_cut = false;
+render_front_panel = true;
+
+enable_connectors = true;
+enable_alignment_bar = true;
+enable_mounting_holes = true;
+enable_sensor_jig = true;
+enable_source_info = true;
+zip_tie_mode = 1; // 0=none; 1=standard; 2=up&down
 
 // Panelization:
 panel_vertical = 0;
@@ -94,24 +103,24 @@ etch_color = [0, 0, 0];  // black, "000000"
 hardware_color = [0.75, 0.75, 0.8];  // steel, "bfbfcc"
 
 flap_color = [1, 1, 1];  // white, "ffffff"
+letter_color = color_invert(flap_color);  // inverse of the flap color, for contrast
 
-
-assembly_color1 = color_multiply(assembly_color, [1.161, 1.157, 1.157, 1.0]);  // "e1b17c" with MDF
-assembly_color2 = color_multiply(assembly_color, [0.897, 0.895, 0.895, 1.0]);  // "ae8960" with MDF
-assembly_color3 = color_multiply(assembly_color, [0.547, 0.542, 0.540, 1.0]);  // "6a533a" with MDF
-assembly_color4 = color_multiply(assembly_color, [0.268, 0.268, 0.271, 1.0]);  // "34291d" with MDF
+assembly_colors = [
+    color_multiply(assembly_color, [1.161, 1.157, 1.157, 1.0]),  // "e1b17c" with MDF
+    color_multiply(assembly_color, [0.897, 0.895, 0.895, 1.0]),  // "ae8960" with MDF
+    color_multiply(assembly_color, [0.547, 0.542, 0.540, 1.0]),  // "6a533a" with MDF
+    color_multiply(assembly_color, [0.268, 0.268, 0.271, 1.0]),  // "34291d" with MDF
+];
 
 bolt_color = hardware_color;
 nut_color = color_multiply(hardware_color, [0.933, 0.933, 0.9, 1.0]);  // "b2b2b7" with steel
-
-letter_color = color_invert(flap_color);  // inverse of the flap color, for contrast
 
 
 flap_width_slop = 0.5;  // amount of slop of the flap side to side between the 2 spools
 
 spool_width_slop = 1.4;  // amount of slop for the spool assembly side-to-side inside the enclosure
 
-spool_tab_clearance = -0.06;  // for the tabs connecting the struts to the spool ends (interference fit)
+spool_tab_clearance = 0;  // for the tabs connecting the struts to the spool ends (interference fit)
 spool_retaining_clearance = 0.10;  // for the notches in the spool retaining wall
 spool_joint_clearance = 0.10;  // for the notched joints on the spool struts
 
@@ -147,9 +156,10 @@ spool_strut_inner_length = spool_width - 3 * thickness;
 
 spool_strut_exclusion_radius = sqrt((spool_strut_tab_outset+thickness/2)*(spool_strut_tab_outset+thickness/2) + (spool_strut_tab_width/2)*(spool_strut_tab_width/2));
 
+m4_axle_hole_diameter = 4.3;    // Slightly closer fit than the standard m4_hole_diameter, since a loose fit here will cause the spool to sit at a slight angle
 
 magnet_diameter = 4;
-magnet_hole_clearance = -0.07;  // interference fit
+magnet_hole_clearance = -0.05;  // interference fit
 magnet_hole_radius = (magnet_diameter + magnet_hole_clearance)/2;
 magnet_hole_offset = (spool_strut_exclusion_radius + flap_pitch_radius)/2;
 
@@ -165,14 +175,13 @@ enclosure_wall_to_wall_width = thickness + spool_width_slop/2 + spool_width_clea
 
 // Width of the front panel
 enclosure_width = enclosure_wall_to_wall_width + 28byj48_chassis_height() + 28byj48_chassis_height_clearance - thickness - 28byj48_mount_bracket_height();
-enclosure_horizontal_inset = (enclosure_width - enclosure_wall_to_wall_width)/2;
 front_window_upper_base = (flap_height - flap_pin_width/2);
 front_window_overhang = 3;
 front_window_upper = front_window_upper_base - front_window_overhang;
 front_window_lower = sqrt(outer_exclusion_radius*outer_exclusion_radius - front_forward_offset*front_forward_offset);
-front_window_slop = 0;
-front_window_width = spool_width_slop + spool_width_clearance + front_window_slop;
-front_window_right_inset = thickness - front_window_slop/2;
+front_window_width = spool_width_slop + spool_width_clearance;
+front_window_right_inset = thickness;
+enclosure_horizontal_inset = (enclosure_width - front_window_width)/2 - front_window_right_inset; // center the window in the front face (the inset is measured with respect to the *outside* of the wall, hence the "front_window_right_inset" correction)
 enclosure_vertical_margin = 10; // gap between top/bottom of flaps and top/bottom of enclosure
 enclosure_vertical_inset = max(thickness*1.5, m4_nut_width_corners_padded/2); // distance from top of sides to top of the top piece
 enclosure_height_upper = exclusion_radius + enclosure_vertical_margin + thickness + enclosure_vertical_inset;
@@ -190,7 +199,7 @@ pcb_to_spool = enclosure_wall_to_wall_width - front_window_width - thickness + s
 enclosure_tab_clearance = 0.10;
 
 num_front_tabs = 2;
-front_tab_width = (enclosure_wall_to_wall_width - 2*thickness) / (num_front_tabs*2 - 1);
+front_tab_width = (front_window_width) / (num_front_tabs*2 - 1);
 
 enclosure_length_right = front_forward_offset + m4_hole_diameter/2 + 2;
 
@@ -244,16 +253,27 @@ alignment_bar_center = (enclosure_length - enclosure_length_right) - alignment_b
 
 // Exported values
 // (Functions allow other files to reference these values when this file is 'used' and not 'included')
+function get_assembly_colors() = assembly_colors;
 function get_captive_nut_inset() = captive_nut_inset;
 function get_connector_bracket_length() = connector_bracket_length_outer;
 function get_connector_bracket_width() = connector_bracket_width;
+function get_enclosure_height() = enclosure_height;
 function get_enclosure_height_lower() = enclosure_height_lower;
+function get_enclosure_height_upper() = enclosure_height_upper;
 function get_enclosure_length_right() = enclosure_length_right;
 function get_enclosure_vertical_inset() = enclosure_vertical_inset;
 function get_enclosure_wall_to_wall_width() = enclosure_wall_to_wall_width;
+function get_enclosure_width() = enclosure_width;
 function get_flap_arc_separation() = (flap_hole_radius*2 + flap_hole_separation);
+function get_flap_color() = flap_color;
 function get_flap_gap() = flap_gap;
+function get_flap_pin_width() = flap_pin_width;
 function get_front_forward_offset() = front_forward_offset;
+function get_front_window_lower() = front_window_lower;
+function get_front_window_right_inset() = front_window_right_inset;
+function get_front_window_upper() = front_window_upper;
+function get_front_window_width() = front_window_width;
+function get_letter_color() = letter_color;
 function get_magnet_diameter() = magnet_diameter;
 function get_magnet_hole_offset() = magnet_hole_offset;
 function get_mounting_hole_inset() = mounting_hole_inset;
@@ -383,7 +403,7 @@ module spool_struts() {
     for (i=[0:3]) {
         angle = 90*i;
         //color([i < 2 ? 0 : 1, i == 0 || i == 2 ? 0 : 1, 0])
-        color(i % 2 == 0 ? assembly_color2 : assembly_color3)
+        color(i % 2 == 0 ? assembly_colors[1] : assembly_colors[2])
         translate([0, sin(angle)*(spool_strut_tab_outset + spool_strut_explosion), cos(angle)*(spool_strut_tab_outset + spool_strut_explosion)])
             rotate([-angle, 0, 0])
                 spool_strut();
@@ -407,10 +427,13 @@ module flap_spool_complete(captive_nut=false, motor_shaft=false, magnet_hole=fal
                 }
             }
             if (magnet_hole) {
-                // Hole for press fit magnet
-                translate([magnet_hole_offset, 0]) {
+                // Hole for press fit magnet, 90 degrees from home flap position
+                translate([0, magnet_hole_offset]) {
                     circle(r=magnet_hole_radius, $fn=15);
                 }
+            }
+            if (render_home_indicator_as_cut) {
+                flap_spool_home_indicator(num_flaps, flap_hole_radius, flap_hole_separation, flap_spool_outset, height=0);
             }
         }
     }
@@ -444,14 +467,48 @@ module motor_shaft() {
     }
 }
 
-module front_tabs_negative() {
+module front_tabs_negative(upper, tool_diameter=0) {
+    // tool_diameter is an optional parameter to adjust these cutouts to compensate for a rotary cutting tool, which
+    // requires "dog-bones" for corners and adjustment of the cutout if the tool is larger than thickness. This will
+    // generally not look good if cut all the way through the material, but with a CNC router these can be cut as
+    // pockets which are not visible from the front.
+    assert(tool_diameter <= m4_hole_diameter, "Tool diameter is too large to cut M4 holes");
+
+    cutout_height = max(thickness, tool_diameter);
+
+    // Offset is inverted on upper vs lower so that larger cutouts from tool diameter don't allow vertical movement freedom
+    cutout_offset = (upper ? 1 : -1) * (cutout_height - thickness)/2;
+
     for (i = [0 : num_front_tabs-1]) {
-        translate([thickness + (i*2+0.5) * front_tab_width, 0, 0])
-            square([front_tab_width + enclosure_tab_clearance, thickness + enclosure_tab_clearance], center=true);
+        translate([thickness + (i*2+0.5) * front_tab_width, cutout_offset, 0]) {
+            square([front_tab_width + enclosure_tab_clearance, cutout_height + enclosure_tab_clearance], center=true);
+
+            // Dog-bones
+            if (tool_diameter > 0) {
+                // Dog-bones are rendered as squares to simplify the number of line segments in the final SVG output
+                translate([(front_tab_width + enclosure_tab_clearance)/2 - tool_diameter/2, (cutout_height + enclosure_tab_clearance)/2]) {
+                    square([tool_diameter, tool_diameter], center=true);
+                }
+                translate([(front_tab_width + enclosure_tab_clearance)/2 - tool_diameter/2, -(cutout_height + enclosure_tab_clearance)/2]) {
+                    square([tool_diameter, tool_diameter], center=true);
+                }
+                translate([-(front_tab_width + enclosure_tab_clearance)/2 + tool_diameter/2, (cutout_height + enclosure_tab_clearance)/2]) {
+                    square([tool_diameter, tool_diameter], center=true);
+                }
+                translate([-(front_tab_width + enclosure_tab_clearance)/2 + tool_diameter/2, -(cutout_height + enclosure_tab_clearance)/2]) {
+                    square([tool_diameter, tool_diameter], center=true);
+                }
+            }
+        }
     }
     for (i = [0 : num_front_tabs-2]) {
-        translate([thickness + (i*2+1.5) * front_tab_width, 0, 0])
-            circle(r=m4_hole_diameter/2, $fn=30);
+        translate([thickness + (i*2+1.5) * front_tab_width, 0, 0]) {
+            if (tool_diameter == 0) {
+                circle(r=m4_hole_diameter/2, $fn=30);
+            } else {
+                square([m4_hole_diameter, m4_hole_diameter], center=true);
+            }
+        }
     }
 }
 
@@ -483,24 +540,31 @@ module enclosure_etch_style() {
                 children();
 }
 
+module enclosure_front_base_2d() {
+    translate([-enclosure_horizontal_inset, 0, 0]) {
+        square([enclosure_width, enclosure_height]);
+    }
+}
+
+module enclosure_front_cutouts_2d(tool_diameter=0) {
+    // Viewing window cutout
+    translate([front_window_right_inset, enclosure_height_lower - front_window_lower])
+        square([front_window_width, front_window_lower + front_window_upper]);
+
+    // Front lower tabs
+    translate([0, thickness * 0.5 + enclosure_vertical_inset, 0])
+        front_tabs_negative(upper=false, tool_diameter=tool_diameter);
+
+    // Front upper tabs
+    translate([0, enclosure_height - thickness * 0.5 - enclosure_vertical_inset, 0])
+        front_tabs_negative(upper=true, tool_diameter=tool_diameter);
+}
+
 module enclosure_front() {
     linear_extrude(height=thickness) {
         difference() {
-            translate([-enclosure_horizontal_inset, 0, 0]) {
-                square([enclosure_width, enclosure_height]);
-            }
-
-            // Viewing window cutout
-            translate([front_window_right_inset, enclosure_height_lower - front_window_lower])
-                square([front_window_width, front_window_lower + front_window_upper]);
-
-            // Front lower tabs
-            translate([0, thickness * 0.5 + enclosure_vertical_inset, 0])
-                front_tabs_negative();
-
-            // Front upper tabs
-            translate([0, enclosure_height - thickness * 0.5 - enclosure_vertical_inset, 0])
-                front_tabs_negative();
+            enclosure_front_base_2d();
+            enclosure_front_cutouts_2d();
         }
     }
 }
@@ -518,7 +582,7 @@ module enclosure_front_etch() {
 
     // position indicator, 'up' arrow
     enclosure_etch_style()
-        translate([enclosure_width - enclosure_horizontal_inset * 1.5, enclosure_height - enclosure_indicator_arrow_height/2 - enclosure_indicator_inset])
+        translate([enclosure_wall_to_wall_width + ((enclosure_width - enclosure_horizontal_inset) - enclosure_wall_to_wall_width)/2, enclosure_height - enclosure_indicator_arrow_height/2 - enclosure_indicator_inset])
             arrow([enclosure_indicator_arrow_width, enclosure_indicator_arrow_height], center=true);
 }
 
@@ -576,7 +640,7 @@ module connector_bracket_side_holes() {
 }
 
 module alignment_bar() {
-    color(assembly_color1)
+    color(assembly_colors[0])
         translate([enclosure_width - enclosure_horizontal_inset, -enclosure_length_right + front_forward_offset - alignment_bar_diameter/2, -enclosure_height_lower + alignment_bar_diameter/2])
             rotate([0, -90, 0])
                 linear_extrude(height=enclosure_width * render_units)
@@ -606,14 +670,16 @@ module enclosure_left() {
                 mirror([0, 1, 0])
                     side_tabs_negative(hole_sizes=[1]);
 
-            // Connector bracket cuts
-            translate([enclosure_height, enclosure_length]) {
-                mirror([1, 0, 0]) {
+            if (enable_connectors) {
+                // Connector bracket cuts
+                translate([enclosure_height, enclosure_length]) {
+                    mirror([1, 0, 0]) {
+                        connector_bracket_side_holes();
+                    }
+                }
+                translate([0, enclosure_length]) {
                     connector_bracket_side_holes();
                 }
-            }
-            translate([0, enclosure_length]) {
-                connector_bracket_side_holes();
             }
 
 
@@ -626,31 +692,45 @@ module enclosure_left() {
                 }
             }
 
-            // Zip tie holes, sensor (leading to bottom)
-            translate([enclosure_left_zip_bottom_inset, zip_tie_height/2 + enclosure_left_zip_side_inset, 0])
-                zip_tie_holes();
-
-            // Zip tie holes, motor (leading to top)
-            translate([enclosure_height - enclosure_left_zip_top_inset, enclosure_length - front_forward_offset])
-                rotate([0, 0, 90])  // cable channel facing 'up'
+            if (zip_tie_mode == 1) {
+                // Zip tie holes, sensor (leading to bottom)
+                translate([enclosure_left_zip_bottom_inset, zip_tie_height/2 + enclosure_left_zip_side_inset, 0])
                     zip_tie_holes();
 
-            // Alignment bar cutout
-            translate([0, alignment_bar_center]) {
-                union() {
-                    // Cutout
-                    translate([alignment_bar_cutout_width/2, 0])
-                        circle(r=alignment_bar_cutout_width/2, $fn=40);
-                    square([alignment_bar_cutout_width, alignment_bar_cutout_width], center=true);
+                // Zip tie holes, motor (leading to top)
+                translate([enclosure_height - enclosure_left_zip_top_inset, enclosure_length - front_forward_offset])
+                    rotate([0, 0, 90])  // cable channel facing 'up'
+                        zip_tie_holes();
+            } else if (zip_tie_mode == 2) {
+                // Zip tie holes, bottom
+                translate([10, zip_tie_spacing/2 + 5, 0])
+                    rotate([0, 0, 90])  // cable channel facing 'up/down'
+                        zip_tie_holes();
 
-                    // Front-side fillet
-                    // translate([0, alignment_bar_cutout_width/2, 0])
-                    //     fillet_tool(r=alignment_bar_fillet_radius, overlap=1, $fn=40);
+                // Zip tie holes, top
+                translate([enclosure_height - 10, zip_tie_spacing/2 + 5])
+                    rotate([0, 0, 90])  // cable channel facing 'up/down'
+                        zip_tie_holes();
+            }
 
-                    // Back-side fillet
-                    translate([0, -alignment_bar_cutout_width/2, 0])
-                        mirror([0, 1, 0])
-                            fillet_tool(r=alignment_bar_fillet_radius, $fn=40);
+            if (enable_alignment_bar) {
+                // Alignment bar cutout
+                translate([0, alignment_bar_center]) {
+                    union() {
+                        // Cutout
+                        translate([alignment_bar_cutout_width/2, 0])
+                            circle(r=alignment_bar_cutout_width/2, $fn=40);
+                        square([alignment_bar_cutout_width, alignment_bar_cutout_width], center=true);
+
+                        // Front-side fillet
+                        // translate([0, alignment_bar_cutout_width/2, 0])
+                        //     fillet_tool(r=alignment_bar_fillet_radius, overlap=1, $fn=40);
+
+                        // Back-side fillet
+                        translate([0, -alignment_bar_cutout_width/2, 0])
+                            mirror([0, 1, 0])
+                                fillet_tool(r=alignment_bar_fillet_radius, $fn=40);
+                    }
                 }
             }
         }
@@ -679,7 +759,7 @@ module enclosure_right() {
         difference() {
             square([enclosure_height, enclosure_length_right]);
             translate([enclosure_height_upper, enclosure_length_right - front_forward_offset, 0])
-                circle(r=m4_hole_diameter/2, $fn=30);
+                circle(r=m4_axle_hole_diameter/2, $fn=30);
 
             // backstop bolt slot
             translate([enclosure_height_upper - backstop_bolt_vertical_offset, enclosure_length_right - front_forward_offset, 0]) {
@@ -696,14 +776,16 @@ module enclosure_right() {
                 mirror([0, 1, 0])
                     side_tabs_negative(hole_sizes=[1]);
 
-            // Connector bracket cuts
-            translate([enclosure_height, enclosure_length_right]) {
-                mirror([1, 0, 0]) {
+            if (enable_connectors) {
+                // Connector bracket cuts
+                translate([enclosure_height, enclosure_length_right]) {
+                    mirror([1, 0, 0]) {
+                        connector_bracket_side_holes();
+                    }
+                }
+                translate([0, enclosure_length_right]) {
                     connector_bracket_side_holes();
                 }
-            }
-            translate([0, enclosure_length_right]) {
-                connector_bracket_side_holes();
             }
         }
     }
@@ -786,9 +868,11 @@ module enclosure_top() {
                     mirror([1, 0, 0])
                         side_captive_nuts(hole_types = [1]);
 
-                // mounting hole
-                translate([(enclosure_wall_to_wall_width - 2 * thickness)/2, enclosure_length_right - mounting_hole_inset]) {
-                    circle(r=m4_hole_diameter/2, $fn=30);
+                if (enable_mounting_holes) {
+                    // mounting hole
+                    translate([(enclosure_wall_to_wall_width - 2 * thickness)/2, enclosure_length_right - mounting_hole_inset]) {
+                        circle(r=m4_hole_diameter/2, $fn=30);
+                    }
                 }
             }
         }
@@ -834,9 +918,11 @@ module enclosure_bottom() {
                         mirror([1, 0, 0])
                             side_captive_nuts(hole_types = [1]);
 
-                // mounting hole
-                translate([(enclosure_wall_to_wall_width - 2 * thickness)/2, mounting_hole_inset]) {
-                    circle(r=m4_hole_diameter/2, $fn=30);
+                if (enable_mounting_holes) {
+                    // mounting hole
+                    translate([(enclosure_wall_to_wall_width - 2 * thickness)/2, mounting_hole_inset]) {
+                        circle(r=m4_hole_diameter/2, $fn=30);
+                    }
                 }
             }
         }
@@ -844,17 +930,21 @@ module enclosure_bottom() {
 }
 
 module enclosure_bottom_etch() {
-    enclosure_etch_style()
-        translate([captive_nut_inset + m4_nut_length + 1, 1, thickness]) {
-            text_label([str("rev. ", render_revision), render_date, "github.com/scottbez1/splitflap"]);
-        }
+    if (enable_source_info) {
+        enclosure_etch_style()
+            translate([captive_nut_inset + m4_nut_length + 1, 1, thickness]) {
+                text_label([str("rev. ", render_revision), render_date, "github.com/scottbez1/splitflap"]);
+            }
+    }
 }
 
-module split_flap_3d(front_flap_index, include_connector) {
+module split_flap_3d(front_flap_index, include_connector, include_front_panel=true) {
     module position_front() {
-        translate([0, front_forward_offset + thickness, -enclosure_height_lower])
-            rotate([90, 0, 0])
-                children();
+        if (include_front_panel) {
+            translate([0, front_forward_offset + thickness, -enclosure_height_lower])
+                rotate([90, 0, 0])
+                    children();
+        }
     }
 
     module positioned_front() {
@@ -966,14 +1056,14 @@ module split_flap_3d(front_flap_index, include_connector) {
 
     module positioned_front_bolts() {
         // Top
-        translate([enclosure_wall_to_wall_width/2, front_forward_offset + thickness, enclosure_height_upper - enclosure_vertical_inset - thickness/2]) {
+        translate([front_window_right_inset + 1.5*front_tab_width, front_forward_offset + thickness, enclosure_height_upper - enclosure_vertical_inset - thickness/2]) {
             rotate([0, 90, -90]) {
                 standard_m4_bolt(nut_distance=captive_nut_inset);
             }
         }
 
         // Bottom
-        translate([enclosure_wall_to_wall_width/2, front_forward_offset + thickness, -enclosure_height_lower + enclosure_vertical_inset + thickness/2]) {
+        translate([front_window_right_inset + 1.5*front_tab_width, front_forward_offset + thickness, -enclosure_height_lower + enclosure_vertical_inset + thickness/2]) {
             rotate([0, 90, -90]) {
                 standard_m4_bolt(nut_distance=captive_nut_inset);
             }
@@ -982,24 +1072,24 @@ module split_flap_3d(front_flap_index, include_connector) {
 
     module positioned_enclosure() {
         if (render_enclosure == 2) {
-            color(assembly_color1)
+            color(assembly_colors[0])
                 positioned_front();
-            color(assembly_color2)
+            color(assembly_colors[1])
                 positioned_left();
-            color(assembly_color2)
+            color(assembly_colors[1])
                 positioned_right();
-            color(assembly_color3)
+            color(assembly_colors[2])
                 positioned_top();
-            color(assembly_color3)
+            color(assembly_colors[2])
                 positioned_bottom();
             positioned_front_etch();
             positioned_left_etch();
             positioned_right_etch();
             positioned_bottom_etch();
             if (include_connector) {
-                color(assembly_color4)
+                color(assembly_colors[3])
                     positioned_top_connector();
-                color(assembly_color4)
+                color(assembly_colors[3])
                     positioned_bottom_connector();
             }
             if (render_bolts) {
@@ -1104,7 +1194,7 @@ module split_flap_3d(front_flap_index, include_connector) {
                         flap_spool_etch();
                 }
             }
-            color(assembly_color1) {
+            color(assembly_colors[0]) {
                 translate([thickness - 3*spool_horizontal_explosion, 0, 0]) {
                     rotate([0, 90, 0]) {
                         spool_retaining_wall(m4_bolt_hole=true);
@@ -1195,14 +1285,18 @@ if (render_3d) {
                 translate([0, enclosure_length + kerf_width])
                     enclosure_right_etch();
 
-            translate([0, enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width - enclosure_horizontal_inset])
-                rotate([0, 0, -90])
-                    enclosure_front();
-
-            laser_etch()
+            if (render_front_panel) {
                 translate([0, enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width - enclosure_horizontal_inset])
                     rotate([0, 0, -90])
-                        enclosure_front_etch();
+                        enclosure_front();
+            }
+
+            if (render_front_panel) {
+                laser_etch()
+                    translate([0, enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width - enclosure_horizontal_inset])
+                        rotate([0, 0, -90])
+                            enclosure_front_etch();
+            }
 
             // Top and bottom
             translate([enclosure_height + kerf_width + enclosure_length_right, enclosure_wall_to_wall_width + kerf_width])
@@ -1235,13 +1329,17 @@ if (render_3d) {
                 rotate([0, 0, 180])
                     spool_strut();
 
-            // Connector brackets on the top right
-            translate([enclosure_height + kerf_width, 2 * enclosure_wall_to_wall_width + 2 * kerf_width - thickness, 0])
-                connector_bracket();
-
-            translate([enclosure_height + kerf_width + connector_bracket_width - connector_bracket_length_outer, 2 * enclosure_wall_to_wall_width + 3 * kerf_width - thickness + connector_bracket_width + connector_bracket_length_outer, 0])
-                rotate([0,0,-90])
+            if (enable_connectors) {
+                // Connector brackets on the top right
+                translate([enclosure_height + kerf_width, 2 * enclosure_wall_to_wall_width + 2 * kerf_width - thickness, 0])
                     connector_bracket();
+            }
+
+            if (enable_connectors) {
+                translate([enclosure_height + kerf_width + connector_bracket_width - connector_bracket_length_outer, 2 * enclosure_wall_to_wall_width + 3 * kerf_width - thickness + connector_bracket_width + connector_bracket_length_outer, 0])
+                    rotate([0,0,-90])
+                        connector_bracket();
+            }
 
             // Flap spools in flap window
             flap_spool_y_off = enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width - front_window_right_inset - enclosure_horizontal_inset - front_window_width/2;
@@ -1249,25 +1347,30 @@ if (render_3d) {
             translate([flap_spool_x_off, flap_spool_y_off])
                 flap_spool_complete(motor_shaft=true, magnet_hole=true);
             translate([flap_spool_x_off + spool_outer_radius*2 + 2, flap_spool_y_off])
-                flap_spool_complete(captive_nut=true);
+                mirror([0, 1, 0])
+                    flap_spool_complete(captive_nut=true);
 
             // Flap spool etching
-            laser_etch() {
-                translate([flap_spool_x_off, flap_spool_y_off])
-                    mirror([0, 1, 0])
-                    flap_spool_etch();
-                translate([flap_spool_x_off + spool_outer_radius*2 + 2, flap_spool_y_off])
-                    flap_spool_etch();
+            if (!render_home_indicator_as_cut) {
+                laser_etch() {
+                    translate([flap_spool_x_off, flap_spool_y_off])
+                        flap_spool_etch();
+                    translate([flap_spool_x_off + spool_outer_radius*2 + 2, flap_spool_y_off])
+                        mirror([0, 1, 0])
+                            flap_spool_etch();
+                }
             }
 
             // Spool retaining wall in motor window
             translate([enclosure_height_lower + 28byj48_shaft_offset() - 28byj48_chassis_radius() + (28byj48_chassis_radius() + motor_backpack_extent)/2, enclosure_length - front_forward_offset - 28byj48_chassis_radius() - motor_hole_slop/2 + spool_strut_width/2 + kerf_width])
                 spool_retaining_wall(m4_bolt_hole=true);
 
-            // Sensor soldering jig
-            translate([enclosure_height_lower + 28byj48_shaft_offset() - 28byj48_chassis_radius() + (28byj48_chassis_radius() + motor_backpack_extent)/2 + sensor_jig_width(pcb_to_spool)/2, enclosure_length - front_forward_offset + 28byj48_chassis_radius() + motor_hole_slop/2 - kerf_width])
-                rotate([0, 0, 180])
-                    sensor_jig(pcb_to_spool);
+            if (enable_sensor_jig) {
+                // Sensor soldering jig
+                translate([enclosure_height_lower + 28byj48_shaft_offset() - 28byj48_chassis_radius() + (28byj48_chassis_radius() + motor_backpack_extent)/2 + sensor_jig_width(pcb_to_spool)/2, enclosure_length - front_forward_offset + 28byj48_chassis_radius() + motor_hole_slop/2 - kerf_width])
+                    rotate([0, 0, 180])
+                        sensor_jig(pcb_to_spool, thickness);
+            }
         }
     }
 }

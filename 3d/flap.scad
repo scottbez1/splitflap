@@ -23,6 +23,10 @@ use<splitflap.scad>;
 
 character_list = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,'";
 
+// Facet number variable refers to a special variable "$fn" that is used to control the number of facets to generate an arc.
+// Higher than 100 is not recommended according to the docs as it demands a lot resources
+letter_facet_number = 100;
+
 // Vertical keepout refers to the portion of bottom flaps that are visible stacked behind the frontmost flap.
 vertical_keepout_mode = 1;              // 0=ignore; 1=highlight; 2=cut
 vertical_keepout_size_factor = 1.1;     // Expand calculated keepout region by this factor. 1=no expansion, 1.5=50% expansion, etc
@@ -84,7 +88,7 @@ module _draw_letter(letter) {
             offset_x = is_undef(overrides[1]) ? get_font_setting("offset_x") : get_font_setting("offset_x") + overrides[1];
             offset_y = is_undef(overrides[2]) ? get_font_setting("offset_y") : get_font_setting("offset_y") + overrides[2];
             translate([offset_x, offset_y]) {
-                text(text=letter, size=flap_height * height * 2, font=get_font_setting("font"), halign="center");
+                text(text=letter, size=flap_height * height * 2, font=get_font_setting("font"), halign="center", $fn=letter_facet_number);
             }
         }
     }

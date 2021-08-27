@@ -14,54 +14,7 @@
    limitations under the License.
 */
 include <m4_dimensions.scad>;
-
-pcb_thickness = 1.6;
-sensor_spool_distance = 0.70;  // distance from the sensor to the face of the spool
-
-// From datasheet:
-hall_effect_height = (2.8 + 3.2) / 2;
-hall_effect_width = (3.9 + 4.3) / 2;
-hall_effect_thickness = (1.40 + 1.60) / 2;
-hall_effect_sensor_offset_y = hall_effect_height - 1.25;
-hall_effect_pin_length_max = 14.5;
-
-// From sensor.kicad_pcb:
-pcb_height = 16.256;
-pcb_length = 16.256;
-pcb_hole_to_sensor_pin_1_x = 8.636;
-pcb_hole_to_sensor_pin_1_y = 1.27;
-sensor_pin_pitch = 1.27;
-pcb_hole_to_connector_pin_1_x = 8.636;
-pcb_hole_to_connector_pin_1_y = 8.636;
-connector_pin_pitch = 2.54;
-pcb_edge_to_hole_x = 4.572;
-pcb_edge_to_hole_y = 4.572;
-
-pcb_adjustment_range = 4;
-pcb_hole_radius = m4_hole_diameter/2;
-
-// Jig dimensions
-pcb_jig_corner_fillet = 2;
-pcb_jig_align_thickness = 2;
-pcb_jig_align_length = 0;  // past the PCB thickness
-pcb_jig_align_clearance = 0.25;  // on x, around the PCB
-pcb_jig_depth_clearance = 0.1;  // on y, from sensor to jig
-
-
-// Computed dimensions
-pcb_hole_to_sensor_x = pcb_hole_to_sensor_pin_1_x - sensor_pin_pitch;
-pcb_hole_to_sensor_y = pcb_hole_to_sensor_pin_1_y + hall_effect_sensor_offset_y;
-
-
-// Rough numbers for 3d rendering only (non-critical dimensions)
-pcb_connector_height = 3.2;
-pcb_connector_width = 8.2;
-pcb_connector_length = 18;
-pcb_connector_pin_width = 0.64;
-pcb_connector_pin_slop = 0.1;
-pcb_connector_pin_tail_length = 3.05 + 2.5/2;
-
-pcb_sensor_pin_width = 0.43;
+include <sensor_pcb_dimensions.scad>;
 
 
 module pcb_outline_2d(hole=true) {
@@ -76,7 +29,7 @@ module pcb_outline_2d(hole=true) {
 }
 
 // 3D PCB module, origin at the center of the mounting hole on the bottom surface of the PCB
-module pcb(pcb_to_spool, render_jig=false) {
+module pcb(pcb_to_spool, render_jig=false, jig_thickness=0) {
     color([0, 0.5, 0]) {
         linear_extrude(height=pcb_thickness) {
             pcb_outline_2d();
@@ -133,7 +86,7 @@ module pcb(pcb_to_spool, render_jig=false) {
         color([1, 1, 0])
         translate([-pcb_edge_to_hole_x - pcb_jig_align_thickness - pcb_jig_align_clearance, pcb_hole_to_sensor_pin_1_y + pcb_sensor_pin_width/2 + thickness, -pcb_to_sensor(pcb_to_spool) + pcb_jig_depth_clearance])
         rotate([90, 0, 0])
-            sensor_jig(pcb_to_spool);
+            sensor_jig(pcb_to_spool, jig_thickness);
     }
 }
 
@@ -180,7 +133,7 @@ function pcb_thickness() = pcb_thickness;
 function sensor_jig_height(pcb_to_spool) = pcb_to_sensor(pcb_to_spool) - pcb_jig_depth_clearance + pcb_jig_align_length + pcb_thickness;
 function sensor_jig_width(pcb_to_spool) = pcb_length + (pcb_jig_align_thickness + pcb_jig_align_clearance) * 2;
 
-module sensor_jig(pcb_to_spool) {
+module sensor_jig(pcb_to_spool, thickness) {
     module fillet() {
         eps = 0.01;
         difference() {

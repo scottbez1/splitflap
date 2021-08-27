@@ -24,7 +24,7 @@ class Splitflap(object):
 
         self.has_inited = False
         self.num_modules = 0
-        self.character_list = ""
+        self.character_list = _ALPHABET
 
         self.last_command = None
         self.last_status = None
@@ -97,6 +97,13 @@ class Splitflap(object):
         self.serial.write(b'@')
         return self._loop_for_status()
 
+    def get_text(self):
+        text = ""
+        if self.last_status != None:
+            for module in self.last_status:
+                text += module['flap']
+        return text
+
     def get_status(self):
         return self.last_status
 
@@ -122,7 +129,7 @@ class Splitflap(object):
 
 @contextmanager
 def splitflap(serial_port):
-    with serial.Serial(serial_port, 38400) as ser:
+    with serial.Serial(serial_port, 38400, timeout=1.0) as ser:
         s = Splitflap(ser)
         s._loop_for_status()
         yield s
