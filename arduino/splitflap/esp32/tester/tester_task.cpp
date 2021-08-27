@@ -773,40 +773,6 @@ Status TesterTask::runTestSuitesForever() {
     }
     
     return Status::ok();
-
-        // TODO: move loopback testing to splitflap_task; just reset it then monitor it here
-
-        // spr_.setTextColor(TFT_WHITE, TFT_BLACK);
-        // spr_.setTextSize(2);
-        // spr_.setCursor(0, 0);
-        // spr_.printf("Testing loopback...");
-        // bool loopback_result[NUM_LOOPBACKS][NUM_LOOPBACKS];
-        // bool loopback_off_result[NUM_LOOPBACKS];
-        // bool loopback_success = splitflap_task_.testAllLoopbacks(loopback_result, loopback_off_result);
-
-        // if (!loopback_success) {
-        //     String failure;
-        //     for (uint8_t i = 0; i < NUM_LOOPBACKS; i++) {
-        //         for (uint8_t j = 0; j < NUM_LOOPBACKS; j++) {
-        //             if (!loopback_result[i][j]) {
-        //                 failure.concat("Bad loopback. Set output ");
-        //                 failure.concat(i);
-        //                 failure.concat(" but read incorrect value at input ");
-        //                 failure.concat(j);
-        //                 failure.concat("\n");
-        //             }
-        //         }
-        //     }
-        //     for (uint8_t j = 0; j < NUM_LOOPBACKS; j++) {
-        //         if (!loopback_off_result[j]) {
-        //             failure.concat("Bad loopback at input ");
-        //             failure.concat(j);
-        //             failure.concat(" when all outputs off - should have been 0\n");
-        //         }
-        //     }
-        //     fail(failure);
-        // } else {
-        // }
 }
 
 void TesterTask::initializeIo() {

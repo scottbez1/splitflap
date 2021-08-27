@@ -27,27 +27,6 @@
 #include "../core/task.h"
 #include "firestore_test_reporter.h"
 
-// enum class TestState : uint16_t {
-//     BOOT                        = 0,
-//     BOOT_POWER_TEST             = 1,
-
-//     READY                       = 100,
-
-//     TEST_LOOPBACK               = 200,
-//     TEST_LEDS                   = 210,
-//     TEST_CHECK_MOTOR_POWER      = 220,
-//     TEST_ENABLE_MOTOR_POWER     = 230,
-//     TEST_HOME_ALL               = 240,
-
-//     TEST_MIN                    = TEST_LOOPBACK,
-//     TEST_MAX                    = TEST_HOME_ALL,
-
-//     RESULT_ABORTED                = 900,
-//     RESULT_PASSED                 = 901,
-//     RESULT_FAILED                 = 902,
-// };
-
-
 class Status {
     public:
         enum class Code : uint8_t {
