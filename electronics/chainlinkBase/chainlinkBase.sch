@@ -469,13 +469,13 @@ Text Label 3950 4350 2    50   ~ 0
 LATCH
 Text Label 3950 4050 2    50   ~ 0
 SENSOR_DATA
-Text Label 1650 4150 0    50   ~ 0
+Text Label 1650 3850 0    50   ~ 0
 SDA
-Text Label 1650 4350 0    50   ~ 0
+Text Label 1650 3950 0    50   ~ 0
 SCL
 Text Label 3950 3750 2    50   ~ 0
 RX
-Text Label 1650 3950 0    50   ~ 0
+Text Label 1650 4350 0    50   ~ 0
 TX
 Wire Wire Line
 	3950 4050 3350 4050
@@ -489,10 +489,10 @@ Wire Wire Line
 	1850 4600 1850 4650
 Wire Wire Line
 	1850 4750 2350 4750
-Text Label 1650 4050 0    50   ~ 0
+Text Label 1650 4150 0    50   ~ 0
 RS485_DRIVE_EN
 Wire Wire Line
-	1650 4050 2350 4050
+	1650 4150 2350 4150
 $Comp
 L power:+3.3V #PWR0122
 U 1 1 60BD53B3
@@ -510,11 +510,11 @@ Wire Wire Line
 	3350 4450 3950 4450
 Connection ~ 3700 7250
 Wire Wire Line
-	1650 3950 2350 3950
-Wire Wire Line
-	1650 4150 2350 4150
-Wire Wire Line
 	1650 4350 2350 4350
+Wire Wire Line
+	1650 3850 2350 3850
+Wire Wire Line
+	1650 3950 2350 3950
 $Comp
 L power:GND #PWR0114
 U 1 1 6238771C
@@ -777,8 +777,8 @@ Wire Wire Line
 Wire Wire Line
 	9750 1350 9750 1250
 Wire Wire Line
-	2350 3850 1650 3850
-Text Label 1650 3850 0    50   ~ 0
+	2350 4050 1650 4050
+Text Label 1650 4050 0    50   ~ 0
 MASTER_EN
 Wire Wire Line
 	10350 1550 9650 1550
