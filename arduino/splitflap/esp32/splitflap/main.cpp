@@ -31,6 +31,11 @@ DisplayTask displayTask(splitflapTask, 0);
 MQTTTask mqttTask(splitflapTask, 0);
 #endif
 
+#ifdef CHAINLINK_BASE
+#include "../base/base_supervisor_task.h"
+BaseSupervisorTask baseSupervisorTask(splitflapTask, 0);
+#endif
+
 void setup() {
   Serial.begin(MONITOR_SPEED);
 
@@ -39,6 +44,10 @@ void setup() {
 
   #ifdef MQTT
   mqttTask.begin();
+  #endif
+
+  #ifdef CHAINLINK_BASE
+  baseSupervisorTask.begin();
   #endif
 
   // Delete the default Arduino loopTask to free up Core 1

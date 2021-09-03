@@ -70,6 +70,13 @@ jobs:
         pio run -d ./arduino/splitflap \
           -e chainlink
 
+    - name: Build Firmware (chainlinkBase)
+      # Run regardless of other build step failures, as long as setup steps completed
+      if: always() && steps.pio_install.outcome == 'success'
+      run: |
+        pio run -d ./arduino/splitflap \
+          -e chainlinkBase
+
     - name: Build Firmware (chainlinkDriverTester)
       # Run regardless of other build step failures, as long as setup steps completed
       if: always() && steps.pio_install.outcome == 'success'
