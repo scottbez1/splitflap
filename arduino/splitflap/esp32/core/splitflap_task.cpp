@@ -26,12 +26,6 @@
 #include "task.h"
 #include "splitflap_task.h"
 
-#define QCMD_NO_OP          0
-#define QCMD_RESET_AND_HOME 1
-#define QCMD_LED_ON         2
-#define QCMD_LED_OFF        3
-#define QCMD_FLAP           4
-
 static_assert(QCMD_FLAP + NUM_FLAPS <= 255, "Too many flaps to fit in uint8_t command structure");
 
 SplitflapTask::SplitflapTask(const uint8_t task_core, const LedMode led_mode) : Task("Splitflap", 8192, 1, task_core), led_mode_(led_mode), state_semaphore_(xSemaphoreCreateMutex()) {
@@ -117,7 +111,7 @@ void SplitflapTask::run() {
 
     for (uint8_t i = 0; i < NUM_MODULES; i++) {
         modules[i]->Init();
-#ifndef CHAINLINK_DRIVER_TESTER
+#if !defined(CHAINLINK_DRIVER_TESTER) && !defined(CHAINLINK_BASE)
         modules[i]->GoHome();
 #endif
     }
@@ -241,7 +235,7 @@ void SplitflapTask::runUpdate() {
       if (!ok && loopback_all_ok_) {
         // Publish failures immediately
         loopback_all_ok_ = false;
-        Serial.println("Loopback status changed to 0");
+        Serial.println("Loopback status changed to 0!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
       }
     } else if (loopback_step_index_ == 50) {
       loopback_step_index_ = 0;
@@ -374,9 +368,6 @@ void SplitflapTask::updateStateCache() {
 }
 
 void SplitflapTask::showString(const char* str, uint8_t length) {
-    // XXX This is very dangerous to call from within our own task, as we risk deadlock, but allow it for now to ease development. It will be safe once serial processing is moved to another task
-    // assert(xTaskGetCurrentTaskHandle() != getHandle());
-
     pending_move_response = true;
     Serial.print("{\"type\":\"move_echo\", \"dest\":\"");
     Serial.flush();
@@ -418,6 +409,10 @@ void SplitflapTask::setLed(const uint8_t id, const bool on) {
 SplitflapState SplitflapTask::getState() {
     SemaphoreGuard lock(state_semaphore_);
     return state_cache_;
+}
+
+void SplitflapTask::postRawCommandToBack(const Command& command) {
+    assert(xQueueSendToBack(queue_, &command, portMAX_DELAY) == pdTRUE);
 }
 
 // void SplitflapTask::disableAll(const char* message) {

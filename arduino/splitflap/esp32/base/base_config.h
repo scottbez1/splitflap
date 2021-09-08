@@ -33,3 +33,5 @@
 #define MCP_PIN_ADDR_2          14
 #define MCP_PIN_ADDR_4          13
 #define MCP_PIN_ADDR_8          12
+
+#define IDLE_CURRENT_MILLIAMPS  25  // Max acceptable power channel idle current. Should account for measurement error and channel Out LED (if enabled).

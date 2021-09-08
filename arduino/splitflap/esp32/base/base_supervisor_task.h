@@ -49,4 +49,8 @@ class BaseSupervisorTask : public Task<BaseSupervisorTask> {
             Adafruit_INA219(0x44),
         };
 
+
+
+        void setPowerChannel(uint8_t channel, bool on);
+
 };

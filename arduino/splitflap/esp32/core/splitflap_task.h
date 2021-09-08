@@ -45,6 +45,12 @@ struct Command {
     uint8_t data[NUM_MODULES];
 };
 
+#define QCMD_NO_OP          0
+#define QCMD_RESET_AND_HOME 1
+#define QCMD_LED_ON         2
+#define QCMD_LED_OFF        3
+#define QCMD_FLAP           4
+
 class SplitflapTask : public Task<SplitflapTask> {
     friend class Task<SplitflapTask>; // Allow base Task to invoke protected run()
 
@@ -57,6 +63,7 @@ class SplitflapTask : public Task<SplitflapTask> {
         void showString(const char *str, uint8_t length);
         void resetAll();
         void setLed(uint8_t id, bool on);
+        void postRawCommandToBack(const Command& command);
 
     protected:
         void run();
