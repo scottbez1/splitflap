@@ -35,7 +35,12 @@ static const uint8_t LED_CHANNEL_INDEX[NUM_POWER_CHANNELS] = {
     1
 };
 
-BaseSupervisorTask::BaseSupervisorTask(SplitflapTask& splitflap_task, const uint8_t task_core) : Task{"BaseSupervisor", 2048, 1, task_core}, splitflap_task_{splitflap_task} {}
+/** Maps splitflap module index to the power channel index. */
+uint8_t BaseSupervisorTask::getPowerChannelForModuleIndex(uint8_t module_index) {
+    return module_index / 36;
+}
+
+BaseSupervisorTask::BaseSupervisorTask(SplitflapTask& splitflap_task, const uint8_t task_core) : Task{"BaseSupervisor", 4096, 1, task_core}, splitflap_task_{splitflap_task} {}
 
 void BaseSupervisorTask::run() {
     pinMode(BASE_MCP_NRESET_PIN, OUTPUT);
@@ -49,6 +54,9 @@ void BaseSupervisorTask::run() {
     mcp_.begin(BASE_MCP_ADDRESS, &Wire);
 
     for (uint8_t i = 0; i < NUM_POWER_CHANNELS; i++) {
+        channel_enabled_[i] = false;
+        channel_current_out_of_range_count_[i] = 0;
+
         ina219_[i].begin();
         ina219_[i].setCalibrationSplitflap();
 
@@ -83,27 +91,38 @@ void BaseSupervisorTask::run() {
     for (uint8_t i = 0; i < NUM_POWER_CHANNELS; i++) {
         setPowerChannel(i, false);
     }
-    digitalWrite(BASE_MASTER_EN_PIN, LOW);
 
-    for (uint8_t i = 0; i < NUM_POWER_CHANNELS; i++) {
-        v = ina219_[i].getBusVoltage_V();
-        ma = ina219_[i].getCurrent_mA();
-        if (v > 3 || ma > IDLE_CURRENT_MILLIAMPS) {
-            while (1) {
-                Serial.printf("FAULT DURING STARTUP. Unexpected power on channel %u! %dmV\t%dmA\n", i, (int)(v*1000), (int)ma);
-                delay(1000);
-            }
-        }
-    }
+    // FIXME
+    // digitalWrite(BASE_MASTER_EN_PIN, LOW);
+
+    // for (uint8_t i = 0; i < NUM_POWER_CHANNELS; i++) {
+    //     v = ina219_[i].getBusVoltage_V();
+    //     ma = ina219_[i].getCurrent_mA();
+    //     if (v > 3 || ma > IDLE_CURRENT_MILLIAMPS) {
+    //         while (1) {
+    //             Serial.printf("FAULT DURING STARTUP. Unexpected power on channel %u! %dmV\t%dmA\n", i, (int)(v*1000), (int)ma);
+    //             delay(1000);
+    //         }
+    //     }
+    // }
 
     digitalWrite(BASE_MASTER_EN_PIN, HIGH);
 
     Serial.println("Waiting for voltage...");
+    uint32_t voltage_found_at = 0;
     while (1) {
-        v = ina219_[0].getBusVoltage_V();
-        ma = ina219_[0].getCurrent_mA();
+        for (uint8_t i = 0; i < NUM_POWER_CHANNELS; i++) {
+            v = ina219_[i].getBusVoltage_V();
+            ma = ina219_[i].getCurrent_mA();
 
-        if (v > 11.5 && v < 13) {
+            if (v > 11.5 && v < 13) {
+                channel_enabled_[i] = true;
+                if (voltage_found_at == 0) {
+                    voltage_found_at = millis();
+                }
+            }
+        }
+        if (voltage_found_at != 0 && millis() - voltage_found_at > 100) {
             break;
         }
     }
@@ -111,6 +130,9 @@ void BaseSupervisorTask::run() {
     bool fault = false;
 
     for (uint8_t i = 0; i < NUM_POWER_CHANNELS; i++) {
+        if (!channel_enabled_[i]) {
+            continue;
+        }
         Serial.printf("Enabling power channel %u\n", i);
 
         setPowerChannel(i, true);
@@ -119,7 +141,7 @@ void BaseSupervisorTask::run() {
         for (uint8_t j = 0; j < 250; j++) {
             ma = ina219_[i].getCurrent_mA();
             Serial.printf("%d mA\n", (int)ma);
-            if (ma < 20) {
+            if (ma < IDLE_CURRENT_MILLIAMPS) {
                 low_current++;
                 if (low_current >= 10) {
                     current_settled = true;
@@ -139,45 +161,77 @@ void BaseSupervisorTask::run() {
     }
 
     if (!fault) {
-        // splitflap_task_.resetAll();
+        splitflap_task_.resetAll();
+    }
 
-        Command c = {};
-        for (uint8_t i = 0; i < 82; i++) {
-            c.data[i] = QCMD_RESET_AND_HOME;
+    uint32_t last_report = 0;
+    while (!fault) {
+        uint32_t now = millis();
+        SplitflapState splitflap_state = splitflap_task_.getState();
+        int32_t min_expected_channel_current[NUM_POWER_CHANNELS] = {};
+        int32_t max_expected_channel_current[NUM_POWER_CHANNELS] = {};
+        for (uint8_t i = 0; i < NUM_POWER_CHANNELS; i++) {
+            min_expected_channel_current[i] = -5;
+            max_expected_channel_current[i] = IDLE_CURRENT_MILLIAMPS;
         }
-        splitflap_task_.postRawCommandToBack(c);
+        for (uint8_t i = 0; i < NUM_MODULES; i++) {
+            uint8_t power_channel = getPowerChannelForModuleIndex(i);
+            if (splitflap_state.modules[i].moving) {
+                min_expected_channel_current[power_channel] += MIN_MODULE_CURRENT_MA;
+                max_expected_channel_current[power_channel] += splitflap_state.modules[i].state == State::LOOK_FOR_HOME ?
+                        MAX_MODULE_CURRENT_HOMING_MA :
+                        MAX_MODULE_CURRENT_MOVING_MA;
+            }
+        }
 
-        uint32_t last_report = 0;
-        while (!fault) {
-            uint32_t now = millis();
-            float voltages[NUM_POWER_CHANNELS];
-            float current_ma[NUM_POWER_CHANNELS];
-            for (uint8_t i = 0; i < NUM_POWER_CHANNELS; i++) {
-                voltages[i] = ina219_[i].getBusVoltage_V();
-                current_ma[i] = ina219_[i].getCurrent_mA();
+        float voltages[NUM_POWER_CHANNELS];
+        float current_ma[NUM_POWER_CHANNELS];
+        for (uint8_t i = 0; i < NUM_POWER_CHANNELS; i++) {
+            voltages[i] = ina219_[i].getBusVoltage_V();
+            current_ma[i] = ina219_[i].getCurrent_mA();
 
-                // TODO: calculate expected load based on splitflap moving status
-                if ((voltages[i] > 5 && voltages[i] < 11) || voltages[i] > 13 || current_ma[i] > 9000) {
+            if (channel_enabled_[i]) {
+                if (voltages[i] < 11 || voltages[i] > 13 || current_ma[i] > MAX_CHANNEL_CURRENT_MA) {
                     Serial.printf("BAD POWER on power channel %u! %dmV\t%dmA\n", i, (int)(voltages[i]*1000), (int)current_ma[i]);
                     fault = true;
                     break;
                 }
 
-                leds_[LED_CHANNEL_INDEX[i]].setRGB(0, 30, ((now / 128) % 2 == 0) ? (current_ma[i] > 25 ? 20 + current_ma[i]*100/9000 : 0) : 0);
-            }
-            FastLED.show();
-
-            if (now - last_report > 500) {
-                last_report = now;
-                float current_sum_ma = 0;
-                for (uint8_t i = 0; i < NUM_POWER_CHANNELS; i++) {
-                    Serial.printf("%dmV\t%dmA\n", (int)(voltages[i]*1000), (int)current_ma[i]);
-                    current_sum_ma += current_ma[i];
+                if (current_ma[i] < min_expected_channel_current[i] || current_ma[i] > max_expected_channel_current[i]) {
+                    channel_current_out_of_range_count_[i]++;
+                    if (channel_current_out_of_range_count_[i] >= CONSECUTIVE_CURRENT_OUT_OF_RANGE_THRESHOLD) {
+                        Serial.printf("Power outside expected current on power channel %u!\n  Expected: %d - %dmA\n  Actual: %dmA\n", i, min_expected_channel_current[i], max_expected_channel_current[i], (int)current_ma[i]);
+                        fault = true;
+                        break;
+                    }
+                } else {
+                    channel_current_out_of_range_count_[i] = 0;
                 }
-                Serial.printf("Total current: %d\n", (int)current_sum_ma);
-                Serial.println("----------");
+
+                leds_[LED_CHANNEL_INDEX[i]].setRGB(0, 30, ((now / 128) % 2 == 0) ?
+                        (current_ma[i] > 25 ? 20 + current_ma[i]*100/MAX_CHANNEL_CURRENT_MA : 0) : 
+                        0); 
+            } else {
+                if (voltages[i] > 5 || current_ma[i] > IDLE_CURRENT_MILLIAMPS) {
+                    Serial.printf("BAD POWER on disabled power channel %u! %dmV\t%dmA\n", i, (int)(voltages[i]*1000), (int)current_ma[i]);
+                    fault = true;
+                    break;
+                }
             }
         }
+        FastLED.show();
+
+        if (now - last_report > 250) {
+            last_report = now;
+            float current_sum_ma = 0;
+            for (uint8_t i = 0; i < NUM_POWER_CHANNELS; i++) {
+                Serial.printf("%dmV\t%dmA\n", (int)(voltages[i]*1000), (int)current_ma[i]);
+                current_sum_ma += current_ma[i];
+            }
+            Serial.printf("Total current: %d\n", (int)current_sum_ma);
+            Serial.println("----------");
+        }
+        delay(1);
     }
 
     // Shutdown

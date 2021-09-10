@@ -41,6 +41,9 @@ class BaseSupervisorTask : public Task<BaseSupervisorTask> {
         CRGB leds_[NUM_LEDS];
         Adafruit_MCP23017 mcp_;
 
+        bool channel_enabled_[NUM_POWER_CHANNELS];
+        uint32_t channel_current_out_of_range_count_[NUM_POWER_CHANNELS];
+
         Adafruit_INA219 ina219_[NUM_POWER_CHANNELS] = {
             Adafruit_INA219(0x40),
             Adafruit_INA219(0x41),
@@ -49,7 +52,7 @@ class BaseSupervisorTask : public Task<BaseSupervisorTask> {
             Adafruit_INA219(0x44),
         };
 
-
+        static uint8_t getPowerChannelForModuleIndex(uint8_t module_index);
 
         void setPowerChannel(uint8_t channel, bool on);
 
