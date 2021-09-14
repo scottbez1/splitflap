@@ -92,19 +92,20 @@ void BaseSupervisorTask::run() {
         setPowerChannel(i, false);
     }
 
-    // FIXME
-    // digitalWrite(BASE_MASTER_EN_PIN, LOW);
+    digitalWrite(BASE_MASTER_EN_PIN, LOW);
 
-    // for (uint8_t i = 0; i < NUM_POWER_CHANNELS; i++) {
-    //     v = ina219_[i].getBusVoltage_V();
-    //     ma = ina219_[i].getCurrent_mA();
-    //     if (v > 3 || ma > IDLE_CURRENT_MILLIAMPS) {
-    //         while (1) {
-    //             Serial.printf("FAULT DURING STARTUP. Unexpected power on channel %u! %dmV\t%dmA\n", i, (int)(v*1000), (int)ma);
-    //             delay(1000);
-    //         }
-    //     }
-    // }
+    Serial.println("Waiting for low motor input voltage for 10 seconds...");
+    // Voltage must be low on all channels for at least 10 seconds before enabling PSU (to avoid fast switching in case of a WDT reset or other crash loop)
+    uint32_t voltage_low_millis = millis();
+    while (millis() - voltage_low_millis < 10000) {
+        for (uint8_t i = 0; i < NUM_POWER_CHANNELS; i++) {
+            v = ina219_[i].getBusVoltage_V();
+            ma = ina219_[i].getCurrent_mA();
+            if (v > 3 || ma > IDLE_CURRENT_MILLIAMPS) {
+                voltage_low_millis = millis();
+            }
+        }
+    }
 
     digitalWrite(BASE_MASTER_EN_PIN, HIGH);
 
