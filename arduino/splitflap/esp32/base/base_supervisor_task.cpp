@@ -17,6 +17,9 @@
 
 #include "base_supervisor_task.h"
 
+#define PIN_UP_BUTTON           35
+#define PIN_DOWN_BUTTON         0
+
 /** Maps power channel index (0-4) to MCP GPIO pin. */
 static const uint8_t MCP_PIN_CHANNEL_EN[NUM_POWER_CHANNELS] = {
     5,
@@ -45,6 +48,9 @@ BaseSupervisorTask::BaseSupervisorTask(SplitflapTask& splitflap_task, const uint
 void BaseSupervisorTask::run() {
     pinMode(BASE_MCP_NRESET_PIN, OUTPUT);
     pinMode(BASE_MASTER_EN_PIN, OUTPUT);
+
+    pinMode(PIN_UP_BUTTON, INPUT);  // TDisplay has built-in pullup
+    pinMode(PIN_DOWN_BUTTON, INPUT_PULLUP);
 
     digitalWrite(BASE_MCP_NRESET_PIN, HIGH);
 
@@ -94,10 +100,10 @@ void BaseSupervisorTask::run() {
 
     digitalWrite(BASE_MASTER_EN_PIN, LOW);
 
-    Serial.println("Waiting for low motor input voltage for 10 seconds...");
-    // Voltage must be low on all channels for at least 10 seconds before enabling PSU (to avoid fast switching in case of a WDT reset or other crash loop)
+    Serial.println("Waiting for low motor input voltage for 5 seconds...");
+    // Voltage must be low on all channels for at least 5 seconds before enabling PSU (to avoid fast switching in case of a WDT reset or other crash loop)
     uint32_t voltage_low_millis = millis();
-    while (millis() - voltage_low_millis < 10000) {
+    while (millis() - voltage_low_millis < 5000) {
         for (uint8_t i = 0; i < NUM_POWER_CHANNELS; i++) {
             v = ina219_[i].getBusVoltage_V();
             ma = ina219_[i].getCurrent_mA();
@@ -166,23 +172,51 @@ void BaseSupervisorTask::run() {
     }
 
     uint32_t last_report = 0;
+
+    float avg_moving[NUM_POWER_CHANNELS] = {};
+    float avg_homing[NUM_POWER_CHANNELS] = {};
     while (!fault) {
         uint32_t now = millis();
+
         SplitflapState splitflap_state = splitflap_task_.getState();
-        int32_t min_expected_channel_current[NUM_POWER_CHANNELS] = {};
-        int32_t max_expected_channel_current[NUM_POWER_CHANNELS] = {};
-        for (uint8_t i = 0; i < NUM_POWER_CHANNELS; i++) {
-            min_expected_channel_current[i] = -5;
-            max_expected_channel_current[i] = IDLE_CURRENT_MILLIAMPS;
+
+        if (!splitflap_state.loopbacks_ok) {
+            Serial.printf("Bad loopbacks; shutting down power!");
+            fault = true;
+            break;
         }
+
+        uint8_t moving[NUM_POWER_CHANNELS] = {};
+        uint8_t homing[NUM_POWER_CHANNELS] = {};
         for (uint8_t i = 0; i < NUM_MODULES; i++) {
             uint8_t power_channel = getPowerChannelForModuleIndex(i);
             if (splitflap_state.modules[i].moving) {
-                min_expected_channel_current[power_channel] += MIN_MODULE_CURRENT_MA;
-                max_expected_channel_current[power_channel] += splitflap_state.modules[i].state == State::LOOK_FOR_HOME ?
-                        MAX_MODULE_CURRENT_HOMING_MA :
-                        MAX_MODULE_CURRENT_MOVING_MA;
+                if (splitflap_state.modules[i].state == State::LOOK_FOR_HOME) {
+                    homing[power_channel]++;
+                } else {
+                    moving[power_channel]++;
+                }
             }
+        }
+
+        const float alpha = 0.9;
+        int32_t min_expected_channel_current[NUM_POWER_CHANNELS] = {};
+        int32_t max_expected_channel_current[NUM_POWER_CHANNELS] = {};
+        for (uint8_t i = 0; i < NUM_POWER_CHANNELS; i++) {
+            if (moving[i] > avg_moving[i]) {
+                avg_moving[i] = moving[i];
+            } else {
+                avg_moving[i] = alpha * avg_moving[i] + (1-alpha)* moving[i];
+            }
+            if (homing[i] > avg_homing[i]) {
+                avg_homing[i] = homing[i];
+            } else {
+                avg_homing[i] = alpha * avg_homing[i] + (1-alpha) * homing[i];
+            }
+            min_expected_channel_current[i] = -5 + (moving[i] + homing[i]) * MIN_MODULE_CURRENT_MA;
+            max_expected_channel_current[i] = IDLE_CURRENT_MILLIAMPS
+                    + (int32_t)(avg_homing[i] + 0.5) * MAX_MODULE_CURRENT_HOMING_MA
+                    + (int32_t)(avg_moving[i] + 0.5) * MAX_MODULE_CURRENT_MOVING_MA;
         }
 
         float voltages[NUM_POWER_CHANNELS];
@@ -198,7 +232,9 @@ void BaseSupervisorTask::run() {
                     break;
                 }
 
-                if (current_ma[i] < min_expected_channel_current[i] || current_ma[i] > max_expected_channel_current[i]) {
+                // FIXME
+                // if (current_ma[i] < min_expected_channel_current[i] || current_ma[i] > max_expected_channel_current[i]) {
+                if (current_ma[i] > max_expected_channel_current[i]) {
                     channel_current_out_of_range_count_[i]++;
                     if (channel_current_out_of_range_count_[i] >= CONSECUTIVE_CURRENT_OUT_OF_RANGE_THRESHOLD) {
                         Serial.printf("Power outside expected current on power channel %u!\n  Expected: %d - %dmA\n  Actual: %dmA\n", i, min_expected_channel_current[i], max_expected_channel_current[i], (int)current_ma[i]);
@@ -226,7 +262,7 @@ void BaseSupervisorTask::run() {
             last_report = now;
             float current_sum_ma = 0;
             for (uint8_t i = 0; i < NUM_POWER_CHANNELS; i++) {
-                Serial.printf("%dmV\t%dmA\n", (int)(voltages[i]*1000), (int)current_ma[i]);
+                Serial.printf("%dmV\t%dmA\t\t[%d]\n", (int)(voltages[i]*1000), (int)current_ma[i], (int)max_expected_channel_current[i]);
                 current_sum_ma += current_ma[i];
             }
             Serial.printf("Total current: %d\n", (int)current_sum_ma);

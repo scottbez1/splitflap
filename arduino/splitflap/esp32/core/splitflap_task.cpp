@@ -289,6 +289,14 @@ void SplitflapTask::runUpdate() {
             case '\n':
                 showString(recv_buffer, recv_count);
                 break;
+            case '+':
+                if (recv_count == 1) {
+                  for (uint8_t i = 1; i < NUM_MODULES; i++) {
+                    recv_buffer[i] = recv_buffer[0];
+                  }
+                  showString(recv_buffer, NUM_MODULES);
+                }
+                break;
             default:
               if (recv_count > NUM_MODULES - 1) {
                 break;
