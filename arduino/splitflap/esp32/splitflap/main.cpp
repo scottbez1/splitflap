@@ -20,11 +20,13 @@
 
 #include "config.h"
 
-#include "display_task.h"
 #include "../core/splitflap_task.h"
+#include "display_task.h"
+#include "serial_task.h"
 
 SplitflapTask splitflapTask(1, LedMode::AUTO);
 DisplayTask displayTask(splitflapTask, 0);
+SerialTask serialTask(splitflapTask, 0);
 
 #ifdef MQTT
 #include "mqtt_task.h"
@@ -41,6 +43,7 @@ void setup() {
 
   splitflapTask.begin();
   displayTask.begin();
+  serialTask.begin();
 
   #ifdef MQTT
   mqttTask.begin();

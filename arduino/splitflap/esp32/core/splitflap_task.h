@@ -20,15 +20,22 @@
 
 #include "task.h"
 
+enum class SplitflapMode {
+    MODE_RUN,
+    MODE_SENSOR_TEST,
+};
+
 struct SplitflapModuleState {
     State state;
     uint8_t flap_index;
     bool moving;
+    bool home_state;
     uint8_t count_unexpected_home;
     uint8_t count_missed_home;
 };
 
 struct SplitflapState {
+    SplitflapMode mode;
     SplitflapModuleState modules[NUM_MODULES];
 
 #ifdef CHAINLINK
@@ -41,7 +48,14 @@ enum class LedMode {
     MANUAL,
 };
 
+enum class CommandType {
+    MODULES,
+    SENSOR_TEST_SET,
+    SENSOR_TEST_CLEAR,
+};
+
 struct Command {
+    CommandType command_type;
     uint8_t data[NUM_MODULES];
 };
 
@@ -63,7 +77,7 @@ class SplitflapTask : public Task<SplitflapTask> {
         void showString(const char *str, uint8_t length);
         void resetAll();
         void setLed(uint8_t id, bool on);
-        void postRawCommandToBack(const Command& command);
+        void setSensorTest(bool sensor_test);
 
     protected:
         void run();
@@ -74,18 +88,8 @@ class SplitflapTask : public Task<SplitflapTask> {
         QueueHandle_t queue_;
         Command queue_receive_buffer_ = {};
 
-        // TODO: move to serial task
-        char recv_buffer[NUM_MODULES];
-        uint8_t recv_count = 0;
-        void dumpStatus(void);
+        bool all_stopped_ = true;
 
-        // TODO: rename to match style guide
-        bool pending_move_response = true;
-        bool pending_no_op = false;
-        bool was_stopped = false;
-        uint32_t stopped_at_millis = 0;
-
-        // bool disabled = false;
         uint32_t last_sensor_print_millis_ = 0;
         bool sensor_test_ = SENSOR_TEST;
 
@@ -105,5 +109,4 @@ class SplitflapTask : public Task<SplitflapTask> {
         void sensorTestUpdate();
 
         int8_t findFlapIndex(uint8_t character);
-        // void disableAll(const char* message);
 };
