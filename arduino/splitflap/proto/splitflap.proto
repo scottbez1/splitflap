@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+import "nanopb.proto";
+
+package PB;
+
+message SplitflapState {
+    message ModuleState {
+        enum State {
+            // Keep in sync with splitflap_module_data.h!
+            NORMAL = 0;
+            LOOK_FOR_HOME = 1;
+            SENSOR_ERROR = 2;
+            PANIC = 3;
+            STATE_DISABLED = 4;
+        }
+
+        State state = 1;
+        uint32 flap_index = 2;
+        bool moving = 3;
+        bool home_state = 4;
+        uint32 count_unexpected_home = 5;
+        uint32 count_missed_home = 6;
+    }
+
+    repeated ModuleState modules = 1 [(nanopb).max_count = 255];
+}

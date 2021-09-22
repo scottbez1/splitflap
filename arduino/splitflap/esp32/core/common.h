@@ -14,29 +14,4 @@
    limitations under the License.
 */
 #pragma once
-
-#include "config.h"
-
-#include "../core/splitflap_task.h"
-#include "../core/task.h"
-
-#include "serial_legacy_json_protocol.h"
-#include "serial_proto_protocol.h"
-
-class SerialTask : public Task<SerialTask> {
-    friend class Task<SerialTask>; // Allow base Task to invoke protected run()
-
-    public:
-        SerialTask(SplitflapTask& splitflapTask, const uint8_t task_core);
-
-    protected:
-        void run();
-
-    private:
-        SplitflapTask& splitflap_task_;
-
-        SerialLegacyJsonProtocol legacy_protocol_;
-        SerialProtoProtocol proto_protocol_;
-
-        void dumpStatus(SplitflapState& state);
-};
+#define COUNT_OF(x) ((sizeof(x)/sizeof(0[x])) / ((size_t)(!(sizeof(x) % sizeof(0[x])))))

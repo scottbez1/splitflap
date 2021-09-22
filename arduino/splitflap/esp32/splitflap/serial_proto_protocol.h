@@ -15,28 +15,21 @@
 */
 #pragma once
 
-#include "config.h"
+#include "serial_protocol.h"
+#include "../proto_gen/splitflap.pb.h"
 
-#include "../core/splitflap_task.h"
-#include "../core/task.h"
-
-#include "serial_legacy_json_protocol.h"
-#include "serial_proto_protocol.h"
-
-class SerialTask : public Task<SerialTask> {
-    friend class Task<SerialTask>; // Allow base Task to invoke protected run()
-
+class SerialProtoProtocol : public SerialProtocol {
     public:
-        SerialTask(SplitflapTask& splitflapTask, const uint8_t task_core);
+        SerialProtoProtocol(SplitflapTask& splitflap_task) : SerialProtocol(splitflap_task) {}
+        ~SerialProtoProtocol(){}
+        void handleState(const SplitflapState& old_state, const SplitflapState& new_state);
+        void handleRx(int byte);
+        void log(String msg);
+        void loop();
 
-    protected:
-        void run();
-
+        void init();
+    
     private:
-        SplitflapTask& splitflap_task_;
-
-        SerialLegacyJsonProtocol legacy_protocol_;
-        SerialProtoProtocol proto_protocol_;
-
-        void dumpStatus(SplitflapState& state);
+        PB_SplitflapState pb_state_buffer_;
+        uint8_t state_buffer_[PB_SplitflapState_size];
 };

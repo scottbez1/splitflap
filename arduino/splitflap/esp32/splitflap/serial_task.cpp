@@ -15,128 +15,40 @@
 */
 #include "serial_task.h"
 
-SerialTask::SerialTask(SplitflapTask& splitflap_task, const uint8_t task_core) : Task{"Serial", 4098, 1, task_core}, splitflap_task_{splitflap_task} {}
+SerialTask::SerialTask(SplitflapTask& splitflap_task, const uint8_t task_core) : 
+        Task("Serial", 4096, 1, task_core), 
+        splitflap_task_(splitflap_task),
+        legacy_protocol_(splitflap_task),
+        proto_protocol_(splitflap_task) {
+}
 
 void SerialTask::run() {
+    // // Start in legacy protocol mode
+    // SerialProtocol* current_protocol = &legacy_protocol;
+    // legacy_protocol.init();
 
-    char recv_buffer[NUM_MODULES] = {};
-    uint8_t recv_count = 0;
-    bool pending_move_response = false;
-    uint32_t last_sensor_print_millis = 0;
+    // FIXME
+    SerialProtocol* current_protocol = &proto_protocol_;
 
-    Serial.print("\n\n\n");
-    Serial.print("{\"type\":\"init\", \"num_modules\":");
-    Serial.print(NUM_MODULES);
-    Serial.print("}\n");
 
+    SplitflapState last_state = {};
     while(1) {
         // TODO: set up task notifications or message queues for state changes instead of polling?
-        SplitflapState state = splitflap_task_.getState();
+        SplitflapState new_state = splitflap_task_.getState();
 
-        bool all_stopped = true;
-        for (uint8_t i = 0; i < NUM_MODULES; i++) {
-            all_stopped &= !state.modules[i].moving;
+        int state_compare = memcmp(&new_state, &last_state, sizeof(new_state));
+        if (state_compare != 0) {
+            current_protocol->handleState(last_state, new_state);
         }
-        if (pending_move_response && all_stopped) {
-            pending_move_response = false;
-            dumpStatus(state);
-        }
+        last_state = new_state;
 
-        if (state.mode == SplitflapMode::MODE_SENSOR_TEST) {
-            if (millis() - last_sensor_print_millis > 200) {
-                last_sensor_print_millis = millis();
-                for (uint8_t i = 0; i < NUM_MODULES; i++) {
-                    Serial.write(state.modules[i].home_state ? '1' : '0');
-                }
-                Serial.println();
-            }
-        }
-
-        if (Serial.available() > 0) {
+        while (Serial.available() > 0) {
             int b = Serial.read();
-            if (b == '%') {
-                bool new_sensor_test_state = state.mode != SplitflapMode::MODE_SENSOR_TEST;
-                splitflap_task_.setSensorTest(new_sensor_test_state);
-                Serial.print("{\"type\":\"sensor_test\", \"enabled\":");
-                Serial.print(new_sensor_test_state ? "true" : "false");
-                Serial.print("}\n");
-            } else if (state.mode == SplitflapMode::MODE_RUN) {
-                switch (b) {
-                    case '@':
-                        splitflap_task_.resetAll();
-                        break;
-                    case '#':
-                        Serial.print("{\"type\":\"no_op\"}\n");
-                        Serial.flush();
-                        break;
-                    case '=':
-                        recv_count = 0;
-                        break;
-                    case '\n':
-                        pending_move_response = true;
-                        Serial.print("{\"type\":\"move_echo\", \"dest\":\"");
-                        Serial.flush();
-                        for (uint8_t i = 0; i < recv_count; i++) {
-                            Serial.write(recv_buffer[i]);
-                        }
-                        Serial.print("\"}\n");
-                        Serial.flush();
-                        splitflap_task_.showString(recv_buffer, recv_count);
-                        break;
-                    case '+':
-                        if (recv_count == 1) {
-                            for (uint8_t i = 1; i < NUM_MODULES; i++) {
-                                recv_buffer[i] = recv_buffer[0];
-                            }
-                            splitflap_task_.showString(recv_buffer, NUM_MODULES);
-                        }
-                        break;
-                    default:
-                        if (recv_count > NUM_MODULES - 1) {
-                            break;
-                        }
-                        recv_buffer[recv_count] = b;
-                        recv_count++;
-                        break;
-                }
-            }
+            current_protocol->handleRx(b);
+
+            // TODO: add mechanism for changing protocols...
         }
-        delay(10);
+        delay(5);
     }
 }
 
-void SerialTask::dumpStatus(SplitflapState& state) {
-    Serial.print("{\"type\":\"status\", \"modules\":[");
-    for (uint8_t i = 0; i < NUM_MODULES; i++) {
-        Serial.print("{\"state\":\"");
-        switch (state.modules[i].state) {
-            case NORMAL:
-                Serial.print("normal");
-                break;
-            case LOOK_FOR_HOME:
-                Serial.print("look_for_home");
-                break;
-            case SENSOR_ERROR:
-                Serial.print("sensor_error");
-                break;
-            case PANIC:
-                Serial.print("panic");
-                break;
-            case STATE_DISABLED:
-                Serial.print("disabled");
-                break;
-        }
-        Serial.print("\", \"flap\":\"");
-        Serial.write(flaps[state.modules[i].flap_index]);
-        Serial.print("\", \"count_missed_home\":");
-        Serial.print(state.modules[i].count_missed_home);
-        Serial.print(", \"count_unexpected_home\":");
-        Serial.print(state.modules[i].count_unexpected_home);
-        Serial.print("}");
-        if (i < NUM_MODULES - 1) {
-            Serial.print(", ");
-        }
-    }
-    Serial.print("]}\n");
-    Serial.flush();
-}
