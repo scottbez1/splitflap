@@ -17,16 +17,33 @@
 
 #include "../proto_gen/splitflap.pb.h"
 
+#include "crc32.h"
+
 #include "pb_encode.h"
 #include "serial_proto_protocol.h"
 
+static SerialProtoProtocol* singleton_for_packet_serial = 0;
+
+
+SerialProtoProtocol::SerialProtoProtocol(SplitflapTask& splitflap_task) : SerialProtocol(splitflap_task) {
+    packet_serial_.setStream(&Serial);
+
+    // Note: not threadsafe or instance safe!! but PacketSerial requires a legacy function pointer, so we can't
+    // use a member, std::function, or lambda with captures
+    assert(singleton_for_packet_serial == 0);
+    singleton_for_packet_serial = this;
+
+    packet_serial_.setPacketHandler([](const uint8_t* buffer, size_t size) {
+         singleton_for_packet_serial->handlePacket(buffer, size);
+    });
+}
 
 void SerialProtoProtocol::handleState(const SplitflapState& old_state, const SplitflapState& new_state) {
-    pb_state_buffer_ = {};
-
-    pb_state_buffer_.modules_count = NUM_MODULES;
+    pb_tx_buffer_ = {};
+    pb_tx_buffer_.which_payload = PB_FromSplitflap_splitflap_state_tag;
+    pb_tx_buffer_.payload.splitflap_state.modules_count = NUM_MODULES;
     for (uint8_t i = 0; i < NUM_MODULES; i++) {
-        pb_state_buffer_.modules[i] = {
+        pb_tx_buffer_.payload.splitflap_state.modules[i] = {
             .state = (PB_SplitflapState_ModuleState_State) new_state.modules[i].state,
             .flap_index = new_state.modules[i].flap_index,
             .moving = new_state.modules[i].moving,
@@ -36,22 +53,47 @@ void SerialProtoProtocol::handleState(const SplitflapState& old_state, const Spl
         };
     }
 
-    pb_ostream_t stream = pb_ostream_from_buffer(state_buffer_, COUNT_OF(state_buffer_));
-    if (!pb_encode(&stream, PB_SplitflapState_fields, &pb_state_buffer_)) {
-        Serial.println(stream.errmsg);
-        Serial.flush();
-        assert(false);
-    }
-
-    // TODO: CRC and Packet
-    Serial.write(state_buffer_, stream.bytes_written);
+    sendPbTxBuffer();
 }
 
 void SerialProtoProtocol::handleRx(int b) {
 }
 
 void SerialProtoProtocol::log(const char* msg) {
+    pb_tx_buffer_ = {};
+    pb_tx_buffer_.which_payload = PB_FromSplitflap_log_tag;
+
+    strncpy(pb_tx_buffer_.payload.log.msg, msg, sizeof(pb_tx_buffer_.payload.log.msg));
+
+    sendPbTxBuffer();
 }
 
 void SerialProtoProtocol::loop() {
+    packet_serial_.update();
+}
+
+void SerialProtoProtocol::handlePacket(const uint8_t* buffer, size_t size) {
+    // TODO: Check CRC
+    // TODO: decode proto
+}
+
+void SerialProtoProtocol::sendPbTxBuffer() {
+    // Encode protobuf message to byte buffer
+    pb_ostream_t stream = pb_ostream_from_buffer(tx_buffer_, sizeof(tx_buffer_));
+    if (!pb_encode(&stream, PB_FromSplitflap_fields, &pb_tx_buffer_)) {
+        Serial.println(stream.errmsg);
+        Serial.flush();
+        assert(false);
+    }
+
+    // Compute and append little-endian CRC32
+    uint32_t crc = 0;
+    crc32(tx_buffer_, stream.bytes_written, &crc);
+    tx_buffer_[stream.bytes_written + 0] = (crc >> 0)  & 0xFF;
+    tx_buffer_[stream.bytes_written + 1] = (crc >> 8)  & 0xFF;
+    tx_buffer_[stream.bytes_written + 2] = (crc >> 16) & 0xFF;
+    tx_buffer_[stream.bytes_written + 3] = (crc >> 24) & 0xFF;
+
+    // Encode and send proto+CRC as a COBS packet
+    packet_serial_.send(tx_buffer_, stream.bytes_written + 4);
 }

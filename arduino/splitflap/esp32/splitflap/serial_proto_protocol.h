@@ -15,13 +15,15 @@
 */
 #pragma once
 
+#include "PacketSerial.h"
+
 #include "serial_protocol.h"
 #include "../proto_gen/splitflap.pb.h"
 
 class SerialProtoProtocol : public SerialProtocol {
     public:
-        SerialProtoProtocol(SplitflapTask& splitflap_task) : SerialProtocol(splitflap_task) {}
-        ~SerialProtoProtocol(){}
+        SerialProtoProtocol(SplitflapTask& splitflap_task);
+        ~SerialProtoProtocol() {}
         void handleState(const SplitflapState& old_state, const SplitflapState& new_state);
         void handleRx(int byte);
         void log(const char* msg);
@@ -30,6 +32,12 @@ class SerialProtoProtocol : public SerialProtocol {
         void init();
     
     private:
-        PB_SplitflapState pb_state_buffer_;
-        uint8_t state_buffer_[PB_SplitflapState_size];
+        PB_FromSplitflap pb_tx_buffer_;
+
+        uint8_t tx_buffer_[PB_FromSplitflap_size + 4]; // Max message size + CRC32
+
+        PacketSerial packet_serial_;
+
+        void sendPbTxBuffer();
+        void handlePacket(const uint8_t* buffer, size_t size);
 };

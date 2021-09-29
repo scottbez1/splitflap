@@ -28,10 +28,10 @@ SerialTask::SerialTask(SplitflapTask& splitflap_task, const uint8_t task_core) :
 void SerialTask::run() {
     // Start in legacy protocol mode
     legacy_protocol_.init();
-    SerialProtocol* current_protocol = &legacy_protocol_;
+    // SerialProtocol* current_protocol = &legacy_protocol_;
 
-    // // FIXME
-    // SerialProtocol* current_protocol = &proto_protocol_;
+    // FIXME
+    SerialProtocol* current_protocol = &proto_protocol_;
 
     splitflap_task_.setLogger(this);
 
@@ -40,11 +40,10 @@ void SerialTask::run() {
         // TODO: set up task notifications or message queues for state changes instead of polling?
         SplitflapState new_state = splitflap_task_.getState();
 
-        int state_compare = memcmp(&new_state, &last_state, sizeof(new_state));
-        if (state_compare != 0) {
+        if (new_state != last_state) {
             current_protocol->handleState(last_state, new_state);
+            last_state = new_state;
         }
-        last_state = new_state;
 
         while (Serial.available() > 0) {
             int b = Serial.read();

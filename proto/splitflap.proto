@@ -25,3 +25,18 @@ message SplitflapState {
 
     repeated ModuleState modules = 1 [(nanopb).max_count = 255];
 }
+
+message Log {
+    string msg = 1 [(nanopb).max_length = 255];
+}
+
+message FromSplitflap {
+    oneof payload {
+        SplitflapState splitflap_state = 1;
+        Log log = 2;
+    }
+}
+
+message ToSplitflap {
+
+}

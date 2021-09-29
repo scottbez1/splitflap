@@ -33,6 +33,19 @@ struct SplitflapModuleState {
     bool home_state;
     uint8_t count_unexpected_home;
     uint8_t count_missed_home;
+
+    bool operator==(const SplitflapModuleState& other) {
+        return state == other.state
+            && flap_index == other.flap_index
+            && moving == other.moving
+            && home_state == other.home_state
+            && count_unexpected_home == other.count_unexpected_home
+            && count_missed_home == other.count_missed_home;
+    }
+
+    bool operator!=(const SplitflapModuleState& other) {
+        return !(*this == other);
+    }
 };
 
 struct SplitflapState {
@@ -42,6 +55,24 @@ struct SplitflapState {
 #ifdef CHAINLINK
     bool loopbacks_ok = false;
 #endif
+
+    bool operator==(const SplitflapState& other) {
+        for (uint8_t i = 0; i < NUM_MODULES; i++) {
+            if (modules[i] != other.modules[i]) {
+                return false;
+            }
+        }
+
+        return mode == other.mode
+#ifdef CHAINLINK
+            && loopbacks_ok == other.loopbacks_ok
+#endif
+            ;
+    }
+
+    bool operator!=(const SplitflapState& other) {
+        return !(*this == other);
+    }
 };
 
 enum class LedMode {
