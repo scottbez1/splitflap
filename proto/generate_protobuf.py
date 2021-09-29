@@ -16,6 +16,7 @@
 from pathlib import Path
 
 import os
+import shutil
 import subprocess
 import sys
 
@@ -33,13 +34,28 @@ def run():
         exit(1)
 
     nanopb_generator_path = nanopb_path / 'generator' / 'nanopb_generator.py'
-    generated_output_path = REPO_ROOT / 'arduino' / 'splitflap' / 'esp32' / 'proto_gen'
+    c_generated_output_path = REPO_ROOT / 'arduino' / 'splitflap' / 'esp32' / 'proto_gen'
     
     proto_files = [f for f in os.listdir(proto_path) if f.endswith('.proto')]
     assert len(proto_files) > 0, 'No proto files found!'
 
     # Generate C files via nanopb
-    subprocess.check_call(['python3', nanopb_generator_path, '-D', generated_output_path] + proto_files, cwd=proto_path)
+    subprocess.check_call(['python3', nanopb_generator_path, '-D', c_generated_output_path] + proto_files, cwd=proto_path)
+
+
+    # Use nanopb's packaged protoc to generate python bindings
+    protoc_path = nanopb_path / 'generator' / 'protoc'
+    python_generated_output_path = REPO_ROOT / 'software' / 'proto_gen'
+    python_generated_output_path.mkdir(parents=True, exist_ok=True)
+    subprocess.check_call([
+        protoc_path,
+        '--python_out',
+        python_generated_output_path,
+    ] + proto_files, cwd=proto_path)
+
+    # Copy nanopb's compiled options proto
+    shutil.copy2(nanopb_path / 'generator' / 'proto' / 'nanopb_pb2.py', python_generated_output_path)
+    
 
 if __name__ == '__main__':
     run()

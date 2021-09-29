@@ -23,11 +23,13 @@
 #include "serial_legacy_json_protocol.h"
 #include "serial_proto_protocol.h"
 
-class SerialTask : public Task<SerialTask> {
+class SerialTask : public Task<SerialTask>, public Logger {
     friend class Task<SerialTask>; // Allow base Task to invoke protected run()
 
     public:
         SerialTask(SplitflapTask& splitflapTask, const uint8_t task_core);
+        virtual ~SerialTask() {};
+        void log(const char* msg);
 
     protected:
         void run();
@@ -37,6 +39,8 @@ class SerialTask : public Task<SerialTask> {
 
         SerialLegacyJsonProtocol legacy_protocol_;
         SerialProtoProtocol proto_protocol_;
+
+        QueueHandle_t log_queue_;
 
         void dumpStatus(SplitflapState& state);
 };

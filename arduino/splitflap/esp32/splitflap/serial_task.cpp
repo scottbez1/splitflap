@@ -15,21 +15,25 @@
 */
 #include "serial_task.h"
 
-SerialTask::SerialTask(SplitflapTask& splitflap_task, const uint8_t task_core) : 
-        Task("Serial", 4096, 1, task_core), 
+SerialTask::SerialTask(SplitflapTask& splitflap_task, const uint8_t task_core) :
+        Task("Serial", 8192, 1, task_core),
+        Logger(),
         splitflap_task_(splitflap_task),
         legacy_protocol_(splitflap_task),
         proto_protocol_(splitflap_task) {
+    log_queue_ = xQueueCreate(10, sizeof(std::string *));
+    assert(log_queue_ != NULL);
 }
 
 void SerialTask::run() {
-    // // Start in legacy protocol mode
-    // SerialProtocol* current_protocol = &legacy_protocol;
-    // legacy_protocol.init();
+    // Start in legacy protocol mode
+    legacy_protocol_.init();
+    SerialProtocol* current_protocol = &legacy_protocol_;
 
-    // FIXME
-    SerialProtocol* current_protocol = &proto_protocol_;
+    // // FIXME
+    // SerialProtocol* current_protocol = &proto_protocol_;
 
+    splitflap_task_.setLogger(this);
 
     SplitflapState last_state = {};
     while(1) {
@@ -48,7 +52,20 @@ void SerialTask::run() {
 
             // TODO: add mechanism for changing protocols...
         }
+
+        std::string* log_string;
+        while (xQueueReceive(log_queue_, &log_string, 0) == pdTRUE) {
+            current_protocol->log(log_string->c_str());
+            delete log_string;
+        }
         delay(5);
     }
 }
 
+void SerialTask::log(const char* msg) {
+    // Allocate a string for the duration it's in the queue; it is free'd by the queue consumer
+    std::string* msg_str = new std::string(msg);
+
+    // Put string in queue (or drop if full to avoid blocking)
+    xQueueSendToBack(log_queue_, &msg_str, 0);
+}

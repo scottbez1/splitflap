@@ -24,7 +24,7 @@ class SerialProtoProtocol : public SerialProtocol {
         ~SerialProtoProtocol(){}
         void handleState(const SplitflapState& old_state, const SplitflapState& new_state);
         void handleRx(int byte);
-        void log(String msg);
+        void log(const char* msg);
         void loop();
 
         void init();

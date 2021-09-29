@@ -50,7 +50,7 @@ void SerialProtoProtocol::handleState(const SplitflapState& old_state, const Spl
 void SerialProtoProtocol::handleRx(int b) {
 }
 
-void SerialProtoProtocol::log(String msg) {
+void SerialProtoProtocol::log(const char* msg) {
 }
 
 void SerialProtoProtocol::loop() {

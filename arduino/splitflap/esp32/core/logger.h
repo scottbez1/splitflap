@@ -15,17 +15,10 @@
 */
 #pragma once
 
-#include "../core/logger.h"
-#include "../core/splitflap_task.h"
-
-class SerialProtocol : public Logger {
+class Logger {
     public:
-        SerialProtocol(SplitflapTask& splitflap_task) : Logger(), splitflap_task_(splitflap_task) {}
-        virtual ~SerialProtocol(){}
-        virtual void handleState(const SplitflapState& old_state, const SplitflapState& new_state) = 0;
-        virtual void handleRx(int byte) = 0;
-        virtual void loop() = 0;
+        Logger() {};
+        virtual ~Logger() {};
+        virtual void log(const char* msg) = 0;
     
-    protected:
-        SplitflapTask& splitflap_task_;
 };

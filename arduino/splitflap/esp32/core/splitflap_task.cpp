@@ -70,13 +70,17 @@ void SplitflapTask::run() {
       for (uint8_t i = 0; i < NUM_LOOPBACKS; i++) {
         for (uint8_t j = 0; j < NUM_LOOPBACKS; j++) {
           if (!loopback_result[i][j]) {
-            Serial.printf("Bad loopback. Set output %u but read incorrect value at input %u\n", i, j);
+            char buffer[200] = {};
+            snprintf(buffer, sizeof(buffer), "Bad loopback. Set output %u but read incorrect value at input %u", i, j);
+            log(buffer);
           }
         }
       }
       for (uint8_t j = 0; j < NUM_LOOPBACKS; j++) {
         if (!loopback_off_result[j]) {
-          Serial.printf("Bad loopback at input %u when all outputs off - should have been 0\n", j);
+            char buffer[200] = {};
+            snprintf(buffer, sizeof(buffer), "Bad loopback at input %u when all outputs off - should have been 0", j);
+            log(buffer);
         }
       }
 
@@ -155,11 +159,11 @@ void SplitflapTask::processQueue() {
                 break;
             }
             case CommandType::SENSOR_TEST_SET:
-                Serial.println("FOO");
+                log("FOO");
                 sensor_test_ = true;
                 break;
             case CommandType::SENSOR_TEST_CLEAR:
-                Serial.println("BAR");
+                log("BAR");
                 sensor_test_ = false;
                 break;
         }
@@ -229,7 +233,7 @@ void SplitflapTask::runUpdate() {
       if (!ok && loopback_all_ok_) {
         // Publish failures immediately
         loopback_all_ok_ = false;
-        Serial.println("Loopback status changed to 0!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        log("Loopback status changed to 0!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
       }
     } else if (loopback_step_index_ == 50) {
       loopback_step_index_ = 0;
@@ -239,7 +243,9 @@ void SplitflapTask::runUpdate() {
       // from the first loopback again.
       if (loopback_current_out_index_ >= NUM_LOOPBACKS) {
         if (loopback_all_ok_ != loopback_current_ok_) {
-          Serial.println("Loopback status changed to " + String((int)loopback_current_ok_));
+            char buffer[200] = {};
+            snprintf(buffer, sizeof(buffer), "Loopback status changed to %u", loopback_current_ok_);
+            log(buffer);
         }
         loopback_all_ok_ = loopback_current_ok_;
         loopback_current_ok_ = true;
@@ -279,6 +285,12 @@ void SplitflapTask::updateStateCache() {
     if (memcmp(&state_cache_, &new_state, sizeof(state_cache_))) {
         SemaphoreGuard lock(state_semaphore_);
         memcpy(&state_cache_, &new_state, sizeof(state_cache_));
+    }
+}
+
+void SplitflapTask::log(const char* msg) {
+    if (logger_ != nullptr) {
+        logger_->log(msg);
     }
 }
 
@@ -323,4 +335,8 @@ void SplitflapTask::setSensorTest(bool sensor_test) {
 SplitflapState SplitflapTask::getState() {
     SemaphoreGuard lock(state_semaphore_);
     return state_cache_;
+}
+
+void SplitflapTask::setLogger(Logger* logger) {
+    logger_ = logger;
 }

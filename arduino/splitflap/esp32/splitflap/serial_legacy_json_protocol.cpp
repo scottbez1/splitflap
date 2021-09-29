@@ -14,7 +14,11 @@
    limitations under the License.
 */
 
+#include "json11.hpp"
+
 #include "serial_legacy_json_protocol.h"
+
+using namespace json11;
 
 void SerialLegacyJsonProtocol::handleState(const SplitflapState& old_state, const SplitflapState& new_state) {
     bool all_stopped = true;
@@ -78,9 +82,12 @@ void SerialLegacyJsonProtocol::handleRx(int b) {
     }
 }
 
-void SerialLegacyJsonProtocol::log(String msg) {
-    // TODO: print as proper JSON with escaping
-    Serial.println(msg);
+void SerialLegacyJsonProtocol::log(const char* msg) {
+    Json body = Json::object {
+            {"type", "log"},
+            {"msg", std::string(msg)},
+    };
+    Serial.println(body.dump().c_str());
 }
 
 void SerialLegacyJsonProtocol::loop() {

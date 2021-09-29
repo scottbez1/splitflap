@@ -16,6 +16,7 @@
 #pragma once
 
 #include "config.h"
+#include "logger.h"
 #include "src/splitflap_module_data.h"
 
 #include "task.h"
@@ -78,6 +79,7 @@ class SplitflapTask : public Task<SplitflapTask> {
         void resetAll();
         void setLed(uint8_t id, bool on);
         void setSensorTest(bool sensor_test);
+        void setLogger(Logger* logger);
 
     protected:
         void run();
@@ -87,6 +89,7 @@ class SplitflapTask : public Task<SplitflapTask> {
         const SemaphoreHandle_t state_semaphore_;
         QueueHandle_t queue_;
         Command queue_receive_buffer_ = {};
+        Logger* logger_;
 
         bool all_stopped_ = true;
 
@@ -107,6 +110,7 @@ class SplitflapTask : public Task<SplitflapTask> {
         void processQueue();
         void runUpdate();
         void sensorTestUpdate();
+        void log(const char* msg);
 
         int8_t findFlapIndex(uint8_t character);
 };
