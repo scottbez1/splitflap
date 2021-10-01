@@ -1,13 +1,11 @@
 import SerialPort = require('serialport')
-import { Splitflap, Util, PB } from 'splitflapjs'
+import {Splitflap, Util, PB} from 'splitflapjs'
 
 const main = async (): Promise<void> => {
     const ports = await SerialPort.list()
 
     const matchingPorts = ports.filter((portInfo) => {
-        return portInfo.vendorId === '10c4' &&
-                portInfo.productId === 'ea60' &&
-                portInfo.serialNumber === '02280A9E'
+        return portInfo.vendorId === '10c4' && portInfo.productId === 'ea60' && portInfo.serialNumber === '02280A9E'
     })
 
     if (matchingPorts.length < 1) {
@@ -29,47 +27,47 @@ const main = async (): Promise<void> => {
         }
     })
 
-    const flaps = [ 
-        ' ',      // BLACK
-        'J',    // 1
-        'B',    // 2
-        'M',    // 3
-        'R',    // 4
-        '$',    // 5
-        'V',    // 6
-        'K',    // 7
-        'A',    // 8
-        'E',    // 9
-        'N',    // 10
-        'O',    // 11
-        'y',     // YELLOW
-        '*',    // 13
-        'g',     // GREEN
-        'G',    // 15
-        'I',    // 16
-        '%',    // 17
-        'D',    // 18
-        'L',    // 19
-        '&',    // 20
-        '@',    // 21
-        'C',    // 22
-        'W',    // 23
-        'H',    // 24
-        'Y',    // 25
-        'w',     // WHITE
-        'Q',    // 27
-        'p',     // PINK
-        'o',     // ORANGE
-        '!',    // 30
-        'T',    // 31
-        'Z',    // 32
-        'P',    // 33
-        'F',    // 34
-        '?',    // 35
-        'S',    // 36
-        '#',    // 37
-        'U',    // 38
-        'X'     // 39
+    const flaps = [
+        ' ', // BLACK
+        'J', // 1
+        'B', // 2
+        'M', // 3
+        'R', // 4
+        '$', // 5
+        'V', // 6
+        'K', // 7
+        'A', // 8
+        'E', // 9
+        'N', // 10
+        'O', // 11
+        'y', // YELLOW
+        '*', // 13
+        'g', // GREEN
+        'G', // 15
+        'I', // 16
+        '%', // 17
+        'D', // 18
+        'L', // 19
+        '&', // 20
+        '@', // 21
+        'C', // 22
+        'W', // 23
+        'H', // 24
+        'Y', // 25
+        'w', // WHITE
+        'Q', // 27
+        'p', // PINK
+        'o', // ORANGE
+        '!', // 30
+        'T', // 31
+        'Z', // 32
+        'P', // 33
+        'F', // 34
+        '?', // 35
+        'S', // 36
+        '#', // 37
+        'U', // 38
+        'X', // 39
     ]
 
     const charToFlapIndex = (c: string): number | null => {
@@ -86,11 +84,11 @@ const main = async (): Promise<void> => {
     }
 
     const example1 = [
-        [ 1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
         [19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36],
-        [37, 38, 39,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14],
+        [37, 38, 39, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
         [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32],
-        [33, 34, 35, 36, 37, 38, 39,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10],
+        [33, 34, 35, 36, 37, 38, 39, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28],
     ]
 
@@ -111,7 +109,7 @@ const main = async (): Promise<void> => {
         '~~~~~~~~~~~~~~~~~~',
         '~~~~~~~~~~~~~~~~~~',
     ]
-    
+
     const go1 = () => {
         splitflap.setPositions(Util.mapDualRowZigZagToLinear(example1, true))
         setTimeout(go2, 6000)

@@ -4,7 +4,7 @@ import * as CRC32 from 'crc-32'
 
 import {PB} from './proto_gen/splitflap_proto.js'
 
-export { PB }
+export {PB}
 
 export type MessageCallback = (message: PB.FromSplitflap) => void
 
@@ -37,20 +37,26 @@ export class Splitflap {
                 }
             }
         })
-        this.sendCommand(PB.SplitflapCommand.fromObject({
-            modules
-        }))
+        this.sendCommand(
+            PB.SplitflapCommand.fromObject({
+                modules,
+            }),
+        )
     }
 
     public resetModules(positions: boolean[]): void {
         const modules = positions.map((reset: boolean) => {
             return {
-                action: reset ? PB.SplitflapCommand.ModuleCommand.Action.RESET_AND_HOME : PB.SplitflapCommand.ModuleCommand.Action.NO_OP,
+                action: reset
+                    ? PB.SplitflapCommand.ModuleCommand.Action.RESET_AND_HOME
+                    : PB.SplitflapCommand.ModuleCommand.Action.NO_OP,
             }
         })
-        this.sendCommand(PB.SplitflapCommand.fromObject({
-            modules
-        }))
+        this.sendCommand(
+            PB.SplitflapCommand.fromObject({
+                modules,
+            }),
+        )
     }
 
     public resetModule(position: number): void {
