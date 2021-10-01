@@ -36,7 +36,7 @@ class SerialProtoProtocol : public SerialProtocol {
 
         uint8_t tx_buffer_[PB_FromSplitflap_size + 4]; // Max message size + CRC32
 
-        PacketSerial_<COBS, 0, 512> packet_serial_;
+        PacketSerial_<COBS, 0, (PB_ToSplitflap_size + 4) * 2 + 10> packet_serial_;
 
         void sendPbTxBuffer();
         void handlePacket(const uint8_t* buffer, size_t size);

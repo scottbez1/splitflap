@@ -28,6 +28,7 @@ static SerialProtoProtocol* singleton_for_packet_serial = 0;
 
 SerialProtoProtocol::SerialProtoProtocol(SplitflapTask& splitflap_task) : SerialProtocol(splitflap_task) {
     packet_serial_.setStream(&Serial);
+    Serial.setRxBufferSize((PB_ToSplitflap_size + 4) * 2);
 
     // Note: not threadsafe or instance safe!! but PacketSerial requires a legacy function pointer, so we can't
     // use a member, std::function, or lambda with captures
@@ -67,12 +68,18 @@ void SerialProtoProtocol::log(const char* msg) {
 }
 
 void SerialProtoProtocol::loop() {
-    packet_serial_.update();
+    do {
+        packet_serial_.update();
+        if (packet_serial_.overflow()) {
+            log("Overflow");
+        }
+    } while (Serial.available());
 }
 
 void SerialProtoProtocol::handlePacket(const uint8_t* buffer, size_t size) {
     if (size <= 4) {
         // Too small, ignore bad packet
+        log("Small packet");
         return;
     }
 
@@ -85,6 +92,10 @@ void SerialProtoProtocol::handlePacket(const uint8_t* buffer, size_t size) {
                          | (buffer[size - 2] << 16)
                          | (buffer[size - 1] << 24);
     
+    char buf[200];
+    snprintf(buf, sizeof(buf), "Got %u byte packet with computed CRC %08x", size - 4, expected_crc);
+    log(buf);
+
     if (expected_crc != provided_crc) {
         char buf[200];
         snprintf(buf, sizeof(buf), "Bad CRC. Expected %08x but got %08x.", expected_crc, provided_crc);

@@ -67,7 +67,7 @@ const uint8_t flaps[NUM_FLAPS] = {
   #define MONITOR_SPEED 38400
 #elif defined(ESP32)
   #define NEOPIXEL_PIN (13)
-  #define MONITOR_SPEED 921600
+  #define MONITOR_SPEED 230400
 #endif
 
 /*************************/
