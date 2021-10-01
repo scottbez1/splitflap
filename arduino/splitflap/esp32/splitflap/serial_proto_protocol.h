@@ -25,7 +25,6 @@ class SerialProtoProtocol : public SerialProtocol {
         SerialProtoProtocol(SplitflapTask& splitflap_task);
         ~SerialProtoProtocol() {}
         void handleState(const SplitflapState& old_state, const SplitflapState& new_state);
-        void handleRx(int byte);
         void log(const char* msg);
         void loop();
 
@@ -33,10 +32,11 @@ class SerialProtoProtocol : public SerialProtocol {
     
     private:
         PB_FromSplitflap pb_tx_buffer_;
+        PB_ToSplitflap pb_rx_buffer_;
 
         uint8_t tx_buffer_[PB_FromSplitflap_size + 4]; // Max message size + CRC32
 
-        PacketSerial packet_serial_;
+        PacketSerial_<COBS, 0, 512> packet_serial_;
 
         void sendPbTxBuffer();
         void handlePacket(const uint8_t* buffer, size_t size);

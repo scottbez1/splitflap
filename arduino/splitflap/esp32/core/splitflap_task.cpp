@@ -340,3 +340,7 @@ SplitflapState SplitflapTask::getState() {
 void SplitflapTask::setLogger(Logger* logger) {
     logger_ = logger;
 }
+
+void SplitflapTask::postRawCommand(Command command) {
+    assert(xQueueSendToBack(queue_, &command, portMAX_DELAY) == pdTRUE);
+}

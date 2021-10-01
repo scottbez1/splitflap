@@ -45,12 +45,8 @@ void SerialTask::run() {
             last_state = new_state;
         }
 
-        while (Serial.available() > 0) {
-            int b = Serial.read();
-            current_protocol->handleRx(b);
-
-            // TODO: add mechanism for changing protocols...
-        }
+        current_protocol->loop();
+        // TODO: add mechanism for changing protocols...
 
         std::string* log_string;
         while (xQueueReceive(log_queue_, &log_string, 0) == pdTRUE) {

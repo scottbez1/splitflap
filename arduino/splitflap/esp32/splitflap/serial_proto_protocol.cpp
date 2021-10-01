@@ -20,6 +20,7 @@
 #include "crc32.h"
 
 #include "pb_encode.h"
+#include "pb_decode.h"
 #include "serial_proto_protocol.h"
 
 static SerialProtoProtocol* singleton_for_packet_serial = 0;
@@ -34,7 +35,7 @@ SerialProtoProtocol::SerialProtoProtocol(SplitflapTask& splitflap_task) : Serial
     singleton_for_packet_serial = this;
 
     packet_serial_.setPacketHandler([](const uint8_t* buffer, size_t size) {
-         singleton_for_packet_serial->handlePacket(buffer, size);
+        singleton_for_packet_serial->handlePacket(buffer, size);
     });
 }
 
@@ -56,9 +57,6 @@ void SerialProtoProtocol::handleState(const SplitflapState& old_state, const Spl
     sendPbTxBuffer();
 }
 
-void SerialProtoProtocol::handleRx(int b) {
-}
-
 void SerialProtoProtocol::log(const char* msg) {
     pb_tx_buffer_ = {};
     pb_tx_buffer_.which_payload = PB_FromSplitflap_log_tag;
@@ -73,8 +71,68 @@ void SerialProtoProtocol::loop() {
 }
 
 void SerialProtoProtocol::handlePacket(const uint8_t* buffer, size_t size) {
-    // TODO: Check CRC
-    // TODO: decode proto
+    if (size <= 4) {
+        // Too small, ignore bad packet
+        return;
+    }
+
+    // Compute and append little-endian CRC32
+    uint32_t expected_crc = 0;
+    crc32(buffer, size - 4, &expected_crc);
+
+    uint32_t provided_crc = buffer[size - 4]
+                         | (buffer[size - 3] << 8)
+                         | (buffer[size - 2] << 16)
+                         | (buffer[size - 1] << 24);
+    
+    if (expected_crc != provided_crc) {
+        char buf[200];
+        snprintf(buf, sizeof(buf), "Bad CRC. Expected %08x but got %08x.", expected_crc, provided_crc);
+        log(buf);
+        return;
+    }
+
+    pb_istream_t stream = pb_istream_from_buffer(buffer, size - 4);
+    if (!pb_decode(&stream, PB_ToSplitflap_fields, &pb_rx_buffer_)) {
+        char buf[200];
+        snprintf(buf, sizeof(buf), "Decoding failed: %s", PB_GET_ERROR(&stream));
+        log(buf);
+        return;
+    }
+    
+    switch (pb_rx_buffer_.which_payload) {
+        case PB_ToSplitflap_splitflap_command_tag: {
+            PB_SplitflapCommand command = pb_rx_buffer_.payload.splitflap_command;
+            Command c = {};
+            c.command_type = CommandType::MODULES;
+            for (uint8_t i = 0; i < command.modules_count; i++) {
+                switch (command.modules[i].action) {
+                    case PB_SplitflapCommand_ModuleCommand_Action_NO_OP:
+                        c.data[i] = QCMD_NO_OP;
+                        break;
+                    case PB_SplitflapCommand_ModuleCommand_Action_RESET_AND_HOME:
+                        c.data[i] = QCMD_RESET_AND_HOME;
+                        break;
+                    case PB_SplitflapCommand_ModuleCommand_Action_GO_TO_FLAP:
+                        if (command.modules[i].param <= 255) {
+                            c.data[i] = QCMD_FLAP + command.modules[i].param;
+                        }
+                        break;
+                    default:
+                        // Ignore unknown action
+                        break;
+                }
+            }
+            splitflap_task_.postRawCommand(c);
+            break;
+        }
+        default: {
+            char buf[200];
+            snprintf(buf, sizeof(buf), "Unknown ToSplitflap type: %d", pb_rx_buffer_.which_payload);
+            log(buf);
+            return;
+        }
+    }
 }
 
 void SerialProtoProtocol::sendPbTxBuffer() {

@@ -5,6 +5,7 @@ import serial
 import serial.tools.list_ports
 import six
 import sys
+from threading import Thread
 import zlib
 
 software_root = os.path.dirname(os.path.abspath(__file__))
@@ -48,6 +49,34 @@ class Splitflap(object):
             message = splitflap_pb2.FromSplitflap()
             message.ParseFromString(payload)
             print(message)
+    
+    def setPositions(self, indexes):
+        message = splitflap_pb2.ToSplitflap()
+        # message.splitflap_command = splitflap_pb2.SplitflapCommand()
+        for i in indexes:
+            param = 0
+            if i < 0:
+                action = splitflap_pb2.SplitflapCommand.ModuleCommand.NO_OP
+            else:
+                action = splitflap_pb2.SplitflapCommand.ModuleCommand.GO_TO_FLAP
+                param = i
+            command = splitflap_pb2.SplitflapCommand.ModuleCommand()
+            command.action = action
+            command.param = param
+            message.splitflap_command.modules.append(command)
+        
+        payload = bytearray(message.SerializeToString())
+
+        crc = zlib.crc32(payload) & 0xffffffff
+        payload.append(crc & 0xff)
+        payload.append((crc >> 8) & 0xff)
+        payload.append((crc >> 16) & 0xff)
+        payload.append((crc >> 24) & 0xff)
+
+        encoded = cobs.encode(payload)
+
+        self.serial.write(encoded)
+        self.serial.write(b'\0')
 
 
 
@@ -79,4 +108,8 @@ def ask_for_serial_port():
 if __name__ == '__main__':
     p = ask_for_serial_port()
     with splitflap(p) as s:
-        s._loop_for_status()
+        t = Thread(target=s._loop_for_status)
+        t.start()
+        while True:
+            input()
+            s.setPositions([1, 2, 3])

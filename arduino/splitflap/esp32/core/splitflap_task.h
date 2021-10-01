@@ -111,6 +111,7 @@ class SplitflapTask : public Task<SplitflapTask> {
         void setLed(uint8_t id, bool on);
         void setSensorTest(bool sensor_test);
         void setLogger(Logger* logger);
+        void postRawCommand(Command command);
 
     protected:
         void run();

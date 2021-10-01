@@ -33,55 +33,6 @@ void SerialLegacyJsonProtocol::handleState(const SplitflapState& old_state, cons
     latest_state_ = new_state;
 }
 
-void SerialLegacyJsonProtocol::handleRx(int b) {
-    if (b == '%') {
-        bool new_sensor_test_state = latest_state_.mode != SplitflapMode::MODE_SENSOR_TEST;
-        splitflap_task_.setSensorTest(new_sensor_test_state);
-        Serial.print("{\"type\":\"sensor_test\", \"enabled\":");
-        Serial.print(new_sensor_test_state ? "true" : "false");
-        Serial.print("}\n");
-    } else if (latest_state_.mode == SplitflapMode::MODE_RUN) {
-        switch (b) {
-            case '@':
-                splitflap_task_.resetAll();
-                break;
-            case '#':
-                Serial.print("{\"type\":\"no_op\"}\n");
-                Serial.flush();
-                break;
-            case '=':
-                recv_count_ = 0;
-                break;
-            case '\n':
-                pending_move_response_ = true;
-                Serial.printf("{\"type\":\"move_echo\", \"dest\":\"");
-                Serial.flush();
-                for (uint8_t i = 0; i < recv_count_; i++) {
-                    Serial.write(recv_buffer_[i]);
-                }
-                Serial.printf("\"}\n");
-                Serial.flush();
-                splitflap_task_.showString(recv_buffer_, recv_count_);
-                break;
-            case '+':
-                if (recv_count_ == 1) {
-                    for (uint8_t i = 1; i < NUM_MODULES; i++) {
-                        recv_buffer_[i] = recv_buffer_[0];
-                    }
-                    splitflap_task_.showString(recv_buffer_, NUM_MODULES);
-                }
-                break;
-            default:
-                if (recv_count_ > NUM_MODULES - 1) {
-                    break;
-                }
-                recv_buffer_[recv_count_] = b;
-                recv_count_++;
-                break;
-        }
-    }
-}
-
 void SerialLegacyJsonProtocol::log(const char* msg) {
     Json body = Json::object {
             {"type", "log"},
@@ -100,6 +51,57 @@ void SerialLegacyJsonProtocol::loop() {
             Serial.println();
         }
     }
+
+    while (Serial.available() > 0) {
+        int b = Serial.read();
+        if (b == '%') {
+            bool new_sensor_test_state = latest_state_.mode != SplitflapMode::MODE_SENSOR_TEST;
+            splitflap_task_.setSensorTest(new_sensor_test_state);
+            Serial.print("{\"type\":\"sensor_test\", \"enabled\":");
+            Serial.print(new_sensor_test_state ? "true" : "false");
+            Serial.print("}\n");
+        } else if (latest_state_.mode == SplitflapMode::MODE_RUN) {
+            switch (b) {
+                case '@':
+                    splitflap_task_.resetAll();
+                    break;
+                case '#':
+                    Serial.print("{\"type\":\"no_op\"}\n");
+                    Serial.flush();
+                    break;
+                case '=':
+                    recv_count_ = 0;
+                    break;
+                case '\n':
+                    pending_move_response_ = true;
+                    Serial.printf("{\"type\":\"move_echo\", \"dest\":\"");
+                    Serial.flush();
+                    for (uint8_t i = 0; i < recv_count_; i++) {
+                        Serial.write(recv_buffer_[i]);
+                    }
+                    Serial.printf("\"}\n");
+                    Serial.flush();
+                    splitflap_task_.showString(recv_buffer_, recv_count_);
+                    break;
+                case '+':
+                    if (recv_count_ == 1) {
+                        for (uint8_t i = 1; i < NUM_MODULES; i++) {
+                            recv_buffer_[i] = recv_buffer_[0];
+                        }
+                        splitflap_task_.showString(recv_buffer_, NUM_MODULES);
+                    }
+                    break;
+                default:
+                    if (recv_count_ > NUM_MODULES - 1) {
+                        break;
+                    }
+                    recv_buffer_[recv_count_] = b;
+                    recv_count_++;
+                    break;
+            }
+        }
+    }
+
 }
 
 void SerialLegacyJsonProtocol::init() {

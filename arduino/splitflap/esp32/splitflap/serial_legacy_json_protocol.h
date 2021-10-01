@@ -22,7 +22,6 @@ class SerialLegacyJsonProtocol : public SerialProtocol {
         SerialLegacyJsonProtocol(SplitflapTask& splitflap_task) : SerialProtocol(splitflap_task) {}
         ~SerialLegacyJsonProtocol(){}
         void handleState(const SplitflapState& old_state, const SplitflapState& new_state);
-        void handleRx(int byte);
         void log(const char* msg);
         void loop();
 

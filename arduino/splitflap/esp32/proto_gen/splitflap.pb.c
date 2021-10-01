@@ -15,10 +15,17 @@ PB_BIND(PB_SplitflapState_ModuleState, PB_SplitflapState_ModuleState, AUTO)
 PB_BIND(PB_Log, PB_Log, 2)
 
 
+PB_BIND(PB_SplitflapCommand, PB_SplitflapCommand, 2)
+
+
+PB_BIND(PB_SplitflapCommand_ModuleCommand, PB_SplitflapCommand_ModuleCommand, AUTO)
+
+
 PB_BIND(PB_FromSplitflap, PB_FromSplitflap, 4)
 
 
-PB_BIND(PB_ToSplitflap, PB_ToSplitflap, AUTO)
+PB_BIND(PB_ToSplitflap, PB_ToSplitflap, 2)
+
 
 
 

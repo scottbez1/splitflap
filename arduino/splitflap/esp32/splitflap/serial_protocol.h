@@ -23,7 +23,6 @@ class SerialProtocol : public Logger {
         SerialProtocol(SplitflapTask& splitflap_task) : Logger(), splitflap_task_(splitflap_task) {}
         virtual ~SerialProtocol(){}
         virtual void handleState(const SplitflapState& old_state, const SplitflapState& new_state) = 0;
-        virtual void handleRx(int byte) = 0;
         virtual void loop() = 0;
     
     protected:
