@@ -4,6 +4,8 @@ import * as CRC32 from 'crc-32'
 
 import {PB} from './proto_gen/splitflap_proto.js'
 
+export { PB }
+
 export type MessageCallback = (message: PB.FromSplitflap) => void
 
 export class Splitflap {
@@ -22,9 +24,9 @@ export class Splitflap {
         })
     }
 
-    public setPositions(positions: Array<number | undefined>): void {
-        const modules = positions.map((position: number | undefined) => {
-            if (position === undefined) {
+    public setPositions(positions: Array<number | null>): void {
+        const modules = positions.map((position: number | null) => {
+            if (position === null) {
                 return {
                     action: PB.SplitflapCommand.ModuleCommand.Action.NO_OP,
                 }

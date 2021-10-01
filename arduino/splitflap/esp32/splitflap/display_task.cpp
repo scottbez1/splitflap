@@ -54,7 +54,7 @@ void DisplayTask::run() {
                     c = flaps[s.flap_index];
                     if (s.moving) {
                         // use a dimmer color when moving
-                        foreground = 0xa514;
+                        foreground = 0x6b4d;
                     }
                     break;
                 case PANIC:
