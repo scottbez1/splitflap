@@ -52,6 +52,10 @@ void DisplayTask::run() {
             switch (s.state) {
                 case NORMAL:
                     c = flaps[s.flap_index];
+                    if (s.moving) {
+                        // use a dimmer color when moving
+                        foreground = 0xa514;
+                    }
                     break;
                 case PANIC:
                     c = '~';

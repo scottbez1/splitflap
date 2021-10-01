@@ -22,7 +22,43 @@ export class Splitflap {
         })
     }
 
-    public sendCommand(command: PB.SplitflapCommand): void {
+    public setPositions(positions: Array<number | undefined>): void {
+        const modules = positions.map((position: number | undefined) => {
+            if (position === undefined) {
+                return {
+                    action: PB.SplitflapCommand.ModuleCommand.Action.NO_OP,
+                }
+            } else {
+                return {
+                    action: PB.SplitflapCommand.ModuleCommand.Action.GO_TO_FLAP,
+                    param: position,
+                }
+            }
+        })
+        this.sendCommand(PB.SplitflapCommand.fromObject({
+            modules
+        }))
+    }
+
+    public resetModules(positions: boolean[]): void {
+        const modules = positions.map((reset: boolean) => {
+            return {
+                action: reset ? PB.SplitflapCommand.ModuleCommand.Action.RESET_AND_HOME : PB.SplitflapCommand.ModuleCommand.Action.NO_OP,
+            }
+        })
+        this.sendCommand(PB.SplitflapCommand.fromObject({
+            modules
+        }))
+    }
+
+    public resetModule(position: number): void {
+        const reset = new Array(position + 1)
+        reset.fill(false)
+        reset[position] = true
+        this.resetModules(reset)
+    }
+
+    private sendCommand(command: PB.SplitflapCommand): void {
         this.sendMessage(
             PB.ToSplitflap.create({
                 splitflapCommand: command,
@@ -95,42 +131,3 @@ export namespace Util {
         return out
     }
 }
-
-const main = async (): Promise<void> => {
-    // const ports = await SerialPort.list()
-    // console.log(ports)
-    const port = new SerialPort('/dev/ttyUSB0', {
-        baudRate: 230400,
-    })
-
-    const splitflap = new Splitflap(port, (message) => {
-        if (message.payload === 'log') {
-            console.log(message.log!.msg)
-        }
-    })
-
-    const example = [
-        [ 1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
-        [19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36],
-        [37, 38, 39,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14],
-        [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32],
-        [33, 34, 35, 36, 37, 38, 39,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10],
-        [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28],
-    ]
-    const moduleData = Util.mapDualRowZigZagToLinear(example, true).map((v) => {
-        return {
-            action: PB.SplitflapCommand.ModuleCommand.Action.GO_TO_FLAP,
-            param: v,
-        }
-    })
-
-    setInterval(() => {
-        splitflap.sendCommand(
-            PB.SplitflapCommand.fromObject({
-                modules: moduleData
-            }),
-        )
-    }, 6000)
-}
-
-main()

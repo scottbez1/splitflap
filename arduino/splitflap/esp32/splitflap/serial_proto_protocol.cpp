@@ -116,7 +116,7 @@ void SerialProtoProtocol::handlePacket(const uint8_t* buffer, size_t size) {
             PB_SplitflapCommand command = pb_rx_buffer_.payload.splitflap_command;
             Command c = {};
             c.command_type = CommandType::MODULES;
-            for (uint8_t i = 0; i < command.modules_count; i++) {
+            for (uint8_t i = 0; i < min((int)command.modules_count, NUM_MODULES); i++) {
                 switch (command.modules[i].action) {
                     case PB_SplitflapCommand_ModuleCommand_Action_NO_OP:
                         c.data[i] = QCMD_NO_OP;
@@ -125,7 +125,7 @@ void SerialProtoProtocol::handlePacket(const uint8_t* buffer, size_t size) {
                         c.data[i] = QCMD_RESET_AND_HOME;
                         break;
                     case PB_SplitflapCommand_ModuleCommand_Action_GO_TO_FLAP:
-                        if (command.modules[i].param <= 255) {
+                        if (command.modules[i].param <= 255 - QCMD_FLAP) {
                             c.data[i] = QCMD_FLAP + command.modules[i].param;
                         }
                         break;
