@@ -9,19 +9,21 @@ export {PB}
 export type MessageCallback = (message: PB.FromSplitflap) => void
 
 export class Splitflap {
-    private port: SerialPort
+    private port: SerialPort | null
     private onMessage: MessageCallback
     private buffer: Buffer
-    constructor(port: SerialPort, onMessage: MessageCallback) {
+    constructor(port: SerialPort | null, onMessage: MessageCallback) {
         this.port = port
         this.onMessage = onMessage
 
         this.buffer = Buffer.alloc(0)
 
-        port.on('data', (data: Buffer) => {
-            this.buffer = Buffer.concat([this.buffer, data])
-            this.processBuffer()
-        })
+        if (port !== null) {
+            port.on('data', (data: Buffer) => {
+                this.buffer = Buffer.concat([this.buffer, data])
+                this.processBuffer()
+            })
+        }
     }
 
     public setPositions(positions: Array<number | null>): void {
@@ -107,6 +109,9 @@ export class Splitflap {
     }
 
     private sendMessage(message: PB.ToSplitflap) {
+        if (this.port === null) {
+            return
+        }
         const payload = PB.ToSplitflap.encode(message).finish()
         const crc = CRC32.buf(payload)
         const crcBuffer = Buffer.from([crc & 0xff, (crc >>> 8) & 0xff, (crc >>> 16) & 0xff, (crc >>> 24) & 0xff])
