@@ -58,6 +58,13 @@ void SerialProtoProtocol::handleState(const SplitflapState& old_state, const Spl
     sendPbTxBuffer();
 }
 
+void SerialProtoProtocol::ack(uint32_t nonce) {
+    pb_tx_buffer_ = {};
+    pb_tx_buffer_.which_payload = PB_FromSplitflap_ack_tag;
+    pb_tx_buffer_.payload.ack.nonce = nonce;
+    sendPbTxBuffer();
+}
+
 void SerialProtoProtocol::log(const char* msg) {
     pb_tx_buffer_ = {};
     pb_tx_buffer_.which_payload = PB_FromSplitflap_log_tag;
@@ -91,10 +98,6 @@ void SerialProtoProtocol::handlePacket(const uint8_t* buffer, size_t size) {
                          | (buffer[size - 3] << 8)
                          | (buffer[size - 2] << 16)
                          | (buffer[size - 1] << 24);
-    
-    char buf[200];
-    snprintf(buf, sizeof(buf), "Got %u byte packet with computed CRC %08x", size - 4, expected_crc);
-    log(buf);
 
     if (expected_crc != provided_crc) {
         char buf[200];
@@ -110,6 +113,17 @@ void SerialProtoProtocol::handlePacket(const uint8_t* buffer, size_t size) {
         log(buf);
         return;
     }
+
+    // Always ACK immediately
+    ack(pb_rx_buffer_.nonce);
+    if (pb_rx_buffer_.nonce == last_nonce_) {
+        // Ignore any extraneous retries
+        char buf[200];
+        snprintf(buf, sizeof(buf), "Already handled nonce %u", pb_rx_buffer_.nonce);
+        log(buf);
+        return;
+    }
+    last_nonce_ = pb_rx_buffer_.nonce;
     
     switch (pb_rx_buffer_.which_payload) {
         case PB_ToSplitflap_splitflap_command_tag: {

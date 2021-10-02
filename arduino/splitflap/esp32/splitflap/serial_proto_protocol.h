@@ -38,6 +38,9 @@ class SerialProtoProtocol : public SerialProtocol {
 
         PacketSerial_<COBS, 0, (PB_ToSplitflap_size + 4) * 2 + 10> packet_serial_;
 
+        uint32_t last_nonce_;
+
         void sendPbTxBuffer();
         void handlePacket(const uint8_t* buffer, size_t size);
+        void ack(uint32_t nonce);
 };

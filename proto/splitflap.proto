@@ -30,6 +30,18 @@ message Log {
     string msg = 1 [(nanopb).max_length = 255];
 }
 
+message Ack {
+    uint32 nonce = 1;
+}
+
+message FromSplitflap {
+    oneof payload {
+        SplitflapState splitflap_state = 1;
+        Log log = 2;
+        Ack ack = 3;
+    }
+}
+
 message SplitflapCommand {
     message ModuleCommand {
         enum Action {
@@ -40,19 +52,13 @@ message SplitflapCommand {
         Action action = 1;
         uint32 param = 2;
     }
-
-    repeated ModuleCommand modules = 1 [(nanopb).max_count = 255];
-}
-
-message FromSplitflap {
-    oneof payload {
-        SplitflapState splitflap_state = 1;
-        Log log = 2;
-    }
+    repeated ModuleCommand modules = 2 [(nanopb).max_count = 255];
 }
 
 message ToSplitflap {
+    uint32 nonce = 1;
+    
     oneof payload {
-        SplitflapCommand splitflap_command = 1;
+        SplitflapCommand splitflap_command = 2;
     }
 }

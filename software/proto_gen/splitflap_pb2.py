@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='PB',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x0fsplitflap.proto\x12\x02PB\x1a\x0cnanopb.proto\"\xd9\x02\n\x0eSplitflapState\x12\x37\n\x07modules\x18\x01 \x03(\x0b\x32\x1e.PB.SplitflapState.ModuleStateB\x06\x92?\x03\x10\xff\x01\x1a\x8d\x02\n\x0bModuleState\x12\x33\n\x05state\x18\x01 \x01(\x0e\x32$.PB.SplitflapState.ModuleState.State\x12\x12\n\nflap_index\x18\x02 \x01(\r\x12\x0e\n\x06moving\x18\x03 \x01(\x08\x12\x12\n\nhome_state\x18\x04 \x01(\x08\x12\x1d\n\x15\x63ount_unexpected_home\x18\x05 \x01(\r\x12\x19\n\x11\x63ount_missed_home\x18\x06 \x01(\r\"W\n\x05State\x12\n\n\x06NORMAL\x10\x00\x12\x11\n\rLOOK_FOR_HOME\x10\x01\x12\x10\n\x0cSENSOR_ERROR\x10\x02\x12\t\n\x05PANIC\x10\x03\x12\x12\n\x0eSTATE_DISABLED\x10\x04\"\x1a\n\x03Log\x12\x13\n\x03msg\x18\x01 \x01(\tB\x06\x92?\x03p\xff\x01\"\xe4\x01\n\x10SplitflapCommand\x12;\n\x07modules\x18\x01 \x03(\x0b\x32\".PB.SplitflapCommand.ModuleCommandB\x06\x92?\x03\x10\xff\x01\x1a\x92\x01\n\rModuleCommand\x12\x39\n\x06\x61\x63tion\x18\x01 \x01(\x0e\x32).PB.SplitflapCommand.ModuleCommand.Action\x12\r\n\x05param\x18\x02 \x01(\r\"7\n\x06\x41\x63tion\x12\t\n\x05NO_OP\x10\x00\x12\x0e\n\nGO_TO_FLAP\x10\x01\x12\x12\n\x0eRESET_AND_HOME\x10\x02\"a\n\rFromSplitflap\x12-\n\x0fsplitflap_state\x18\x01 \x01(\x0b\x32\x12.PB.SplitflapStateH\x00\x12\x16\n\x03log\x18\x02 \x01(\x0b\x32\x07.PB.LogH\x00\x42\t\n\x07payload\"K\n\x0bToSplitflap\x12\x31\n\x11splitflap_command\x18\x01 \x01(\x0b\x32\x14.PB.SplitflapCommandH\x00\x42\t\n\x07payloadb\x06proto3')
+  serialized_pb=_b('\n\x0fsplitflap.proto\x12\x02PB\x1a\x0cnanopb.proto\"\xd9\x02\n\x0eSplitflapState\x12\x37\n\x07modules\x18\x01 \x03(\x0b\x32\x1e.PB.SplitflapState.ModuleStateB\x06\x92?\x03\x10\xff\x01\x1a\x8d\x02\n\x0bModuleState\x12\x33\n\x05state\x18\x01 \x01(\x0e\x32$.PB.SplitflapState.ModuleState.State\x12\x12\n\nflap_index\x18\x02 \x01(\r\x12\x0e\n\x06moving\x18\x03 \x01(\x08\x12\x12\n\nhome_state\x18\x04 \x01(\x08\x12\x1d\n\x15\x63ount_unexpected_home\x18\x05 \x01(\r\x12\x19\n\x11\x63ount_missed_home\x18\x06 \x01(\r\"W\n\x05State\x12\n\n\x06NORMAL\x10\x00\x12\x11\n\rLOOK_FOR_HOME\x10\x01\x12\x10\n\x0cSENSOR_ERROR\x10\x02\x12\t\n\x05PANIC\x10\x03\x12\x12\n\x0eSTATE_DISABLED\x10\x04\"\x1a\n\x03Log\x12\x13\n\x03msg\x18\x01 \x01(\tB\x06\x92?\x03p\xff\x01\"\x14\n\x03\x41\x63k\x12\r\n\x05nonce\x18\x01 \x01(\r\"y\n\rFromSplitflap\x12-\n\x0fsplitflap_state\x18\x01 \x01(\x0b\x32\x12.PB.SplitflapStateH\x00\x12\x16\n\x03log\x18\x02 \x01(\x0b\x32\x07.PB.LogH\x00\x12\x16\n\x03\x61\x63k\x18\x03 \x01(\x0b\x32\x07.PB.AckH\x00\x42\t\n\x07payload\"\xe4\x01\n\x10SplitflapCommand\x12;\n\x07modules\x18\x02 \x03(\x0b\x32\".PB.SplitflapCommand.ModuleCommandB\x06\x92?\x03\x10\xff\x01\x1a\x92\x01\n\rModuleCommand\x12\x39\n\x06\x61\x63tion\x18\x01 \x01(\x0e\x32).PB.SplitflapCommand.ModuleCommand.Action\x12\r\n\x05param\x18\x02 \x01(\r\"7\n\x06\x41\x63tion\x12\t\n\x05NO_OP\x10\x00\x12\x0e\n\nGO_TO_FLAP\x10\x01\x12\x12\n\x0eRESET_AND_HOME\x10\x02\"Z\n\x0bToSplitflap\x12\r\n\x05nonce\x18\x01 \x01(\r\x12\x31\n\x11splitflap_command\x18\x02 \x01(\x0b\x32\x14.PB.SplitflapCommandH\x00\x42\t\n\x07payloadb\x06proto3')
   ,
   dependencies=[nanopb__pb2.DESCRIPTOR,])
 
@@ -81,8 +81,8 @@ _SPLITFLAPCOMMAND_MODULECOMMAND_ACTION = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=587,
-  serialized_end=642,
+  serialized_start=732,
+  serialized_end=787,
 )
 _sym_db.RegisterEnumDescriptor(_SPLITFLAPCOMMAND_MODULECOMMAND_ACTION)
 
@@ -215,6 +215,85 @@ _LOG = _descriptor.Descriptor(
 )
 
 
+_ACK = _descriptor.Descriptor(
+  name='Ack',
+  full_name='PB.Ack',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='nonce', full_name='PB.Ack.nonce', index=0,
+      number=1, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=413,
+  serialized_end=433,
+)
+
+
+_FROMSPLITFLAP = _descriptor.Descriptor(
+  name='FromSplitflap',
+  full_name='PB.FromSplitflap',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='splitflap_state', full_name='PB.FromSplitflap.splitflap_state', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='log', full_name='PB.FromSplitflap.log', index=1,
+      number=2, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='ack', full_name='PB.FromSplitflap.ack', index=2,
+      number=3, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+    _descriptor.OneofDescriptor(
+      name='payload', full_name='PB.FromSplitflap.payload',
+      index=0, containing_type=None, fields=[]),
+  ],
+  serialized_start=435,
+  serialized_end=556,
+)
+
+
 _SPLITFLAPCOMMAND_MODULECOMMAND = _descriptor.Descriptor(
   name='ModuleCommand',
   full_name='PB.SplitflapCommand.ModuleCommand',
@@ -249,8 +328,8 @@ _SPLITFLAPCOMMAND_MODULECOMMAND = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=496,
-  serialized_end=642,
+  serialized_start=641,
+  serialized_end=787,
 )
 
 _SPLITFLAPCOMMAND = _descriptor.Descriptor(
@@ -262,7 +341,7 @@ _SPLITFLAPCOMMAND = _descriptor.Descriptor(
   fields=[
     _descriptor.FieldDescriptor(
       name='modules', full_name='PB.SplitflapCommand.modules', index=0,
-      number=1, type=11, cpp_type=10, label=3,
+      number=2, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -279,49 +358,8 @@ _SPLITFLAPCOMMAND = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=414,
-  serialized_end=642,
-)
-
-
-_FROMSPLITFLAP = _descriptor.Descriptor(
-  name='FromSplitflap',
-  full_name='PB.FromSplitflap',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='splitflap_state', full_name='PB.FromSplitflap.splitflap_state', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='log', full_name='PB.FromSplitflap.log', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-    _descriptor.OneofDescriptor(
-      name='payload', full_name='PB.FromSplitflap.payload',
-      index=0, containing_type=None, fields=[]),
-  ],
-  serialized_start=644,
-  serialized_end=741,
+  serialized_start=559,
+  serialized_end=787,
 )
 
 
@@ -333,8 +371,15 @@ _TOSPLITFLAP = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='splitflap_command', full_name='PB.ToSplitflap.splitflap_command', index=0,
-      number=1, type=11, cpp_type=10, label=1,
+      name='nonce', full_name='PB.ToSplitflap.nonce', index=0,
+      number=1, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='splitflap_command', full_name='PB.ToSplitflap.splitflap_command', index=1,
+      number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -354,34 +399,39 @@ _TOSPLITFLAP = _descriptor.Descriptor(
       name='payload', full_name='PB.ToSplitflap.payload',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=743,
-  serialized_end=818,
+  serialized_start=789,
+  serialized_end=879,
 )
 
 _SPLITFLAPSTATE_MODULESTATE.fields_by_name['state'].enum_type = _SPLITFLAPSTATE_MODULESTATE_STATE
 _SPLITFLAPSTATE_MODULESTATE.containing_type = _SPLITFLAPSTATE
 _SPLITFLAPSTATE_MODULESTATE_STATE.containing_type = _SPLITFLAPSTATE_MODULESTATE
 _SPLITFLAPSTATE.fields_by_name['modules'].message_type = _SPLITFLAPSTATE_MODULESTATE
-_SPLITFLAPCOMMAND_MODULECOMMAND.fields_by_name['action'].enum_type = _SPLITFLAPCOMMAND_MODULECOMMAND_ACTION
-_SPLITFLAPCOMMAND_MODULECOMMAND.containing_type = _SPLITFLAPCOMMAND
-_SPLITFLAPCOMMAND_MODULECOMMAND_ACTION.containing_type = _SPLITFLAPCOMMAND_MODULECOMMAND
-_SPLITFLAPCOMMAND.fields_by_name['modules'].message_type = _SPLITFLAPCOMMAND_MODULECOMMAND
 _FROMSPLITFLAP.fields_by_name['splitflap_state'].message_type = _SPLITFLAPSTATE
 _FROMSPLITFLAP.fields_by_name['log'].message_type = _LOG
+_FROMSPLITFLAP.fields_by_name['ack'].message_type = _ACK
 _FROMSPLITFLAP.oneofs_by_name['payload'].fields.append(
   _FROMSPLITFLAP.fields_by_name['splitflap_state'])
 _FROMSPLITFLAP.fields_by_name['splitflap_state'].containing_oneof = _FROMSPLITFLAP.oneofs_by_name['payload']
 _FROMSPLITFLAP.oneofs_by_name['payload'].fields.append(
   _FROMSPLITFLAP.fields_by_name['log'])
 _FROMSPLITFLAP.fields_by_name['log'].containing_oneof = _FROMSPLITFLAP.oneofs_by_name['payload']
+_FROMSPLITFLAP.oneofs_by_name['payload'].fields.append(
+  _FROMSPLITFLAP.fields_by_name['ack'])
+_FROMSPLITFLAP.fields_by_name['ack'].containing_oneof = _FROMSPLITFLAP.oneofs_by_name['payload']
+_SPLITFLAPCOMMAND_MODULECOMMAND.fields_by_name['action'].enum_type = _SPLITFLAPCOMMAND_MODULECOMMAND_ACTION
+_SPLITFLAPCOMMAND_MODULECOMMAND.containing_type = _SPLITFLAPCOMMAND
+_SPLITFLAPCOMMAND_MODULECOMMAND_ACTION.containing_type = _SPLITFLAPCOMMAND_MODULECOMMAND
+_SPLITFLAPCOMMAND.fields_by_name['modules'].message_type = _SPLITFLAPCOMMAND_MODULECOMMAND
 _TOSPLITFLAP.fields_by_name['splitflap_command'].message_type = _SPLITFLAPCOMMAND
 _TOSPLITFLAP.oneofs_by_name['payload'].fields.append(
   _TOSPLITFLAP.fields_by_name['splitflap_command'])
 _TOSPLITFLAP.fields_by_name['splitflap_command'].containing_oneof = _TOSPLITFLAP.oneofs_by_name['payload']
 DESCRIPTOR.message_types_by_name['SplitflapState'] = _SPLITFLAPSTATE
 DESCRIPTOR.message_types_by_name['Log'] = _LOG
-DESCRIPTOR.message_types_by_name['SplitflapCommand'] = _SPLITFLAPCOMMAND
+DESCRIPTOR.message_types_by_name['Ack'] = _ACK
 DESCRIPTOR.message_types_by_name['FromSplitflap'] = _FROMSPLITFLAP
+DESCRIPTOR.message_types_by_name['SplitflapCommand'] = _SPLITFLAPCOMMAND
 DESCRIPTOR.message_types_by_name['ToSplitflap'] = _TOSPLITFLAP
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -407,6 +457,20 @@ Log = _reflection.GeneratedProtocolMessageType('Log', (_message.Message,), dict(
   ))
 _sym_db.RegisterMessage(Log)
 
+Ack = _reflection.GeneratedProtocolMessageType('Ack', (_message.Message,), dict(
+  DESCRIPTOR = _ACK,
+  __module__ = 'splitflap_pb2'
+  # @@protoc_insertion_point(class_scope:PB.Ack)
+  ))
+_sym_db.RegisterMessage(Ack)
+
+FromSplitflap = _reflection.GeneratedProtocolMessageType('FromSplitflap', (_message.Message,), dict(
+  DESCRIPTOR = _FROMSPLITFLAP,
+  __module__ = 'splitflap_pb2'
+  # @@protoc_insertion_point(class_scope:PB.FromSplitflap)
+  ))
+_sym_db.RegisterMessage(FromSplitflap)
+
 SplitflapCommand = _reflection.GeneratedProtocolMessageType('SplitflapCommand', (_message.Message,), dict(
 
   ModuleCommand = _reflection.GeneratedProtocolMessageType('ModuleCommand', (_message.Message,), dict(
@@ -421,13 +485,6 @@ SplitflapCommand = _reflection.GeneratedProtocolMessageType('SplitflapCommand', 
   ))
 _sym_db.RegisterMessage(SplitflapCommand)
 _sym_db.RegisterMessage(SplitflapCommand.ModuleCommand)
-
-FromSplitflap = _reflection.GeneratedProtocolMessageType('FromSplitflap', (_message.Message,), dict(
-  DESCRIPTOR = _FROMSPLITFLAP,
-  __module__ = 'splitflap_pb2'
-  # @@protoc_insertion_point(class_scope:PB.FromSplitflap)
-  ))
-_sym_db.RegisterMessage(FromSplitflap)
 
 ToSplitflap = _reflection.GeneratedProtocolMessageType('ToSplitflap', (_message.Message,), dict(
   DESCRIPTOR = _TOSPLITFLAP,

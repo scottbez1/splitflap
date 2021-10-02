@@ -317,6 +317,201 @@ export namespace PB {
         public toJSON(): { [k: string]: any };
     }
 
+    /** Properties of an Ack. */
+    interface IAck {
+
+        /** Ack nonce */
+        nonce?: (number|null);
+    }
+
+    /** Represents an Ack. */
+    class Ack implements IAck {
+
+        /**
+         * Constructs a new Ack.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: PB.IAck);
+
+        /** Ack nonce. */
+        public nonce: number;
+
+        /**
+         * Creates a new Ack instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns Ack instance
+         */
+        public static create(properties?: PB.IAck): PB.Ack;
+
+        /**
+         * Encodes the specified Ack message. Does not implicitly {@link PB.Ack.verify|verify} messages.
+         * @param message Ack message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: PB.IAck, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified Ack message, length delimited. Does not implicitly {@link PB.Ack.verify|verify} messages.
+         * @param message Ack message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: PB.IAck, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes an Ack message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns Ack
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): PB.Ack;
+
+        /**
+         * Decodes an Ack message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns Ack
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): PB.Ack;
+
+        /**
+         * Verifies an Ack message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates an Ack message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns Ack
+         */
+        public static fromObject(object: { [k: string]: any }): PB.Ack;
+
+        /**
+         * Creates a plain object from an Ack message. Also converts values to other types if specified.
+         * @param message Ack
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: PB.Ack, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this Ack to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+    }
+
+    /** Properties of a FromSplitflap. */
+    interface IFromSplitflap {
+
+        /** FromSplitflap splitflapState */
+        splitflapState?: (PB.ISplitflapState|null);
+
+        /** FromSplitflap log */
+        log?: (PB.ILog|null);
+
+        /** FromSplitflap ack */
+        ack?: (PB.IAck|null);
+    }
+
+    /** Represents a FromSplitflap. */
+    class FromSplitflap implements IFromSplitflap {
+
+        /**
+         * Constructs a new FromSplitflap.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: PB.IFromSplitflap);
+
+        /** FromSplitflap splitflapState. */
+        public splitflapState?: (PB.ISplitflapState|null);
+
+        /** FromSplitflap log. */
+        public log?: (PB.ILog|null);
+
+        /** FromSplitflap ack. */
+        public ack?: (PB.IAck|null);
+
+        /** FromSplitflap payload. */
+        public payload?: ("splitflapState"|"log"|"ack");
+
+        /**
+         * Creates a new FromSplitflap instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns FromSplitflap instance
+         */
+        public static create(properties?: PB.IFromSplitflap): PB.FromSplitflap;
+
+        /**
+         * Encodes the specified FromSplitflap message. Does not implicitly {@link PB.FromSplitflap.verify|verify} messages.
+         * @param message FromSplitflap message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: PB.IFromSplitflap, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified FromSplitflap message, length delimited. Does not implicitly {@link PB.FromSplitflap.verify|verify} messages.
+         * @param message FromSplitflap message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: PB.IFromSplitflap, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a FromSplitflap message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns FromSplitflap
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): PB.FromSplitflap;
+
+        /**
+         * Decodes a FromSplitflap message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns FromSplitflap
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): PB.FromSplitflap;
+
+        /**
+         * Verifies a FromSplitflap message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a FromSplitflap message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns FromSplitflap
+         */
+        public static fromObject(object: { [k: string]: any }): PB.FromSplitflap;
+
+        /**
+         * Creates a plain object from a FromSplitflap message. Also converts values to other types if specified.
+         * @param message FromSplitflap
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: PB.FromSplitflap, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this FromSplitflap to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+    }
+
     /** Properties of a SplitflapCommand. */
     interface ISplitflapCommand {
 
@@ -516,107 +711,11 @@ export namespace PB {
         }
     }
 
-    /** Properties of a FromSplitflap. */
-    interface IFromSplitflap {
-
-        /** FromSplitflap splitflapState */
-        splitflapState?: (PB.ISplitflapState|null);
-
-        /** FromSplitflap log */
-        log?: (PB.ILog|null);
-    }
-
-    /** Represents a FromSplitflap. */
-    class FromSplitflap implements IFromSplitflap {
-
-        /**
-         * Constructs a new FromSplitflap.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: PB.IFromSplitflap);
-
-        /** FromSplitflap splitflapState. */
-        public splitflapState?: (PB.ISplitflapState|null);
-
-        /** FromSplitflap log. */
-        public log?: (PB.ILog|null);
-
-        /** FromSplitflap payload. */
-        public payload?: ("splitflapState"|"log");
-
-        /**
-         * Creates a new FromSplitflap instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns FromSplitflap instance
-         */
-        public static create(properties?: PB.IFromSplitflap): PB.FromSplitflap;
-
-        /**
-         * Encodes the specified FromSplitflap message. Does not implicitly {@link PB.FromSplitflap.verify|verify} messages.
-         * @param message FromSplitflap message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: PB.IFromSplitflap, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified FromSplitflap message, length delimited. Does not implicitly {@link PB.FromSplitflap.verify|verify} messages.
-         * @param message FromSplitflap message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: PB.IFromSplitflap, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a FromSplitflap message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns FromSplitflap
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): PB.FromSplitflap;
-
-        /**
-         * Decodes a FromSplitflap message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns FromSplitflap
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): PB.FromSplitflap;
-
-        /**
-         * Verifies a FromSplitflap message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates a FromSplitflap message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns FromSplitflap
-         */
-        public static fromObject(object: { [k: string]: any }): PB.FromSplitflap;
-
-        /**
-         * Creates a plain object from a FromSplitflap message. Also converts values to other types if specified.
-         * @param message FromSplitflap
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: PB.FromSplitflap, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this FromSplitflap to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-    }
-
     /** Properties of a ToSplitflap. */
     interface IToSplitflap {
+
+        /** ToSplitflap nonce */
+        nonce?: (number|null);
 
         /** ToSplitflap splitflapCommand */
         splitflapCommand?: (PB.ISplitflapCommand|null);
@@ -630,6 +729,9 @@ export namespace PB {
          * @param [properties] Properties to set
          */
         constructor(properties?: PB.IToSplitflap);
+
+        /** ToSplitflap nonce. */
+        public nonce: number;
 
         /** ToSplitflap splitflapCommand. */
         public splitflapCommand?: (PB.ISplitflapCommand|null);

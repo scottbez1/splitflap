@@ -766,6 +766,472 @@
             return Log;
         })();
     
+        PB.Ack = (function() {
+    
+            /**
+             * Properties of an Ack.
+             * @memberof PB
+             * @interface IAck
+             * @property {number|null} [nonce] Ack nonce
+             */
+    
+            /**
+             * Constructs a new Ack.
+             * @memberof PB
+             * @classdesc Represents an Ack.
+             * @implements IAck
+             * @constructor
+             * @param {PB.IAck=} [properties] Properties to set
+             */
+            function Ack(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+    
+            /**
+             * Ack nonce.
+             * @member {number} nonce
+             * @memberof PB.Ack
+             * @instance
+             */
+            Ack.prototype.nonce = 0;
+    
+            /**
+             * Creates a new Ack instance using the specified properties.
+             * @function create
+             * @memberof PB.Ack
+             * @static
+             * @param {PB.IAck=} [properties] Properties to set
+             * @returns {PB.Ack} Ack instance
+             */
+            Ack.create = function create(properties) {
+                return new Ack(properties);
+            };
+    
+            /**
+             * Encodes the specified Ack message. Does not implicitly {@link PB.Ack.verify|verify} messages.
+             * @function encode
+             * @memberof PB.Ack
+             * @static
+             * @param {PB.IAck} message Ack message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            Ack.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.nonce != null && Object.hasOwnProperty.call(message, "nonce"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).uint32(message.nonce);
+                return writer;
+            };
+    
+            /**
+             * Encodes the specified Ack message, length delimited. Does not implicitly {@link PB.Ack.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof PB.Ack
+             * @static
+             * @param {PB.IAck} message Ack message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            Ack.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+    
+            /**
+             * Decodes an Ack message from the specified reader or buffer.
+             * @function decode
+             * @memberof PB.Ack
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {PB.Ack} Ack
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            Ack.decode = function decode(reader, length) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.PB.Ack();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    switch (tag >>> 3) {
+                    case 1:
+                        message.nonce = reader.uint32();
+                        break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+    
+            /**
+             * Decodes an Ack message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof PB.Ack
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {PB.Ack} Ack
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            Ack.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+    
+            /**
+             * Verifies an Ack message.
+             * @function verify
+             * @memberof PB.Ack
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            Ack.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.nonce != null && message.hasOwnProperty("nonce"))
+                    if (!$util.isInteger(message.nonce))
+                        return "nonce: integer expected";
+                return null;
+            };
+    
+            /**
+             * Creates an Ack message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof PB.Ack
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {PB.Ack} Ack
+             */
+            Ack.fromObject = function fromObject(object) {
+                if (object instanceof $root.PB.Ack)
+                    return object;
+                var message = new $root.PB.Ack();
+                if (object.nonce != null)
+                    message.nonce = object.nonce >>> 0;
+                return message;
+            };
+    
+            /**
+             * Creates a plain object from an Ack message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof PB.Ack
+             * @static
+             * @param {PB.Ack} message Ack
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            Ack.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults)
+                    object.nonce = 0;
+                if (message.nonce != null && message.hasOwnProperty("nonce"))
+                    object.nonce = message.nonce;
+                return object;
+            };
+    
+            /**
+             * Converts this Ack to JSON.
+             * @function toJSON
+             * @memberof PB.Ack
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            Ack.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+    
+            return Ack;
+        })();
+    
+        PB.FromSplitflap = (function() {
+    
+            /**
+             * Properties of a FromSplitflap.
+             * @memberof PB
+             * @interface IFromSplitflap
+             * @property {PB.ISplitflapState|null} [splitflapState] FromSplitflap splitflapState
+             * @property {PB.ILog|null} [log] FromSplitflap log
+             * @property {PB.IAck|null} [ack] FromSplitflap ack
+             */
+    
+            /**
+             * Constructs a new FromSplitflap.
+             * @memberof PB
+             * @classdesc Represents a FromSplitflap.
+             * @implements IFromSplitflap
+             * @constructor
+             * @param {PB.IFromSplitflap=} [properties] Properties to set
+             */
+            function FromSplitflap(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+    
+            /**
+             * FromSplitflap splitflapState.
+             * @member {PB.ISplitflapState|null|undefined} splitflapState
+             * @memberof PB.FromSplitflap
+             * @instance
+             */
+            FromSplitflap.prototype.splitflapState = null;
+    
+            /**
+             * FromSplitflap log.
+             * @member {PB.ILog|null|undefined} log
+             * @memberof PB.FromSplitflap
+             * @instance
+             */
+            FromSplitflap.prototype.log = null;
+    
+            /**
+             * FromSplitflap ack.
+             * @member {PB.IAck|null|undefined} ack
+             * @memberof PB.FromSplitflap
+             * @instance
+             */
+            FromSplitflap.prototype.ack = null;
+    
+            // OneOf field names bound to virtual getters and setters
+            var $oneOfFields;
+    
+            /**
+             * FromSplitflap payload.
+             * @member {"splitflapState"|"log"|"ack"|undefined} payload
+             * @memberof PB.FromSplitflap
+             * @instance
+             */
+            Object.defineProperty(FromSplitflap.prototype, "payload", {
+                get: $util.oneOfGetter($oneOfFields = ["splitflapState", "log", "ack"]),
+                set: $util.oneOfSetter($oneOfFields)
+            });
+    
+            /**
+             * Creates a new FromSplitflap instance using the specified properties.
+             * @function create
+             * @memberof PB.FromSplitflap
+             * @static
+             * @param {PB.IFromSplitflap=} [properties] Properties to set
+             * @returns {PB.FromSplitflap} FromSplitflap instance
+             */
+            FromSplitflap.create = function create(properties) {
+                return new FromSplitflap(properties);
+            };
+    
+            /**
+             * Encodes the specified FromSplitflap message. Does not implicitly {@link PB.FromSplitflap.verify|verify} messages.
+             * @function encode
+             * @memberof PB.FromSplitflap
+             * @static
+             * @param {PB.IFromSplitflap} message FromSplitflap message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            FromSplitflap.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.splitflapState != null && Object.hasOwnProperty.call(message, "splitflapState"))
+                    $root.PB.SplitflapState.encode(message.splitflapState, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.log != null && Object.hasOwnProperty.call(message, "log"))
+                    $root.PB.Log.encode(message.log, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                if (message.ack != null && Object.hasOwnProperty.call(message, "ack"))
+                    $root.PB.Ack.encode(message.ack, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                return writer;
+            };
+    
+            /**
+             * Encodes the specified FromSplitflap message, length delimited. Does not implicitly {@link PB.FromSplitflap.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof PB.FromSplitflap
+             * @static
+             * @param {PB.IFromSplitflap} message FromSplitflap message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            FromSplitflap.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+    
+            /**
+             * Decodes a FromSplitflap message from the specified reader or buffer.
+             * @function decode
+             * @memberof PB.FromSplitflap
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {PB.FromSplitflap} FromSplitflap
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            FromSplitflap.decode = function decode(reader, length) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.PB.FromSplitflap();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    switch (tag >>> 3) {
+                    case 1:
+                        message.splitflapState = $root.PB.SplitflapState.decode(reader, reader.uint32());
+                        break;
+                    case 2:
+                        message.log = $root.PB.Log.decode(reader, reader.uint32());
+                        break;
+                    case 3:
+                        message.ack = $root.PB.Ack.decode(reader, reader.uint32());
+                        break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+    
+            /**
+             * Decodes a FromSplitflap message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof PB.FromSplitflap
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {PB.FromSplitflap} FromSplitflap
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            FromSplitflap.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+    
+            /**
+             * Verifies a FromSplitflap message.
+             * @function verify
+             * @memberof PB.FromSplitflap
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            FromSplitflap.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                var properties = {};
+                if (message.splitflapState != null && message.hasOwnProperty("splitflapState")) {
+                    properties.payload = 1;
+                    {
+                        var error = $root.PB.SplitflapState.verify(message.splitflapState);
+                        if (error)
+                            return "splitflapState." + error;
+                    }
+                }
+                if (message.log != null && message.hasOwnProperty("log")) {
+                    if (properties.payload === 1)
+                        return "payload: multiple values";
+                    properties.payload = 1;
+                    {
+                        var error = $root.PB.Log.verify(message.log);
+                        if (error)
+                            return "log." + error;
+                    }
+                }
+                if (message.ack != null && message.hasOwnProperty("ack")) {
+                    if (properties.payload === 1)
+                        return "payload: multiple values";
+                    properties.payload = 1;
+                    {
+                        var error = $root.PB.Ack.verify(message.ack);
+                        if (error)
+                            return "ack." + error;
+                    }
+                }
+                return null;
+            };
+    
+            /**
+             * Creates a FromSplitflap message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof PB.FromSplitflap
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {PB.FromSplitflap} FromSplitflap
+             */
+            FromSplitflap.fromObject = function fromObject(object) {
+                if (object instanceof $root.PB.FromSplitflap)
+                    return object;
+                var message = new $root.PB.FromSplitflap();
+                if (object.splitflapState != null) {
+                    if (typeof object.splitflapState !== "object")
+                        throw TypeError(".PB.FromSplitflap.splitflapState: object expected");
+                    message.splitflapState = $root.PB.SplitflapState.fromObject(object.splitflapState);
+                }
+                if (object.log != null) {
+                    if (typeof object.log !== "object")
+                        throw TypeError(".PB.FromSplitflap.log: object expected");
+                    message.log = $root.PB.Log.fromObject(object.log);
+                }
+                if (object.ack != null) {
+                    if (typeof object.ack !== "object")
+                        throw TypeError(".PB.FromSplitflap.ack: object expected");
+                    message.ack = $root.PB.Ack.fromObject(object.ack);
+                }
+                return message;
+            };
+    
+            /**
+             * Creates a plain object from a FromSplitflap message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof PB.FromSplitflap
+             * @static
+             * @param {PB.FromSplitflap} message FromSplitflap
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            FromSplitflap.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (message.splitflapState != null && message.hasOwnProperty("splitflapState")) {
+                    object.splitflapState = $root.PB.SplitflapState.toObject(message.splitflapState, options);
+                    if (options.oneofs)
+                        object.payload = "splitflapState";
+                }
+                if (message.log != null && message.hasOwnProperty("log")) {
+                    object.log = $root.PB.Log.toObject(message.log, options);
+                    if (options.oneofs)
+                        object.payload = "log";
+                }
+                if (message.ack != null && message.hasOwnProperty("ack")) {
+                    object.ack = $root.PB.Ack.toObject(message.ack, options);
+                    if (options.oneofs)
+                        object.payload = "ack";
+                }
+                return object;
+            };
+    
+            /**
+             * Converts this FromSplitflap to JSON.
+             * @function toJSON
+             * @memberof PB.FromSplitflap
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            FromSplitflap.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+    
+            return FromSplitflap;
+        })();
+    
         PB.SplitflapCommand = (function() {
     
             /**
@@ -825,7 +1291,7 @@
                     writer = $Writer.create();
                 if (message.modules != null && message.modules.length)
                     for (var i = 0; i < message.modules.length; ++i)
-                        $root.PB.SplitflapCommand.ModuleCommand.encode(message.modules[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                        $root.PB.SplitflapCommand.ModuleCommand.encode(message.modules[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
                 return writer;
             };
     
@@ -860,7 +1326,7 @@
                 while (reader.pos < end) {
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
-                    case 1:
+                    case 2:
                         if (!(message.modules && message.modules.length))
                             message.modules = [];
                         message.modules.push($root.PB.SplitflapCommand.ModuleCommand.decode(reader, reader.uint32()));
@@ -1218,257 +1684,13 @@
             return SplitflapCommand;
         })();
     
-        PB.FromSplitflap = (function() {
-    
-            /**
-             * Properties of a FromSplitflap.
-             * @memberof PB
-             * @interface IFromSplitflap
-             * @property {PB.ISplitflapState|null} [splitflapState] FromSplitflap splitflapState
-             * @property {PB.ILog|null} [log] FromSplitflap log
-             */
-    
-            /**
-             * Constructs a new FromSplitflap.
-             * @memberof PB
-             * @classdesc Represents a FromSplitflap.
-             * @implements IFromSplitflap
-             * @constructor
-             * @param {PB.IFromSplitflap=} [properties] Properties to set
-             */
-            function FromSplitflap(properties) {
-                if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                        if (properties[keys[i]] != null)
-                            this[keys[i]] = properties[keys[i]];
-            }
-    
-            /**
-             * FromSplitflap splitflapState.
-             * @member {PB.ISplitflapState|null|undefined} splitflapState
-             * @memberof PB.FromSplitflap
-             * @instance
-             */
-            FromSplitflap.prototype.splitflapState = null;
-    
-            /**
-             * FromSplitflap log.
-             * @member {PB.ILog|null|undefined} log
-             * @memberof PB.FromSplitflap
-             * @instance
-             */
-            FromSplitflap.prototype.log = null;
-    
-            // OneOf field names bound to virtual getters and setters
-            var $oneOfFields;
-    
-            /**
-             * FromSplitflap payload.
-             * @member {"splitflapState"|"log"|undefined} payload
-             * @memberof PB.FromSplitflap
-             * @instance
-             */
-            Object.defineProperty(FromSplitflap.prototype, "payload", {
-                get: $util.oneOfGetter($oneOfFields = ["splitflapState", "log"]),
-                set: $util.oneOfSetter($oneOfFields)
-            });
-    
-            /**
-             * Creates a new FromSplitflap instance using the specified properties.
-             * @function create
-             * @memberof PB.FromSplitflap
-             * @static
-             * @param {PB.IFromSplitflap=} [properties] Properties to set
-             * @returns {PB.FromSplitflap} FromSplitflap instance
-             */
-            FromSplitflap.create = function create(properties) {
-                return new FromSplitflap(properties);
-            };
-    
-            /**
-             * Encodes the specified FromSplitflap message. Does not implicitly {@link PB.FromSplitflap.verify|verify} messages.
-             * @function encode
-             * @memberof PB.FromSplitflap
-             * @static
-             * @param {PB.IFromSplitflap} message FromSplitflap message or plain object to encode
-             * @param {$protobuf.Writer} [writer] Writer to encode to
-             * @returns {$protobuf.Writer} Writer
-             */
-            FromSplitflap.encode = function encode(message, writer) {
-                if (!writer)
-                    writer = $Writer.create();
-                if (message.splitflapState != null && Object.hasOwnProperty.call(message, "splitflapState"))
-                    $root.PB.SplitflapState.encode(message.splitflapState, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-                if (message.log != null && Object.hasOwnProperty.call(message, "log"))
-                    $root.PB.Log.encode(message.log, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
-                return writer;
-            };
-    
-            /**
-             * Encodes the specified FromSplitflap message, length delimited. Does not implicitly {@link PB.FromSplitflap.verify|verify} messages.
-             * @function encodeDelimited
-             * @memberof PB.FromSplitflap
-             * @static
-             * @param {PB.IFromSplitflap} message FromSplitflap message or plain object to encode
-             * @param {$protobuf.Writer} [writer] Writer to encode to
-             * @returns {$protobuf.Writer} Writer
-             */
-            FromSplitflap.encodeDelimited = function encodeDelimited(message, writer) {
-                return this.encode(message, writer).ldelim();
-            };
-    
-            /**
-             * Decodes a FromSplitflap message from the specified reader or buffer.
-             * @function decode
-             * @memberof PB.FromSplitflap
-             * @static
-             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @param {number} [length] Message length if known beforehand
-             * @returns {PB.FromSplitflap} FromSplitflap
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            FromSplitflap.decode = function decode(reader, length) {
-                if (!(reader instanceof $Reader))
-                    reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.PB.FromSplitflap();
-                while (reader.pos < end) {
-                    var tag = reader.uint32();
-                    switch (tag >>> 3) {
-                    case 1:
-                        message.splitflapState = $root.PB.SplitflapState.decode(reader, reader.uint32());
-                        break;
-                    case 2:
-                        message.log = $root.PB.Log.decode(reader, reader.uint32());
-                        break;
-                    default:
-                        reader.skipType(tag & 7);
-                        break;
-                    }
-                }
-                return message;
-            };
-    
-            /**
-             * Decodes a FromSplitflap message from the specified reader or buffer, length delimited.
-             * @function decodeDelimited
-             * @memberof PB.FromSplitflap
-             * @static
-             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @returns {PB.FromSplitflap} FromSplitflap
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            FromSplitflap.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader))
-                    reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32());
-            };
-    
-            /**
-             * Verifies a FromSplitflap message.
-             * @function verify
-             * @memberof PB.FromSplitflap
-             * @static
-             * @param {Object.<string,*>} message Plain object to verify
-             * @returns {string|null} `null` if valid, otherwise the reason why it is not
-             */
-            FromSplitflap.verify = function verify(message) {
-                if (typeof message !== "object" || message === null)
-                    return "object expected";
-                var properties = {};
-                if (message.splitflapState != null && message.hasOwnProperty("splitflapState")) {
-                    properties.payload = 1;
-                    {
-                        var error = $root.PB.SplitflapState.verify(message.splitflapState);
-                        if (error)
-                            return "splitflapState." + error;
-                    }
-                }
-                if (message.log != null && message.hasOwnProperty("log")) {
-                    if (properties.payload === 1)
-                        return "payload: multiple values";
-                    properties.payload = 1;
-                    {
-                        var error = $root.PB.Log.verify(message.log);
-                        if (error)
-                            return "log." + error;
-                    }
-                }
-                return null;
-            };
-    
-            /**
-             * Creates a FromSplitflap message from a plain object. Also converts values to their respective internal types.
-             * @function fromObject
-             * @memberof PB.FromSplitflap
-             * @static
-             * @param {Object.<string,*>} object Plain object
-             * @returns {PB.FromSplitflap} FromSplitflap
-             */
-            FromSplitflap.fromObject = function fromObject(object) {
-                if (object instanceof $root.PB.FromSplitflap)
-                    return object;
-                var message = new $root.PB.FromSplitflap();
-                if (object.splitflapState != null) {
-                    if (typeof object.splitflapState !== "object")
-                        throw TypeError(".PB.FromSplitflap.splitflapState: object expected");
-                    message.splitflapState = $root.PB.SplitflapState.fromObject(object.splitflapState);
-                }
-                if (object.log != null) {
-                    if (typeof object.log !== "object")
-                        throw TypeError(".PB.FromSplitflap.log: object expected");
-                    message.log = $root.PB.Log.fromObject(object.log);
-                }
-                return message;
-            };
-    
-            /**
-             * Creates a plain object from a FromSplitflap message. Also converts values to other types if specified.
-             * @function toObject
-             * @memberof PB.FromSplitflap
-             * @static
-             * @param {PB.FromSplitflap} message FromSplitflap
-             * @param {$protobuf.IConversionOptions} [options] Conversion options
-             * @returns {Object.<string,*>} Plain object
-             */
-            FromSplitflap.toObject = function toObject(message, options) {
-                if (!options)
-                    options = {};
-                var object = {};
-                if (message.splitflapState != null && message.hasOwnProperty("splitflapState")) {
-                    object.splitflapState = $root.PB.SplitflapState.toObject(message.splitflapState, options);
-                    if (options.oneofs)
-                        object.payload = "splitflapState";
-                }
-                if (message.log != null && message.hasOwnProperty("log")) {
-                    object.log = $root.PB.Log.toObject(message.log, options);
-                    if (options.oneofs)
-                        object.payload = "log";
-                }
-                return object;
-            };
-    
-            /**
-             * Converts this FromSplitflap to JSON.
-             * @function toJSON
-             * @memberof PB.FromSplitflap
-             * @instance
-             * @returns {Object.<string,*>} JSON object
-             */
-            FromSplitflap.prototype.toJSON = function toJSON() {
-                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-            };
-    
-            return FromSplitflap;
-        })();
-    
         PB.ToSplitflap = (function() {
     
             /**
              * Properties of a ToSplitflap.
              * @memberof PB
              * @interface IToSplitflap
+             * @property {number|null} [nonce] ToSplitflap nonce
              * @property {PB.ISplitflapCommand|null} [splitflapCommand] ToSplitflap splitflapCommand
              */
     
@@ -1486,6 +1708,14 @@
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
+    
+            /**
+             * ToSplitflap nonce.
+             * @member {number} nonce
+             * @memberof PB.ToSplitflap
+             * @instance
+             */
+            ToSplitflap.prototype.nonce = 0;
     
             /**
              * ToSplitflap splitflapCommand.
@@ -1533,8 +1763,10 @@
             ToSplitflap.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
+                if (message.nonce != null && Object.hasOwnProperty.call(message, "nonce"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).uint32(message.nonce);
                 if (message.splitflapCommand != null && Object.hasOwnProperty.call(message, "splitflapCommand"))
-                    $root.PB.SplitflapCommand.encode(message.splitflapCommand, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    $root.PB.SplitflapCommand.encode(message.splitflapCommand, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
                 return writer;
             };
     
@@ -1570,6 +1802,9 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
+                        message.nonce = reader.uint32();
+                        break;
+                    case 2:
                         message.splitflapCommand = $root.PB.SplitflapCommand.decode(reader, reader.uint32());
                         break;
                     default:
@@ -1608,6 +1843,9 @@
                 if (typeof message !== "object" || message === null)
                     return "object expected";
                 var properties = {};
+                if (message.nonce != null && message.hasOwnProperty("nonce"))
+                    if (!$util.isInteger(message.nonce))
+                        return "nonce: integer expected";
                 if (message.splitflapCommand != null && message.hasOwnProperty("splitflapCommand")) {
                     properties.payload = 1;
                     {
@@ -1631,6 +1869,8 @@
                 if (object instanceof $root.PB.ToSplitflap)
                     return object;
                 var message = new $root.PB.ToSplitflap();
+                if (object.nonce != null)
+                    message.nonce = object.nonce >>> 0;
                 if (object.splitflapCommand != null) {
                     if (typeof object.splitflapCommand !== "object")
                         throw TypeError(".PB.ToSplitflap.splitflapCommand: object expected");
@@ -1652,6 +1892,10 @@
                 if (!options)
                     options = {};
                 var object = {};
+                if (options.defaults)
+                    object.nonce = 0;
+                if (message.nonce != null && message.hasOwnProperty("nonce"))
+                    object.nonce = message.nonce;
                 if (message.splitflapCommand != null && message.hasOwnProperty("splitflapCommand")) {
                     object.splitflapCommand = $root.PB.SplitflapCommand.toObject(message.splitflapCommand, options);
                     if (options.oneofs)
