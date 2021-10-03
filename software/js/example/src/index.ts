@@ -5,11 +5,11 @@ const main = async (): Promise<void> => {
     const ports = await SerialPort.list()
 
     const matchingPorts = ports.filter((portInfo) => {
-        return portInfo.vendorId === '10c4' && portInfo.productId === 'ea60' && portInfo.serialNumber === '02280A9E'
+        return portInfo.vendorId === '10c4' && portInfo.productId === 'ea60' && portInfo.serialNumber === '022809A3' //'02280A9E'
     })
 
     if (matchingPorts.length < 1) {
-        console.error(`No splitflap usb serial port found!`)
+        console.error(`No splitflap usb serial port found! ${JSON.stringify(ports, undefined, 4)}`)
         return
     } else if (matchingPorts.length > 1) {
         console.error(`Multiple splitflap usb serial ports found: ${JSON.stringify(matchingPorts, undefined, 4)}`)
@@ -83,13 +83,21 @@ const main = async (): Promise<void> => {
         return str.split('').map(charToFlapIndex)
     }
 
+    // const example1 = [
+    //     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+    //     [19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36],
+    //     [37, 38, 39, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+    //     [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32],
+    //     [33, 34, 35, 36, 37, 38, 39, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    //     [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28],
+    // ]
     const example1 = [
-        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
-        [19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36],
-        [37, 38, 39, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
-        [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32],
-        [33, 34, 35, 36, 37, 38, 39, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-        [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28],
+        '$$$$$$$$$$$$$$$$$$',
+        '$$$$$$$$$$$$$$$$$$',
+        '$$$$$$$$$$$$$$$$$$',
+        '$$$$$$$$$$$$$$$$$$',
+        '$$$$$$$$$$$$$$$$$$',
+        '$$$$$$$$$$$$$$$$$$',
     ]
 
     const example2 = [
@@ -111,18 +119,18 @@ const main = async (): Promise<void> => {
     ]
 
     const go1 = () => {
-        splitflap.setPositions(Util.mapDualRowZigZagToLinear(example1, true))
-        setTimeout(go2, 6000)
+        splitflap.setPositions(Util.mapDualRowZigZagToLinear(example1.map(stringToFlapIndexArray), true))
+        setTimeout(go2, 8000)
     }
 
     const go2 = () => {
         splitflap.setPositions(Util.mapDualRowZigZagToLinear(example2.map(stringToFlapIndexArray), true))
-        setTimeout(go3, 6000)
+        setTimeout(go3, 8000)
     }
 
     const go3 = () => {
         splitflap.setPositions(Util.mapDualRowZigZagToLinear(example3.map(stringToFlapIndexArray), true))
-        setTimeout(go1, 6000)
+        setTimeout(go1, 8000)
     }
 
     go1()

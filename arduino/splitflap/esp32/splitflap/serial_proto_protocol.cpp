@@ -77,9 +77,6 @@ void SerialProtoProtocol::log(const char* msg) {
 void SerialProtoProtocol::loop() {
     do {
         packet_serial_.update();
-        if (packet_serial_.overflow()) {
-            log("Overflow");
-        }
     } while (Serial.available());
 }
 
@@ -101,7 +98,7 @@ void SerialProtoProtocol::handlePacket(const uint8_t* buffer, size_t size) {
 
     if (expected_crc != provided_crc) {
         char buf[200];
-        snprintf(buf, sizeof(buf), "Bad CRC. Expected %08x but got %08x.", expected_crc, provided_crc);
+        snprintf(buf, sizeof(buf), "Bad CRC (%u byte packet). Expected %08x but got %08x.", size - 4, expected_crc, provided_crc);
         log(buf);
         return;
     }

@@ -16,7 +16,7 @@
 #include "serial_task.h"
 
 SerialTask::SerialTask(SplitflapTask& splitflap_task, const uint8_t task_core) :
-        Task("Serial", 8192, 1, task_core),
+        Task("Serial", 16000, 1, task_core),
         Logger(),
         splitflap_task_(splitflap_task),
         legacy_protocol_(splitflap_task),
@@ -53,7 +53,7 @@ void SerialTask::run() {
             current_protocol->log(log_string->c_str());
             delete log_string;
         }
-        delay(5);
+        delay(1);
     }
 }
 

@@ -35,7 +35,7 @@ MQTTTask mqttTask(splitflapTask, 0);
 
 #ifdef CHAINLINK_BASE
 #include "../base/base_supervisor_task.h"
-BaseSupervisorTask baseSupervisorTask(splitflapTask, 0);
+BaseSupervisorTask baseSupervisorTask(splitflapTask, serialTask, 0);
 #endif
 
 void setup() {

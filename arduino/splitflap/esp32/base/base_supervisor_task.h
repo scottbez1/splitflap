@@ -21,6 +21,7 @@
 #include "Adafruit_MCP23017.h"
 #include "src/Adafruit_INA219.h"
 
+#include "../core/logger.h"
 #include "../core/splitflap_task.h"
 #include "../core/task.h"
 
@@ -30,13 +31,14 @@ class BaseSupervisorTask : public Task<BaseSupervisorTask> {
     friend class Task<BaseSupervisorTask>; // Allow base Task to invoke protected run()
 
     public:
-        BaseSupervisorTask(SplitflapTask& splitflapTask, const uint8_t taskCore);
+        BaseSupervisorTask(SplitflapTask& splitflapTask, Logger& logger, const uint8_t taskCore);
 
     protected:
         void run();
 
     private:
         SplitflapTask& splitflap_task_;
+        Logger& logger_;
 
         CRGB leds_[NUM_LEDS];
         Adafruit_MCP23017 mcp_;

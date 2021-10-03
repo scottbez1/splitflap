@@ -43,7 +43,11 @@ uint8_t BaseSupervisorTask::getPowerChannelForModuleIndex(uint8_t module_index) 
     return module_index / 36;
 }
 
-BaseSupervisorTask::BaseSupervisorTask(SplitflapTask& splitflap_task, const uint8_t task_core) : Task{"BaseSupervisor", 4096, 1, task_core}, splitflap_task_{splitflap_task} {}
+BaseSupervisorTask::BaseSupervisorTask(SplitflapTask& splitflap_task, Logger& logger, const uint8_t task_core) :
+        Task("BaseSupervisor", 4096, 1, task_core),
+        splitflap_task_(splitflap_task),
+        logger_(logger) {
+}
 
 void BaseSupervisorTask::run() {
     pinMode(BASE_MCP_NRESET_PIN, OUTPUT);
@@ -89,7 +93,9 @@ void BaseSupervisorTask::run() {
                     (addr2 << 1) |
                     (addr1);
     
-    Serial.printf("My address: %d\n", addr);
+    char buf[400];
+    snprintf(buf, sizeof(buf), "My address: %d", addr);
+    logger_.log(buf);
 
     float v;
     float ma;
@@ -100,7 +106,7 @@ void BaseSupervisorTask::run() {
 
     digitalWrite(BASE_MASTER_EN_PIN, LOW);
 
-    Serial.println("Waiting for low motor input voltage for 5 seconds...");
+    logger_.log("Waiting for low motor input voltage for 5 seconds...");
     // Voltage must be low on all channels for at least 5 seconds before enabling PSU (to avoid fast switching in case of a WDT reset or other crash loop)
     uint32_t voltage_low_millis = millis();
     while (millis() - voltage_low_millis < 5000) {
@@ -115,7 +121,7 @@ void BaseSupervisorTask::run() {
 
     digitalWrite(BASE_MASTER_EN_PIN, HIGH);
 
-    Serial.println("Waiting for voltage...");
+    logger_.log("Waiting for voltage...");
     uint32_t voltage_found_at = 0;
     while (1) {
         for (uint8_t i = 0; i < NUM_POWER_CHANNELS; i++) {
@@ -140,14 +146,17 @@ void BaseSupervisorTask::run() {
         if (!channel_enabled_[i]) {
             continue;
         }
-        Serial.printf("Enabling power channel %u\n", i);
+
+        snprintf(buf, sizeof(buf), "Enabling power channel %u", i);
+        logger_.log(buf);
 
         setPowerChannel(i, true);
         uint8_t low_current = 0;
         bool current_settled = false;
         for (uint8_t j = 0; j < 250; j++) {
             ma = ina219_[i].getCurrent_mA();
-            Serial.printf("%d mA\n", (int)ma);
+            snprintf(buf, sizeof(buf), "%d mA", (int)ma);
+            logger_.log(buf);
             if (ma < IDLE_CURRENT_MILLIAMPS) {
                 low_current++;
                 if (low_current >= 10) {
@@ -160,7 +169,8 @@ void BaseSupervisorTask::run() {
             delay(1);
         }
         if (!current_settled) {
-            Serial.printf("FAULT DURING STARTUP: Inrush current didn't settle on power channel %u!\n", i);
+            snprintf(buf, sizeof(buf), "FAULT DURING STARTUP: Inrush current didn't settle on power channel %u!", i);
+            logger_.log(buf);
             setPowerChannel(i, false);
             fault = true;
             break;
@@ -181,7 +191,7 @@ void BaseSupervisorTask::run() {
         SplitflapState splitflap_state = splitflap_task_.getState();
 
         if (!splitflap_state.loopbacks_ok) {
-            Serial.printf("Bad loopbacks; shutting down power!");
+            logger_.log("Bad loopbacks; shutting down power!");
             fault = true;
             break;
         }
@@ -227,7 +237,8 @@ void BaseSupervisorTask::run() {
 
             if (channel_enabled_[i]) {
                 if (voltages[i] < 11 || voltages[i] > 13 || current_ma[i] > MAX_CHANNEL_CURRENT_MA) {
-                    Serial.printf("BAD POWER on power channel %u! %dmV\t%dmA\n", i, (int)(voltages[i]*1000), (int)current_ma[i]);
+                    snprintf(buf, sizeof(buf), "BAD POWER on power channel %u! %dmV\t%dmA", i, (int)(voltages[i]*1000), (int)current_ma[i]);
+                    logger_.log(buf);
                     fault = true;
                     break;
                 }
@@ -237,7 +248,8 @@ void BaseSupervisorTask::run() {
                 if (current_ma[i] > max_expected_channel_current[i]) {
                     channel_current_out_of_range_count_[i]++;
                     if (channel_current_out_of_range_count_[i] >= CONSECUTIVE_CURRENT_OUT_OF_RANGE_THRESHOLD) {
-                        Serial.printf("Power outside expected current on power channel %u!\n  Expected: %d - %dmA\n  Actual: %dmA\n", i, min_expected_channel_current[i], max_expected_channel_current[i], (int)current_ma[i]);
+                        snprintf(buf, sizeof(buf), "Power outside expected current on power channel %u!\n  Expected: %d - %dmA\n  Actual: %dmA", i, min_expected_channel_current[i], max_expected_channel_current[i], (int)current_ma[i]);
+                        logger_.log(buf);
                         fault = true;
                         break;
                     }
@@ -250,7 +262,8 @@ void BaseSupervisorTask::run() {
                         0); 
             } else {
                 if (voltages[i] > 5 || current_ma[i] > IDLE_CURRENT_MILLIAMPS) {
-                    Serial.printf("BAD POWER on disabled power channel %u! %dmV\t%dmA\n", i, (int)(voltages[i]*1000), (int)current_ma[i]);
+                    snprintf(buf, sizeof(buf), "BAD POWER on disabled power channel %u! %dmV\t%dmA", i, (int)(voltages[i]*1000), (int)current_ma[i]);
+                    logger_.log(buf);
                     fault = true;
                     break;
                 }
@@ -258,15 +271,17 @@ void BaseSupervisorTask::run() {
         }
         FastLED.show();
 
-        if (now - last_report > 250) {
+        if (now - last_report > 1000) {
             last_report = now;
             float current_sum_ma = 0;
             for (uint8_t i = 0; i < NUM_POWER_CHANNELS; i++) {
-                Serial.printf("%dmV\t%dmA\t\t[%d]\n", (int)(voltages[i]*1000), (int)current_ma[i], (int)max_expected_channel_current[i]);
+                snprintf(buf, sizeof(buf), "%dmV\t%dmA\t\t[%d]", (int)(voltages[i]*1000), (int)current_ma[i], (int)max_expected_channel_current[i]);
+                logger_.log(buf);
                 current_sum_ma += current_ma[i];
             }
-            Serial.printf("Total current: %d\n", (int)current_sum_ma);
-            Serial.println("----------");
+            snprintf(buf, sizeof(buf), "Total current: %d", (int)current_sum_ma);
+            logger_.log(buf);
+            logger_.log("----------");
         }
         delay(1);
     }

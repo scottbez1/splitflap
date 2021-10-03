@@ -14,7 +14,7 @@ interface QueueEntry {
 }
 
 export class Splitflap {
-    private static readonly RETRY_MILLIS = 100
+    private static readonly RETRY_MILLIS = 500
 
     private port: SerialPort | null
     private onMessage: MessageCallback
@@ -93,7 +93,8 @@ export class Splitflap {
         var i: number
         // Iterate 0-delimited packets
         while ((i = this.buffer.indexOf(0)) != -1) {
-            const packet = decode(this.buffer.slice(0, i)) as Buffer
+            const raw_buffer = this.buffer.slice(0, i)
+            const packet = decode(raw_buffer) as Buffer
             this.buffer = this.buffer.slice(i + 1)
             if (packet.length <= 4) {
                 console.debug(`Received short packet ${this.buffer.slice(0, i)}`)
@@ -107,6 +108,7 @@ export class Splitflap {
             const crc = CRC32.buf(payload)
             if (crc !== provided_crc) {
                 console.debug(`Bad CRC. Expected ${crc} but received ${provided_crc}`)
+                console.debug(raw_buffer.toString())
                 continue
             }
 
@@ -185,6 +187,7 @@ export class Splitflap {
             this.serviceQueue()
         }, Splitflap.RETRY_MILLIS)
 
+        console.log(`Sent ${payload.length} byte packet with CRC ${(crc >>> 0).toString(16)}`)
         this.port.write(encodedDelimitedPacket)
     }
 }
