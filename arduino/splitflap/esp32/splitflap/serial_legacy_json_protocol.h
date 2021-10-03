@@ -19,7 +19,7 @@
 
 class SerialLegacyJsonProtocol : public SerialProtocol {
     public:
-        SerialLegacyJsonProtocol(SplitflapTask& splitflap_task) : SerialProtocol(splitflap_task) {}
+        SerialLegacyJsonProtocol(SplitflapTask& splitflap_task, Stream& stream) : SerialProtocol(splitflap_task), stream_(stream) {}
         ~SerialLegacyJsonProtocol(){}
         void handleState(const SplitflapState& old_state, const SplitflapState& new_state);
         void log(const char* msg);
@@ -28,6 +28,7 @@ class SerialLegacyJsonProtocol : public SerialProtocol {
         void init();
     
     private:
+        Stream& stream_;
         SplitflapState latest_state_ = {};
         uint8_t recv_count_ = 0;
         char recv_buffer_[NUM_MODULES] = {};

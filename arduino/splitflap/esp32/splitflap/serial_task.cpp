@@ -15,19 +15,24 @@
 */
 #include "serial_task.h"
 
+#include "../core/uart_stream.h"
+
 SerialTask::SerialTask(SplitflapTask& splitflap_task, const uint8_t task_core) :
         Task("Serial", 16000, 1, task_core),
         Logger(),
         splitflap_task_(splitflap_task),
-        legacy_protocol_(splitflap_task),
-        proto_protocol_(splitflap_task) {
+        stream_(),
+        legacy_protocol_(splitflap_task_, stream_),
+        proto_protocol_(splitflap_task_, stream_) {
     log_queue_ = xQueueCreate(10, sizeof(std::string *));
     assert(log_queue_ != NULL);
 }
 
 void SerialTask::run() {
+    stream_.begin();
+
     // Start in legacy protocol mode
-    legacy_protocol_.init();
+    // legacy_protocol_.init();
     // SerialProtocol* current_protocol = &legacy_protocol_;
 
     // FIXME

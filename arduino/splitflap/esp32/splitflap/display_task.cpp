@@ -48,6 +48,8 @@ void DisplayTask::run() {
             uint16_t background = 0x0000;
             uint16_t foreground = 0xFFFF;
 
+            bool blink = (millis() / 400) % 2;
+
             char c;
             switch (s.state) {
                 case NORMAL:
@@ -56,22 +58,39 @@ void DisplayTask::run() {
                         // use a dimmer color when moving
                         foreground = 0x6b4d;
                     }
+
+                    // Special-case color handling:
+                    if (c == 'w') {
+                        c = ' ';
+                        background = 0xFFFF;
+                    } else if (c == 'y') {
+                        c = ' ';
+                        background = 0xffe0;
+                    } else if (c == 'o') {
+                        c = ' ';
+                        background = 0xfd00;
+                    } else if (c == 'g') {
+                        c = ' ';
+                        background = 0x46a0;
+                    } else if (c == 'p') {
+                        c = ' ';
+                        background = 0xd938;
+                    }
                     break;
                 case PANIC:
                     c = '~';
-                    background = 0xD000;
+                    background = blink ? 0xD000 : 0;
                     break;
                 case STATE_DISABLED:
                     c = '*';
                     break;
                 case LOOK_FOR_HOME:
                     c = '?';
-                    background = 0x6018;
+                    background = blink ? 0x6018 : 0;
                     break;
                 case SENSOR_ERROR:
                     c = ' ';
-                    background = 0xD461;
-                    foreground = 0x0000;
+                    background = blink ? 0xD461 : 0;
                     break;
                 default:
                     c = ' ';

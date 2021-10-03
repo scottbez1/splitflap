@@ -19,6 +19,7 @@
 
 #include "../core/splitflap_task.h"
 #include "../core/task.h"
+#include "../core/uart_stream.h"
 
 #include "serial_legacy_json_protocol.h"
 #include "serial_proto_protocol.h"
@@ -36,6 +37,7 @@ class SerialTask : public Task<SerialTask>, public Logger {
 
     private:
         SplitflapTask& splitflap_task_;
+        UartStream stream_;
 
         SerialLegacyJsonProtocol legacy_protocol_;
         SerialProtoProtocol proto_protocol_;

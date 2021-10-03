@@ -39,8 +39,6 @@ BaseSupervisorTask baseSupervisorTask(splitflapTask, serialTask, 0);
 #endif
 
 void setup() {
-  Serial.begin(MONITOR_SPEED);
-
   splitflapTask.begin();
   displayTask.begin();
   serialTask.begin();

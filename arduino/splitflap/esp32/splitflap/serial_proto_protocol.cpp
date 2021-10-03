@@ -26,9 +26,10 @@
 static SerialProtoProtocol* singleton_for_packet_serial = 0;
 
 
-SerialProtoProtocol::SerialProtoProtocol(SplitflapTask& splitflap_task) : SerialProtocol(splitflap_task) {
-    packet_serial_.setStream(&Serial);
-    Serial.setRxBufferSize((PB_ToSplitflap_size + 4) * 2);
+SerialProtoProtocol::SerialProtoProtocol(SplitflapTask& splitflap_task, Stream& stream) :
+        SerialProtocol(splitflap_task),
+        stream_(stream) {
+    packet_serial_.setStream(&stream);
 
     // Note: not threadsafe or instance safe!! but PacketSerial requires a legacy function pointer, so we can't
     // use a member, std::function, or lambda with captures
@@ -77,7 +78,7 @@ void SerialProtoProtocol::log(const char* msg) {
 void SerialProtoProtocol::loop() {
     do {
         packet_serial_.update();
-    } while (Serial.available());
+    } while (stream_.available());
 }
 
 void SerialProtoProtocol::handlePacket(const uint8_t* buffer, size_t size) {
@@ -161,8 +162,8 @@ void SerialProtoProtocol::sendPbTxBuffer() {
     // Encode protobuf message to byte buffer
     pb_ostream_t stream = pb_ostream_from_buffer(tx_buffer_, sizeof(tx_buffer_));
     if (!pb_encode(&stream, PB_FromSplitflap_fields, &pb_tx_buffer_)) {
-        Serial.println(stream.errmsg);
-        Serial.flush();
+        stream_.println(stream.errmsg);
+        stream_.flush();
         assert(false);
     }
 

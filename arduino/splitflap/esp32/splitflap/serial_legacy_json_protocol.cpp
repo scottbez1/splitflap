@@ -38,7 +38,7 @@ void SerialLegacyJsonProtocol::log(const char* msg) {
             {"type", "log"},
             {"msg", std::string(msg)},
     };
-    Serial.println(body.dump().c_str());
+    stream_.println(body.dump().c_str());
 }
 
 void SerialLegacyJsonProtocol::loop() {
@@ -46,41 +46,41 @@ void SerialLegacyJsonProtocol::loop() {
         if (millis() - last_sensor_print_millis_ > 200) {
             last_sensor_print_millis_ = millis();
             for (uint8_t i = 0; i < NUM_MODULES; i++) {
-                Serial.write(latest_state_.modules[i].home_state ? '1' : '0');
+                stream_.write(latest_state_.modules[i].home_state ? '1' : '0');
             }
-            Serial.println();
+            stream_.println();
         }
     }
 
-    while (Serial.available() > 0) {
-        int b = Serial.read();
+    while (stream_.available() > 0) {
+        int b = stream_.read();
         if (b == '%') {
             bool new_sensor_test_state = latest_state_.mode != SplitflapMode::MODE_SENSOR_TEST;
             splitflap_task_.setSensorTest(new_sensor_test_state);
-            Serial.print("{\"type\":\"sensor_test\", \"enabled\":");
-            Serial.print(new_sensor_test_state ? "true" : "false");
-            Serial.print("}\n");
+            stream_.print("{\"type\":\"sensor_test\", \"enabled\":");
+            stream_.print(new_sensor_test_state ? "true" : "false");
+            stream_.print("}\n");
         } else if (latest_state_.mode == SplitflapMode::MODE_RUN) {
             switch (b) {
                 case '@':
                     splitflap_task_.resetAll();
                     break;
                 case '#':
-                    Serial.print("{\"type\":\"no_op\"}\n");
-                    Serial.flush();
+                    stream_.print("{\"type\":\"no_op\"}\n");
+                    stream_.flush();
                     break;
                 case '=':
                     recv_count_ = 0;
                     break;
                 case '\n':
                     pending_move_response_ = true;
-                    Serial.printf("{\"type\":\"move_echo\", \"dest\":\"");
-                    Serial.flush();
+                    stream_.printf("{\"type\":\"move_echo\", \"dest\":\"");
+                    stream_.flush();
                     for (uint8_t i = 0; i < recv_count_; i++) {
-                        Serial.write(recv_buffer_[i]);
+                        stream_.write(recv_buffer_[i]);
                     }
-                    Serial.printf("\"}\n");
-                    Serial.flush();
+                    stream_.printf("\"}\n");
+                    stream_.flush();
                     splitflap_task_.showString(recv_buffer_, recv_count_);
                     break;
                 case '+':
@@ -105,44 +105,44 @@ void SerialLegacyJsonProtocol::loop() {
 }
 
 void SerialLegacyJsonProtocol::init() {
-    Serial.print("\n\n\n");
-    Serial.print("{\"type\":\"init\", \"num_modules\":");
-    Serial.print(NUM_MODULES);
-    Serial.print("}\n");
+    stream_.print("\n\n\n");
+    stream_.print("{\"type\":\"init\", \"num_modules\":");
+    stream_.print(NUM_MODULES);
+    stream_.print("}\n");
 }
 
 void SerialLegacyJsonProtocol::dumpStatus(const SplitflapState& state) {
-    Serial.print("{\"type\":\"status\", \"modules\":[");
+    stream_.print("{\"type\":\"status\", \"modules\":[");
     for (uint8_t i = 0; i < NUM_MODULES; i++) {
-        Serial.print("{\"state\":\"");
+        stream_.print("{\"state\":\"");
         switch (state.modules[i].state) {
             case NORMAL:
-                Serial.print("normal");
+                stream_.print("normal");
                 break;
             case LOOK_FOR_HOME:
-                Serial.print("look_for_home");
+                stream_.print("look_for_home");
                 break;
             case SENSOR_ERROR:
-                Serial.print("sensor_error");
+                stream_.print("sensor_error");
                 break;
             case PANIC:
-                Serial.print("panic");
+                stream_.print("panic");
                 break;
             case STATE_DISABLED:
-                Serial.print("disabled");
+                stream_.print("disabled");
                 break;
         }
-        Serial.print("\", \"flap\":\"");
-        Serial.write(flaps[state.modules[i].flap_index]);
-        Serial.print("\", \"count_missed_home\":");
-        Serial.print(state.modules[i].count_missed_home);
-        Serial.print(", \"count_unexpected_home\":");
-        Serial.print(state.modules[i].count_unexpected_home);
-        Serial.print("}");
+        stream_.print("\", \"flap\":\"");
+        stream_.write(flaps[state.modules[i].flap_index]);
+        stream_.print("\", \"count_missed_home\":");
+        stream_.print(state.modules[i].count_missed_home);
+        stream_.print(", \"count_unexpected_home\":");
+        stream_.print(state.modules[i].count_unexpected_home);
+        stream_.print("}");
         if (i < NUM_MODULES - 1) {
-            Serial.print(", ");
+            stream_.print(", ");
         }
     }
-    Serial.print("]}\n");
-    Serial.flush();
+    stream_.print("]}\n");
+    stream_.flush();
 }

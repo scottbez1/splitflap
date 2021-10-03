@@ -5,7 +5,8 @@ const main = async (): Promise<void> => {
     const ports = await SerialPort.list()
 
     const matchingPorts = ports.filter((portInfo) => {
-        return portInfo.vendorId === '10c4' && portInfo.productId === 'ea60' && portInfo.serialNumber === '022809A3' //'02280A9E'
+        // return portInfo.vendorId === '10c4' && portInfo.productId === 'ea60' && portInfo.serialNumber === '022809A3'
+        return portInfo.vendorId === '10c4' && portInfo.productId === 'ea60' && portInfo.serialNumber === '02280A9E'
     })
 
     if (matchingPorts.length < 1) {
@@ -18,7 +19,7 @@ const main = async (): Promise<void> => {
 
     const portInfo = matchingPorts[0]
     const port = new SerialPort(portInfo.path, {
-        baudRate: 230400,
+        baudRate: 921600,
     })
 
     const splitflap = new Splitflap(port, (message: PB.FromSplitflap) => {
@@ -83,57 +84,174 @@ const main = async (): Promise<void> => {
         return str.split('').map(charToFlapIndex)
     }
 
+    // // const example1 = [
+    // //     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+    // //     [19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36],
+    // //     [37, 38, 39, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+    // //     [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32],
+    // //     [33, 34, 35, 36, 37, 38, 39, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    // //     [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28],
+    // // ]
     // const example1 = [
-    //     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
-    //     [19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36],
-    //     [37, 38, 39, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
-    //     [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32],
-    //     [33, 34, 35, 36, 37, 38, 39, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    //     [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28],
+    //     '$$$$$$$$$$$$$$$$$$',
+    //     '$$$$$$$$$$$$$$$$$$',
+    //     '$$$$$$$$$$$$$$$$$$',
+    //     '$$$$$$$$$$$$$$$$$$',
+    //     '$$$$$$$$$$$$$$$$$$',
+    //     '$$$$$$$$$$$$$$$$$$',
     // ]
-    const example1 = [
-        '$$$$$$$$$$$$$$$$$$',
-        '$$$$$$$$$$$$$$$$$$',
-        '$$$$$$$$$$$$$$$$$$',
-        '$$$$$$$$$$$$$$$$$$',
-        '$$$$$$$$$$$$$$$$$$',
-        '$$$$$$$$$$$$$$$$$$',
+
+    // const example2 = [
+    //     '~~~~~~~~~~~~~~~~~~',
+    //     '~~~            ~~~',
+    //     '~~~            ~~~',
+    //     '~~~            ~~~',
+    //     '~~~            ~~~',
+    //     '~~~~~~~~~~~~~~~~~~',
+    // ]
+
+    // const example3 = [
+    //     '~~~~~~~~~~~~~~~~~~',
+    //     '~~~~~~~~~~~~~~~~~~',
+    //     '~~~~HELLO~~~~~~~~~',
+    //     '~~~~~~~~~WORLD~~~~',
+    //     '~~~~~~~~~~~~~~~~~~',
+    //     '~~~~~~~~~~~~~~~~~~',
+    // ]
+
+    // const go1 = () => {
+    //     splitflap.setPositions(Util.mapDualRowZigZagToLinear(example1.map(stringToFlapIndexArray), true))
+    //     setTimeout(go2, 2000)
+    // }
+
+    // const go2 = () => {
+    //     splitflap.setPositions(Util.mapDualRowZigZagToLinear(example2.map(stringToFlapIndexArray), true))
+    //     setTimeout(go3, 2000)
+    // }
+
+    // const go3 = () => {
+    //     splitflap.setPositions(Util.mapDualRowZigZagToLinear(example3.map(stringToFlapIndexArray), true))
+    //     setTimeout(go1, 2000)
+    // }
+
+    // go1()
+
+    type anim = [number, string[]]
+    const animation: anim[] = [
+        [10000, [
+            '$$$$$$$$$$$$$$$$$$',
+            '$$$$$$$$$$$$$$$$$$',
+            '$$$$$$$$$$$$$$$$$$',
+            '$$$$$$$$$$$$$$$$$$',
+            '$$$$$$$$$$$$$$$$$$',
+            '$$$$$$$$$$$$$$$$$$',
+        ]],
+        [3000, [
+            'wwwwwwwwwwwwwwwwww',
+            'wwwwwwwwwwwwwwwwww',
+            'wwwwwwwwwwwwwwwwww',
+            'wwwwwwwwwwwwwwwwww',
+            'wwwwwwwwwwwwwwwwww',
+            'wwwwwwwwwwwwwwwwww',
+        ]],
+        [1000, [
+            'oooooooooooooooooo',
+            'o~~~~~~~~~~~~~~~~o',
+            'o~~~~~~~~~~~~~~~~o',
+            'o~~~~~~~~~~~~~~~~o',
+            'o~~~~~~~~~~~~~~~~o',
+            'oooooooooooooooooo',
+        ]],
+        [1000, [
+            '~~~~~~~~~~~~~~~~~~',
+            '~oooooooooooooooo~',
+            '~o~~~~~~~~~~~~~~o~',
+            '~o~~~~~~~~~~~~~~o~',
+            '~oooooooooooooooo~',
+            '~~~~~~~~~~~~~~~~~~',
+        ]],
+        [250, [
+            '~~~~~~~~~~~~~~~~~~',
+            '~~~~~~~~~~~~~~~~~~',
+            '~~o~~~~~~~~~~~~o~~',
+            '~~o~~~~~~~~~~~~o~~',
+            '~~~~~~~~~~~~~~~~~~',
+            '~~~~~~~~~~~~~~~~~~',
+        ]],
+        [250, [
+            '~~~~~~~~~~~~~~~~~~',
+            '~~~~~~~~~~~~~~~~~~',
+            '~~~o~~~~~~~~~~o~~~',
+            '~~~o~~~~~~~~~~o~~~',
+            '~~~~~~~~~~~~~~~~~~',
+            '~~~~~~~~~~~~~~~~~~',
+        ]],
+        [250, [
+            '~~~~~~~~~~~~~~~~~~',
+            '~~~~~~~~~~~~~~~~~~',
+            '~~~~o~~~~~~~~o~~~~',
+            '~~~~o~~~~~~~~o~~~~',
+            '~~~~~~~~~~~~~~~~~~',
+            '~~~~~~~~~~~~~~~~~~',
+        ]],
+        [100, [
+            '~~~~~~~~~~~~~~~~~~',
+            '~~~~~~~~~~~~~~~~~~',
+            '~~~~~o~~~~~~o~~~~~',
+            '~~~~~o~~~~~~o~~~~~',
+            '~~~~~~~~~~~~~~~~~~',
+            '~~~~~~~~~~~~~~~~~~',
+        ]],
+        [100, [
+            '~~~~~~~~~~~~~~~~~~',
+            '~~~~~~~~~~~~~~~~~~',
+            '~~~~~~o~~~~o~~~~~~',
+            '~~~~~~o~~~~o~~~~~~',
+            '~~~~~~~~~~~~~~~~~~',
+            '~~~~~~~~~~~~~~~~~~',
+        ]],
+        [100, [
+            '~~~~~~~~~~~~~~~~~~',
+            '~~~~~~~~~~~~~~~~~~',
+            '~~~~~~~o~~o~~~~~~~',
+            '~~~~~~~o~~o~~~~~~~',
+            '~~~~~~~~~~~~~~~~~~',
+            '~~~~~~~~~~~~~~~~~~',
+        ]],
+        [3000, [
+            '~~~~~~~~~~~~~~~~~~',
+            '~~~~~~~~~~~~~~~~~~',
+            '~~~~~~~~oo~~~~~~~~',
+            '~~~~~~~~oo~~~~~~~~',
+            '~~~~~~~~~~~~~~~~~~',
+            '~~~~~~~~~~~~~~~~~~',
+        ]],
+        [2000, [
+            '~~~~~~~~~~~~~~~~~~',
+            '~~~~          ~~~~',
+            '~~~~          ~~~~',
+            '~~~~          ~~~~',
+            '~~~~          ~~~~',
+            '~~~~~~~~~~~~~~~~~~',
+        ]],
+        [6000, [
+            '~~~~~~~~~~~~~~~~~~',
+            '~~~~~~~~~~~~~~~~~~',
+            '~~~~~CODE~~~~~~~~~',
+            '~~~~~~~~~~ART~~~~~',
+            '~~~~~~~~~~~~~~~~~~',
+            '~~~~~~~~~~~~~~~~~~',
+        ]],
     ]
 
-    const example2 = [
-        '~~~~~~~~~~~~~~~~~~',
-        '~~~            ~~~',
-        '~~~            ~~~',
-        '~~~            ~~~',
-        '~~~            ~~~',
-        '~~~~~~~~~~~~~~~~~~',
-    ]
-
-    const example3 = [
-        '~~~~~~~~~~~~~~~~~~',
-        '~~~~~~~~~~~~~~~~~~',
-        '~~~~HELLO~~~~~~~~~',
-        '~~~~~~~~~WORLD~~~~',
-        '~~~~~~~~~~~~~~~~~~',
-        '~~~~~~~~~~~~~~~~~~',
-    ]
-
-    const go1 = () => {
-        splitflap.setPositions(Util.mapDualRowZigZagToLinear(example1.map(stringToFlapIndexArray), true))
-        setTimeout(go2, 8000)
+    let cur = 0
+    const runAnimation = () => {
+        splitflap.setPositions(Util.mapDualRowZigZagToLinear(animation[cur][1].map(stringToFlapIndexArray), true))
+        setTimeout(runAnimation, animation[cur][0])
+        cur = (cur + 1) % animation.length
     }
 
-    const go2 = () => {
-        splitflap.setPositions(Util.mapDualRowZigZagToLinear(example2.map(stringToFlapIndexArray), true))
-        setTimeout(go3, 8000)
-    }
-
-    const go3 = () => {
-        splitflap.setPositions(Util.mapDualRowZigZagToLinear(example3.map(stringToFlapIndexArray), true))
-        setTimeout(go1, 8000)
-    }
-
-    go1()
+    runAnimation()
 }
 
 main()

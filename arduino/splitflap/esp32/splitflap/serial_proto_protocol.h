@@ -22,7 +22,7 @@
 
 class SerialProtoProtocol : public SerialProtocol {
     public:
-        SerialProtoProtocol(SplitflapTask& splitflap_task);
+        SerialProtoProtocol(SplitflapTask& splitflap_task, Stream& stream);
         ~SerialProtoProtocol() {}
         void handleState(const SplitflapState& old_state, const SplitflapState& new_state);
         void log(const char* msg);
@@ -31,6 +31,7 @@ class SerialProtoProtocol : public SerialProtocol {
         void init();
     
     private:
+        Stream& stream_;
         PB_FromSplitflap pb_tx_buffer_;
         PB_ToSplitflap pb_rx_buffer_;
 
