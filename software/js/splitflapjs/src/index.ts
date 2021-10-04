@@ -13,8 +13,14 @@ interface QueueEntry {
     encodedToSplitflapPayload: Uint8Array
 }
 
+
+const sleep = (millis: number) => {
+    return new Promise((resolve) => { setTimeout(resolve, millis) })
+}
+
 export class Splitflap {
     private static readonly RETRY_MILLIS = 250
+    private static readonly BAUD = 921600
 
     private port: SerialPort | null
     private onMessage: MessageCallback
@@ -25,17 +31,21 @@ export class Splitflap {
     private lastNonce: number = 1
     private retryTimeout: NodeJS.Timeout | null = null
 
-    constructor(port: SerialPort | null, onMessage: MessageCallback) {
-        this.port = port
+    constructor(serialPath: string | null, onMessage: MessageCallback) {
         this.onMessage = onMessage
 
         this.buffer = Buffer.alloc(0)
 
-        if (port !== null) {
-            port.on('data', (data: Buffer) => {
+        if (serialPath !== null) {
+            this.port = new SerialPort(serialPath, {
+                baudRate: Splitflap.BAUD,
+            })
+            this.port.on('data', (data: Buffer) => {
                 this.buffer = Buffer.concat([this.buffer, data])
                 this.processBuffer()
             })
+        } else {
+            this.port = null
         }
     }
 
@@ -79,6 +89,22 @@ export class Splitflap {
         reset.fill(false)
         reset[position] = true
         this.resetModules(reset)
+    }
+
+    /**
+     * Perform a hard reset of the splitflap MCU. Takes a few seconds.
+     */
+    public async hardReset(): Promise<void> {
+        if (this.port === null) {
+            console.warn('Not connected to splitflap, so hard reset isn\'t possible')
+            return
+        }
+
+        this.port.set({rts: true, dtr: false})
+        await sleep(200)
+        this.port.set({rts: true, dtr: true})
+        await sleep(200)
+        return
     }
 
     private sendCommand(command: PB.SplitflapCommand): void {

@@ -1,10 +1,6 @@
 import SerialPort = require('serialport')
 import {Splitflap, Util, PB} from 'splitflapjs'
 
-const sleep = (millis: number) => {
-    return new Promise((resolve) => { setTimeout(resolve, millis) })
-}
-
 const main = async (): Promise<void> => {
     const ports = await SerialPort.list()
 
@@ -22,19 +18,10 @@ const main = async (): Promise<void> => {
     }
 
     const portInfo = matchingPorts[0]
-    const port = new SerialPort(portInfo.path, {
-        baudRate: 230400,
-        autoOpen: false,
-    })
-
-    await new Promise<void>((resolve, reject) => {
-        port.open((err) => { 
-            if (err) {
-                reject(err)
-            } else {
-                resolve()
-            }
-        })
+    const splitflap = new Splitflap(portInfo.path, (message: PB.FromSplitflap) => {
+        if (message.payload === 'log') {
+            console.log(message.log!.msg)
+        }
     })
 
     const readline = require("readline");
@@ -48,17 +35,8 @@ const main = async (): Promise<void> => {
     })
 
     if (reset === 'y') {
-        port.set({dtr: true})
-        sleep(500)
-        port.set({dtr: false})
-        sleep(3000)
+        await splitflap.hardReset()
     }
-
-    const splitflap = new Splitflap(port, (message: PB.FromSplitflap) => {
-        if (message.payload === 'log') {
-            console.log(message.log!.msg)
-        }
-    })
 
     const flaps = [
         ' ', // BLACK

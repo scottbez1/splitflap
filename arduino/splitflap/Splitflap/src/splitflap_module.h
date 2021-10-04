@@ -28,7 +28,7 @@
 #define VERBOSE_LOGGING false
 #define ASSERTIONS_ENABLED false
 
-#define FAKE_HOME_SENSOR false
+#define FAKE_HOME_SENSOR true
 
 #define STEPS_PER_MOTOR_REVOLUTION (32)
 

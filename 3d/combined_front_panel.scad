@@ -82,8 +82,8 @@ assert(is_undef(center_center_y) || center_center_y >= get_enclosure_height(), "
 assert(is_undef(gap_x) || gap_x >= 0);
 assert(is_undef(gap_y) || gap_y >= 0);
 
-layout_center_center_x = is_undef(center_center_x) ? get_enclosure_width() + gap_x : center_center_x;
-layout_center_center_y = is_undef(center_center_y) ? get_enclosure_height() + gap_y : center_center_y;
+layout_center_center_x = is_undef(gap_x) ? center_center_x : get_enclosure_width() + gap_x;
+layout_center_center_y = is_undef(gap_y) ? center_center_y : get_enclosure_height() + gap_y;
 
 echo(debug_gap_x = layout_center_center_x - get_enclosure_width());
 echo(debug_gap_y = layout_center_center_y - get_enclosure_height());
