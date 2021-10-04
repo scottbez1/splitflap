@@ -209,24 +209,24 @@ void BaseSupervisorTask::run() {
             }
         }
 
-        const float alpha = 0.9;
+        const float alpha = 0.95;
         int32_t min_expected_channel_current[NUM_POWER_CHANNELS] = {};
         int32_t max_expected_channel_current[NUM_POWER_CHANNELS] = {};
         for (uint8_t i = 0; i < NUM_POWER_CHANNELS; i++) {
-            if (moving[i] > avg_moving[i]) {
-                avg_moving[i] = moving[i];
-            } else {
-                avg_moving[i] = alpha * avg_moving[i] + (1-alpha)* moving[i];
-            }
-            if (homing[i] > avg_homing[i]) {
-                avg_homing[i] = homing[i];
-            } else {
-                avg_homing[i] = alpha * avg_homing[i] + (1-alpha) * homing[i];
-            }
+            // if (moving[i] > avg_moving[i]) {
+            //     avg_moving[i] = moving[i];
+            // } else {
+            //     avg_moving[i] = alpha * avg_moving[i] + (1-alpha)* moving[i];
+            // }
+            // if (homing[i] > avg_homing[i]) {
+            //     avg_homing[i] = homing[i];
+            // } else {
+            //     avg_homing[i] = alpha * avg_homing[i] + (1-alpha) * homing[i];
+            // }
             min_expected_channel_current[i] = -5 + (moving[i] + homing[i]) * MIN_MODULE_CURRENT_MA;
             max_expected_channel_current[i] = IDLE_CURRENT_MILLIAMPS
-                    + (int32_t)(avg_homing[i] + 0.5) * MAX_MODULE_CURRENT_HOMING_MA
-                    + (int32_t)(avg_moving[i] + 0.5) * MAX_MODULE_CURRENT_MOVING_MA;
+                    + homing[i] * MAX_MODULE_CURRENT_HOMING_MA
+                    + (moving[i] + 1) * MAX_MODULE_CURRENT_MOVING_MA;
         }
 
         float voltages[NUM_POWER_CHANNELS];

@@ -14,7 +14,7 @@ interface QueueEntry {
 }
 
 export class Splitflap {
-    private static readonly RETRY_MILLIS = 500
+    private static readonly RETRY_MILLIS = 250
 
     private port: SerialPort | null
     private onMessage: MessageCallback

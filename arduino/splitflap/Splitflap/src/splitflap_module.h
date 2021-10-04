@@ -28,7 +28,7 @@
 #define VERBOSE_LOGGING false
 #define ASSERTIONS_ENABLED false
 
-#define FAKE_HOME_SENSOR true
+#define FAKE_HOME_SENSOR false
 
 #define STEPS_PER_MOTOR_REVOLUTION (32)
 
@@ -262,6 +262,9 @@ inline uint32_t SplitflapModule::GetTargetStepForFlapIndex(uint32_t from_step, u
 
 __attribute__((always_inline))
 inline void SplitflapModule::GoToTargetFlapIndex() {
+    if (state != NORMAL) {
+        return;
+    }
     delta_steps = GetTargetStepForFlapIndex(current_step, target_flap_index) - current_step;
 
 
@@ -359,7 +362,11 @@ inline void SplitflapModule::UpdateExpectedHome() {
 
 __attribute__((always_inline))
 inline void SplitflapModule::GoToFlapIndex(uint8_t index) {
-    if (state != NORMAL) {
+    if (state != NORMAL
+#if HOME_CALIBRATION_ENABLED
+     && state != LOOK_FOR_HOME
+#endif
+    ) {
         return;
     }
     target_flap_index = index;
