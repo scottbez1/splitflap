@@ -20,7 +20,7 @@ const sleep = (millis: number) => {
 
 export class Splitflap {
     private static readonly RETRY_MILLIS = 250
-    private static readonly BAUD = 921600
+    private static readonly BAUD = 230400
 
     private port: SerialPort | null
     private onMessage: MessageCallback

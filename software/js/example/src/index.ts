@@ -21,9 +21,8 @@ const main = async (): Promise<void> => {
     const splitflap = new Splitflap(portInfo.path, (message: PB.FromSplitflap) => {
         if (message.payload === 'log') {
             console.log(message.log!.msg)
-        } else if (message.payload === 'splitflapState') {
-            const data = PB.SplitflapState.toObject(message.splitflapState! as PB.SplitflapState, {defaults: true}) as PB.SplitflapState
-            const remapped = Util.convert1dChainlinkTo2dDualRowZigZag(data.modules, 18, true)
+        } else if (message.payload === 'splitflapState' && message.splitflapState && message.splitflapState.modules) {
+            const remapped = Util.convert1dChainlinkTo2dDualRowZigZag(message.splitflapState.modules, 18, true)
             let s = ''
             for (let i = 0; i < remapped.length; i++) {
                 s += JSON.stringify(remapped[i].map((mod) => { return mod.flapIndex })) + '\n'
