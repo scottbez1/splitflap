@@ -21,6 +21,14 @@ const main = async (): Promise<void> => {
     const splitflap = new Splitflap(portInfo.path, (message: PB.FromSplitflap) => {
         if (message.payload === 'log') {
             console.log(message.log!.msg)
+        } else if (message.payload === 'splitflapState') {
+            const data = PB.SplitflapState.toObject(message.splitflapState! as PB.SplitflapState, {defaults: true}) as PB.SplitflapState
+            const remapped = Util.convert1dChainlinkTo2dDualRowZigZag(data.modules, 18, true)
+            let s = ''
+            for (let i = 0; i < remapped.length; i++) {
+                s += JSON.stringify(remapped[i].map((mod) => { return mod.flapIndex })) + '\n'
+            }
+            console.log(`State:\n${s}`)
         }
     })
 
@@ -93,58 +101,6 @@ const main = async (): Promise<void> => {
     const stringToFlapIndexArray = (str: string): Array<number | null> => {
         return str.split('').map(charToFlapIndex)
     }
-
-    // // const example1 = [
-    // //     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
-    // //     [19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36],
-    // //     [37, 38, 39, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
-    // //     [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32],
-    // //     [33, 34, 35, 36, 37, 38, 39, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    // //     [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28],
-    // // ]
-    // const example1 = [
-    //     '$$$$$$$$$$$$$$$$$$',
-    //     '$$$$$$$$$$$$$$$$$$',
-    //     '$$$$$$$$$$$$$$$$$$',
-    //     '$$$$$$$$$$$$$$$$$$',
-    //     '$$$$$$$$$$$$$$$$$$',
-    //     '$$$$$$$$$$$$$$$$$$',
-    // ]
-
-    // const example2 = [
-    //     '~~~~~~~~~~~~~~~~~~',
-    //     '~~~            ~~~',
-    //     '~~~            ~~~',
-    //     '~~~            ~~~',
-    //     '~~~            ~~~',
-    //     '~~~~~~~~~~~~~~~~~~',
-    // ]
-
-    // const example3 = [
-    //     '~~~~~~~~~~~~~~~~~~',
-    //     '~~~~~~~~~~~~~~~~~~',
-    //     '~~~~HELLO~~~~~~~~~',
-    //     '~~~~~~~~~WORLD~~~~',
-    //     '~~~~~~~~~~~~~~~~~~',
-    //     '~~~~~~~~~~~~~~~~~~',
-    // ]
-
-    // const go1 = () => {
-    //     splitflap.setPositions(Util.mapDualRowZigZagToLinear(example1.map(stringToFlapIndexArray), true))
-    //     setTimeout(go2, 2000)
-    // }
-
-    // const go2 = () => {
-    //     splitflap.setPositions(Util.mapDualRowZigZagToLinear(example2.map(stringToFlapIndexArray), true))
-    //     setTimeout(go3, 2000)
-    // }
-
-    // const go3 = () => {
-    //     splitflap.setPositions(Util.mapDualRowZigZagToLinear(example3.map(stringToFlapIndexArray), true))
-    //     setTimeout(go1, 2000)
-    // }
-
-    // go1()
 
     type anim = [number, string[]]
     const animation: anim[] = [
@@ -520,7 +476,7 @@ const main = async (): Promise<void> => {
 
     let cur = 0
     const runAnimation = () => {
-        splitflap.setPositions(Util.mapDualRowZigZagToLinear(animation[cur][1].map(stringToFlapIndexArray), true))
+        splitflap.setPositions(Util.convert2dDualRowZigZagTo1dChainlink(animation[cur][1].map(stringToFlapIndexArray), true))
         setTimeout(runAnimation, animation[cur][0])
         cur = (cur + 1) % animation.length
     }

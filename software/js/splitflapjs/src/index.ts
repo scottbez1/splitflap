@@ -2,7 +2,7 @@ import SerialPort = require('serialport')
 import {decode, encode} from 'cobs'
 import * as CRC32 from 'crc-32'
 
-import {PB} from './proto_gen/splitflap_proto.js'
+import {PB} from './proto_gen/splitflap_proto'
 
 export {PB}
 
@@ -219,7 +219,7 @@ export class Splitflap {
 }
 
 export namespace Util {
-    export function mapDualRowZigZagToLinear<T>(arr: T[][], flipFirstRows: boolean = false): T[] {
+    export function convert2dDualRowZigZagTo1dChainlink<T>(arr: T[][], flipFirstRows: boolean = false): T[] {
         const cols = arr[0].length
         const rows = arr.length
 
@@ -235,6 +235,29 @@ export namespace Util {
             const col = upsideDownRowPair ? cols - 1 - (Math.floor(i / 2) % cols) : Math.floor(i / 2) % cols
 
             out[i] = arr[row][col]
+        }
+        return out
+    }
+
+    export function convert1dChainlinkTo2dDualRowZigZag<T>(arr: T[], cols: number, flipFirstRows: boolean = false): T[][] {
+        const rows = Math.ceil(arr.length / cols)
+
+        const out: T[][] = new Array<T[]>(rows)
+        for (let i = 0; i < rows; i++) {
+            out[i] = new Array<T>(cols)
+        }
+
+        for (let i = 0; i < arr.length; i++) {
+            const rowPair = Math.floor(Math.floor(i / 2) / cols)
+            const upsideDownRowPair = (rowPair + (flipFirstRows ? 1 : 0)) % 2 !== 0
+
+            const rowBase = rowPair * 2
+            const rowOffset = upsideDownRowPair ? i % 2 : 1 - (i % 2)
+
+            const row = rowBase + rowOffset
+            const col = upsideDownRowPair ? cols - 1 - (Math.floor(i / 2) % cols) : Math.floor(i / 2) % cols
+
+            out[row][col] = arr[i]
         }
         return out
     }

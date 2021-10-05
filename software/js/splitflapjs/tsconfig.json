@@ -25,15 +25,15 @@
 
     /* Modules */
     "module": "commonjs",                                /* Specify what module code is generated. */
-    "rootDir": "src",                                  /* Specify the root folder within your source files. */
+    // "rootDir": "./",                                  /* Specify the root folder within your source files. */
     // "moduleResolution": "node",                       /* Specify how TypeScript looks up a file from a given module specifier. */
     // "baseUrl": "./",                                  /* Specify the base directory to resolve non-relative module names. */
     // "paths": {},                                      /* Specify a set of entries that re-map imports to additional lookup locations. */
-    "paths" :{
-      "*": ["./src/typings/*", "./*"]
-    },
+    // "paths" :{
+    //   "*": ["./src/typings/*", "./*"]
+    // },
     // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
-    "typeRoots": ["src/typings"],                        /* Specify multiple folders that act like `./node_modules/@types`. */
+    // "typeRoots": ["src/typings"],                        /* Specify multiple folders that act like `./node_modules/@types`. */
     // "types": [],                                      /* Specify type package names to be included without being referenced in a source file. */
     // "allowUmdGlobalAccess": true,                     /* Allow accessing UMD globals from modules. */
     // "resolveJsonModule": true,                        /* Enable importing .json files */
@@ -64,7 +64,7 @@
     // "newLine": "crlf",                                /* Set the newline character for emitting files. */
     // "stripInternal": true,                            /* Disable emitting declarations that have `@internal` in their JSDoc comments. */
     // "noEmitHelpers": true,                            /* Disable generating custom helper functions like `__extends` in compiled output. */
-    // "noEmitOnError": true,                            /* Disable emitting files if any type checking errors are reported. */
+    "noEmitOnError": true,                            /* Disable emitting files if any type checking errors are reported. */
     // "preserveConstEnums": true,                       /* Disable erasing `const enum` declarations in generated code. */
     // "declarationDir": "./",                           /* Specify the output directory for generated declaration files. */
 
