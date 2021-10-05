@@ -42,21 +42,7 @@ SerialProtoProtocol::SerialProtoProtocol(SplitflapTask& splitflap_task, Stream& 
 }
 
 void SerialProtoProtocol::handleState(const SplitflapState& old_state, const SplitflapState& new_state) {
-    pb_tx_buffer_ = {};
-    pb_tx_buffer_.which_payload = PB_FromSplitflap_splitflap_state_tag;
-    pb_tx_buffer_.payload.splitflap_state.modules_count = NUM_MODULES;
-    for (uint8_t i = 0; i < NUM_MODULES; i++) {
-        pb_tx_buffer_.payload.splitflap_state.modules[i] = {
-            .state = (PB_SplitflapState_ModuleState_State) new_state.modules[i].state,
-            .flap_index = new_state.modules[i].flap_index,
-            .moving = new_state.modules[i].moving,
-            .home_state = new_state.modules[i].home_state,
-            .count_unexpected_home = new_state.modules[i].count_unexpected_home,
-            .count_missed_home = new_state.modules[i].count_missed_home,
-        };
-    }
-
-    sendPbTxBuffer();
+    latest_state_ = new_state;
 }
 
 void SerialProtoProtocol::ack(uint32_t nonce) {
@@ -79,6 +65,27 @@ void SerialProtoProtocol::loop() {
     do {
         packet_serial_.update();
     } while (stream_.available());
+
+    // Rate limit state change transmissions
+    if (latest_state_ != last_sent_state_ && millis() - last_sent_state_millis_ >= 250) {
+        pb_tx_buffer_ = {};
+        pb_tx_buffer_.which_payload = PB_FromSplitflap_splitflap_state_tag;
+        pb_tx_buffer_.payload.splitflap_state.modules_count = NUM_MODULES;
+        for (uint8_t i = 0; i < NUM_MODULES; i++) {
+            pb_tx_buffer_.payload.splitflap_state.modules[i] = {
+                .state = (PB_SplitflapState_ModuleState_State) latest_state_.modules[i].state,
+                .flap_index = latest_state_.modules[i].flap_index,
+                .moving = latest_state_.modules[i].moving,
+                .home_state = latest_state_.modules[i].home_state,
+                .count_unexpected_home = latest_state_.modules[i].count_unexpected_home,
+                .count_missed_home = latest_state_.modules[i].count_missed_home,
+            };
+        }
+
+        sendPbTxBuffer();
+
+        last_sent_state_ = latest_state_;
+    }
 }
 
 void SerialProtoProtocol::handlePacket(const uint8_t* buffer, size_t size) {
@@ -131,20 +138,33 @@ void SerialProtoProtocol::handlePacket(const uint8_t* buffer, size_t size) {
             for (uint8_t i = 0; i < min((int)command.modules_count, NUM_MODULES); i++) {
                 switch (command.modules[i].action) {
                     case PB_SplitflapCommand_ModuleCommand_Action_NO_OP:
-                        c.data[i] = QCMD_NO_OP;
+                        c.data.module_command[i] = QCMD_NO_OP;
                         break;
                     case PB_SplitflapCommand_ModuleCommand_Action_RESET_AND_HOME:
-                        c.data[i] = QCMD_RESET_AND_HOME;
+                        c.data.module_command[i] = QCMD_RESET_AND_HOME;
                         break;
                     case PB_SplitflapCommand_ModuleCommand_Action_GO_TO_FLAP:
                         if (command.modules[i].param <= 255 - QCMD_FLAP) {
-                            c.data[i] = QCMD_FLAP + command.modules[i].param;
+                            c.data.module_command[i] = QCMD_FLAP + command.modules[i].param;
                         }
                         break;
                     default:
                         // Ignore unknown action
                         break;
                 }
+            }
+            splitflap_task_.postRawCommand(c);
+            break;
+        }
+        case PB_ToSplitflap_splitflap_config_tag: {
+            PB_SplitflapConfig config = pb_rx_buffer_.payload.splitflap_config;
+            Command c = {};
+            c.command_type = CommandType::CONFIG;
+            for (uint8_t i = 0; i < min((int)config.modules_count, NUM_MODULES); i++) {
+                ModuleConfig& module_config = c.data.module_configs.config[i];
+                module_config.target_flap_index = config.modules[i].target_flap_index;
+                module_config.movement_nonce = config.modules[i].movement_nonce;
+                module_config.reset_nonce = config.modules[i].reset_nonce;
             }
             splitflap_task_.postRawCommand(c);
             break;

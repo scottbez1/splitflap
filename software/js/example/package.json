@@ -14,7 +14,8 @@
   "license": "Apache-2.0",
   "dependencies": {
     "serialport": "^9.2.4",
-    "splitflapjs": "file:../splitflapjs"
+    "splitflapjs": "file:../splitflapjs",
+    "splitflapjs-proto": "file:../splitflapjs-proto"
   },
   "devDependencies": {
     "@types/serialport": "^8.0.2",

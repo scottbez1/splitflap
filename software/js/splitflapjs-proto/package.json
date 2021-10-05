@@ -1,0 +1,17 @@
+{
+  "name": "splitflapjs-proto",
+  "version": "1.0.0",
+  "description": "Splitflap interface protobufs",
+  "main": "lib/splitflap_proto.js",
+  "types": "lib/splitflap_proto.d.ts",
+  "scripts": {
+    "build": "pbjs --target static-module --out lib/splitflap_proto.js ../../../proto/*.proto && pbts -o lib/splitflap_proto.d.ts lib/splitflap_proto.js"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "protobufjs": "^6.11.2"
+  },
+  "devDependencies": {
+  }
+}

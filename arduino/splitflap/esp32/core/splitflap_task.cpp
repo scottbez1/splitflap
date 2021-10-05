@@ -125,14 +125,15 @@ void SplitflapTask::processQueue() {
     if (xQueueReceive(queue_, &queue_receive_buffer_, 0) == pdTRUE) {
         switch (queue_receive_buffer_.command_type) {
             case CommandType::MODULES: {
+                uint8_t* data = queue_receive_buffer_.data.module_command;
                 bool any_leds = false;
                 for (uint8_t i = 0; i < NUM_MODULES; i++) {
-                    switch (queue_receive_buffer_.data[i]) {
+                    switch (data[i]) {
                         case QCMD_NO_OP:
                             // No-op
                             break;
                         case QCMD_RESET_AND_HOME:
-                            modules[i]->ResetState();
+                            modules[i]->ResetErrorCounters();
                             modules[i]->GoHome();
                             break;
                         case QCMD_LED_ON:
@@ -148,8 +149,8 @@ void SplitflapTask::processQueue() {
     #endif
                             break;
                         default:
-                            assert(queue_receive_buffer_.data[i] >= QCMD_FLAP && queue_receive_buffer_.data[i] < QCMD_FLAP + NUM_FLAPS);
-                            modules[i]->GoToFlapIndex(queue_receive_buffer_.data[i] - QCMD_FLAP);
+                            assert(data[i] >= QCMD_FLAP && data[i] < QCMD_FLAP + NUM_FLAPS);
+                            modules[i]->GoToFlapIndex(data[i] - QCMD_FLAP);
                             break;
                     }
                 }
@@ -159,13 +160,35 @@ void SplitflapTask::processQueue() {
                 break;
             }
             case CommandType::SENSOR_TEST_SET:
-                log("FOO");
                 sensor_test_ = true;
                 break;
             case CommandType::SENSOR_TEST_CLEAR:
-                log("BAR");
                 sensor_test_ = false;
                 break;
+            case CommandType::CONFIG: {
+                ModuleConfigs configs = queue_receive_buffer_.data.module_configs;
+                for (uint8_t i = 0; i < NUM_MODULES; i++) {
+                    ModuleConfig config = configs.config[i];
+
+                    if (config.reset_nonce != current_configs_.config[i].reset_nonce) {
+                        modules[i]->ResetErrorCounters();
+                        modules[i]->GoHome();
+                    }
+
+                    if (config.target_flap_index != current_configs_.config[i].target_flap_index ||
+                            config.movement_nonce != current_configs_.config[i].movement_nonce) {
+                        if (config.target_flap_index >= NUM_FLAPS) {
+                            char buffer[200] = {};
+                            snprintf(buffer, sizeof(buffer), "Invalid flap index (%u) specified for module %u", config.target_flap_index, i);
+                            log(buffer);
+                        } else {
+                            modules[i]->GoToFlapIndex(config.target_flap_index);
+                        }
+                    }
+                }
+                current_configs_ = configs;
+                break;
+            }
         }
     }
 }
@@ -301,7 +324,7 @@ void SplitflapTask::showString(const char* str, uint8_t length) {
         int8_t index = findFlapIndex(str[i]);
         if (index != -1) {
             if (FORCE_FULL_ROTATION || index != modules[i]->GetTargetFlapIndex()) {
-                command.data[i] = QCMD_FLAP + index;
+                command.data.module_command[i] = QCMD_FLAP + index;
             }
         }
     }
@@ -312,7 +335,7 @@ void SplitflapTask::resetAll() {
     Command command = {};
     command.command_type = CommandType::MODULES;
     for (uint8_t i = 0; i < NUM_MODULES; i++) {
-        command.data[i] = QCMD_RESET_AND_HOME;
+        command.data.module_command[i] = QCMD_RESET_AND_HOME;
     }
     assert(xQueueSendToBack(queue_, &command, portMAX_DELAY) == pdTRUE);
 }
@@ -322,7 +345,7 @@ void SplitflapTask::setLed(const uint8_t id, const bool on) {
 
     Command command = {};
     command.command_type = CommandType::MODULES;
-    command.data[id] = on ? QCMD_LED_ON : QCMD_LED_OFF;
+    command.data.module_command[id] = on ? QCMD_LED_ON : QCMD_LED_OFF;
     assert(xQueueSendToBack(queue_, &command, portMAX_DELAY) == pdTRUE);
 }
 

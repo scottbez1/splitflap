@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='PB',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x0fsplitflap.proto\x12\x02PB\x1a\x0cnanopb.proto\"\xd9\x02\n\x0eSplitflapState\x12\x37\n\x07modules\x18\x01 \x03(\x0b\x32\x1e.PB.SplitflapState.ModuleStateB\x06\x92?\x03\x10\xff\x01\x1a\x8d\x02\n\x0bModuleState\x12\x33\n\x05state\x18\x01 \x01(\x0e\x32$.PB.SplitflapState.ModuleState.State\x12\x12\n\nflap_index\x18\x02 \x01(\r\x12\x0e\n\x06moving\x18\x03 \x01(\x08\x12\x12\n\nhome_state\x18\x04 \x01(\x08\x12\x1d\n\x15\x63ount_unexpected_home\x18\x05 \x01(\r\x12\x19\n\x11\x63ount_missed_home\x18\x06 \x01(\r\"W\n\x05State\x12\n\n\x06NORMAL\x10\x00\x12\x11\n\rLOOK_FOR_HOME\x10\x01\x12\x10\n\x0cSENSOR_ERROR\x10\x02\x12\t\n\x05PANIC\x10\x03\x12\x12\n\x0eSTATE_DISABLED\x10\x04\"\x1a\n\x03Log\x12\x13\n\x03msg\x18\x01 \x01(\tB\x06\x92?\x03p\xff\x01\"\x14\n\x03\x41\x63k\x12\r\n\x05nonce\x18\x01 \x01(\r\"y\n\rFromSplitflap\x12-\n\x0fsplitflap_state\x18\x01 \x01(\x0b\x32\x12.PB.SplitflapStateH\x00\x12\x16\n\x03log\x18\x02 \x01(\x0b\x32\x07.PB.LogH\x00\x12\x16\n\x03\x61\x63k\x18\x03 \x01(\x0b\x32\x07.PB.AckH\x00\x42\t\n\x07payload\"\xe4\x01\n\x10SplitflapCommand\x12;\n\x07modules\x18\x02 \x03(\x0b\x32\".PB.SplitflapCommand.ModuleCommandB\x06\x92?\x03\x10\xff\x01\x1a\x92\x01\n\rModuleCommand\x12\x39\n\x06\x61\x63tion\x18\x01 \x01(\x0e\x32).PB.SplitflapCommand.ModuleCommand.Action\x12\r\n\x05param\x18\x02 \x01(\r\"7\n\x06\x41\x63tion\x12\t\n\x05NO_OP\x10\x00\x12\x0e\n\nGO_TO_FLAP\x10\x01\x12\x12\n\x0eRESET_AND_HOME\x10\x02\"Z\n\x0bToSplitflap\x12\r\n\x05nonce\x18\x01 \x01(\r\x12\x31\n\x11splitflap_command\x18\x02 \x01(\x0b\x32\x14.PB.SplitflapCommandH\x00\x42\t\n\x07payloadb\x06proto3')
+  serialized_pb=_b('\n\x0fsplitflap.proto\x12\x02PB\x1a\x0cnanopb.proto\"\xd9\x02\n\x0eSplitflapState\x12\x37\n\x07modules\x18\x01 \x03(\x0b\x32\x1e.PB.SplitflapState.ModuleStateB\x06\x92?\x03\x10\xff\x01\x1a\x8d\x02\n\x0bModuleState\x12\x33\n\x05state\x18\x01 \x01(\x0e\x32$.PB.SplitflapState.ModuleState.State\x12\x12\n\nflap_index\x18\x02 \x01(\r\x12\x0e\n\x06moving\x18\x03 \x01(\x08\x12\x12\n\nhome_state\x18\x04 \x01(\x08\x12\x1d\n\x15\x63ount_unexpected_home\x18\x05 \x01(\r\x12\x19\n\x11\x63ount_missed_home\x18\x06 \x01(\r\"W\n\x05State\x12\n\n\x06NORMAL\x10\x00\x12\x11\n\rLOOK_FOR_HOME\x10\x01\x12\x10\n\x0cSENSOR_ERROR\x10\x02\x12\t\n\x05PANIC\x10\x03\x12\x12\n\x0eSTATE_DISABLED\x10\x04\"\x1a\n\x03Log\x12\x13\n\x03msg\x18\x01 \x01(\tB\x06\x92?\x03p\xff\x01\"\x14\n\x03\x41\x63k\x12\r\n\x05nonce\x18\x01 \x01(\r\"\x8b\x02\n\x0fSupervisorState\x12(\n\x05state\x18\x01 \x01(\x0e\x32\x19.PB.SupervisorState.State\x12\x44\n\x0epower_channels\x18\x02 \x03(\x0b\x32%.PB.SupervisorState.PowerChannelStateB\x05\x92?\x02\x10\x05\x1aQ\n\x11PowerChannelState\x12\x15\n\rvoltage_volts\x18\x01 \x01(\x02\x12\x14\n\x0c\x63urrent_amps\x18\x02 \x01(\x02\x12\x0f\n\x07\x65nabled\x18\x03 \x01(\x08\"5\n\x05State\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x0c\n\x08STARTING\x10\x01\x12\x06\n\x02OK\x10\x02\x12\t\n\x05\x46\x41ULT\x10\x03\"y\n\rFromSplitflap\x12-\n\x0fsplitflap_state\x18\x01 \x01(\x0b\x32\x12.PB.SplitflapStateH\x00\x12\x16\n\x03log\x18\x02 \x01(\x0b\x32\x07.PB.LogH\x00\x12\x16\n\x03\x61\x63k\x18\x03 \x01(\x0b\x32\x07.PB.AckH\x00\x42\t\n\x07payload\"\xe4\x01\n\x10SplitflapCommand\x12;\n\x07modules\x18\x02 \x03(\x0b\x32\".PB.SplitflapCommand.ModuleCommandB\x06\x92?\x03\x10\xff\x01\x1a\x92\x01\n\rModuleCommand\x12\x39\n\x06\x61\x63tion\x18\x01 \x01(\x0e\x32).PB.SplitflapCommand.ModuleCommand.Action\x12\r\n\x05param\x18\x02 \x01(\r\"7\n\x06\x41\x63tion\x12\t\n\x05NO_OP\x10\x00\x12\x0e\n\nGO_TO_FLAP\x10\x01\x12\x12\n\x0eRESET_AND_HOME\x10\x02\"\xa4\x01\n\x0fSplitflapConfig\x12\x39\n\x07modules\x18\x01 \x03(\x0b\x32 .PB.SplitflapConfig.ModuleConfigB\x06\x92?\x03\x10\xff\x01\x1aV\n\x0cModuleConfig\x12\x19\n\x11target_flap_index\x18\x01 \x01(\r\x12\x16\n\x0emovement_nonce\x18\x02 \x01(\r\x12\x13\n\x0breset_nonce\x18\x03 \x01(\r\"\x8b\x01\n\x0bToSplitflap\x12\r\n\x05nonce\x18\x01 \x01(\r\x12\x31\n\x11splitflap_command\x18\x02 \x01(\x0b\x32\x14.PB.SplitflapCommandH\x00\x12/\n\x10splitflap_config\x18\x03 \x01(\x0b\x32\x13.PB.SplitflapConfigH\x00\x42\t\n\x07payloadb\x06proto3')
   ,
   dependencies=[nanopb__pb2.DESCRIPTOR,])
 
@@ -60,6 +60,36 @@ _SPLITFLAPSTATE_MODULESTATE_STATE = _descriptor.EnumDescriptor(
 )
 _sym_db.RegisterEnumDescriptor(_SPLITFLAPSTATE_MODULESTATE_STATE)
 
+_SUPERVISORSTATE_STATE = _descriptor.EnumDescriptor(
+  name='State',
+  full_name='PB.SupervisorState.State',
+  filename=None,
+  file=DESCRIPTOR,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='UNKNOWN', index=0, number=0,
+      serialized_options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='STARTING', index=1, number=1,
+      serialized_options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='OK', index=2, number=2,
+      serialized_options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='FAULT', index=3, number=3,
+      serialized_options=None,
+      type=None),
+  ],
+  containing_type=None,
+  serialized_options=None,
+  serialized_start=650,
+  serialized_end=703,
+)
+_sym_db.RegisterEnumDescriptor(_SUPERVISORSTATE_STATE)
+
 _SPLITFLAPCOMMAND_MODULECOMMAND_ACTION = _descriptor.EnumDescriptor(
   name='Action',
   full_name='PB.SplitflapCommand.ModuleCommand.Action',
@@ -81,8 +111,8 @@ _SPLITFLAPCOMMAND_MODULECOMMAND_ACTION = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=732,
-  serialized_end=787,
+  serialized_start=1002,
+  serialized_end=1057,
 )
 _sym_db.RegisterEnumDescriptor(_SPLITFLAPCOMMAND_MODULECOMMAND_ACTION)
 
@@ -246,6 +276,89 @@ _ACK = _descriptor.Descriptor(
 )
 
 
+_SUPERVISORSTATE_POWERCHANNELSTATE = _descriptor.Descriptor(
+  name='PowerChannelState',
+  full_name='PB.SupervisorState.PowerChannelState',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='voltage_volts', full_name='PB.SupervisorState.PowerChannelState.voltage_volts', index=0,
+      number=1, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='current_amps', full_name='PB.SupervisorState.PowerChannelState.current_amps', index=1,
+      number=2, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='enabled', full_name='PB.SupervisorState.PowerChannelState.enabled', index=2,
+      number=3, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=567,
+  serialized_end=648,
+)
+
+_SUPERVISORSTATE = _descriptor.Descriptor(
+  name='SupervisorState',
+  full_name='PB.SupervisorState',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='state', full_name='PB.SupervisorState.state', index=0,
+      number=1, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='power_channels', full_name='PB.SupervisorState.power_channels', index=1,
+      number=2, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=_b('\222?\002\020\005'), file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[_SUPERVISORSTATE_POWERCHANNELSTATE, ],
+  enum_types=[
+    _SUPERVISORSTATE_STATE,
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=436,
+  serialized_end=703,
+)
+
+
 _FROMSPLITFLAP = _descriptor.Descriptor(
   name='FromSplitflap',
   full_name='PB.FromSplitflap',
@@ -289,8 +402,8 @@ _FROMSPLITFLAP = _descriptor.Descriptor(
       name='payload', full_name='PB.FromSplitflap.payload',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=435,
-  serialized_end=556,
+  serialized_start=705,
+  serialized_end=826,
 )
 
 
@@ -328,8 +441,8 @@ _SPLITFLAPCOMMAND_MODULECOMMAND = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=641,
-  serialized_end=787,
+  serialized_start=911,
+  serialized_end=1057,
 )
 
 _SPLITFLAPCOMMAND = _descriptor.Descriptor(
@@ -358,8 +471,83 @@ _SPLITFLAPCOMMAND = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=559,
-  serialized_end=787,
+  serialized_start=829,
+  serialized_end=1057,
+)
+
+
+_SPLITFLAPCONFIG_MODULECONFIG = _descriptor.Descriptor(
+  name='ModuleConfig',
+  full_name='PB.SplitflapConfig.ModuleConfig',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='target_flap_index', full_name='PB.SplitflapConfig.ModuleConfig.target_flap_index', index=0,
+      number=1, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='movement_nonce', full_name='PB.SplitflapConfig.ModuleConfig.movement_nonce', index=1,
+      number=2, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='reset_nonce', full_name='PB.SplitflapConfig.ModuleConfig.reset_nonce', index=2,
+      number=3, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1138,
+  serialized_end=1224,
+)
+
+_SPLITFLAPCONFIG = _descriptor.Descriptor(
+  name='SplitflapConfig',
+  full_name='PB.SplitflapConfig',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='modules', full_name='PB.SplitflapConfig.modules', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=_b('\222?\003\020\377\001'), file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[_SPLITFLAPCONFIG_MODULECONFIG, ],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1060,
+  serialized_end=1224,
 )
 
 
@@ -384,6 +572,13 @@ _TOSPLITFLAP = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='splitflap_config', full_name='PB.ToSplitflap.splitflap_config', index=2,
+      number=3, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -399,14 +594,18 @@ _TOSPLITFLAP = _descriptor.Descriptor(
       name='payload', full_name='PB.ToSplitflap.payload',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=789,
-  serialized_end=879,
+  serialized_start=1227,
+  serialized_end=1366,
 )
 
 _SPLITFLAPSTATE_MODULESTATE.fields_by_name['state'].enum_type = _SPLITFLAPSTATE_MODULESTATE_STATE
 _SPLITFLAPSTATE_MODULESTATE.containing_type = _SPLITFLAPSTATE
 _SPLITFLAPSTATE_MODULESTATE_STATE.containing_type = _SPLITFLAPSTATE_MODULESTATE
 _SPLITFLAPSTATE.fields_by_name['modules'].message_type = _SPLITFLAPSTATE_MODULESTATE
+_SUPERVISORSTATE_POWERCHANNELSTATE.containing_type = _SUPERVISORSTATE
+_SUPERVISORSTATE.fields_by_name['state'].enum_type = _SUPERVISORSTATE_STATE
+_SUPERVISORSTATE.fields_by_name['power_channels'].message_type = _SUPERVISORSTATE_POWERCHANNELSTATE
+_SUPERVISORSTATE_STATE.containing_type = _SUPERVISORSTATE
 _FROMSPLITFLAP.fields_by_name['splitflap_state'].message_type = _SPLITFLAPSTATE
 _FROMSPLITFLAP.fields_by_name['log'].message_type = _LOG
 _FROMSPLITFLAP.fields_by_name['ack'].message_type = _ACK
@@ -423,15 +622,23 @@ _SPLITFLAPCOMMAND_MODULECOMMAND.fields_by_name['action'].enum_type = _SPLITFLAPC
 _SPLITFLAPCOMMAND_MODULECOMMAND.containing_type = _SPLITFLAPCOMMAND
 _SPLITFLAPCOMMAND_MODULECOMMAND_ACTION.containing_type = _SPLITFLAPCOMMAND_MODULECOMMAND
 _SPLITFLAPCOMMAND.fields_by_name['modules'].message_type = _SPLITFLAPCOMMAND_MODULECOMMAND
+_SPLITFLAPCONFIG_MODULECONFIG.containing_type = _SPLITFLAPCONFIG
+_SPLITFLAPCONFIG.fields_by_name['modules'].message_type = _SPLITFLAPCONFIG_MODULECONFIG
 _TOSPLITFLAP.fields_by_name['splitflap_command'].message_type = _SPLITFLAPCOMMAND
+_TOSPLITFLAP.fields_by_name['splitflap_config'].message_type = _SPLITFLAPCONFIG
 _TOSPLITFLAP.oneofs_by_name['payload'].fields.append(
   _TOSPLITFLAP.fields_by_name['splitflap_command'])
 _TOSPLITFLAP.fields_by_name['splitflap_command'].containing_oneof = _TOSPLITFLAP.oneofs_by_name['payload']
+_TOSPLITFLAP.oneofs_by_name['payload'].fields.append(
+  _TOSPLITFLAP.fields_by_name['splitflap_config'])
+_TOSPLITFLAP.fields_by_name['splitflap_config'].containing_oneof = _TOSPLITFLAP.oneofs_by_name['payload']
 DESCRIPTOR.message_types_by_name['SplitflapState'] = _SPLITFLAPSTATE
 DESCRIPTOR.message_types_by_name['Log'] = _LOG
 DESCRIPTOR.message_types_by_name['Ack'] = _ACK
+DESCRIPTOR.message_types_by_name['SupervisorState'] = _SUPERVISORSTATE
 DESCRIPTOR.message_types_by_name['FromSplitflap'] = _FROMSPLITFLAP
 DESCRIPTOR.message_types_by_name['SplitflapCommand'] = _SPLITFLAPCOMMAND
+DESCRIPTOR.message_types_by_name['SplitflapConfig'] = _SPLITFLAPCONFIG
 DESCRIPTOR.message_types_by_name['ToSplitflap'] = _TOSPLITFLAP
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -464,6 +671,21 @@ Ack = _reflection.GeneratedProtocolMessageType('Ack', (_message.Message,), dict(
   ))
 _sym_db.RegisterMessage(Ack)
 
+SupervisorState = _reflection.GeneratedProtocolMessageType('SupervisorState', (_message.Message,), dict(
+
+  PowerChannelState = _reflection.GeneratedProtocolMessageType('PowerChannelState', (_message.Message,), dict(
+    DESCRIPTOR = _SUPERVISORSTATE_POWERCHANNELSTATE,
+    __module__ = 'splitflap_pb2'
+    # @@protoc_insertion_point(class_scope:PB.SupervisorState.PowerChannelState)
+    ))
+  ,
+  DESCRIPTOR = _SUPERVISORSTATE,
+  __module__ = 'splitflap_pb2'
+  # @@protoc_insertion_point(class_scope:PB.SupervisorState)
+  ))
+_sym_db.RegisterMessage(SupervisorState)
+_sym_db.RegisterMessage(SupervisorState.PowerChannelState)
+
 FromSplitflap = _reflection.GeneratedProtocolMessageType('FromSplitflap', (_message.Message,), dict(
   DESCRIPTOR = _FROMSPLITFLAP,
   __module__ = 'splitflap_pb2'
@@ -486,6 +708,21 @@ SplitflapCommand = _reflection.GeneratedProtocolMessageType('SplitflapCommand', 
 _sym_db.RegisterMessage(SplitflapCommand)
 _sym_db.RegisterMessage(SplitflapCommand.ModuleCommand)
 
+SplitflapConfig = _reflection.GeneratedProtocolMessageType('SplitflapConfig', (_message.Message,), dict(
+
+  ModuleConfig = _reflection.GeneratedProtocolMessageType('ModuleConfig', (_message.Message,), dict(
+    DESCRIPTOR = _SPLITFLAPCONFIG_MODULECONFIG,
+    __module__ = 'splitflap_pb2'
+    # @@protoc_insertion_point(class_scope:PB.SplitflapConfig.ModuleConfig)
+    ))
+  ,
+  DESCRIPTOR = _SPLITFLAPCONFIG,
+  __module__ = 'splitflap_pb2'
+  # @@protoc_insertion_point(class_scope:PB.SplitflapConfig)
+  ))
+_sym_db.RegisterMessage(SplitflapConfig)
+_sym_db.RegisterMessage(SplitflapConfig.ModuleConfig)
+
 ToSplitflap = _reflection.GeneratedProtocolMessageType('ToSplitflap', (_message.Message,), dict(
   DESCRIPTOR = _TOSPLITFLAP,
   __module__ = 'splitflap_pb2'
@@ -496,5 +733,7 @@ _sym_db.RegisterMessage(ToSplitflap)
 
 _SPLITFLAPSTATE.fields_by_name['modules']._options = None
 _LOG.fields_by_name['msg']._options = None
+_SUPERVISORSTATE.fields_by_name['power_channels']._options = None
 _SPLITFLAPCOMMAND.fields_by_name['modules']._options = None
+_SPLITFLAPCONFIG.fields_by_name['modules']._options = None
 # @@protoc_insertion_point(module_scope)

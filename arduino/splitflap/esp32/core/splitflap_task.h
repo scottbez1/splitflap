@@ -84,11 +84,26 @@ enum class CommandType {
     MODULES,
     SENSOR_TEST_SET,
     SENSOR_TEST_CLEAR,
+    CONFIG,
+};
+
+struct ModuleConfig {
+    uint8_t target_flap_index;
+    uint8_t movement_nonce;
+    uint8_t reset_nonce;
+};
+
+struct ModuleConfigs {
+    ModuleConfig config[NUM_MODULES];
 };
 
 struct Command {
     CommandType command_type;
-    uint8_t data[NUM_MODULES];
+    union CommandData {
+        uint8_t module_command[NUM_MODULES];
+        ModuleConfigs module_configs;
+    };
+    CommandData data;
 };
 
 #define QCMD_NO_OP          0
@@ -127,6 +142,7 @@ class SplitflapTask : public Task<SplitflapTask> {
 
         uint32_t last_sensor_print_millis_ = 0;
         bool sensor_test_ = SENSOR_TEST;
+        ModuleConfigs current_configs_ = {};
 
 #ifdef CHAINLINK
         uint8_t loopback_current_out_index_ = 0;

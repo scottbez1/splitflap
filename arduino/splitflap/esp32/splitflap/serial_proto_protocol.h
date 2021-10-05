@@ -41,6 +41,10 @@ class SerialProtoProtocol : public SerialProtocol {
 
         uint32_t last_nonce_;
 
+        SplitflapState latest_state_ = {};
+        SplitflapState last_sent_state_ = {};
+        uint32_t last_sent_state_millis_ = 0;
+
         void sendPbTxBuffer();
         void handlePacket(const uint8_t* buffer, size_t size);
         void ack(uint32_t nonce);

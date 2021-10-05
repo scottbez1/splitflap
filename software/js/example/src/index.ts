@@ -1,5 +1,6 @@
 import SerialPort = require('serialport')
-import {Splitflap, Util, PB} from 'splitflapjs'
+import {Splitflap, Util} from 'splitflapjs'
+import {PB} from 'splitflapjs-proto'
 
 const main = async (): Promise<void> => {
     const ports = await SerialPort.list()
@@ -29,7 +30,7 @@ const main = async (): Promise<void> => {
             }
             console.log(`State:\n${s}`)
         }
-    })
+    }, 108)
 
     const readline = require("readline");
     const rl = readline.createInterface({
@@ -475,7 +476,7 @@ const main = async (): Promise<void> => {
 
     let cur = 0
     const runAnimation = () => {
-        splitflap.setPositions(Util.convert2dDualRowZigZagTo1dChainlink(animation[cur][1].map(stringToFlapIndexArray), true))
+        splitflap.setFlaps(Util.convert2dDualRowZigZagTo1dChainlink(animation[cur][1].map(stringToFlapIndexArray), true))
         setTimeout(runAnimation, animation[cur][0])
         cur = (cur + 1) % animation.length
     }

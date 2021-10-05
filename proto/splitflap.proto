@@ -34,6 +34,23 @@ message Ack {
     uint32 nonce = 1;
 }
 
+message SupervisorState {
+    enum State {
+        UNKNOWN = 0;
+        STARTING = 1;
+        OK = 2;
+        FAULT = 3;
+    }
+    message PowerChannelState {
+        float voltage_volts = 1;
+        float current_amps = 2;
+        bool enabled = 3;
+    }
+
+    State state = 1;
+    repeated PowerChannelState power_channels = 2 [(nanopb).max_count = 5];
+}
+
 message FromSplitflap {
     oneof payload {
         SplitflapState splitflap_state = 1;
@@ -55,10 +72,36 @@ message SplitflapCommand {
     repeated ModuleCommand modules = 2 [(nanopb).max_count = 255];
 }
 
+message SplitflapConfig {
+    message ModuleConfig {
+        uint32 target_flap_index = 1;
+
+        /**
+         * Value that triggers a movement upon change. If unused, only changes to target_flap_index
+         * will trigger a movement. This can be used to trigger a full revolution back to the *same*
+         * flap index.
+         *
+         * NOTE: Only the lowest 8 bits are used!
+         */
+        uint32 movement_nonce = 2;
+
+        /**
+         * Value that triggers a reset (clear error counters, re-home) upon change. If unused,
+         * module will only re-home upon recoverable errors, and error counters will continue
+         * to increase until overflow.
+         *
+         * NOTE: Only the lowest 8 bits are used!
+         */
+        uint32 reset_nonce = 3;
+    }
+    repeated ModuleConfig modules = 1 [(nanopb).max_count = 255];
+}
+
 message ToSplitflap {
     uint32 nonce = 1;
     
     oneof payload {
         SplitflapCommand splitflap_command = 2;
+        SplitflapConfig splitflap_config = 3;
     }
 }

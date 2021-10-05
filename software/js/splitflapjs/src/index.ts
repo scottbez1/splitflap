@@ -2,9 +2,7 @@ import SerialPort = require('serialport')
 import {decode, encode} from 'cobs'
 import * as CRC32 from 'crc-32'
 
-import {PB} from './proto_gen/splitflap_proto'
-
-export {PB}
+import {PB} from 'splitflapjs-proto'
 
 export type MessageCallback = (message: PB.FromSplitflap) => void
 
@@ -25,16 +23,20 @@ export class Splitflap {
     private port: SerialPort | null
     private onMessage: MessageCallback
     private buffer: Buffer
+    private numModules: number
 
     private outgoingQueue: QueueEntry[] = []
 
     private lastNonce: number = 1
     private retryTimeout: NodeJS.Timeout | null = null
 
-    constructor(serialPath: string | null, onMessage: MessageCallback) {
+    private currentConfig: PB.SplitflapConfig
+
+    constructor(serialPath: string | null, onMessage: MessageCallback, numModules: number) {
         this.onMessage = onMessage
 
         this.buffer = Buffer.alloc(0)
+        this.numModules = numModules
 
         if (serialPath !== null) {
             this.port = new SerialPort(serialPath, {
@@ -47,41 +49,40 @@ export class Splitflap {
         } else {
             this.port = null
         }
+
+        this.currentConfig = PB.SplitflapConfig.create()
+        for (let i = 0; i < numModules; i++) {
+            this.currentConfig.modules.push(PB.SplitflapConfig.ModuleConfig.create())
+        }
     }
 
-    public setPositions(positions: Array<number | null>): void {
-        const modules = positions.map((position: number | null) => {
-            if (position === null) {
-                return {
-                    action: PB.SplitflapCommand.ModuleCommand.Action.NO_OP,
-                }
-            } else {
-                return {
-                    action: PB.SplitflapCommand.ModuleCommand.Action.GO_TO_FLAP,
-                    param: position,
-                }
+    public setFlaps(positions: Array<number | null>, forceMovement?: Array<boolean>): void {
+        if (positions.length > this.numModules) {
+            throw new Error(`More positions specified (${positions.length}) than modules (${this.numModules})!`)
+        }
+        if (forceMovement !== undefined && forceMovement.length != positions.length) {
+            throw new Error(`forceMovement (${forceMovement.length}) and positions (${positions.length}) length mismatch!`)
+        }
+
+        for (let i = 0; i < positions.length; i++) {
+            if (positions[i] !== null) {
+                this.currentConfig.modules[i].targetFlapIndex = positions[i]
             }
-        })
-        this.sendCommand(
-            PB.SplitflapCommand.fromObject({
-                modules,
-            }),
-        )
+            if (forceMovement !== undefined && forceMovement[i]) {
+                this.currentConfig.modules[i].movementNonce = (this.currentConfig.modules[i].movementNonce || 0) + 1
+            }
+        }
+        this.sendConfig(this.currentConfig)
     }
 
     public resetModules(positions: boolean[]): void {
-        const modules = positions.map((reset: boolean) => {
-            return {
-                action: reset
-                    ? PB.SplitflapCommand.ModuleCommand.Action.RESET_AND_HOME
-                    : PB.SplitflapCommand.ModuleCommand.Action.NO_OP,
-            }
-        })
-        this.sendCommand(
-            PB.SplitflapCommand.fromObject({
-                modules,
-            }),
-        )
+        if (positions.length > this.numModules) {
+            throw new Error(`More positions specified (${positions.length}) than modules (${this.numModules})!`)
+        }
+        for (let i = 0; i < positions.length; i++) {
+            this.currentConfig.modules[i].resetNonce = (this.currentConfig.modules[i].resetNonce || 0) + 1
+        }
+        this.sendConfig(this.currentConfig)
     }
 
     public resetModule(position: number): void {
@@ -107,10 +108,10 @@ export class Splitflap {
         return
     }
 
-    private sendCommand(command: PB.SplitflapCommand): void {
+    private sendConfig(config: PB.SplitflapConfig): void {
         this.sendMessage(
             PB.ToSplitflap.create({
-                splitflapCommand: command,
+                splitflapConfig: config,
             }),
         )
     }
