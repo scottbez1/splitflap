@@ -169,7 +169,7 @@ void BaseSupervisorTask::runStateStartingVerifyStartupVoltages() {
     bool all_ok = true;
     for (uint8_t i = 0; i < NUM_POWER_CHANNELS; i++) {
         if (channel_used_[i]) {
-            all_ok &= voltage_volts_[i] >= MIN_RUN_VOLTAGE && voltage_volts_[i] < ABSOLUTE_MAX_VOLTAGE;
+            all_ok &= voltage_volts_[i] >= MIN_RUN_VOLTAGE && voltage_volts_[i] < ABSOLUTE_MAX_VOLTAGE; // FIXME -- set to true for testing without real hardware
         } else {
             all_ok &= voltage_volts_[i] < MAX_DISABLED_VOLTAGE;
         }
@@ -246,6 +246,7 @@ void BaseSupervisorTask::runStateNormal() {
 
     for (uint8_t i = 0; i < NUM_POWER_CHANNELS; i++) {
         if (channel_used_[i]) {
+            // FIXME -- disable for testing without real hardware:
             if (voltage_volts_[i] < MIN_RUN_VOLTAGE || voltage_volts_[i] > ABSOLUTE_MAX_VOLTAGE || current_amps_[i] * 1000 > ABSOLUTE_MAX_CHANNEL_CURRENT_MA) {
                 snprintf(msg, sizeof(msg), "Bad power on channel %u! %.2fV   %.3fA", i, voltage_volts_[i], current_amps_[i]);
                 fault(PB_SupervisorState_FaultInfo_FaultType_OUT_OF_RANGE, msg);
@@ -324,8 +325,8 @@ void BaseSupervisorTask::sendState() {
     state.fault_info = fault_info_;
     state.has_fault_info = true;
 
-    // Rate limit transmissions, except in Fault state
-    if (should_send && (state.state == PB_SupervisorState_State_FAULT || state.uptime_millis - last_sent_state_.uptime_millis > 250)) {
+    // Rate limit transmissions
+    if (should_send && state.uptime_millis - last_sent_state_.uptime_millis > 250) {
         serial_task_.sendSupervisorState(state);
         last_sent_state_ = state;
     }
@@ -333,15 +334,15 @@ void BaseSupervisorTask::sendState() {
 
 void BaseSupervisorTask::readPower() {
     for (uint8_t i = 0; i < NUM_POWER_CHANNELS; i++) {
-        voltage_volts_[i] = ina219_[i].getBusVoltage_V();
-        current_amps_[i] = ina219_[i].getCurrent_mA() / 1000.;
+        voltage_volts_[i] = ina219_[i].getBusVoltage_V();   // FIXME -- set to 0 for testing without real hardware
+        current_amps_[i] = i * 0.001;                       // FIXME -- set to 0 for testing without real hardware
 
         // Check for absolute max violations
         if (state_ != PB_SupervisorState_State_FAULT && (
             voltage_volts_[i] > ABSOLUTE_MAX_VOLTAGE || current_amps_[i] * 1000 > ABSOLUTE_MAX_CHANNEL_CURRENT_MA
         )) {
             char msg[255];
-            snprintf(msg, sizeof(msg), "Absolute max exceeded! Channel=%u, voltage=%.2f, current=%.3f", i, voltage_volts_[i], current_amps_[i]);
+            snprintf(msg, sizeof(msg), "Absolute max exceeded on channel %u. %.2fV %.3fA", i, voltage_volts_[i], current_amps_[i]);
             fault(PB_SupervisorState_FaultInfo_FaultType_OUT_OF_RANGE, msg);
             return;
         }
@@ -361,6 +362,7 @@ void BaseSupervisorTask::fault(PB_SupervisorState_FaultInfo_FaultType type, cons
     state_ = PB_SupervisorState_State_FAULT;
     strncpy(fault_info_.msg, msg, sizeof(fault_info_.msg));
     fault_info_.type = type;
+    fault_info_.ts_millis = millis();
     sendState();
     splitflap_task_.disableAll();
     serial_task_.log(msg);

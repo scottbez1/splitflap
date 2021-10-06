@@ -61,6 +61,7 @@ message SupervisorState {
 
         FaultType type = 1;
         string msg = 2 [(nanopb).max_length = 255];
+        uint32 ts_millis = 3;
     }
 
     uint32 uptime_millis = 1;
