@@ -334,8 +334,8 @@ void BaseSupervisorTask::sendState() {
 
 void BaseSupervisorTask::readPower() {
     for (uint8_t i = 0; i < NUM_POWER_CHANNELS; i++) {
-        voltage_volts_[i] = ina219_[i].getBusVoltage_V();   // FIXME -- set to 0 for testing without real hardware
-        current_amps_[i] = i * 0.001;                       // FIXME -- set to 0 for testing without real hardware
+        voltage_volts_[i] = ina219_[i].getBusVoltage_V();       // FIXME -- set to 0 for testing without real hardware
+        current_amps_[i] = ina219_[i].getCurrent_mA() / 1000.;  // FIXME -- set to 0 for testing without real hardware
 
         // Check for absolute max violations
         if (state_ != PB_SupervisorState_State_FAULT && (
