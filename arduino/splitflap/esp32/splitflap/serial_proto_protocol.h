@@ -24,9 +24,10 @@ class SerialProtoProtocol : public SerialProtocol {
     public:
         SerialProtoProtocol(SplitflapTask& splitflap_task, Stream& stream);
         ~SerialProtoProtocol() {}
-        void handleState(const SplitflapState& old_state, const SplitflapState& new_state);
-        void log(const char* msg);
-        void loop();
+        void log(const char* msg) override;
+        void loop() override;
+        void handleState(const SplitflapState& old_state, const SplitflapState& new_state) override;
+        void sendSupervisorState(PB_SupervisorState& supervisor_state) override;
 
         void init();
     

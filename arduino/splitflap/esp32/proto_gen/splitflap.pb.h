@@ -20,10 +20,22 @@ typedef enum _PB_SplitflapState_ModuleState_State {
 
 typedef enum _PB_SupervisorState_State { 
     PB_SupervisorState_State_UNKNOWN = 0, 
-    PB_SupervisorState_State_STARTING = 1, 
-    PB_SupervisorState_State_OK = 2, 
-    PB_SupervisorState_State_FAULT = 3 
+    PB_SupervisorState_State_STARTING_VERIFY_PSU_OFF = 1, 
+    PB_SupervisorState_State_STARTING_VERIFY_VOLTAGES = 2, 
+    PB_SupervisorState_State_STARTING_ENABLE_CHANNELS = 3, 
+    PB_SupervisorState_State_NORMAL = 4, 
+    PB_SupervisorState_State_FAULT = 5 
 } PB_SupervisorState_State;
+
+typedef enum _PB_SupervisorState_FaultInfo_FaultType { 
+    PB_SupervisorState_FaultInfo_FaultType_UNKNOWN = 0, 
+    PB_SupervisorState_FaultInfo_FaultType_NONE = 1, 
+    PB_SupervisorState_FaultInfo_FaultType_INRUSH_CURRENT_NOT_SETTLED = 2, 
+    PB_SupervisorState_FaultInfo_FaultType_SPLITFLAP_SHUTDOWN = 3, 
+    PB_SupervisorState_FaultInfo_FaultType_OUT_OF_RANGE = 4, 
+    PB_SupervisorState_FaultInfo_FaultType_OVER_CURRENT = 5, 
+    PB_SupervisorState_FaultInfo_FaultType_UNEXPECTED_POWER = 6 
+} PB_SupervisorState_FaultInfo_FaultType;
 
 typedef enum _PB_SplitflapCommand_ModuleCommand_Action { 
     PB_SplitflapCommand_ModuleCommand_Action_NO_OP = 0, 
@@ -42,28 +54,33 @@ typedef struct _PB_Log {
 
 typedef struct _PB_SplitflapCommand_ModuleCommand { 
     PB_SplitflapCommand_ModuleCommand_Action action; 
-    uint32_t param; 
+    uint8_t param; 
 } PB_SplitflapCommand_ModuleCommand;
 
 typedef struct _PB_SplitflapConfig_ModuleConfig { 
-    uint32_t target_flap_index; 
-    uint32_t movement_nonce; 
-    uint32_t reset_nonce; 
+    uint8_t target_flap_index; 
+    uint8_t movement_nonce; 
+    uint8_t reset_nonce; 
 } PB_SplitflapConfig_ModuleConfig;
 
 typedef struct _PB_SplitflapState_ModuleState { 
     PB_SplitflapState_ModuleState_State state; 
-    uint32_t flap_index; 
+    uint8_t flap_index; 
     bool moving; 
     bool home_state; 
-    uint32_t count_unexpected_home; 
-    uint32_t count_missed_home; 
+    uint8_t count_unexpected_home; 
+    uint8_t count_missed_home; 
 } PB_SplitflapState_ModuleState;
+
+typedef struct _PB_SupervisorState_FaultInfo { 
+    PB_SupervisorState_FaultInfo_FaultType type; 
+    char msg[256]; 
+} PB_SupervisorState_FaultInfo;
 
 typedef struct _PB_SupervisorState_PowerChannelState { 
     float voltage_volts; 
     float current_amps; 
-    bool enabled; 
+    bool on; 
 } PB_SupervisorState_PowerChannelState;
 
 typedef struct _PB_SplitflapCommand { 
@@ -82,9 +99,12 @@ typedef struct _PB_SplitflapState {
 } PB_SplitflapState;
 
 typedef struct _PB_SupervisorState { 
+    uint32_t uptime_millis; 
     PB_SupervisorState_State state; 
     pb_size_t power_channels_count;
     PB_SupervisorState_PowerChannelState power_channels[5]; 
+    bool has_fault_info;
+    PB_SupervisorState_FaultInfo fault_info; 
 } PB_SupervisorState;
 
 typedef struct _PB_FromSplitflap { 
@@ -93,6 +113,7 @@ typedef struct _PB_FromSplitflap {
         PB_SplitflapState splitflap_state;
         PB_Log log;
         PB_Ack ack;
+        PB_SupervisorState supervisor_state;
     } payload; 
 } PB_FromSplitflap;
 
@@ -115,6 +136,10 @@ typedef struct _PB_ToSplitflap {
 #define _PB_SupervisorState_State_MAX PB_SupervisorState_State_FAULT
 #define _PB_SupervisorState_State_ARRAYSIZE ((PB_SupervisorState_State)(PB_SupervisorState_State_FAULT+1))
 
+#define _PB_SupervisorState_FaultInfo_FaultType_MIN PB_SupervisorState_FaultInfo_FaultType_UNKNOWN
+#define _PB_SupervisorState_FaultInfo_FaultType_MAX PB_SupervisorState_FaultInfo_FaultType_UNEXPECTED_POWER
+#define _PB_SupervisorState_FaultInfo_FaultType_ARRAYSIZE ((PB_SupervisorState_FaultInfo_FaultType)(PB_SupervisorState_FaultInfo_FaultType_UNEXPECTED_POWER+1))
+
 #define _PB_SplitflapCommand_ModuleCommand_Action_MIN PB_SplitflapCommand_ModuleCommand_Action_NO_OP
 #define _PB_SplitflapCommand_ModuleCommand_Action_MAX PB_SplitflapCommand_ModuleCommand_Action_RESET_AND_HOME
 #define _PB_SplitflapCommand_ModuleCommand_Action_ARRAYSIZE ((PB_SplitflapCommand_ModuleCommand_Action)(PB_SplitflapCommand_ModuleCommand_Action_RESET_AND_HOME+1))
@@ -129,8 +154,9 @@ extern "C" {
 #define PB_SplitflapState_ModuleState_init_default {_PB_SplitflapState_ModuleState_State_MIN, 0, 0, 0, 0, 0}
 #define PB_Log_init_default                      {""}
 #define PB_Ack_init_default                      {0}
-#define PB_SupervisorState_init_default          {_PB_SupervisorState_State_MIN, 0, {PB_SupervisorState_PowerChannelState_init_default, PB_SupervisorState_PowerChannelState_init_default, PB_SupervisorState_PowerChannelState_init_default, PB_SupervisorState_PowerChannelState_init_default, PB_SupervisorState_PowerChannelState_init_default}}
+#define PB_SupervisorState_init_default          {0, _PB_SupervisorState_State_MIN, 0, {PB_SupervisorState_PowerChannelState_init_default, PB_SupervisorState_PowerChannelState_init_default, PB_SupervisorState_PowerChannelState_init_default, PB_SupervisorState_PowerChannelState_init_default, PB_SupervisorState_PowerChannelState_init_default}, false, PB_SupervisorState_FaultInfo_init_default}
 #define PB_SupervisorState_PowerChannelState_init_default {0, 0, 0}
+#define PB_SupervisorState_FaultInfo_init_default {_PB_SupervisorState_FaultInfo_FaultType_MIN, ""}
 #define PB_FromSplitflap_init_default            {0, {PB_SplitflapState_init_default}}
 #define PB_SplitflapCommand_init_default         {0, {PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default, PB_SplitflapCommand_ModuleCommand_init_default}}
 #define PB_SplitflapCommand_ModuleCommand_init_default {_PB_SplitflapCommand_ModuleCommand_Action_MIN, 0}
@@ -141,8 +167,9 @@ extern "C" {
 #define PB_SplitflapState_ModuleState_init_zero  {_PB_SplitflapState_ModuleState_State_MIN, 0, 0, 0, 0, 0}
 #define PB_Log_init_zero                         {""}
 #define PB_Ack_init_zero                         {0}
-#define PB_SupervisorState_init_zero             {_PB_SupervisorState_State_MIN, 0, {PB_SupervisorState_PowerChannelState_init_zero, PB_SupervisorState_PowerChannelState_init_zero, PB_SupervisorState_PowerChannelState_init_zero, PB_SupervisorState_PowerChannelState_init_zero, PB_SupervisorState_PowerChannelState_init_zero}}
+#define PB_SupervisorState_init_zero             {0, _PB_SupervisorState_State_MIN, 0, {PB_SupervisorState_PowerChannelState_init_zero, PB_SupervisorState_PowerChannelState_init_zero, PB_SupervisorState_PowerChannelState_init_zero, PB_SupervisorState_PowerChannelState_init_zero, PB_SupervisorState_PowerChannelState_init_zero}, false, PB_SupervisorState_FaultInfo_init_zero}
 #define PB_SupervisorState_PowerChannelState_init_zero {0, 0, 0}
+#define PB_SupervisorState_FaultInfo_init_zero   {_PB_SupervisorState_FaultInfo_FaultType_MIN, ""}
 #define PB_FromSplitflap_init_zero               {0, {PB_SplitflapState_init_zero}}
 #define PB_SplitflapCommand_init_zero            {0, {PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero, PB_SplitflapCommand_ModuleCommand_init_zero}}
 #define PB_SplitflapCommand_ModuleCommand_init_zero {_PB_SplitflapCommand_ModuleCommand_Action_MIN, 0}
@@ -164,17 +191,22 @@ extern "C" {
 #define PB_SplitflapState_ModuleState_home_state_tag 4
 #define PB_SplitflapState_ModuleState_count_unexpected_home_tag 5
 #define PB_SplitflapState_ModuleState_count_missed_home_tag 6
+#define PB_SupervisorState_FaultInfo_type_tag    1
+#define PB_SupervisorState_FaultInfo_msg_tag     2
 #define PB_SupervisorState_PowerChannelState_voltage_volts_tag 1
 #define PB_SupervisorState_PowerChannelState_current_amps_tag 2
-#define PB_SupervisorState_PowerChannelState_enabled_tag 3
+#define PB_SupervisorState_PowerChannelState_on_tag 3
 #define PB_SplitflapCommand_modules_tag          2
 #define PB_SplitflapConfig_modules_tag           1
 #define PB_SplitflapState_modules_tag            1
-#define PB_SupervisorState_state_tag             1
-#define PB_SupervisorState_power_channels_tag    2
+#define PB_SupervisorState_uptime_millis_tag     1
+#define PB_SupervisorState_state_tag             2
+#define PB_SupervisorState_power_channels_tag    3
+#define PB_SupervisorState_fault_info_tag        4
 #define PB_FromSplitflap_splitflap_state_tag     1
 #define PB_FromSplitflap_log_tag                 2
 #define PB_FromSplitflap_ack_tag                 3
+#define PB_FromSplitflap_supervisor_state_tag    4
 #define PB_ToSplitflap_nonce_tag                 1
 #define PB_ToSplitflap_splitflap_command_tag     2
 #define PB_ToSplitflap_splitflap_config_tag      3
@@ -207,28 +239,39 @@ X(a, STATIC,   SINGULAR, UINT32,   nonce,             1)
 #define PB_Ack_DEFAULT NULL
 
 #define PB_SupervisorState_FIELDLIST(X, a) \
-X(a, STATIC,   SINGULAR, UENUM,    state,             1) \
-X(a, STATIC,   REPEATED, MESSAGE,  power_channels,    2)
+X(a, STATIC,   SINGULAR, UINT32,   uptime_millis,     1) \
+X(a, STATIC,   SINGULAR, UENUM,    state,             2) \
+X(a, STATIC,   REPEATED, MESSAGE,  power_channels,    3) \
+X(a, STATIC,   OPTIONAL, MESSAGE,  fault_info,        4)
 #define PB_SupervisorState_CALLBACK NULL
 #define PB_SupervisorState_DEFAULT NULL
 #define PB_SupervisorState_power_channels_MSGTYPE PB_SupervisorState_PowerChannelState
+#define PB_SupervisorState_fault_info_MSGTYPE PB_SupervisorState_FaultInfo
 
 #define PB_SupervisorState_PowerChannelState_FIELDLIST(X, a) \
 X(a, STATIC,   SINGULAR, FLOAT,    voltage_volts,     1) \
 X(a, STATIC,   SINGULAR, FLOAT,    current_amps,      2) \
-X(a, STATIC,   SINGULAR, BOOL,     enabled,           3)
+X(a, STATIC,   SINGULAR, BOOL,     on,                3)
 #define PB_SupervisorState_PowerChannelState_CALLBACK NULL
 #define PB_SupervisorState_PowerChannelState_DEFAULT NULL
+
+#define PB_SupervisorState_FaultInfo_FIELDLIST(X, a) \
+X(a, STATIC,   SINGULAR, UENUM,    type,              1) \
+X(a, STATIC,   SINGULAR, STRING,   msg,               2)
+#define PB_SupervisorState_FaultInfo_CALLBACK NULL
+#define PB_SupervisorState_FaultInfo_DEFAULT NULL
 
 #define PB_FromSplitflap_FIELDLIST(X, a) \
 X(a, STATIC,   ONEOF,    MESSAGE,  (payload,splitflap_state,payload.splitflap_state),   1) \
 X(a, STATIC,   ONEOF,    MESSAGE,  (payload,log,payload.log),   2) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (payload,ack,payload.ack),   3)
+X(a, STATIC,   ONEOF,    MESSAGE,  (payload,ack,payload.ack),   3) \
+X(a, STATIC,   ONEOF,    MESSAGE,  (payload,supervisor_state,payload.supervisor_state),   4)
 #define PB_FromSplitflap_CALLBACK NULL
 #define PB_FromSplitflap_DEFAULT NULL
 #define PB_FromSplitflap_payload_splitflap_state_MSGTYPE PB_SplitflapState
 #define PB_FromSplitflap_payload_log_MSGTYPE PB_Log
 #define PB_FromSplitflap_payload_ack_MSGTYPE PB_Ack
+#define PB_FromSplitflap_payload_supervisor_state_MSGTYPE PB_SupervisorState
 
 #define PB_SplitflapCommand_FIELDLIST(X, a) \
 X(a, STATIC,   REPEATED, MESSAGE,  modules,           2)
@@ -270,6 +313,7 @@ extern const pb_msgdesc_t PB_Log_msg;
 extern const pb_msgdesc_t PB_Ack_msg;
 extern const pb_msgdesc_t PB_SupervisorState_msg;
 extern const pb_msgdesc_t PB_SupervisorState_PowerChannelState_msg;
+extern const pb_msgdesc_t PB_SupervisorState_FaultInfo_msg;
 extern const pb_msgdesc_t PB_FromSplitflap_msg;
 extern const pb_msgdesc_t PB_SplitflapCommand_msg;
 extern const pb_msgdesc_t PB_SplitflapCommand_ModuleCommand_msg;
@@ -284,6 +328,7 @@ extern const pb_msgdesc_t PB_ToSplitflap_msg;
 #define PB_Ack_fields &PB_Ack_msg
 #define PB_SupervisorState_fields &PB_SupervisorState_msg
 #define PB_SupervisorState_PowerChannelState_fields &PB_SupervisorState_PowerChannelState_msg
+#define PB_SupervisorState_FaultInfo_fields &PB_SupervisorState_FaultInfo_msg
 #define PB_FromSplitflap_fields &PB_FromSplitflap_msg
 #define PB_SplitflapCommand_fields &PB_SplitflapCommand_msg
 #define PB_SplitflapCommand_ModuleCommand_fields &PB_SplitflapCommand_ModuleCommand_msg
@@ -293,17 +338,18 @@ extern const pb_msgdesc_t PB_ToSplitflap_msg;
 
 /* Maximum encoded size of messages (where known) */
 #define PB_Ack_size                              6
-#define PB_FromSplitflap_size                    6633
+#define PB_FromSplitflap_size                    4338
 #define PB_Log_size                              258
-#define PB_SplitflapCommand_ModuleCommand_size   8
-#define PB_SplitflapCommand_size                 2550
-#define PB_SplitflapConfig_ModuleConfig_size     18
-#define PB_SplitflapConfig_size                  5100
-#define PB_SplitflapState_ModuleState_size       24
-#define PB_SplitflapState_size                   6630
+#define PB_SplitflapCommand_ModuleCommand_size   5
+#define PB_SplitflapCommand_size                 1785
+#define PB_SplitflapConfig_ModuleConfig_size     9
+#define PB_SplitflapConfig_size                  2805
+#define PB_SplitflapState_ModuleState_size       15
+#define PB_SplitflapState_size                   4335
+#define PB_SupervisorState_FaultInfo_size        260
 #define PB_SupervisorState_PowerChannelState_size 12
-#define PB_SupervisorState_size                  72
-#define PB_ToSplitflap_size                      5109
+#define PB_SupervisorState_size                  341
+#define PB_ToSplitflap_size                      2814
 
 #ifdef __cplusplus
 } /* extern "C" */

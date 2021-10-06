@@ -18,10 +18,13 @@ PB_BIND(PB_Log, PB_Log, 2)
 PB_BIND(PB_Ack, PB_Ack, AUTO)
 
 
-PB_BIND(PB_SupervisorState, PB_SupervisorState, AUTO)
+PB_BIND(PB_SupervisorState, PB_SupervisorState, 2)
 
 
 PB_BIND(PB_SupervisorState_PowerChannelState, PB_SupervisorState_PowerChannelState, AUTO)
+
+
+PB_BIND(PB_SupervisorState_FaultInfo, PB_SupervisorState_FaultInfo, 2)
 
 
 PB_BIND(PB_FromSplitflap, PB_FromSplitflap, 4)
@@ -40,6 +43,7 @@ PB_BIND(PB_SplitflapConfig_ModuleConfig, PB_SplitflapConfig_ModuleConfig, AUTO)
 
 
 PB_BIND(PB_ToSplitflap, PB_ToSplitflap, 2)
+
 
 
 

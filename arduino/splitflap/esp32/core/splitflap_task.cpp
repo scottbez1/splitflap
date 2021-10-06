@@ -88,21 +88,20 @@ void SplitflapTask::run() {
           ESP_ERROR_CHECK(esp_task_wdt_reset());
       }
     }
+#else
+    loopback_all_ok_ = true;
 #endif
 
     if (led_mode_ == LedMode::AUTO) {
-      for (uint8_t r = 0; r < 3; r++) {
         for (uint8_t i = 0; i < NUM_MODULES; i++) {
-          chainlink_set_led(i, 1);
-          motor_sensor_io();
-          delay(10);
-          chainlink_set_led(i, 0);
-          motor_sensor_io();
+            chainlink_set_led(i, 1);
+            motor_sensor_io();
+            delay(10);
+            chainlink_set_led(i, 0);
+            motor_sensor_io();
         }
         result = esp_task_wdt_reset();
         ESP_ERROR_CHECK(result);
-        delay(500);
-      }
     }
 #endif
 
@@ -147,6 +146,9 @@ void SplitflapTask::processQueue() {
     #ifdef CHAINLINK
                             chainlink_set_led(i, false);
     #endif
+                            break;
+                        case QCMD_DISABLE:
+                            modules[i]->Disable();
                             break;
                         default:
                             assert(data[i] >= QCMD_FLAP && data[i] < QCMD_FLAP + NUM_FLAPS);
@@ -336,6 +338,15 @@ void SplitflapTask::resetAll() {
     command.command_type = CommandType::MODULES;
     for (uint8_t i = 0; i < NUM_MODULES; i++) {
         command.data.module_command[i] = QCMD_RESET_AND_HOME;
+    }
+    assert(xQueueSendToBack(queue_, &command, portMAX_DELAY) == pdTRUE);
+}
+
+void SplitflapTask::disableAll() {
+    Command command = {};
+    command.command_type = CommandType::MODULES;
+    for (uint8_t i = 0; i < NUM_MODULES; i++) {
+        command.data.module_command[i] = QCMD_DISABLE;
     }
     assert(xQueueSendToBack(queue_, &command, portMAX_DELAY) == pdTRUE);
 }

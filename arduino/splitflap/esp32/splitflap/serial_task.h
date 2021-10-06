@@ -28,9 +28,12 @@ class SerialTask : public Task<SerialTask>, public Logger {
     friend class Task<SerialTask>; // Allow base Task to invoke protected run()
 
     public:
-        SerialTask(SplitflapTask& splitflapTask, const uint8_t task_core);
+        SerialTask(SplitflapTask& splitflap_task, const uint8_t task_core);
         virtual ~SerialTask() {};
-        void log(const char* msg);
+        
+        void log(const char* msg) override;
+
+        void sendSupervisorState(PB_SupervisorState& supervisor_state);
 
     protected:
         void run();
@@ -43,6 +46,7 @@ class SerialTask : public Task<SerialTask>, public Logger {
         SerialProtoProtocol proto_protocol_;
 
         QueueHandle_t log_queue_;
+        QueueHandle_t supervisor_state_queue_;
 
         void dumpStatus(SplitflapState& state);
 };

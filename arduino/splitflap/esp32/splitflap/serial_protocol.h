@@ -17,13 +17,17 @@
 
 #include "../core/logger.h"
 #include "../core/splitflap_task.h"
+#include "../proto_gen/splitflap.pb.h"
 
 class SerialProtocol : public Logger {
     public:
         SerialProtocol(SplitflapTask& splitflap_task) : Logger(), splitflap_task_(splitflap_task) {}
         virtual ~SerialProtocol(){}
-        virtual void handleState(const SplitflapState& old_state, const SplitflapState& new_state) = 0;
+
         virtual void loop() = 0;
+
+        virtual void handleState(const SplitflapState& old_state, const SplitflapState& new_state) = 0;
+        virtual void sendSupervisorState(PB_SupervisorState& supervisor_state) = 0;
     
     protected:
         SplitflapTask& splitflap_task_;

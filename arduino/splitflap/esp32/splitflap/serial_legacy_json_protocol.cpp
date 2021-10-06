@@ -17,6 +17,7 @@
 #include "json11.hpp"
 
 #include "serial_legacy_json_protocol.h"
+#include "../proto_gen/splitflap.pb.h"
 
 using namespace json11;
 
@@ -101,7 +102,12 @@ void SerialLegacyJsonProtocol::loop() {
             }
         }
     }
+}
 
+void SerialLegacyJsonProtocol::sendSupervisorState(PB_SupervisorState& supervisor_state) {
+    // Intentionally not implemented.
+    // Advanced features like supervisor state are not supported via the legacy protocol; use
+    // the proto protocol instead.
 }
 
 void SerialLegacyJsonProtocol::init() {

@@ -69,7 +69,7 @@ export class Splitflap {
                 this.currentConfig.modules[i].targetFlapIndex = positions[i]
             }
             if (forceMovement !== undefined && forceMovement[i]) {
-                this.currentConfig.modules[i].movementNonce = (this.currentConfig.modules[i].movementNonce || 0) + 1
+                this.currentConfig.modules[i].movementNonce = ((this.currentConfig.modules[i].movementNonce || 0) + 1) % 256
             }
         }
         this.sendConfig(this.currentConfig)
@@ -80,7 +80,9 @@ export class Splitflap {
             throw new Error(`More positions specified (${positions.length}) than modules (${this.numModules})!`)
         }
         for (let i = 0; i < positions.length; i++) {
-            this.currentConfig.modules[i].resetNonce = (this.currentConfig.modules[i].resetNonce || 0) + 1
+            if (positions[i]) {
+                this.currentConfig.modules[i].resetNonce = ((this.currentConfig.modules[i].resetNonce || 0) + 1) % 256
+            }
         }
         this.sendConfig(this.currentConfig)
     }

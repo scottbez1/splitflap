@@ -34,9 +34,13 @@
 #define MCP_PIN_ADDR_4          13
 #define MCP_PIN_ADDR_8          12
 
-#define IDLE_CURRENT_MILLIAMPS  25  // Max acceptable power channel idle current. Should account for measurement error and channel Out LED (if enabled).
+#define ABSOLUTE_MAX_VOLTAGE 15
+#define ABSOLUTE_MAX_CHANNEL_CURRENT_MA  9000 // Absolute maximum current allowable (actual limits will be lower and adjust dynamically based on load)
 
-#define MAX_CHANNEL_CURRENT_MA  9000
+#define MIN_RUN_VOLTAGE 11.5
+#define MAX_DISABLED_VOLTAGE 3
+
+#define IDLE_CURRENT_MILLIAMPS  25  // Max acceptable power channel idle current. Should account for measurement error and channel Out LED (if enabled).
 
 #define MIN_MODULE_CURRENT_MA           100
 #define MAX_MODULE_CURRENT_HOMING_MA    260

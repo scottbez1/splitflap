@@ -16,11 +16,11 @@ message SplitflapState {
         }
 
         State state = 1;
-        uint32 flap_index = 2;
+        uint32 flap_index = 2 [(nanopb).int_size = IS_8];
         bool moving = 3;
         bool home_state = 4;
-        uint32 count_unexpected_home = 5;
-        uint32 count_missed_home = 6;
+        uint32 count_unexpected_home = 5 [(nanopb).int_size = IS_8];
+        uint32 count_missed_home = 6 [(nanopb).int_size = IS_8];
     }
 
     repeated ModuleState modules = 1 [(nanopb).max_count = 255];
@@ -37,18 +37,36 @@ message Ack {
 message SupervisorState {
     enum State {
         UNKNOWN = 0;
-        STARTING = 1;
-        OK = 2;
-        FAULT = 3;
+        STARTING_VERIFY_PSU_OFF = 1;
+        STARTING_VERIFY_VOLTAGES = 2;
+        STARTING_ENABLE_CHANNELS = 3;
+        NORMAL = 4;
+        FAULT = 5;
     }
     message PowerChannelState {
         float voltage_volts = 1;
         float current_amps = 2;
-        bool enabled = 3;
+        bool on = 3;
+    }
+    message FaultInfo {
+        enum FaultType {
+            UNKNOWN = 0;
+            NONE = 1;
+            INRUSH_CURRENT_NOT_SETTLED = 2;
+            SPLITFLAP_SHUTDOWN = 3;
+            OUT_OF_RANGE = 4;
+            OVER_CURRENT = 5;
+            UNEXPECTED_POWER = 6;
+        }
+
+        FaultType type = 1;
+        string msg = 2 [(nanopb).max_length = 255];
     }
 
-    State state = 1;
-    repeated PowerChannelState power_channels = 2 [(nanopb).max_count = 5];
+    uint32 uptime_millis = 1;
+    State state = 2;
+    repeated PowerChannelState power_channels = 3 [(nanopb).max_count = 5];
+    FaultInfo fault_info = 4;
 }
 
 message FromSplitflap {
@@ -56,6 +74,7 @@ message FromSplitflap {
         SplitflapState splitflap_state = 1;
         Log log = 2;
         Ack ack = 3;
+        SupervisorState supervisor_state = 4;
     }
 }
 
@@ -67,32 +86,32 @@ message SplitflapCommand {
             RESET_AND_HOME = 2;
         }
         Action action = 1;
-        uint32 param = 2;
+        uint32 param = 2 [(nanopb).int_size = IS_8];
     }
     repeated ModuleCommand modules = 2 [(nanopb).max_count = 255];
 }
 
 message SplitflapConfig {
     message ModuleConfig {
-        uint32 target_flap_index = 1;
+        uint32 target_flap_index = 1 [(nanopb).int_size = IS_8];
 
         /**
          * Value that triggers a movement upon change. If unused, only changes to target_flap_index
          * will trigger a movement. This can be used to trigger a full revolution back to the *same*
          * flap index.
          *
-         * NOTE: Only the lowest 8 bits are used!
+         * NOTE: Must be < 256
          */
-        uint32 movement_nonce = 2;
+        uint32 movement_nonce = 2 [(nanopb).int_size = IS_8];
 
         /**
          * Value that triggers a reset (clear error counters, re-home) upon change. If unused,
          * module will only re-home upon recoverable errors, and error counters will continue
          * to increase until overflow.
          *
-         * NOTE: Only the lowest 8 bits are used!
+         * NOTE: Must be < 256
          */
-        uint32 reset_nonce = 3;
+        uint32 reset_nonce = 3 [(nanopb).int_size = IS_8];
     }
     repeated ModuleConfig modules = 1 [(nanopb).max_count = 255];
 }

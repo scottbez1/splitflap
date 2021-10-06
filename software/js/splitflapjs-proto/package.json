@@ -5,7 +5,7 @@
   "main": "lib/splitflap_proto.js",
   "types": "lib/splitflap_proto.d.ts",
   "scripts": {
-    "build": "pbjs --target static-module --out lib/splitflap_proto.js ../../../proto/*.proto && pbts -o lib/splitflap_proto.d.ts lib/splitflap_proto.js"
+    "build": "mkdir -p lib && pbjs --target static-module --out lib/splitflap_proto.js ../../../proto/*.proto && pbts -o lib/splitflap_proto.d.ts lib/splitflap_proto.js"
   },
   "author": "",
   "license": "Apache-2.0",

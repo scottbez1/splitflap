@@ -110,7 +110,8 @@ struct Command {
 #define QCMD_RESET_AND_HOME 1
 #define QCMD_LED_ON         2
 #define QCMD_LED_OFF        3
-#define QCMD_FLAP           4
+#define QCMD_DISABLE        4
+#define QCMD_FLAP           5
 
 class SplitflapTask : public Task<SplitflapTask> {
     friend class Task<SplitflapTask>; // Allow base Task to invoke protected run()
@@ -123,6 +124,7 @@ class SplitflapTask : public Task<SplitflapTask> {
 
         void showString(const char *str, uint8_t length);
         void resetAll();
+        void disableAll();
         void setLed(uint8_t id, bool on);
         void setSensorTest(bool sensor_test);
         void setLogger(Logger* logger);

@@ -61,13 +61,21 @@ void SerialProtoProtocol::log(const char* msg) {
     sendPbTxBuffer();
 }
 
+void SerialProtoProtocol::sendSupervisorState(PB_SupervisorState& supervisor_state) {
+    pb_tx_buffer_ = {};
+    pb_tx_buffer_.which_payload = PB_FromSplitflap_supervisor_state_tag;
+    pb_tx_buffer_.payload.supervisor_state = supervisor_state;
+    sendPbTxBuffer();
+}
+
 void SerialProtoProtocol::loop() {
     do {
         packet_serial_.update();
     } while (stream_.available());
 
-    // Rate limit state change transmissions
-    if (latest_state_ != last_sent_state_ && millis() - last_sent_state_millis_ >= 250) {
+    // Rate limit state change transmissions, but also re-send state periodically
+    if ((latest_state_ != last_sent_state_ && millis() - last_sent_state_millis_ >= 250) ||
+            millis() - last_sent_state_millis_ > 5000) {
         pb_tx_buffer_ = {};
         pb_tx_buffer_.which_payload = PB_FromSplitflap_splitflap_state_tag;
         pb_tx_buffer_.payload.splitflap_state.modules_count = NUM_MODULES;
@@ -85,6 +93,7 @@ void SerialProtoProtocol::loop() {
         sendPbTxBuffer();
 
         last_sent_state_ = latest_state_;
+        last_sent_state_millis_ = millis();
     }
 }
 

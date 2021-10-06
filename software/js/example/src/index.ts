@@ -29,6 +29,8 @@ const main = async (): Promise<void> => {
                 s += JSON.stringify(remapped[i].map((mod) => { return mod.flapIndex })) + '\n'
             }
             console.log(`State:\n${s}`)
+        } else if (message.payload === 'supervisorState' && message.supervisorState) {
+            console.log(`Supervisor state:\n${JSON.stringify(PB.SupervisorState.toObject(message.supervisorState as PB.SupervisorState, {defaults: true}), undefined, 4)}`)
         }
     }, 108)
 

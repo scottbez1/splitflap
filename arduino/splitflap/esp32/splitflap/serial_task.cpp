@@ -26,6 +26,9 @@ SerialTask::SerialTask(SplitflapTask& splitflap_task, const uint8_t task_core) :
         proto_protocol_(splitflap_task_, stream_) {
     log_queue_ = xQueueCreate(10, sizeof(std::string *));
     assert(log_queue_ != NULL);
+
+    supervisor_state_queue_ = xQueueCreate(1, sizeof(PB_SupervisorState));
+    assert(supervisor_state_queue_ != NULL);
 }
 
 void SerialTask::run() {
@@ -58,6 +61,11 @@ void SerialTask::run() {
             current_protocol->log(log_string->c_str());
             delete log_string;
         }
+
+        PB_SupervisorState supervisor_state;
+        if (xQueueReceive(supervisor_state_queue_, &supervisor_state, 0) == pdTRUE) {
+            current_protocol->sendSupervisorState(supervisor_state);
+        }
         delay(1);
     }
 }
@@ -68,4 +76,9 @@ void SerialTask::log(const char* msg) {
 
     // Put string in queue (or drop if full to avoid blocking)
     xQueueSendToBack(log_queue_, &msg_str, 0);
+}
+
+void SerialTask::sendSupervisorState(PB_SupervisorState& supervisor_state) {
+    // Only queue the latest supervisor state
+    xQueueOverwrite(supervisor_state_queue_, &supervisor_state);
 }
