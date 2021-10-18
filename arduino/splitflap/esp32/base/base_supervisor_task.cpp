@@ -62,7 +62,7 @@ void BaseSupervisorTask::run() {
     digitalWrite(BASE_MCP_NRESET_PIN, HIGH);
 
     Wire.begin();
-    Wire.setClock(400000);
+    // Wire.setClock(400000);
 
     mcp_.begin(BASE_MCP_ADDRESS, &Wire);
 
@@ -256,7 +256,7 @@ void BaseSupervisorTask::runStateNormal() {
             float min_expected_channel_current_ma = -5 + (moving[i] + homing[i]) * MIN_MODULE_CURRENT_MA;
             float max_expected_channel_current_ma = IDLE_CURRENT_MILLIAMPS
                     + homing[i] * MAX_MODULE_CURRENT_HOMING_MA
-                    + (moving[i] + 1) * MAX_MODULE_CURRENT_MOVING_MA;
+                    + (moving[i] > 0 ? (moving[i] + 2) : 1) * MAX_MODULE_CURRENT_MOVING_MA;
 
             if (current_amps_[i] * 1000 > max_expected_channel_current_ma) {
                 channel_current_out_of_range_count_[i]++;
@@ -280,9 +280,14 @@ void BaseSupervisorTask::runStateNormal() {
         } else {
             leds_[LED_CHANNEL_INDEX[i]].setRGB(0, 0, 0);
             if (voltage_volts_[i] > 5 || current_amps_[i] * 1000 > IDLE_CURRENT_MILLIAMPS) {
-                snprintf(msg, sizeof(msg), "Unexpected power on disabled power channel %u! %.2fV\t%.3fA", i, voltage_volts_[i], current_amps_[i]);
-                fault(PB_SupervisorState_FaultInfo_FaultType_UNEXPECTED_POWER, msg);
-                return;
+                channel_unexpected_power_count_[i] ++;
+                if (channel_unexpected_power_count_[i] >= CONSECUTIVE_UNEXPECTED_POWER_THRESHOLD) {
+                    snprintf(msg, sizeof(msg), "Unexpected power on disabled power channel %u! %.2fV\t%.3fA", i, voltage_volts_[i], current_amps_[i]);
+                    fault(PB_SupervisorState_FaultInfo_FaultType_UNEXPECTED_POWER, msg);
+                    return;
+                }
+            } else {
+                channel_unexpected_power_count_[i] = 0;
             }
         }
     }

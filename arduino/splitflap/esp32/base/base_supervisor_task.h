@@ -63,8 +63,9 @@ class BaseSupervisorTask : public Task<BaseSupervisorTask> {
         bool channel_on_[NUM_POWER_CHANNELS] = {};
         bool channel_used_[NUM_POWER_CHANNELS] = {};
 
-        bool channel_enabled_[NUM_POWER_CHANNELS];
-        uint32_t channel_current_out_of_range_count_[NUM_POWER_CHANNELS];
+        bool channel_enabled_[NUM_POWER_CHANNELS] = {};
+        uint32_t channel_current_out_of_range_count_[NUM_POWER_CHANNELS] = {};
+        uint8_t channel_unexpected_power_count_[NUM_POWER_CHANNELS] = {};
 
 
         uint32_t startup_voltage_low_at_millis_ = 0;
