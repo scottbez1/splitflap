@@ -123,23 +123,6 @@ X Pin_3 3 -200 -100 150 R 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
-# Connector_TestPoint_Small
-#
-DEF Connector_TestPoint_Small TP 0 30 N N 1 F N
-F0 "TP" 0 150 50 H V C CNN
-F1 "Connector_TestPoint_Small" 0 80 50 H V C CNN
-F2 "" 200 0 50 H I C CNN
-F3 "" 200 0 50 H I C CNN
-$FPLIST
- Pin*
- Test*
-$ENDFPLIST
-DRAW
-C 0 0 20 0 1 0 N
-X 1 1 0 0 0 U 50 50 1 1 P
-ENDDRAW
-ENDDEF
-#
 # Device_CP_Small
 #
 DEF Device_CP_Small C 0 10 N N 1 F N
