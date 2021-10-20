@@ -35,11 +35,8 @@ void SerialTask::run() {
     stream_.begin();
 
     // Start in legacy protocol mode
-    // legacy_protocol_.init();
-    // SerialProtocol* current_protocol = &legacy_protocol_;
-
-    // FIXME
-    SerialProtocol* current_protocol = &proto_protocol_;
+    legacy_protocol_.init();
+    SerialProtocol* current_protocol = &legacy_protocol_;
 
     splitflap_task_.setLogger(this);
 

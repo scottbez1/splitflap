@@ -50,10 +50,11 @@ static void getLayoutPositionSingleRowZigZag(const uint8_t module_index, uint8_t
  *   [Driver #3]    <--   [Driver #2]  <---<
  *  (upside down)        (upside down)
  * [23]  [21]  [19]     [17]  [15]  [13]
+ *
+ * Set flip_first_rows if the first row chain goes the other direction (driver 0 is on the right when
+ * viewed from the front side)
  */
-static void getLayoutPositionDualRowZigZag(const uint8_t module_index, uint8_t* out_row, uint8_t* out_col) {
-    const bool flip_first_rows = true;      // Set this if the first row chain goes the other direction
-
+static void getLayoutPositionDualRowZigZag(const bool flip_first_rows, const uint8_t module_index, uint8_t* out_row, uint8_t* out_col) {
     uint8_t row_pair = module_index / 2 / COLUMNS;
     bool upside_down_row_pair = (row_pair + flip_first_rows) % 2;
 
@@ -73,6 +74,6 @@ static void getLayoutPositionDualRowZigZag(const uint8_t module_index, uint8_t* 
 static void getLayoutPosition(const uint8_t module_index, uint8_t* out_row, uint8_t* out_col) {
     // Select a layout algorithm by uncommenting, or implement your own here:
 
-    getLayoutPositionDualRowZigZag(module_index, out_row, out_col);
+    getLayoutPositionDualRowZigZag(true, module_index, out_row, out_col);
     // getLayoutPositionSingleRowZigZag(module_index, out_x, out_y);
 }

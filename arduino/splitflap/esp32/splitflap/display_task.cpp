@@ -59,23 +59,23 @@ void DisplayTask::run() {
                         foreground = 0x6b4d;
                     }
 
-                    // Special-case color handling:
-                    if (c == 'w') {
-                        c = ' ';
-                        background = 0xFFFF;
-                    } else if (c == 'y') {
-                        c = ' ';
-                        background = 0xffe0;
-                    } else if (c == 'o') {
-                        c = ' ';
-                        background = 0xfd00;
-                    } else if (c == 'g') {
-                        c = ' ';
-                        background = 0x46a0;
-                    } else if (c == 'p') {
-                        c = ' ';
-                        background = 0xd938;
-                    }
+                    // You can add special-case color handling here if desired:
+                    // if (c == 'w') {
+                    //     c = ' ';
+                    //     background = 0xFFFF;
+                    // } else if (c == 'y') {
+                    //     c = ' ';
+                    //     background = 0xffe0;
+                    // } else if (c == 'o') {
+                    //     c = ' ';
+                    //     background = 0xfd00;
+                    // } else if (c == 'g') {
+                    //     c = ' ';
+                    //     background = 0x46a0;
+                    // } else if (c == 'p') {
+                    //     c = ' ';
+                    //     background = 0xd938;
+                    // }
                     break;
                 case PANIC:
                     c = '~';

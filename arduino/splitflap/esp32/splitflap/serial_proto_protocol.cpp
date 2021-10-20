@@ -13,8 +13,6 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "../core/common.h"
-
 #include "../proto_gen/splitflap.pb.h"
 
 #include "crc32.h"

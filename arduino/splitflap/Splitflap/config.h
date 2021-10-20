@@ -26,17 +26,13 @@
 // This should match the order of flaps on the spool, with the first being the
 // "home" flap.
 const uint8_t flaps[NUM_FLAPS] = {
-  // ' ',
-  // 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-  // 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-  // '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  // '.',
-  // ',',
-  // '\'',
-  ' ', 'J', 'B', 'M', 'R', '$', 'V', 'K', 'A', 'E',
-  'N', 'O', 'y', '*', 'g', 'G', 'I', '%', 'D', 'L',
-  '&', '@', 'C', 'W', 'H', 'Y', 'w', 'Q', 'p', 'o',
-  '!', 'T', 'Z', 'P', 'F', '?', 'S', '#', 'U', 'X',
+  ' ',
+  'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+  'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+  '.',
+  ',',
+  '\'',
 };
 
 // 4) Hardware configuration and features

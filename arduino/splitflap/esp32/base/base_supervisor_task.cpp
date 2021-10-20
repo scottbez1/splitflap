@@ -62,7 +62,6 @@ void BaseSupervisorTask::run() {
     digitalWrite(BASE_MCP_NRESET_PIN, HIGH);
 
     Wire.begin();
-    // Wire.setClock(400000);
 
     mcp_.begin(BASE_MCP_ADDRESS, &Wire);
 
@@ -169,7 +168,7 @@ void BaseSupervisorTask::runStateStartingVerifyStartupVoltages() {
     bool all_ok = true;
     for (uint8_t i = 0; i < NUM_POWER_CHANNELS; i++) {
         if (channel_used_[i]) {
-            all_ok &= voltage_volts_[i] >= MIN_RUN_VOLTAGE && voltage_volts_[i] < ABSOLUTE_MAX_VOLTAGE; // FIXME -- set to true for testing without real hardware
+            all_ok &= voltage_volts_[i] >= MIN_RUN_VOLTAGE && voltage_volts_[i] < ABSOLUTE_MAX_VOLTAGE;
         } else {
             all_ok &= voltage_volts_[i] < MAX_DISABLED_VOLTAGE;
         }
@@ -246,7 +245,6 @@ void BaseSupervisorTask::runStateNormal() {
 
     for (uint8_t i = 0; i < NUM_POWER_CHANNELS; i++) {
         if (channel_used_[i]) {
-            // FIXME -- disable for testing without real hardware:
             if (voltage_volts_[i] < MIN_RUN_VOLTAGE || voltage_volts_[i] > ABSOLUTE_MAX_VOLTAGE || current_amps_[i] * 1000 > ABSOLUTE_MAX_CHANNEL_CURRENT_MA) {
                 snprintf(msg, sizeof(msg), "Bad power on channel %u! %.2fV   %.3fA", i, voltage_volts_[i], current_amps_[i]);
                 fault(PB_SupervisorState_FaultInfo_FaultType_OUT_OF_RANGE, msg);
@@ -339,8 +337,8 @@ void BaseSupervisorTask::sendState() {
 
 void BaseSupervisorTask::readPower() {
     for (uint8_t i = 0; i < NUM_POWER_CHANNELS; i++) {
-        voltage_volts_[i] = ina219_[i].getBusVoltage_V();       // FIXME -- set to 0 for testing without real hardware
-        current_amps_[i] = ina219_[i].getCurrent_mA() / 1000.;  // FIXME -- set to 0 for testing without real hardware
+        voltage_volts_[i] = ina219_[i].getBusVoltage_V();
+        current_amps_[i] = ina219_[i].getCurrent_mA() / 1000.;
 
         // Check for absolute max violations
         if (state_ != PB_SupervisorState_State_FAULT && (
