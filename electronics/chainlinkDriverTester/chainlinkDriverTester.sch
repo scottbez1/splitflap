@@ -524,7 +524,7 @@ U 1 1 60D0A4DC
 P 3100 4600
 F 0 "U2" H 3100 5465 50  0000 C CNN
 F 1 "TTGO_TDisplay" H 3100 5374 50  0000 C CNN
-F 2 "ESP32:T-DISPLAY" H 2900 4650 50  0001 C CNN
+F 2 "ESP32:T-DISPLAY_extra_pins" H 2900 4650 50  0001 C CNN
 F 3 "" H 2900 4650 50  0001 C CNN
 	1    3100 4600
 	1    0    0    -1  
@@ -2222,8 +2222,6 @@ F 6 "732-8430-1-ND" H 6300 1200 50  0001 C CNN "DK#"
 $EndComp
 Connection ~ 6300 1100
 Wire Wire Line
-	6300 1100 6500 1100
-Wire Wire Line
 	6300 1300 6300 1450
 Wire Wire Line
 	6300 1450 6700 1450
@@ -2786,17 +2784,6 @@ F 3 "~" H 15950 1200 50  0001 C CNN
 $EndComp
 NoConn ~ 15700 1300
 NoConn ~ 15950 1300
-$Comp
-L Connector:TestPoint TP70
-U 1 1 62B87233
-P 3600 4400
-F 0 "TP70" V 3600 4588 50  0000 L CNN
-F 1 "TestPoint" V 3645 4588 50  0001 L CNN
-F 2 "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm" H 3800 4400 50  0001 C CNN
-F 3 "~" H 3800 4400 50  0001 C CNN
-	1    3600 4400
-	0    1    1    0   
-$EndComp
 Wire Wire Line
 	8200 1100 8850 1100
 Wire Wire Line
@@ -2815,44 +2802,6 @@ $EndComp
 Connection ~ 8000 1100
 Wire Wire Line
 	8000 1100 8200 1100
-$Comp
-L Connector:TestPoint TP73
-U 1 1 62BEB5EB
-P 6500 1100
-F 0 "TP73" H 6558 1172 50  0000 L CNN
-F 1 "TestPoint" V 6545 1288 50  0001 L CNN
-F 2 "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm" H 6700 1100 50  0001 C CNN
-F 3 "~" H 6700 1100 50  0001 C CNN
-	1    6500 1100
-	1    0    0    -1  
-$EndComp
-Connection ~ 6500 1100
-Wire Wire Line
-	6500 1100 6700 1100
-$Comp
-L Connector:TestPoint TP75
-U 1 1 62BF431E
-P 10500 1100
-F 0 "TP75" H 10558 1172 50  0000 L CNN
-F 1 "TestPoint" V 10545 1288 50  0001 L CNN
-F 2 "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm" H 10700 1100 50  0001 C CNN
-F 3 "~" H 10700 1100 50  0001 C CNN
-	1    10500 1100
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:+3.3V #PWR01
-U 1 1 62BFECBC
-P 10300 1100
-F 0 "#PWR01" H 10300 950 50  0001 C CNN
-F 1 "+3.3V" H 10315 1273 50  0000 C CNN
-F 2 "" H 10300 1100 50  0001 C CNN
-F 3 "" H 10300 1100 50  0001 C CNN
-	1    10300 1100
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	10300 1100 10500 1100
 Text Label 14500 4300 0    50   ~ 0
 SW_IN
 $Comp
@@ -2900,17 +2849,6 @@ F 2 "" H 9300 1650 50  0001 C CNN
 F 3 "" H 9300 1650 50  0001 C CNN
 	1    9300 1650
 	1    0    0    -1  
-$EndComp
-$Comp
-L Connector:TestPoint TP71
-U 1 1 62B8767D
-P 2600 4700
-F 0 "TP71" V 2600 4950 50  0000 C CNN
-F 1 "TestPoint" V 2704 4772 50  0001 C CNN
-F 2 "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm" H 2800 4700 50  0001 C CNN
-F 3 "~" H 2800 4700 50  0001 C CNN
-	1    2600 4700
-	0    -1   -1   0   
 $EndComp
 NoConn ~ 2600 5200
 Text Label 8800 6600 0    50   ~ 0
@@ -3141,4 +3079,8 @@ Wire Wire Line
 	4200 4200 3600 4200
 NoConn ~ 2600 4600
 NoConn ~ 2600 4900
+NoConn ~ 2600 4700
+NoConn ~ 3600 4400
+Wire Wire Line
+	6300 1100 6700 1100
 $EndSCHEMATC
