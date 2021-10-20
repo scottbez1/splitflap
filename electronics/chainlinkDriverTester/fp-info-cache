@@ -1,4 +1,4 @@
-18635441724400137
+18762234828408137
 BK-6013
 BK-6013
 
@@ -50483,6 +50483,13 @@ T-DISPLAY
 0
 24
 24
+ESP32
+T-DISPLAY_extra_pins
+
+
+0
+24
+24
 Fiducial
 Fiducial_0.5mm_Mask1.5mm
 Circular Fiducial, 0.5mm bare copper, 1.5mm soldermask opening
@@ -55999,6 +56006,13 @@ LED
 0
 2
 2
+ModifiedSymbols
+LED_WS2812B_PLCC4_5.0x5.0mm_P3.2mm
+https://cdn-shop.adafruit.com/datasheets/WS2812B.pdf
+LED RGB NeoPixel
+0
+4
+4
 ModifiedSymbols
 PinHeader_1x03_P2.54mm_Vertical_SolderJumper
 Through hole straight pin header, 1x03, 2.54mm pitch, single row
@@ -75052,7 +75066,7 @@ ESE13V01D
 
 0
 4
-4
+3
 Symbol
 CE-Logo_8.5x6mm_SilkScreen
 CE marking
