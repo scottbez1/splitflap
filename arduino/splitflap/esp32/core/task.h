@@ -29,6 +29,7 @@ class Task {
                 priority { priority },
                 coreId { coreId }
         {}
+        virtual ~Task() {};
 
         TaskHandle_t getHandle() {
             return taskHandle;

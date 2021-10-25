@@ -1,5 +1,5 @@
 /*
-   Copyright 2020 Scott Bezek and the splitflap contributors
+   Copyright 2021 Scott Bezek and the splitflap contributors
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -13,29 +13,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+#include "display_layouts.h"
 #include "display_task.h"
 
 DisplayTask::DisplayTask(SplitflapTask& splitflap_task, const uint8_t task_core) : Task{"Display", 8192, 1, task_core}, splitflap_task_{splitflap_task} {}
 
-
-// Customize these settings and layout algorithm if you have a different arrangement of modules:
-static const uint8_t COLUMNS = 24;
 static const int32_t MODULE_WIDTH = 8;
 static const int32_t MODULE_HEIGHT = 13;
-static void getLayoutPosition(const uint8_t module_index, int32_t* out_x, int32_t* out_y) {
-    uint8_t row = module_index / COLUMNS;
-
-    // Each row alternates left-to-right, then right-to-left so data can be easily chained,
-    // winding back and forth down the rows.
-    uint8_t col = (row % 2) ?
-        (COLUMNS - 1 - (module_index % COLUMNS))
-        : module_index % COLUMNS;
-
-    // Leave an empty row and column for headers, and add 1 to width/height as a separator line between modules
-    *out_x = (col + 1) * (MODULE_WIDTH + 1);
-    *out_y = (row + 1) * (MODULE_HEIGHT + 1);
-}
-
 
 void DisplayTask::run() {
     tft_.begin();
@@ -47,6 +31,7 @@ void DisplayTask::run() {
     spr_.setTextFont(0);
     spr_.setTextColor(0xFFFF, TFT_BLACK);
 
+    uint8_t module_row, module_col;
     int32_t module_x, module_y;
     while(1) {
         SplitflapState state = splitflap_task_.getState();
@@ -63,32 +48,60 @@ void DisplayTask::run() {
             uint16_t background = 0x0000;
             uint16_t foreground = 0xFFFF;
 
+            bool blink = (millis() / 400) % 2;
+
             char c;
             switch (s.state) {
                 case NORMAL:
                     c = flaps[s.flap_index];
+                    if (s.moving) {
+                        // use a dimmer color when moving
+                        foreground = 0x6b4d;
+                    }
+
+                    // You can add special-case color handling here if desired:
+                    // if (c == 'w') {
+                    //     c = ' ';
+                    //     background = 0xFFFF;
+                    // } else if (c == 'y') {
+                    //     c = ' ';
+                    //     background = 0xffe0;
+                    // } else if (c == 'o') {
+                    //     c = ' ';
+                    //     background = 0xfd00;
+                    // } else if (c == 'g') {
+                    //     c = ' ';
+                    //     background = 0x46a0;
+                    // } else if (c == 'p') {
+                    //     c = ' ';
+                    //     background = 0xd938;
+                    // }
                     break;
                 case PANIC:
                     c = '~';
-                    background = 0xD000;
+                    background = blink ? 0xD000 : 0;
                     break;
                 case STATE_DISABLED:
                     c = '*';
                     break;
                 case LOOK_FOR_HOME:
                     c = '?';
-                    background = 0x6018;
+                    background = blink ? 0x6018 : 0;
                     break;
                 case SENSOR_ERROR:
                     c = ' ';
-                    background = 0xD461;
-                    foreground = 0x0000;
+                    background = blink ? 0xD461 : 0;
                     break;
                 default:
                     c = ' ';
                     break;
             }
-            getLayoutPosition(i, &module_x, &module_y);
+            getLayoutPosition(i, &module_row, &module_col);
+
+            // Leave an empty row and column for headers, and add 1 to width/height as a separator line between modules
+            module_x = (module_col + 1) * (MODULE_WIDTH + 1);
+            module_y = (module_row + 1) * (MODULE_HEIGHT + 1);
+
             spr_.setTextColor(foreground, background);
             spr_.fillRect(module_x, module_y, MODULE_WIDTH, MODULE_HEIGHT, background);
             spr_.setCursor(module_x + 1, module_y + 2);

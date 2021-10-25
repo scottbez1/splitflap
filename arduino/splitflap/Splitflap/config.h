@@ -63,7 +63,7 @@ const uint8_t flaps[NUM_FLAPS] = {
   #define MONITOR_SPEED 38400
 #elif defined(ESP32)
   #define NEOPIXEL_PIN (13)
-  #define MONITOR_SPEED 921600
+  #define MONITOR_SPEED 230400
 #endif
 
 /*************************/
@@ -111,14 +111,10 @@ const uint8_t flaps[NUM_FLAPS] = {
  *      SCL: 21
  *
  * ESP32 - SPI IO (Shift Register) - Up to 120+ modules:
- *     5  CS            (out) (debug only)
- *     12 Motor latch   (out)
- *     13 neopixel      (out)
- *     18 CLK           (out)
- *     19 MISO          (in)
- *     23 MOSI          (out)
- *     27 Sensor latch  (out)
- *     32 Output enable (out)
+ *     25 Latch         (out)
+ *     33 CLK           (out)
+ *     39 MISO          (in)
+ *     32 MOSI          (out)
  *
  */
 
@@ -129,4 +125,5 @@ const uint8_t flaps[NUM_FLAPS] = {
 #endif
 #ifdef CHAINLINK
 #define NUM_LOOPBACKS (NUM_MODULES / 3)
+#define CHAINLINK_ENFORCE_LOOPBACKS 1
 #endif

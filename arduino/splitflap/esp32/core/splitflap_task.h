@@ -16,24 +16,63 @@
 #pragma once
 
 #include "config.h"
+#include "logger.h"
 #include "src/splitflap_module_data.h"
 
 #include "task.h"
+
+enum class SplitflapMode {
+    MODE_RUN,
+    MODE_SENSOR_TEST,
+};
 
 struct SplitflapModuleState {
     State state;
     uint8_t flap_index;
     bool moving;
+    bool home_state;
     uint8_t count_unexpected_home;
     uint8_t count_missed_home;
+
+    bool operator==(const SplitflapModuleState& other) {
+        return state == other.state
+            && flap_index == other.flap_index
+            && moving == other.moving
+            && home_state == other.home_state
+            && count_unexpected_home == other.count_unexpected_home
+            && count_missed_home == other.count_missed_home;
+    }
+
+    bool operator!=(const SplitflapModuleState& other) {
+        return !(*this == other);
+    }
 };
 
 struct SplitflapState {
+    SplitflapMode mode;
     SplitflapModuleState modules[NUM_MODULES];
 
 #ifdef CHAINLINK
     bool loopbacks_ok = false;
 #endif
+
+    bool operator==(const SplitflapState& other) {
+        for (uint8_t i = 0; i < NUM_MODULES; i++) {
+            if (modules[i] != other.modules[i]) {
+                return false;
+            }
+        }
+
+        return mode == other.mode
+#ifdef CHAINLINK
+            && loopbacks_ok == other.loopbacks_ok
+#endif
+            ;
+    }
+
+    bool operator!=(const SplitflapState& other) {
+        return !(*this == other);
+    }
 };
 
 enum class LedMode {
@@ -41,9 +80,38 @@ enum class LedMode {
     MANUAL,
 };
 
-struct Command {
-    uint8_t data[NUM_MODULES];
+enum class CommandType {
+    MODULES,
+    SENSOR_TEST_SET,
+    SENSOR_TEST_CLEAR,
+    CONFIG,
 };
+
+struct ModuleConfig {
+    uint8_t target_flap_index;
+    uint8_t movement_nonce;
+    uint8_t reset_nonce;
+};
+
+struct ModuleConfigs {
+    ModuleConfig config[NUM_MODULES];
+};
+
+struct Command {
+    CommandType command_type;
+    union CommandData {
+        uint8_t module_command[NUM_MODULES];
+        ModuleConfigs module_configs;
+    };
+    CommandData data;
+};
+
+#define QCMD_NO_OP          0
+#define QCMD_RESET_AND_HOME 1
+#define QCMD_LED_ON         2
+#define QCMD_LED_OFF        3
+#define QCMD_DISABLE        4
+#define QCMD_FLAP           5
 
 class SplitflapTask : public Task<SplitflapTask> {
     friend class Task<SplitflapTask>; // Allow base Task to invoke protected run()
@@ -56,7 +124,11 @@ class SplitflapTask : public Task<SplitflapTask> {
 
         void showString(const char *str, uint8_t length);
         void resetAll();
+        void disableAll();
         void setLed(uint8_t id, bool on);
+        void setSensorTest(bool sensor_test);
+        void setLogger(Logger* logger);
+        void postRawCommand(Command command);
 
     protected:
         void run();
@@ -66,21 +138,13 @@ class SplitflapTask : public Task<SplitflapTask> {
         const SemaphoreHandle_t state_semaphore_;
         QueueHandle_t queue_;
         Command queue_receive_buffer_ = {};
+        Logger* logger_;
 
-        // TODO: move to serial task
-        char recv_buffer[NUM_MODULES];
-        uint8_t recv_count = 0;
-        void dumpStatus(void);
+        bool all_stopped_ = true;
 
-        // TODO: rename to match style guide
-        bool pending_move_response = true;
-        bool pending_no_op = false;
-        bool was_stopped = false;
-        uint32_t stopped_at_millis = 0;
-
-        // bool disabled = false;
         uint32_t last_sensor_print_millis_ = 0;
         bool sensor_test_ = SENSOR_TEST;
+        ModuleConfigs current_configs_ = {};
 
 #ifdef CHAINLINK
         uint8_t loopback_current_out_index_ = 0;
@@ -96,7 +160,7 @@ class SplitflapTask : public Task<SplitflapTask> {
         void processQueue();
         void runUpdate();
         void sensorTestUpdate();
+        void log(const char* msg);
 
         int8_t findFlapIndex(uint8_t character);
-        // void disableAll(const char* message);
 };

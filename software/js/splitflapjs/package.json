@@ -1,0 +1,29 @@
+{
+  "name": "splitflapjs",
+  "version": "1.0.0",
+  "description": "Splitflap interface library",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "run": "ts-node src/index.ts",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "lint": "tslint -p tsconfig.json"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "cobs": "^0.2.1",
+    "crc-32": "^1.2.0",
+    "serialport": "^9.2.4",
+    "splitflapjs-proto": "file:../splitflapjs-proto"
+  },
+  "devDependencies": {
+    "@types/serialport": "^8.0.2",
+    "prettier": "^2.4.1",
+    "ts-node": "^10.2.1",
+    "tslint": "^6.1.3",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^4.4.3"
+  }
+}
