@@ -125,9 +125,9 @@ spool_retaining_clearance = 0.10;  // for the notches in the spool retaining wal
 spool_joint_clearance = 0.10;  // for the notched joints on the spool struts
 
 
-num_flaps = 40;
+num_flaps = 48;
 
-flap_hole_radius = (flap_pin_width + 1) / 2;
+flap_hole_radius = (flap_pin_width + 0.6) / 2;
 flap_hole_separation = 1;  // additional spacing between hole edges
 flap_gap = (flap_hole_radius * 2 - flap_pin_width) + flap_hole_separation;
 
@@ -179,6 +179,7 @@ front_window_upper_base = (flap_height - flap_pin_width/2);
 front_window_overhang = 3;
 front_window_upper = front_window_upper_base - front_window_overhang;
 front_window_lower = sqrt(outer_exclusion_radius*outer_exclusion_radius - front_forward_offset*front_forward_offset);
+front_window_height = front_window_lower+front_window_upper;
 front_window_width = spool_width_slop + spool_width_clearance;
 front_window_right_inset = thickness;
 enclosure_horizontal_inset = (enclosure_width - front_window_width)/2 - front_window_right_inset; // center the window in the front face (the inset is measured with respect to the *outside* of the wall, hence the "front_window_right_inset" correction)
@@ -298,7 +299,7 @@ echo(spool_strut_inner_length=spool_strut_inner_length);
 echo(front_window_width=front_window_width);
 echo(front_window_upper=front_window_upper);
 echo(front_window_lower=front_window_lower);
-echo(front_window_height=front_window_lower+front_window_upper);
+echo(front_window_height=front_window_height);
 echo(front_forward_offset=front_forward_offset);
 echo(flap_exclusion_radius=exclusion_radius);
 echo(flap_hole_radius=flap_hole_radius);
@@ -1343,11 +1344,16 @@ if (render_3d) {
             }
 
             // Flap spools in flap window
-            flap_spool_y_off = enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width - front_window_right_inset - enclosure_horizontal_inset - front_window_width/2;
-            flap_spool_x_off = spool_outer_radius + enclosure_height_lower - front_window_lower + kerf_width + 2;
+            spools_too_large = spool_outer_radius*2 + kerf_width*3 + 1 > front_window_width || spool_outer_radius*4 + kerf_width*3 + 1 > front_window_height;
+            flap_spool_y_off = spools_too_large ?
+                spool_outer_radius + spool_strut_y_offset + spool_strut_width / 2 + kerf_width :
+                enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width - front_window_right_inset - enclosure_horizontal_inset - front_window_width/2;
+            flap_spool_x_off = spools_too_large ?
+                spool_outer_radius :
+                spool_outer_radius + enclosure_height_lower - front_window_lower + kerf_width + 0.5;
             translate([flap_spool_x_off, flap_spool_y_off])
                 flap_spool_complete(motor_shaft=true, magnet_hole=true);
-            translate([flap_spool_x_off + spool_outer_radius*2 + 2, flap_spool_y_off])
+            translate([flap_spool_x_off + spool_outer_radius*2 + kerf_width, flap_spool_y_off])
                 mirror([0, 1, 0])
                     flap_spool_complete(captive_nut=true);
 
@@ -1356,7 +1362,7 @@ if (render_3d) {
                 laser_etch() {
                     translate([flap_spool_x_off, flap_spool_y_off])
                         flap_spool_etch();
-                    translate([flap_spool_x_off + spool_outer_radius*2 + 2, flap_spool_y_off])
+                    translate([flap_spool_x_off + spool_outer_radius*2 + kerf_width, flap_spool_y_off])
                         mirror([0, 1, 0])
                             flap_spool_etch();
                 }

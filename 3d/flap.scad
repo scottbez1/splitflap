@@ -21,7 +21,7 @@ use<flap_fonts.scad>;
 // TODO: extract core flap spool dimensions used for vertical_keepout_size instead of using the full splitflap file
 use<splitflap.scad>;
 
-character_list = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,'";
+character_list = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,'        ";
 
 // Facet number variable refers to a special variable "$fn" that is used to control the number of facets to generate an arc.
 // Higher than 100 is not recommended according to the docs as it demands a lot resources
