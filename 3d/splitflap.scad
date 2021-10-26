@@ -1300,11 +1300,11 @@ if (render_3d) {
             }
 
             // Top and bottom
-            translate([enclosure_height + kerf_width + enclosure_length_right, enclosure_wall_to_wall_width + kerf_width])
+            translate([enclosure_height + kerf_width + enclosure_length_right, enclosure_wall_to_wall_width + kerf_width - thickness * 3 + side_tab_length * 3])
                 rotate([0, 0, 90])
                     enclosure_top();
 
-            translate([enclosure_height + kerf_width, enclosure_wall_to_wall_width])
+            translate([enclosure_height + kerf_width, enclosure_wall_to_wall_width - thickness + side_tab_length])
                 rotate([0, 0, -90])
                     enclosure_bottom();
 
@@ -1332,12 +1332,12 @@ if (render_3d) {
 
             if (enable_connectors) {
                 // Connector brackets on the top right
-                translate([enclosure_height + kerf_width, 2 * enclosure_wall_to_wall_width + 2 * kerf_width - thickness, 0])
+                translate([enclosure_height + kerf_width, 2 * enclosure_wall_to_wall_width + 2 * kerf_width - 4 * thickness + 4 * side_tab_length, 0])
                     connector_bracket();
             }
 
             if (enable_connectors) {
-                translate([enclosure_height + kerf_width + connector_bracket_width - connector_bracket_length_outer, 2 * enclosure_wall_to_wall_width + 3 * kerf_width - thickness + connector_bracket_width + connector_bracket_length_outer, 0])
+                translate([enclosure_height + kerf_width + connector_bracket_width - connector_bracket_length_outer, 2 * enclosure_wall_to_wall_width + 3 * kerf_width - 4 * thickness + 4 * side_tab_length + connector_bracket_width + connector_bracket_length_outer, 0])
                     rotate([0,0,-90])
                         connector_bracket();
             }
