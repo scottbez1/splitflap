@@ -20,7 +20,15 @@ use<flap_fonts.scad>;
 // TODO: extract core flap spool dimensions used for vertical_keepout_size instead of using the full splitflap file
 use<splitflap.scad>;
 
-character_list = " ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789 .?-#,!'@&  $ ";
+character_list = " ABCDEFGHIJKLMNOPQRSTUVWXYZb0123456789r.?-#,!yg'@&$w";
+
+color_list = [
+    ["b", [0.1, 0.1, 1]],
+    ["r", [1, 0.1, 0.1]],
+    ["y", [1, 1, 0.1]],
+    ["g", [0.1, 1, 0.1]],
+    ["w", [1, 1, 1]],
+];
 
 // Facet number variable refers to a special variable "$fn" that is used to control the number of facets to generate an arc.
 // Higher than 100 is not recommended according to the docs as it demands a lot resources
@@ -78,23 +86,41 @@ module _flap(flap_color) {
     }
 }
 
-module _draw_letter(letter) {
-    overrides = get_letter_overrides(letter);
-    height = is_undef(overrides[3]) ? get_font_setting("height") : overrides[3];
-    width = is_undef(overrides[4]) ? get_font_setting("width") : overrides[4];
-    translate([0, -flap_height * height, 0]) {  // valign compensation
-        scale([width, 1, 1]) {
-            offset_x = is_undef(overrides[1]) ? get_font_setting("offset_x") : get_font_setting("offset_x") + overrides[1];
-            offset_y = is_undef(overrides[2]) ? get_font_setting("offset_y") : get_font_setting("offset_y") + overrides[2];
-            translate([offset_x, offset_y]) {
-                text(text=letter, size=flap_height * height * 2, font=get_font_setting("font"), halign="center", $fn=letter_facet_number);
+module _apply_special_color(letter, standard_letter_color) {
+    color_index = search([letter], color_list);
+    if (len(color_index) > 0 && is_num(color_index[0])) {
+        color(color_list[color_index[0]][1]) {
+            children();
+        }
+    } else {
+        color(standard_letter_color) {
+            children();
+        }
+    }
+}
+
+module _draw_letter(letter, flap_gap) {
+    color_index = search([letter], color_list);
+    if (len(color_index) > 0 && is_num(color_index[0])) {
+        square([flap_width - flap_notch_depth * 2 - 4, (flap_height * 2 + flap_gap) * get_font_setting("height")], center=true);
+    } else {
+        overrides = get_letter_overrides(letter);
+        height = is_undef(overrides[3]) ? get_font_setting("height") : overrides[3];
+        width = is_undef(overrides[4]) ? get_font_setting("width") : overrides[4];
+        translate([0, -flap_height * height, 0]) {  // valign compensation
+            scale([width, 1, 1]) {
+                offset_x = is_undef(overrides[1]) ? get_font_setting("offset_x") : get_font_setting("offset_x") + overrides[1];
+                offset_y = is_undef(overrides[2]) ? get_font_setting("offset_y") : get_font_setting("offset_y") + overrides[2];
+                translate([offset_x, offset_y]) {
+                    text(text=letter, size=flap_height * height * 2, font=get_font_setting("font"), halign="center", $fn=letter_facet_number);
+                }
             }
         }
     }
 }
 
 module _flap_letter(letter, letter_color, flap_gap, front=true, bleed = 0) {
-    color(letter_color) {
+    _apply_special_color(letter, letter_color) {
         translate([0, 0, front ? flap_thickness/2 + eps : -flap_thickness/2 - eps]) {
             linear_extrude(height=0.1, center=true) {
                 intersection() {
@@ -120,7 +146,7 @@ module _flap_letter(letter, letter_color, flap_gap, front=true, bleed = 0) {
                         gap_comp = (use_letter_gap_compensation() == true) ? -flap_gap/2 : 0;
                         translate([0, gap_comp, 0]) {
                             rotate([rotation, 0, 0]) {
-                                _draw_letter(letter);
+                                _draw_letter(letter, flap_gap);
                             }
                         }
                     }
@@ -146,7 +172,7 @@ module _flap_letter(letter, letter_color, flap_gap, front=true, bleed = 0) {
                             gap_comp = (use_letter_gap_compensation() == true) ? -flap_gap/2 : 0;
                             translate([0, gap_comp, 0]) {
                                 rotate([rotation, 0, 0]) {
-                                    _draw_letter(letter);
+                                    _draw_letter(letter, flap_gap);
                                 }
                             }
                         }
