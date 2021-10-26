@@ -18,11 +18,14 @@ include<flap_dimensions.scad>;
 
 use<roboto/RobotoCondensed-Regular.ttf>;
 
+use<../../../Dropbox/splitflap/font_selection/Epilogue/Epilogue-VariableFont_wght.ttf>;
+use<../../../Dropbox/splitflap/font_selection/PoiretOne/PoiretOne-Regular.ttf>;
+
 // -----------------------
 // Configurable parameters
 // -----------------------
 
-font_preset = "Roboto";   // See available presets below
+font_preset = "Poiret";   // See available presets below
 letter_gap_comp = true;         // Shifts letter positions to compensate for gap between flaps
 
 // ---------------------------
@@ -83,6 +86,26 @@ _font_settings = [
         "height", 0.7,
         "width", 1,
         "offset_x", -0.78,
+        "offset_y", 0,
+        "overrides", [],
+    ],
+
+    "Epilogue", [
+        "font", "Epilogue:style=ExtraLight",
+        "height", 0.55,
+        "width", 1,
+        "offset_x", -0.6,
+        "offset_y", 1.2,
+        "overrides", [
+            ["@", 1.2, 0, undef, 0.87]
+        ],
+    ],
+
+    "Poiret", [
+        "font", "PoiretOne",
+        "height", 0.43,
+        "width", 1,
+        "offset_x", -0.6,
         "offset_y", 0,
         "overrides", [],
     ],

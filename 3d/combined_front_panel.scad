@@ -39,8 +39,8 @@ frame_margin_y = undef;
 // You can set gap_x and gap_y to 0 to get the closest possible spacing of modules.
 center_center_x = 4*25.4;
 center_center_y = 7.25*25.4;
-gap_x = undef;
-gap_y = undef;
+gap_x = 0;
+gap_y = 0;
 
 // Vertical centering mode
 //   0 = center based on letter/flap center
@@ -60,14 +60,14 @@ kerf_width = 0;
 display_text = [
     "THIS IS SOME TEXT ",
     "",
-    "    SPLIT     FLAP",
-    "           HI     ",
-    "WOW               ",
-    "                 .",
+    " THE QUICK BROWN",
+    "FOX JUMPS OVER THE",
+    "         LAZY DOG ",
+    "WOW              .",
 ];
 
 // Number of full modules to render in 3d preview
-render_full_modules_count = 4;
+render_full_modules_count = 0;
 
 // ---------------------------
 // End configurable parameters
@@ -105,9 +105,11 @@ module centered_front() {
     }
 }
 
-flap_color = get_flap_color();
-letter_color = get_letter_color();
-assembly_colors = get_assembly_colors();
+flap_color = [0.05, 0.05, 0.05];// get_flap_color();
+letter_color = [1, 1, 1]; //get_letter_color();
+assembly_colors = [
+    [0.1, 0.1, 0.1]
+]; // get_assembly_colors();
 frame_color = assembly_colors[0];
 
 projection_renderer(render_index = render_index, render_etch = render_etch, kerf_width = kerf_width, panel_height = 0, panel_horizontal = 0, panel_vertical = 0) {
