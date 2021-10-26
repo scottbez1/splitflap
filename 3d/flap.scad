@@ -15,13 +15,12 @@
 */
 include<flap_dimensions.scad>;
 include<global_constants.scad>;
-
 use<flap_fonts.scad>;
 
 // TODO: extract core flap spool dimensions used for vertical_keepout_size instead of using the full splitflap file
 use<splitflap.scad>;
 
-character_list = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,'        ";
+character_list = " ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789 .?-#,!'@&  $ ";
 
 // Facet number variable refers to a special variable "$fn" that is used to control the number of facets to generate an arc.
 // Higher than 100 is not recommended according to the docs as it demands a lot resources
@@ -159,6 +158,9 @@ module _flap_letter(letter, letter_color, flap_gap, front=true, bleed = 0) {
 }
 
 module flap_with_letters(flap_color, letter_color, flap_index, flap_gap, flap=true, front_letter=true, back_letter=true, bleed=0) {
+    if (len(character_list) != get_num_flaps()) {
+        echo("Warning: character_list and num_flaps mismatch!");
+    }
     if (flap) {
         _flap(flap_color);
     }

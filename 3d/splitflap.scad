@@ -125,10 +125,11 @@ spool_retaining_clearance = 0.10;  // for the notches in the spool retaining wal
 spool_joint_clearance = 0.10;  // for the notched joints on the spool struts
 
 
-num_flaps = 48;
+num_flaps = 52;
+assert(len(get_character_list()) == num_flaps, "num_flaps and character_list mismatch!");
 
 flap_hole_radius = (flap_pin_width + 0.6) / 2;
-flap_hole_separation = 1;  // additional spacing between hole edges
+flap_hole_separation = 0.8;  // additional spacing between hole edges
 flap_gap = (flap_hole_radius * 2 - flap_pin_width) + flap_hole_separation;
 
 flap_spool_outset = flap_hole_radius;
@@ -279,6 +280,7 @@ function get_letter_color() = letter_color;
 function get_magnet_diameter() = magnet_diameter;
 function get_magnet_hole_offset() = magnet_hole_offset;
 function get_mounting_hole_inset() = mounting_hole_inset;
+function get_num_flaps() = num_flaps;
 function get_pcb_to_spool() = pcb_to_spool;
 function get_thickness() = thickness;
 
@@ -1345,6 +1347,9 @@ if (render_3d) {
 
             // Flap spools in flap window
             spools_too_large = spool_outer_radius*2 + kerf_width*3 + 1 > front_window_width || spool_outer_radius*4 + kerf_width*3 + 1 > front_window_height;
+            if (spools_too_large) {
+                echo("Note: spools are too large to place inside front window cutout; placing outside instead.");
+            }
             flap_spool_y_off = spools_too_large ?
                 spool_outer_radius + spool_strut_y_offset + spool_strut_width / 2 + kerf_width :
                 enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width - front_window_right_inset - enclosure_horizontal_inset - front_window_width/2;

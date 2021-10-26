@@ -22,7 +22,7 @@ use<roboto/RobotoCondensed-Regular.ttf>;
 // Configurable parameters
 // -----------------------
 
-font_preset = "Roboto-Example";   // See available presets below
+font_preset = "Roboto";   // See available presets below
 letter_gap_comp = true;         // Shifts letter positions to compensate for gap between flaps
 
 // ---------------------------
@@ -51,13 +51,15 @@ letter_gap_comp = true;         // Shifts letter positions to compensate for gap
 //              - Height override, as a value relative to flap height (e.g. 0.7). Replaces letter_height for this letter. Can be undef to omit.
 //              - Width override, as a value relative to default font width (e.g. 0.7). Replaces letter_width for this letter. Can be undef to omit.
 _font_settings = [
-    "Roboto-Example", [
+    "Roboto", [
         "font", "RobotoCondensed",
-        "height", 0.75,
-        "width", 0.8,
+        "height", 0.6,
+        "width", 1,
         "offset_x", -0.78,
-        "offset_y", 0.5,
-        "overrides", [],
+        "offset_y", 0.7,
+        "overrides", [
+            ["@", 0, 1],
+        ],
     ],
 
     // https://fonts.google.com/specimen/Bangers
