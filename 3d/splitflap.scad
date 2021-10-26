@@ -31,7 +31,7 @@ include<m4_dimensions.scad>;
 
 // ##### RENDERING OPTIONS #####
 
-render_3d = false;
+render_3d = true;
 
 // 3d parameters:
 render_enclosure = 2; // 0=invisible; 1=translucent; 2=opaque color;

@@ -59,11 +59,11 @@ kerf_width = 0;
 
 display_text = [
     "THIS IS SOME TEXT ",
-    "",
+    " ! @ $ # ? . , - '",
     " THE QUICK BROWN",
     "FOX JUMPS OVER THE",
     "         LAZY DOG ",
-    "WOW              .",
+    "wWOWw b r y g   .",
 ];
 
 // Number of full modules to render in 3d preview

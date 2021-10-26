@@ -103,11 +103,12 @@ _font_settings = [
 
     "Poiret", [
         "font", "PoiretOne",
-        "height", 0.43,
+        "height", 0.42,
         "width", 1,
         "offset_x", -0.6,
-        "offset_y", 0,
+        "offset_y", 0.65,
         "overrides", [],
+        "thickness_offset", 1,
     ],
 ];
 

@@ -100,19 +100,25 @@ module _apply_special_color(letter, standard_letter_color) {
 }
 
 module _draw_letter(letter, flap_gap) {
+    overrides = get_letter_overrides(letter);
+    height = is_undef(overrides[3]) ? get_font_setting("height") : overrides[3];
+    width = is_undef(overrides[4]) ? get_font_setting("width") : overrides[4];
+    offset_x = is_undef(overrides[1]) ? get_font_setting("offset_x") : get_font_setting("offset_x") + overrides[1];
+    offset_y = is_undef(overrides[2]) ? get_font_setting("offset_y") : get_font_setting("offset_y") + overrides[2];
+    thickness_offset = is_undef(get_font_setting("thickness_offset")) ? 0 : get_font_setting("thickness_offset");
+
     color_index = search([letter], color_list);
     if (len(color_index) > 0 && is_num(color_index[0])) {
-        square([flap_width - flap_notch_depth * 2 - 4, (flap_height * 2 + flap_gap) * get_font_setting("height")], center=true);
+        translate([0, offset_y]) {
+            square([flap_width - flap_notch_depth * 2 - 4, (flap_height * 2 + flap_gap) * get_font_setting("height")], center=true);
+        }
     } else {
-        overrides = get_letter_overrides(letter);
-        height = is_undef(overrides[3]) ? get_font_setting("height") : overrides[3];
-        width = is_undef(overrides[4]) ? get_font_setting("width") : overrides[4];
         translate([0, -flap_height * height, 0]) {  // valign compensation
             scale([width, 1, 1]) {
-                offset_x = is_undef(overrides[1]) ? get_font_setting("offset_x") : get_font_setting("offset_x") + overrides[1];
-                offset_y = is_undef(overrides[2]) ? get_font_setting("offset_y") : get_font_setting("offset_y") + overrides[2];
                 translate([offset_x, offset_y]) {
-                    text(text=letter, size=flap_height * height * 2, font=get_font_setting("font"), halign="center", $fn=letter_facet_number);
+                    offset(delta=thickness_offset) {
+                        text(text=letter, size=flap_height * height * 2, font=get_font_setting("font"), halign="center", $fn=letter_facet_number);
+                    }
                 }
             }
         }
