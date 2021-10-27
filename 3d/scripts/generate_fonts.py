@@ -34,8 +34,11 @@ sys.path.append(repo_root)
 
 from util import rev_info
 
-_MODE_DOUBLE_SIDED = 'double-sided'
-_MODE_FULL_FONT = 'full-font'
+_MODES = {
+    'double-sided': 0,
+    'full-font': 1,
+    'side-by-side': 2,
+}
 
 def render(extra_variables, skip_optimize, output_directory):
     renderer = Renderer(os.path.join(source_parts_dir, 'font_generator.scad'), output_directory, extra_variables)
@@ -44,10 +47,9 @@ def render(extra_variables, skip_optimize, output_directory):
 
     processor = SvgProcessor(svg_output)
 
-    redundant_lines, merged_lines = None, None
     if not skip_optimize:
         logging.info('Removing redundant lines')
-        redundant_lines, merged_lines = processor.remove_redundant_lines()
+        processor.remove_redundant_lines()
 
     processor.write(svg_output)
     logging.info('\n\n\nDone rendering to SVG: ' + svg_output)
@@ -57,9 +59,9 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(add_help=False)  # avoid conflict with '-h' for height
 
-    parser.add_argument('--mode', choices=[_MODE_DOUBLE_SIDED, _MODE_FULL_FONT])
+    parser.add_argument('--mode', choices=_MODES.keys())
 
-    parser.add_argument('-f', '--font', type=str, help='Name of font to use (no spaces)')
+    parser.add_argument('-f', '--font', type=str, help='Name of font preset to use - see flap_fonts.scad')
     parser.add_argument('-t', '--text', type=str, help='String of text to generate')
 
     parser.add_argument('--columns', type=int, help='Number of columns')
@@ -114,8 +116,9 @@ if __name__ == '__main__':
 
     fonts_directory = os.path.join(source_parts_dir, 'build', 'fonts')
 
-    if args.mode == _MODE_DOUBLE_SIDED:
-        extra_variables['layout_double_flaps_for_full_font'] = False
+    extra_variables['layout_mode'] = _MODES[args.mode]
+    
+    if args.mode == 'double-sided':
         extra_variables['render_alignment_marks'] = args.alignment
 
         extra_variables['only_side'] = 1
@@ -127,8 +130,8 @@ if __name__ == '__main__':
         render(extra_variables, args.skip_optimize, os.path.join(fonts_directory, 'back'))
     else:
         if args.alignment:
-            raise RuntimeError('Alignment markers are incompatible with full font rendering')
-        extra_variables['layout_double_flaps_for_full_font'] = True
+            raise RuntimeError('Alignment markers are only compatible with double-sided rendering')
+
         extra_variables['only_side'] = 1
         extra_variables['flip_over'] = args.flip
         render(extra_variables, args.skip_optimize, fonts_directory)

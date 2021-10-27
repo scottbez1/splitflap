@@ -28,14 +28,25 @@ num_columns = 8;                // Number of columns for layout; 0 for infinite
 start_row = 0;                  // First row to render
 row_count = 1000;               // Number of rows to render
 
-only_side = 0;                  // 0=both, 1=front only, 2=back only
+only_side = 0;                  // 0=both, 1=top only, 2=bottom only
+
+// "Standard" layout, of all flaps front side or back side, which can be rendered to 2 separate files
+// for double-sided printing
+MODE_DOUBLE_SIDED = 0;
 
 // If you want to view the full font with each letter as it appears when at the front of the display,
 // it requires rendering twice as many flaps and a special layout with the bottom flaps flipped over.
 // You also probably want to set only_side to 1 when using this layout.
-layout_double_flaps_for_full_font = true;
+MODE_FULL_FONT = 1;
 
-flip_over = false;              // Flip the entire layout of flaps over (e.g. when exporting the back sizes)
+// Each flap's front side is laid out side-by-side with its back side.
+// You probably want to set only_side to 1 when using this layout.
+MODE_SIDE_BY_SIDE = 2;
+
+
+layout_mode = MODE_SIDE_BY_SIDE;
+
+flip_over = false;              // Flip the entire layout of flaps over (e.g. when exporting the bottom sides)
 
 // Gap between flaps
 spacing_x = 5;
@@ -64,15 +75,17 @@ render_fill = false;
 
 flap_gap = get_flap_gap();
 
-assert(!(layout_double_flaps_for_full_font && render_alignment_marks), "Alignment marks are not supported with double-flap full font layout mode");
+assert(!(layout_mode != MODE_DOUBLE_SIDED && render_alignment_marks), "Alignment marks are only supported with standard front/back layout mode");
 
 if (!is_projection_rendering()) {
     echo("Info: this model is intended for use via generate_fonts.py in order to export flap font files.");
 }
 
 module flap_transform(row, col) {
-    x_pos = (flap_width + spacing_x) * col;
-    y_pos = layout_double_flaps_for_full_font ?
+    x_pos = layout_mode == MODE_SIDE_BY_SIDE ?
+        (flap_width*2 + spacing_x*2) * col :
+        (flap_width + spacing_x) * col;
+    y_pos = layout_mode == MODE_FULL_FONT ?
         (flap_height*2 + flap_gap + spacing_y) * row:
         (flap_height + spacing_y) * row;
 
@@ -95,10 +108,18 @@ module flap_pos(i) {
 module configured_flap(index, flap, front_letter, back_letter) {
     flap_with_letters(flap_color, letter_color, index, flap_gap, flap=flap, front_letter=front_letter, back_letter=back_letter, bleed=bleed);
 
-    if (layout_double_flaps_for_full_font) {
+    if (layout_mode == MODE_FULL_FONT) {
         translate([0, -flap_pin_width -flap_gap, 0]) {
             rotate([180,0,0]) {
                 flap_with_letters(flap_color, letter_color, index - 1, flap_gap, flap=flap, front_letter=back_letter, back_letter=front_letter, bleed=bleed);
+            }
+        }
+    }
+
+    if (layout_mode == MODE_SIDE_BY_SIDE) {
+        translate([2*flap_width + spacing_x, 0]) {
+            rotate([0, 180,0]) {
+                flap_with_letters(flap_color, letter_color, index, flap_gap, flap=flap, front_letter=back_letter, back_letter=front_letter, bleed=bleed);
             }
         }
     }
