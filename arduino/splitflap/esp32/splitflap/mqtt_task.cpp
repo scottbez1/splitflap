@@ -17,6 +17,8 @@
 #include "mqtt_task.h"
 #include "secrets.h"
 
+// TODO: MQTTTask needs to be converted to use a Logger instead of Serial!
+
 void MQTTTask::connectWifi() {
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 

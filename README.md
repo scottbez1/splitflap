@@ -1,13 +1,14 @@
 # DIY Split-Flap Display
 
-This is a work in progress DIY [split-flap display](https://en.wikipedia.org/wiki/Split-flap_display).
+This is a DIY [split-flap display](https://en.wikipedia.org/wiki/Split-flap_display).
 Prototype four-character display: [video](https://www.youtube.com/watch?v=vq4o_88kN8g).
 
 ![animated rendering](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_animation.gif)
 [![prototype video](renders/prototypeVideoThumbnail.jpg)](https://www.youtube.com/watch?v=vq4o_88kN8g)
 
-[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml/badge.svg?branch=dev/newBoard)](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml)
-[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml/badge.svg?branch=dev/newBoard)](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml)
+[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml/badge.svg?branch=master)](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml)
+[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml/badge.svg?branch=master)](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml)
+[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/pio.yml/badge.svg?branch=master)](https://github.com/scottbez1/splitflap/actions/workflows/pio.yml)
 
 The goal is to make a low-cost display that's easy to fabricate at home in small/single quantities (e.g. custom materials can be ordered from Ponoko or similar, and other hardware is generally available).
 
@@ -17,13 +18,17 @@ You can view an interactive 3d model of the design on the [project website](http
 
 **New:** Join the [community Slack group](https://join.slack.com/t/splitflap/shared_invite/zt-dpvol87b-3zUaxXrUd8WauPXr1uBj5Q) to discuss or ask questions about the project!
 
-Want to help support prototyping and development?
-<a href="https://www.buymeacoffee.com/scottbez1" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" height="22" ></a>
+Want to help support development or just say "thanks"? Consider a one-time or monthly sponsorship:
 
-<a href="https://www.youtube.com/watch?v=UAQJJAQSg_g" target="_blank"><img src="https://img.youtube.com/vi/UAQJJAQSg_g/maxresdefault.jpg" alt="How a split-flap display works" width="640"></a>
+| [:heart: Sponsor scottbez1 on GitHub](https://github.com/sponsors/scottbez1) |
+|---|
+
+[![Video: how a split-flap display works](renders/howItWorksThumbnail.jpg)](https://www.youtube.com/watch?v=UAQJJAQSg_g)
+
+**Using this project in a commercial setting or for paid client work?** Go right ahead - it's open source! All I ask is that you consider [sponsoring the project](https://github.com/sponsors/scottbez1). I've been developing and maintaining this project in my free time for over 6 years, and I'd love to continue working on it. Sponsorships allow me to pay for prototypes and development tools that make this project possible. Unlike pure software projects, every iteration has real hardware costs; sponsorships allow me to keep iterating and improving the project faster. Thank you!
 
 
-### Current Status
+# Current Status
 [You can download the **latest stable release** from the official 'releases' page.](https://github.com/scottbez1/splitflap/releases/latest)
 
 Releases have been tested and used to produce working units, but as this is a DIY project, there may always be minor issues and/or incomplete documentation.
@@ -32,9 +37,15 @@ Releases have been tested and used to produce working units, but as this is a DI
 | --- | --- | --- |
 | Enclosure/Mechanics | *Stable* | |
 | Classic Controller Electronics | *Stable* | |
-| New Chainlink Electronics | *Alpha* | Next-generation/alternative electronics, designed for easier assembly and larger displays |
 | Firmware | *Stable* | |
 | Control Software Example | *Stable* | Example python code for driving the display is in the [software](software) directory|
+
+
+:bulb: There's an upcoming major redesign of the electronics, called the *Chainlink* system (more on this [below](#chainlink-electronics)), which makes assembly easier and supports large displays (100+ modules), using an ESP32 for the controller. It's not quite recommended yet, but is expected to be stable by the end of Q1 2022. 
+
+Here's a video of a large 108-module display powered by 18 Chainlink Driver boards and a Chainlink Base:
+
+[![Video: animations on 108-module display](https://raw.githubusercontent.com/wiki/scottbez1/splitflap/images/animationsThumb.gif)](https://youtu.be/g9EPabcxBsM)
 
 
 I'd love to hear your thoughts and questions about this project, and happy to incorporate any feedback you might have into these designs! Please feel free (and encouraged) to [open GitHub issues](https://github.com/scottbez1/splitflap/issues/new), email me directly, reach out [on Twitter](https://twitter.com/scottbez1), and [get involved](https://github.com/scottbez1/splitflap/pulls) in the open source development and let's keep chatting and building together!
@@ -328,7 +339,8 @@ However, if you wish to assemble this board yourself, you can view the [interact
 <img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/chainlinkBase-3d.png"/>
 </a>
 
-This is currently under very active development. _It is **untested** and does not have firmware yet._
+This is currently under very active development. It has been tested and appears to work, but is not yet recommended for general use.
+Firmware support is in progress.
 
 The Chainlink Base PCB is an optional component of the Chainlink system, designed for particularly large displays.
 It hosts the ESP32 and adds additional connectivity options (terminals for UART and RS485 serial) and
@@ -337,15 +349,15 @@ power distribution (independently-monitored power channels for multiple "zones" 
 I would generally recommend wiring an ESP32 directly rather than using a Chainlink Base PCB unless you are building a
 large (50+ module) display.
 
-Key (planned) features:
+Key features:
 * TTGO T-Display ESP32 module as the controller, which includes USB-C, color IPS LCD display and buttons
 * Optional master relay output for 12V PSU control (5V relay, up to ~500mA coil current)
   * Future firmware will power on the 12V PSU after a startup self-test, and power off PSU in case of any faults
-* 5 channels of independently monitored 12V switches for powering groups of Chainlink Driver boards (6-8A max per channel)
-  * Depending on the motors you use, each channel may be able to power about 5 Chainlink Driver boards which is 30 splitflap modules
+* 5 channels of independently monitored 12V switches for powering groups of Chainlink Driver boards (6-10A max per channel)
+  * Depending on the motors you use, each channel may be able to power about 6 Chainlink Driver boards which is 36 splitflap modules
   * Each channel includes an automotive fuse holder for additional over-current protection
   * INA219 and shunt resistor provide high fidelity voltage and current monitoring 
-  * Future firmware will power on each channel after a startup self-test, and power off the channel in case of any faults
+  * Firmware will power on each channel after a startup self-test, and power off the channel in case of any faults
   * 3.3V output for powering many Chainlink Driver boards
 * Flexible controller input power
   * USB power from the T-Display works by default, though external power is recommended for larger displays
@@ -369,12 +381,12 @@ Key (planned) features:
 <img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-tester/chainlinkDriverTester-3d.png"/>
 </a>
 
-This is not likely to be useful unless you're assembling a _very_ large display, but the Chainlink Driver Tester is a complete testbed
+This is not likely to be useful unless you're planning to manufacture dozens to hundreds of Chainlink Driver boards, but the Chainlink Driver Tester is a complete testbed
 for Chainlink Driver boards as they come assembled by the PCBA fabricator.
 
-This is currently under very active development. _It is **untested** and does not have firmware yet._
+This is currently under very active development.
 
-Key (planned) features:
+Key features:
 * TTGO T-Display (ESP32) controller, screen, and buttons for controlling tests and reporting results
 * Pogo-pins for all connectors on the Chainlink Driver board-under-test (screw terminals, sensor pin headers, and motor connectors)
 * 12V switch to supply motor power to the board-under-test, with automotive fuse and INA219 voltage/current monitoring (based on the Chainlink Base channel switch design)
@@ -384,6 +396,9 @@ Key (planned) features:
 * MCP23017 GPIO expander with 8 GPIO pins exposed via headers for future expansion inputs
 * Large cutout allows a barcode scanner or camera to be aimed at the bottom of the board-under-test for tracking serial numbers.
 * Buzzer option for audible pass/fail feedback
+
+
+[Download gerbers](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-tester/chainlinkDriverTester-jlc/gerbers.zip)
 
 [View the interactive BOM/placement tool](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-tester/bom/chainlinkDriverTester-ibom.html)
 

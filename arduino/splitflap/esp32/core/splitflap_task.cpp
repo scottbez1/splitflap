@@ -1,5 +1,5 @@
 /*
-   Copyright 2020 Scott Bezek and the splitflap contributors
+   Copyright 2021 Scott Bezek and the splitflap contributors
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -26,19 +26,13 @@
 #include "task.h"
 #include "splitflap_task.h"
 
-#define QCMD_NO_OP          0
-#define QCMD_RESET_AND_HOME 1
-#define QCMD_LED_ON         2
-#define QCMD_LED_OFF        3
-#define QCMD_FLAP           4
-
 static_assert(QCMD_FLAP + NUM_FLAPS <= 255, "Too many flaps to fit in uint8_t command structure");
 
 SplitflapTask::SplitflapTask(const uint8_t task_core, const LedMode led_mode) : Task("Splitflap", 8192, 1, task_core), led_mode_(led_mode), state_semaphore_(xSemaphoreCreateMutex()) {
   assert(state_semaphore_ != NULL);
   xSemaphoreGive(state_semaphore_);
 
-  queue_ = xQueueCreate( 1, sizeof(Command) );
+  queue_ = xQueueCreate(5, sizeof(Command));
   assert(queue_ != NULL);
 }
 
@@ -66,16 +60,8 @@ void SplitflapTask::run() {
     digitalWrite(OUTPUT_ENABLE_PIN, LOW);
 #endif
 
-    // TODO: Move to serial task
-    for (uint8_t i = 0; i < NUM_MODULES; i++) {
-      recv_buffer[i] = 0;
-    }
-    Serial.print("\n\n\n");
-    Serial.print("{\"type\":\"init\", \"num_modules\":");
-    Serial.print(NUM_MODULES);
-    Serial.print("}\n");
-
 #if (defined(CHAINLINK) && !defined(CHAINLINK_DRIVER_TESTER))
+#if CHAINLINK_ENFORCE_LOOPBACKS
     bool loopback_result[NUM_LOOPBACKS][NUM_LOOPBACKS];
     bool loopback_off_result[NUM_LOOPBACKS];
     bool loopback_success = chainlink_test_all_loopbacks(loopback_result, loopback_off_result);
@@ -84,13 +70,17 @@ void SplitflapTask::run() {
       for (uint8_t i = 0; i < NUM_LOOPBACKS; i++) {
         for (uint8_t j = 0; j < NUM_LOOPBACKS; j++) {
           if (!loopback_result[i][j]) {
-            Serial.printf("Bad loopback. Set output %u but read incorrect value at input %u\n", i, j);
+            char buffer[200] = {};
+            snprintf(buffer, sizeof(buffer), "Bad loopback. Set output %u but read incorrect value at input %u", i, j);
+            log(buffer);
           }
         }
       }
       for (uint8_t j = 0; j < NUM_LOOPBACKS; j++) {
         if (!loopback_off_result[j]) {
-          Serial.printf("Bad loopback at input %u when all outputs off - should have been 0\n", j);
+            char buffer[200] = {};
+            snprintf(buffer, sizeof(buffer), "Bad loopback at input %u when all outputs off - should have been 0", j);
+            log(buffer);
         }
       }
 
@@ -98,26 +88,26 @@ void SplitflapTask::run() {
           ESP_ERROR_CHECK(esp_task_wdt_reset());
       }
     }
+#else
+    loopback_all_ok_ = true;
+#endif
 
     if (led_mode_ == LedMode::AUTO) {
-      for (uint8_t r = 0; r < 3; r++) {
         for (uint8_t i = 0; i < NUM_MODULES; i++) {
-          chainlink_set_led(i, 1);
-          motor_sensor_io();
-          delay(10);
-          chainlink_set_led(i, 0);
-          motor_sensor_io();
+            chainlink_set_led(i, 1);
+            motor_sensor_io();
+            delay(10);
+            chainlink_set_led(i, 0);
+            motor_sensor_io();
         }
         result = esp_task_wdt_reset();
         ESP_ERROR_CHECK(result);
-        delay(500);
-      }
     }
 #endif
 
     for (uint8_t i = 0; i < NUM_MODULES; i++) {
         modules[i]->Init();
-#ifndef CHAINLINK_DRIVER_TESTER
+#if !defined(CHAINLINK_DRIVER_TESTER) && !defined(CHAINLINK_BASE)
         modules[i]->GoHome();
 #endif
     }
@@ -132,43 +122,81 @@ void SplitflapTask::run() {
 
 void SplitflapTask::processQueue() {
     if (xQueueReceive(queue_, &queue_receive_buffer_, 0) == pdTRUE) {
-        bool any_leds = false;
-        for (uint8_t i = 0; i < NUM_MODULES; i++) {
-            switch (queue_receive_buffer_.data[i]) {
-                case QCMD_NO_OP:
-                    // No-op
-                    break;
-                case QCMD_RESET_AND_HOME:
-                    modules[i]->ResetState();
-                    modules[i]->GoHome();
-                    break;
-                case QCMD_LED_ON:
-                    any_leds = true;
-#ifdef CHAINLINK
-                    chainlink_set_led(i, true);
-#endif
-                    break;
-                case QCMD_LED_OFF:
-                    any_leds = true;
-#ifdef CHAINLINK
-                    chainlink_set_led(i, false);
-#endif
-                    break;
-                default:
-                    assert(queue_receive_buffer_.data[i] >= QCMD_FLAP && queue_receive_buffer_.data[i] < QCMD_FLAP + NUM_FLAPS);
-                    modules[i]->GoToFlapIndex(queue_receive_buffer_.data[i] - QCMD_FLAP);
-                    break;
+        switch (queue_receive_buffer_.command_type) {
+            case CommandType::MODULES: {
+                uint8_t* data = queue_receive_buffer_.data.module_command;
+                bool any_leds = false;
+                for (uint8_t i = 0; i < NUM_MODULES; i++) {
+                    switch (data[i]) {
+                        case QCMD_NO_OP:
+                            // No-op
+                            break;
+                        case QCMD_RESET_AND_HOME:
+                            modules[i]->ResetErrorCounters();
+                            modules[i]->GoHome();
+                            break;
+                        case QCMD_LED_ON:
+                            any_leds = true;
+    #ifdef CHAINLINK
+                            chainlink_set_led(i, true);
+    #endif
+                            break;
+                        case QCMD_LED_OFF:
+                            any_leds = true;
+    #ifdef CHAINLINK
+                            chainlink_set_led(i, false);
+    #endif
+                            break;
+                        case QCMD_DISABLE:
+                            modules[i]->Disable();
+                            break;
+                        default:
+                            assert(data[i] >= QCMD_FLAP && data[i] < QCMD_FLAP + NUM_FLAPS);
+                            modules[i]->GoToFlapIndex(data[i] - QCMD_FLAP);
+                            break;
+                    }
+                }
+                if (any_leds) {
+                    motor_sensor_io();
+                }
+                break;
             }
-        }
-        if (any_leds) {
-            motor_sensor_io();
+            case CommandType::SENSOR_TEST_SET:
+                sensor_test_ = true;
+                break;
+            case CommandType::SENSOR_TEST_CLEAR:
+                sensor_test_ = false;
+                break;
+            case CommandType::CONFIG: {
+                ModuleConfigs configs = queue_receive_buffer_.data.module_configs;
+                for (uint8_t i = 0; i < NUM_MODULES; i++) {
+                    ModuleConfig config = configs.config[i];
+
+                    if (config.reset_nonce != current_configs_.config[i].reset_nonce) {
+                        modules[i]->ResetErrorCounters();
+                        modules[i]->GoHome();
+                    }
+
+                    if (config.target_flap_index != current_configs_.config[i].target_flap_index ||
+                            config.movement_nonce != current_configs_.config[i].movement_nonce) {
+                        if (config.target_flap_index >= NUM_FLAPS) {
+                            char buffer[200] = {};
+                            snprintf(buffer, sizeof(buffer), "Invalid flap index (%u) specified for module %u", config.target_flap_index, i);
+                            log(buffer);
+                        } else {
+                            modules[i]->GoToFlapIndex(config.target_flap_index);
+                        }
+                    }
+                }
+                current_configs_ = configs;
+                break;
+            }
         }
     }
 }
 
 void SplitflapTask::runUpdate() {
     boolean all_idle = true;
-    boolean all_stopped = true;
 
     uint32_t iterationStartMillis = millis();
 
@@ -176,7 +204,21 @@ void SplitflapTask::runUpdate() {
     uint32_t flashGroup = (flashStep % 16) / 2;
     uint8_t flashPhase = flashStep % 2;
 
-    if (!sensor_test_) {
+    if (sensor_test_ && all_stopped_) {
+      // Read sensor state
+      motor_sensor_io();
+
+#ifdef CHAINLINK
+      if (led_mode_ == LedMode::AUTO) {
+        for (uint8_t i = 0; i < NUM_MODULES; i++) {
+          chainlink_set_led(i, modules[i]->GetHomeState());
+        }
+        // Output LED state
+        motor_sensor_io();
+      }
+#endif
+    } else {
+      all_stopped_ = true;
       for (uint8_t i = 0; i < NUM_MODULES; i++) {
         modules[i]->Update();
         bool is_idle = modules[i]->state == PANIC
@@ -196,38 +238,13 @@ void SplitflapTask::runUpdate() {
 #endif
 
         all_idle &= is_idle;
-        all_stopped &= is_stopped;
+        all_stopped_ &= is_stopped;
       }
-      if (all_stopped && !was_stopped) {
-        stopped_at_millis = iterationStartMillis;
-      }
-      was_stopped = all_stopped;
       motor_sensor_io();
-    } else {
-      // Read sensor state
-      motor_sensor_io();
-
-#ifdef CHAINLINK
-      if (led_mode_ == LedMode::AUTO) {
-        for (uint8_t i = 0; i < NUM_MODULES; i++) {
-          chainlink_set_led(i, modules[i]->GetHomeState());
-        }
-        // Output LED state
-        motor_sensor_io();
-      }
-#endif
-
-      if (iterationStartMillis - last_sensor_print_millis_ > 200) {
-        last_sensor_print_millis_ = iterationStartMillis;
-        for (uint8_t i = 0; i < NUM_MODULES; i++) {
-            Serial.write(modules[i]->GetHomeState() ? '1' : '0');
-        }
-        Serial.println();
-      }
     }
 
 
-#ifdef CHAINLINK
+#if defined(CHAINLINK) && CHAINLINK_ENFORCE_LOOPBACKS
     // We test loopbacks iteratively, so as not to waste too many cycles/IO-roundtrips all at once. There are
     // two levels of iteration - loopback_step_index_ tracks the small intermediate steps of testing a single
     // loopback, and loopback_current_out_index_ tracks which loopback we're currently testing.
@@ -241,7 +258,7 @@ void SplitflapTask::runUpdate() {
       if (!ok && loopback_all_ok_) {
         // Publish failures immediately
         loopback_all_ok_ = false;
-        Serial.println("Loopback status changed to 0");
+        log("Loopback status changed to 0!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
       }
     } else if (loopback_step_index_ == 50) {
       loopback_step_index_ = 0;
@@ -251,7 +268,9 @@ void SplitflapTask::runUpdate() {
       // from the first loopback again.
       if (loopback_current_out_index_ >= NUM_LOOPBACKS) {
         if (loopback_all_ok_ != loopback_current_ok_) {
-          Serial.println("Loopback status changed to " + String((int)loopback_current_ok_));
+            char buffer[200] = {};
+            snprintf(buffer, sizeof(buffer), "Loopback status changed to %u", loopback_current_ok_);
+            log(buffer);
         }
         loopback_all_ok_ = loopback_current_ok_;
         loopback_current_ok_ = true;
@@ -262,50 +281,6 @@ void SplitflapTask::runUpdate() {
 #endif
 
     updateStateCache();
-
-    if (all_idle) {
-      if (pending_no_op && all_stopped) {
-        Serial.print("{\"type\":\"no_op\"}\n");
-        Serial.flush();
-        pending_no_op = false;
-      }
-      if (pending_move_response && all_stopped) {
-        pending_move_response = false;
-        dumpStatus();
-      }
-
-      while (Serial.available() > 0) {
-        int b = Serial.read();
-        if (b == '%' && all_stopped) {
-          sensor_test_ = !sensor_test_;
-          Serial.print("{\"type\":\"sensor_test\", \"enabled\":");
-          Serial.print(sensor_test_ ? "true" : "false");
-          Serial.print("}\n");
-        } else if (sensor_test_ == false) {
-          switch (b) {
-            case '@':
-              resetAll();
-              break;
-            case '#':
-              pending_no_op = true;
-              break;
-            case '=':
-              recv_count = 0;
-              break;
-            case '\n':
-                showString(recv_buffer, recv_count);
-                break;
-            default:
-              if (recv_count > NUM_MODULES - 1) {
-                break;
-              }
-              recv_buffer[recv_count] = b;
-              recv_count++;
-              break;
-          }
-        }
-      }
-    }
 }
 
 int8_t SplitflapTask::findFlapIndex(uint8_t character) {
@@ -317,49 +292,14 @@ int8_t SplitflapTask::findFlapIndex(uint8_t character) {
     return -1;
 }
 
-void SplitflapTask::dumpStatus() {
-  // TODO: migrate to use state cache
-  Serial.print("{\"type\":\"status\", \"modules\":[");
-  for (uint8_t i = 0; i < NUM_MODULES; i++) {
-    Serial.print("{\"state\":\"");
-    switch (modules[i]->state) {
-      case NORMAL:
-        Serial.print("normal");
-        break;
-      case LOOK_FOR_HOME:
-        Serial.print("look_for_home");
-        break;
-      case SENSOR_ERROR:
-        Serial.print("sensor_error");
-        break;
-      case PANIC:
-        Serial.print("panic");
-        break;
-      case STATE_DISABLED:
-        Serial.print("disabled");
-        break;
-    }
-    Serial.print("\", \"flap\":\"");
-    Serial.write(flaps[modules[i]->GetCurrentFlapIndex()]);
-    Serial.print("\", \"count_missed_home\":");
-    Serial.print(modules[i]->count_missed_home);
-    Serial.print(", \"count_unexpected_home\":");
-    Serial.print(modules[i]->count_unexpected_home);
-    Serial.print("}");
-    if (i < NUM_MODULES - 1) {
-      Serial.print(", ");
-    }
-  }
-  Serial.print("]}\n");
-  Serial.flush();
-}
-
 void SplitflapTask::updateStateCache() {
     SplitflapState new_state;
+    new_state.mode = sensor_test_ ? SplitflapMode::MODE_SENSOR_TEST : SplitflapMode::MODE_RUN;
     for (uint8_t i = 0; i < NUM_MODULES; i++) {
       new_state.modules[i].flap_index = modules[i]->GetCurrentFlapIndex();
       new_state.modules[i].state = modules[i]->state;
       new_state.modules[i].moving = modules[i]->current_accel_step > 0;
+      new_state.modules[i].home_state = modules[i]->GetHomeState();
       new_state.modules[i].count_missed_home = modules[i]->count_missed_home;
       new_state.modules[i].count_unexpected_home = modules[i]->count_unexpected_home;
     }
@@ -373,45 +313,56 @@ void SplitflapTask::updateStateCache() {
     }
 }
 
+void SplitflapTask::log(const char* msg) {
+    if (logger_ != nullptr) {
+        logger_->log(msg);
+    }
+}
+
 void SplitflapTask::showString(const char* str, uint8_t length) {
-    // XXX This is very dangerous to call from within our own task, as we risk deadlock, but allow it for now to ease development. It will be safe once serial processing is moved to another task
-    // assert(xTaskGetCurrentTaskHandle() != getHandle());
-
-    pending_move_response = true;
-    Serial.print("{\"type\":\"move_echo\", \"dest\":\"");
-    Serial.flush();
-
     Command command = {};
+    command.command_type = CommandType::MODULES;
     for (uint8_t i = 0; i < length; i++) {
-        Serial.write(str[i]);
         int8_t index = findFlapIndex(str[i]);
         if (index != -1) {
             if (FORCE_FULL_ROTATION || index != modules[i]->GetTargetFlapIndex()) {
-                command.data[i] = QCMD_FLAP + index;
+                command.data.module_command[i] = QCMD_FLAP + index;
             }
         }
     }
-
     assert(xQueueSendToBack(queue_, &command, portMAX_DELAY) == pdTRUE);
-
-    Serial.print("\"}\n");
-    Serial.flush();
 }
 
 void SplitflapTask::resetAll() {
     Command command = {};
+    command.command_type = CommandType::MODULES;
     for (uint8_t i = 0; i < NUM_MODULES; i++) {
-        command.data[i] = QCMD_RESET_AND_HOME;
+        command.data.module_command[i] = QCMD_RESET_AND_HOME;
+    }
+    assert(xQueueSendToBack(queue_, &command, portMAX_DELAY) == pdTRUE);
+}
+
+void SplitflapTask::disableAll() {
+    Command command = {};
+    command.command_type = CommandType::MODULES;
+    for (uint8_t i = 0; i < NUM_MODULES; i++) {
+        command.data.module_command[i] = QCMD_DISABLE;
     }
     assert(xQueueSendToBack(queue_, &command, portMAX_DELAY) == pdTRUE);
 }
 
 void SplitflapTask::setLed(const uint8_t id, const bool on) {
-    assert(xTaskGetCurrentTaskHandle() != getHandle());
     assert(led_mode_ == LedMode::MANUAL);
 
     Command command = {};
-    command.data[id] = on ? QCMD_LED_ON : QCMD_LED_OFF;
+    command.command_type = CommandType::MODULES;
+    command.data.module_command[id] = on ? QCMD_LED_ON : QCMD_LED_OFF;
+    assert(xQueueSendToBack(queue_, &command, portMAX_DELAY) == pdTRUE);
+}
+
+void SplitflapTask::setSensorTest(bool sensor_test) {
+    Command command = {};
+    command.command_type = sensor_test ? CommandType::SENSOR_TEST_SET : CommandType::SENSOR_TEST_CLEAR;
     assert(xQueueSendToBack(queue_, &command, portMAX_DELAY) == pdTRUE);
 }
 
@@ -420,17 +371,10 @@ SplitflapState SplitflapTask::getState() {
     return state_cache_;
 }
 
-// void SplitflapTask::disableAll(const char* message) {
-//   for (uint8_t i = 0; i < NUM_MODULES; i++) {
-//     modules[i]->Disable();
-//   }
-//   motor_sensor_io();
+void SplitflapTask::setLogger(Logger* logger) {
+    logger_ = logger;
+}
 
-//   if (disabled) {
-//     return;
-//   }
-//   disabled = true;
-
-//   Serial.println("#### DISABLED! ####");
-//   Serial.println(message);
-// }
+void SplitflapTask::postRawCommand(Command command) {
+    assert(xQueueSendToBack(queue_, &command, portMAX_DELAY) == pdTRUE);
+}

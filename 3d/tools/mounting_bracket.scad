@@ -28,7 +28,6 @@ enclosure_wall_to_wall_width = get_enclosure_wall_to_wall_width();
 enclosure_vertical_inset = get_enclosure_vertical_inset();
 captive_nut_inset = get_captive_nut_inset();
 mounting_hole_inset = get_mounting_hole_inset();
-side_tab_width = get_side_tab_width();
 
 eps = 0.01;
 
@@ -91,7 +90,7 @@ module mounting_bracket_base(hole_diameter=m4_hole_diameter, clearance=[0.1, 0.1
         linear_extrude(height=enclosure_vertical_inset - height_clearance, convexity=10)
             mounting_bracket_2d(hole_diameter, clearance);
 
-        bolt_y_offset = enclosure_length_right - (thickness + 1.5 * side_tab_width);
+        bolt_y_offset = enclosure_length_right/2;
         bolt_z_offset = enclosure_vertical_inset + thickness/2;
 
         // left side bolt

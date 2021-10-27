@@ -247,26 +247,10 @@ F 4 "RMCF0805JT1K00CT-ND" H 5150 2900 50  0001 C CNN "DK#"
 	1    5150 2900
 	1    0    0    -1  
 $EndComp
-$Comp
-L power:+3.3V #PWR0115
-U 1 1 60E226B9
-P 5000 2700
-F 0 "#PWR0115" H 5000 2550 50  0001 C CNN
-F 1 "+3.3V" H 5015 2873 50  0000 C CNN
-F 2 "" H 5000 2700 50  0001 C CNN
-F 3 "" H 5000 2700 50  0001 C CNN
-	1    5000 2700
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	4850 2800 4850 2700
 Wire Wire Line
-	4850 2700 5000 2700
-Wire Wire Line
-	5000 2700 5150 2700
-Wire Wire Line
 	5150 2700 5150 2800
-Connection ~ 5000 2700
 Wire Wire Line
 	4850 3000 4850 3100
 Wire Wire Line
@@ -388,7 +372,7 @@ U 1 1 600AC4FA
 P 2850 4150
 F 0 "U104" H 2850 5015 50  0000 C CNN
 F 1 "TTGO_TDisplay" H 2850 4924 50  0000 C CNN
-F 2 "ESP32:T-DISPLAY" H 2650 4200 50  0001 C CNN
+F 2 "ESP32:T-DISPLAY_extra_pins" H 2650 4200 50  0001 C CNN
 F 3 "" H 2650 4200 50  0001 C CNN
 	1    2850 4150
 	1    0    0    -1  
@@ -469,13 +453,13 @@ Text Label 3950 4350 2    50   ~ 0
 LATCH
 Text Label 3950 4050 2    50   ~ 0
 SENSOR_DATA
-Text Label 1650 4150 0    50   ~ 0
+Text Label 1650 3850 0    50   ~ 0
 SDA
-Text Label 1650 4350 0    50   ~ 0
+Text Label 1650 3950 0    50   ~ 0
 SCL
 Text Label 3950 3750 2    50   ~ 0
 RX
-Text Label 1650 3950 0    50   ~ 0
+Text Label 1650 4350 0    50   ~ 0
 TX
 Wire Wire Line
 	3950 4050 3350 4050
@@ -489,10 +473,10 @@ Wire Wire Line
 	1850 4600 1850 4650
 Wire Wire Line
 	1850 4750 2350 4750
-Text Label 1650 4050 0    50   ~ 0
+Text Label 1650 4150 0    50   ~ 0
 RS485_DRIVE_EN
 Wire Wire Line
-	1650 4050 2350 4050
+	1650 4150 2350 4150
 $Comp
 L power:+3.3V #PWR0122
 U 1 1 60BD53B3
@@ -510,11 +494,11 @@ Wire Wire Line
 	3350 4450 3950 4450
 Connection ~ 3700 7250
 Wire Wire Line
-	1650 3950 2350 3950
-Wire Wire Line
-	1650 4150 2350 4150
-Wire Wire Line
 	1650 4350 2350 4350
+Wire Wire Line
+	1650 3850 2350 3850
+Wire Wire Line
+	1650 3950 2350 3950
 $Comp
 L power:GND #PWR0114
 U 1 1 6238771C
@@ -777,8 +761,8 @@ Wire Wire Line
 Wire Wire Line
 	9750 1350 9750 1250
 Wire Wire Line
-	2350 3850 1650 3850
-Text Label 1650 3850 0    50   ~ 0
+	2350 4050 1650 4050
+Text Label 1650 4050 0    50   ~ 0
 MASTER_EN
 Wire Wire Line
 	10350 1550 9650 1550
@@ -2002,7 +1986,6 @@ Wire Wire Line
 Connection ~ 1850 4650
 Wire Wire Line
 	1850 4650 1850 4750
-NoConn ~ 3350 3650
 Wire Wire Line
 	1000 7450 1750 7450
 Wire Wire Line
@@ -2016,46 +1999,27 @@ Wire Wire Line
 Connection ~ 1750 7450
 Wire Wire Line
 	1750 7450 3750 7450
-$Comp
-L Connector:TestPoint_Small TP102
-U 1 1 6071DE1E
-P 2200 4250
-F 0 "TP102" H 2248 4250 50  0000 L CNN
-F 1 "TestPoint_Small" H 2248 4205 50  0001 L CNN
-F 2 "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm" H 2400 4250 50  0001 C CNN
-F 3 "~" H 2400 4250 50  0001 C CNN
-	1    2200 4250
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	2200 4250 2350 4250
-$Comp
-L Connector:TestPoint_Small TP103
-U 1 1 60736F00
-P 2200 4450
-F 0 "TP103" H 2248 4450 50  0000 L CNN
-F 1 "TestPoint_Small" H 2248 4405 50  0001 L CNN
-F 2 "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm" H 2400 4450 50  0001 C CNN
-F 3 "~" H 2400 4450 50  0001 C CNN
-	1    2200 4450
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	2200 4450 2350 4450
-$Comp
-L Connector:TestPoint_Small TP101
-U 1 1 6074F1E8
-P 3500 3950
-F 0 "TP101" H 3548 3950 50  0000 L CNN
-F 1 "TestPoint_Small" H 3548 3905 50  0001 L CNN
-F 2 "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm" H 3700 3950 50  0001 C CNN
-F 3 "~" H 3700 3950 50  0001 C CNN
-	1    3500 3950
-	-1   0    0    1   
-$EndComp
-Wire Wire Line
-	3500 3950 3350 3950
 Wire Notes Line
 	12350 500  12350 9250
 NoConn ~ 15250 8550
+NoConn ~ 3350 3950
+NoConn ~ 2350 4250
+NoConn ~ 2350 4450
+Wire Wire Line
+	5000 2700 5150 2700
+Wire Wire Line
+	4850 2700 5000 2700
+Connection ~ 5000 2700
+$Comp
+L power:+3.3V #PWR0115
+U 1 1 60E226B9
+P 5000 2700
+F 0 "#PWR0115" H 5000 2550 50  0001 C CNN
+F 1 "+3.3V" H 5015 2873 50  0000 C CNN
+F 2 "" H 5000 2700 50  0001 C CNN
+F 3 "" H 5000 2700 50  0001 C CNN
+	1    5000 2700
+	1    0    0    -1  
+$EndComp
+NoConn ~ 3350 3650
 $EndSCHEMATC
