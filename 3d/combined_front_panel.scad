@@ -63,7 +63,7 @@ display_text = [
     " THE QUICK BROWN",
     "FOX JUMPS OVER THE",
     "         LAZY DOG ",
-    "wWOWw b r y g   .",
+    "wbryg 0123456789 .",
 ];
 
 // Number of full modules to render in 3d preview

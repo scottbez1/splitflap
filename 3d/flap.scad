@@ -20,15 +20,23 @@ use<flap_fonts.scad>;
 // TODO: extract core flap spool dimensions used for vertical_keepout_size instead of using the full splitflap file
 use<splitflap.scad>;
 
-character_list = " ABCDEFGHIJKLMNOPQRSTUVWXYZb0123456789r.?-#,!yg'@&$w";
+character_list = " ABCDEFGHIJKLMNOPQRSTUVWXYZg0123456789r.?-#,!yb'@&$w";
 
+// color_list = [
+//     ["b", "#048ba8"],
+//     ["r", "#a4036f"],
+//     ["y", "#efea5a"],
+//     ["g", "#16db93"],
+//     ["w", "#ffffff"],
+// ];
 color_list = [
-    ["b", [0.1, 0.1, 1]],
-    ["r", [1, 0.1, 0.1]],
-    ["y", [1, 1, 0.1]],
-    ["g", [0.1, 1, 0.1]],
-    ["w", [1, 1, 1]],
+    ["b", "#7a28cb"],
+    ["r", "#e63946"],
+    ["y", "#ffd639"],
+    ["g", "#66d7d1"],
+    ["w", "#ffffff"],
 ];
+
 
 // Facet number variable refers to a special variable "$fn" that is used to control the number of facets to generate an arc.
 // Higher than 100 is not recommended according to the docs as it demands a lot resources
@@ -109,8 +117,12 @@ module _draw_letter(letter, flap_gap) {
 
     color_index = search([letter], color_list);
     if (len(color_index) > 0 && is_num(color_index[0])) {
-        translate([0, offset_y]) {
-            square([flap_width - flap_notch_depth * 2 - 4, (flap_height * 2 + flap_gap) * get_font_setting("height")], center=true);
+        color_height = get_font_setting("color_height");
+        color_height_with_default = is_undef(color_height) ? height : color_height;
+        color_offset_y = get_font_setting("color_offset_y");
+        color_offset_y_with_default = is_undef(color_offset_y) ? offset_y : color_offset_y;
+        translate([0, color_offset_y_with_default]) {
+            square([flap_width - flap_notch_depth * 2 - 4, (flap_height * 2 + flap_gap) * color_height_with_default], center=true);
         }
     } else {
         translate([0, -flap_height * height, 0]) {  // valign compensation

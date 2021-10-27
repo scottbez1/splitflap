@@ -96,9 +96,12 @@ _font_settings = [
         "width", 1,
         "offset_x", -0.6,
         "offset_y", 1.2,
+        "thickness_offset", 0.5,
         "overrides", [
-            ["@", 1.2, 0, undef, 0.87]
+            ["@", 1.2, 0, undef, 0.88]
         ],
+        "color_height", 0.565,
+        "color_offset_y", 1.7,
     ],
 
     "Poiret", [
@@ -108,7 +111,9 @@ _font_settings = [
         "offset_x", -0.6,
         "offset_y", 0.65,
         "overrides", [],
-        "thickness_offset", 1,
+        "thickness_offset", 0.5,
+        "color_height", 0.455,
+        "color_offset_y", 1.4,
     ],
 ];
 
