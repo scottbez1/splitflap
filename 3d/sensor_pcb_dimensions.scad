@@ -29,9 +29,9 @@ hall_effect_pin_length_max = 14.5;
 // From sensor.kicad_pcb:
 pcb_height = 16.256;
 pcb_length = 16.256;
-pcb_hole_to_sensor_pin_1_x = 8.636;
+pcb_hole_to_sensor_pin_1_x = 10.16;
 pcb_hole_to_sensor_pin_1_y = 1.27;
-sensor_pin_pitch = 1.27;
+sensor_pin_pitch = 2.54;
 pcb_hole_to_connector_pin_1_x = 8.636;
 pcb_hole_to_connector_pin_1_y = 8.636;
 connector_pin_pitch = 2.54;

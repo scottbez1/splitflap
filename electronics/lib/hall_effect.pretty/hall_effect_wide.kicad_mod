@@ -1,0 +1,16 @@
+(module hall_effect_wide (layer F.Cu) (tedit 617A28E9)
+  (fp_text reference U1 (at 5.08 -1.27) (layer F.SilkS) hide
+    (effects (font (size 1 1) (thickness 0.15)))
+  )
+  (fp_text value hall_effect_wide (at 0 -2.54) (layer F.Fab) hide
+    (effects (font (size 1 1) (thickness 0.15)))
+  )
+  (fp_line (start 1.397 -3.175) (end 1.4 -0.889) (layer F.SilkS) (width 0.15))
+  (fp_line (start -1.397 -3.175) (end -1.397 -0.889) (layer F.SilkS) (width 0.15))
+  (fp_line (start 2.2 -0.889) (end 2.2 -3.175) (layer F.SilkS) (width 0.15))
+  (fp_line (start -2.2 -0.889) (end -2.2 -3.175) (layer F.SilkS) (width 0.15))
+  (fp_line (start -2.2 -0.889) (end 2.2 -0.889) (layer F.SilkS) (width 0.15))
+  (pad 1 thru_hole rect (at -2.54 0) (size 1.8 1.8) (drill 0.6) (layers *.Cu *.Mask))
+  (pad 2 thru_hole circle (at 0 0) (size 1.8 1.8) (drill 0.6) (layers *.Cu *.Mask))
+  (pad 3 thru_hole circle (at 2.54 0) (size 1.8 1.8) (drill 0.6) (layers *.Cu *.Mask))
+)
