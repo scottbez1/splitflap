@@ -30,7 +30,7 @@ SerialTask serialTask(splitflapTask, 0);
 
 #ifdef MQTT
 #include "mqtt_task.h"
-MQTTTask mqttTask(splitflapTask, 0);
+MQTTTask mqttTask(splitflapTask, serialTask, 0);
 #endif
 
 #ifdef CHAINLINK_BASE
