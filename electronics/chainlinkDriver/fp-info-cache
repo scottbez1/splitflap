@@ -1,18 +1,4 @@
-18629043350112931
-BK-6013
-BK-6013
-
-
-0
-4
-2
-BK-6013
-Memory_Protection_Devices-BK-6013-0-0-0
-
-
-0
-4
-2
+18737829927768050
 Battery
 BatteryHolder_Bulgin_BX0036_1xC
 Bulgin Battery Holder, BX0036, Battery Type C (https://www.bulgin.com/products/pub/media/bulgin/data/Battery_holders.pdf)
@@ -314,20 +300,6 @@ battery CR-3032 coin cell vertical
 0
 2
 2
-Buck
-BuckModule
-
-
-0
-8
-4
-Buck
-BuckModuleBackSilk
-
-
-0
-8
-4
 Button_Switch_Keyboard
 SW_Cherry_MX_1.00u_PCB
 Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf
@@ -50462,13 +50434,6 @@ One digit LED 7 segment SA39-11 SC39-11 SA39-12 SC39-12
 0
 10
 10
-Dummy
-Dummy
-
-
-0
-0
-0
 ESP32
 D1_32
 
@@ -50482,6 +50447,20 @@ T-DISPLAY
 
 0
 24
+24
+ESP32
+T-DISPLAY_extra_pins
+
+
+0
+48
+24
+ESP32
+T-DISPLAY_extra_pins_labeled
+
+
+0
+48
 24
 Fiducial
 Fiducial_0.5mm_Mask1.5mm
@@ -51428,20 +51407,6 @@ heatsink
 0
 2
 1
-INA219
-INA219_LARGE
-
-
-0
-10
-6
-INA219
-INA219_SMALL
-
-
-0
-8
-6
 Inductor_SMD
 L_6.3x6.3_H3
 Choke, SMD, 6.3x6.3mm 3mm height
@@ -55986,6 +55951,13 @@ Yellow 5381 Series LED
 2
 2
 ModifiedSymbols
+IDC-Header_2x04_P2.54mm_Vertical
+Through hole IDC box header, 2x04, 2.54mm pitch, DIN 41651 / IEC 60603-13, double rows, https://docs.google.com/spreadsheets/d/16SsEcesNF15N3Lb4niX7dcUr-NY5_MFPQhobNuNppn4/edit#gid=0
+Through hole vertical IDC box header THT 2x04 2.54mm double row
+0
+8
+8
+ModifiedSymbols
 LED_0603_1608Metric_Silkscreen
 LED SMD 0603 (1608 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: http://www.tortai-tech.com/upload/download/2011102023233369053.pdf), generated with kicad-footprint-generator
 LED
@@ -55999,6 +55971,13 @@ LED
 0
 2
 2
+ModifiedSymbols
+LED_WS2812B_PLCC4_5.0x5.0mm_P3.2mm
+https://cdn-shop.adafruit.com/datasheets/WS2812B.pdf
+LED RGB NeoPixel
+0
+4
+4
 ModifiedSymbols
 PinHeader_1x03_P2.54mm_Vertical_SolderJumper
 Through hole straight pin header, 1x03, 2.54mm pitch, single row
@@ -74577,41 +74556,6 @@ rotary encoder
 0
 5
 4
-ScrewTerminals
-C8465_WJ500V-5.08-2P
-
-
-0
-2
-2
-ScrewTerminals
-C72334_WJ500V-5.08-3P
-
-
-0
-3
-3
-ScrewTerminals
-EB147A-02-D
-
-
-0
-2
-2
-ScrewTerminals
-Generic-5.08-2P
-
-
-0
-2
-2
-ScrewTerminals
-Generic-5.08-3P
-
-
-0
-3
-3
 Sensor_Audio
 CUI_CMC-4013-SMT
 Omnidirectional, -42dB, reflowable, electret condenser microphone https://www.cuidevices.com/product/resource/cmc-4013-smt-tr.pdf
@@ -80282,13 +80226,6 @@ transformer flyback
 0
 10
 10
-VN7007ALHTR
-VN7007ALHTR
-
-
-0
-8
-8
 Valve
 Valve_ECC-83-1
 Valve ECC-83-1 round pins

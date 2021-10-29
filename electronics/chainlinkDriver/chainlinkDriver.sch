@@ -2327,12 +2327,12 @@ Wire Wire Line
 Wire Wire Line
 	1450 6400 2050 6400
 $Comp
-L Connector_Generic:Conn_02x04_Odd_Even J101
+L Connector_Generic:Conn_02x04_Odd_Even J19
 U 1 1 61861E9F
 P 2250 6500
-F 0 "J101" H 2300 6817 50  0000 C CNN
+F 0 "J19" H 2300 6817 50  0000 C CNN
 F 1 "Input" H 2300 6726 50  0000 C CNN
-F 2 "Connector_IDC:IDC-Header_2x04_P2.54mm_Vertical" H 2250 6500 50  0001 C CNN
+F 2 "ModifiedSymbols:IDC-Header_2x04_P2.54mm_Vertical" H 2250 6500 50  0001 C CNN
 F 3 "~" H 2250 6500 50  0001 C CNN
 	1    2250 6500
 	1    0    0    -1  
@@ -2349,12 +2349,12 @@ Connection ~ 2550 6700
 Wire Wire Line
 	2550 6700 2550 6850
 $Comp
-L Connector_Generic:Conn_02x04_Odd_Even J102
+L Connector_Generic:Conn_02x04_Odd_Even J20
 U 1 1 618D5E87
 P 3850 6500
-F 0 "J102" H 3900 6817 50  0000 C CNN
+F 0 "J20" H 3900 6817 50  0000 C CNN
 F 1 "Output" H 3900 6726 50  0000 C CNN
-F 2 "Connector_IDC:IDC-Header_2x04_P2.54mm_Vertical" H 3850 6500 50  0001 C CNN
+F 2 "ModifiedSymbols:IDC-Header_2x04_P2.54mm_Vertical" H 3850 6500 50  0001 C CNN
 F 3 "~" H 3850 6500 50  0001 C CNN
 	1    3850 6500
 	1    0    0    -1  
