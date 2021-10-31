@@ -179,33 +179,31 @@ $EndComp
 $Comp
 L power:GND #PWR04
 U 1 1 60FBE6C2
-P 1900 6950
-F 0 "#PWR04" H 1900 6700 50  0001 C CNN
-F 1 "GND" H 1905 6777 50  0000 C CNN
-F 2 "" H 1900 6950 50  0001 C CNN
-F 3 "" H 1900 6950 50  0001 C CNN
-	1    1900 6950
+P 1900 6850
+F 0 "#PWR04" H 1900 6600 50  0001 C CNN
+F 1 "GND" H 1905 6677 50  0000 C CNN
+F 2 "" H 1900 6850 50  0001 C CNN
+F 3 "" H 1900 6850 50  0001 C CNN
+	1    1900 6850
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR020
 U 1 1 60FBEBB8
-P 3950 6950
-F 0 "#PWR020" H 3950 6700 50  0001 C CNN
-F 1 "GND" H 3955 6777 50  0000 C CNN
-F 2 "" H 3950 6950 50  0001 C CNN
-F 3 "" H 3950 6950 50  0001 C CNN
-	1    3950 6950
+P 3950 6850
+F 0 "#PWR020" H 3950 6600 50  0001 C CNN
+F 1 "GND" H 3955 6677 50  0000 C CNN
+F 2 "" H 3950 6850 50  0001 C CNN
+F 3 "" H 3950 6850 50  0001 C CNN
+	1    3950 6850
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	1850 6900 1900 6900
+	1850 6800 1900 6800
 Wire Wire Line
-	1900 6900 1900 6950
+	1900 6800 1900 6850
 Wire Wire Line
-	4000 6900 3950 6900
-Wire Wire Line
-	3950 6900 3950 6950
+	3950 6800 3950 6850
 Wire Wire Line
 	1850 6400 2450 6400
 Wire Wire Line
@@ -217,13 +215,13 @@ Wire Wire Line
 Text Label 2450 6400 2    50   ~ 0
 CLOCK
 Text Label 2450 6700 2    50   ~ 0
-MOTOR_LATCH
+LATCH
 Text Label 2450 6500 2    50   ~ 0
 MOTOR_DATA
 Text Label 2450 6600 2    50   ~ 0
 SENSOR_DATA
 Text Label 3250 6700 0    50   ~ 0
-MOTOR_LATCH_OUT
+LATCH_OUT
 Text Label 3250 6600 0    50   ~ 0
 SENSOR_IN
 $Comp
@@ -357,14 +355,10 @@ F 3 "~" H 15800 750 50  0001 C CNN
 	1    15800 750 
 	1    0    0    -1  
 $EndComp
-Text Label 3250 6800 0    50   ~ 0
-SENSOR_LATCH_OUT
 Wire Wire Line
 	3250 6400 4000 6400
 Wire Wire Line
 	3250 6700 4000 6700
-Wire Wire Line
-	3250 6800 4000 6800
 Wire Wire Line
 	3250 6500 4000 6500
 Wire Wire Line
@@ -602,7 +596,7 @@ CLOCK
 Text Label 4200 4600 2    50   ~ 0
 MOTOR_DATA
 Text Label 4200 4800 2    50   ~ 0
-MOTOR_LATCH
+LATCH
 Text Label 4200 4500 2    50   ~ 0
 SENSOR_DATA
 Text Label 1900 4300 0    50   ~ 0
@@ -1895,144 +1889,12 @@ F 3 "~" H 8650 3150 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L Connector:TestPoint TP50
-U 1 1 618D779F
-P 4000 6400
-F 0 "TP50" V 4000 6588 50  0000 L CNN
-F 1 "TestPoint" V 4045 6588 50  0001 L CNN
-F 2 "pogoPins:pogo2mm" H 4200 6400 50  0001 C CNN
-F 3 "~" H 4200 6400 50  0001 C CNN
-	1    4000 6400
-	0    1    1    0   
-$EndComp
-$Comp
-L Connector:TestPoint TP52
-U 1 1 618D77A5
-P 4000 6500
-F 0 "TP52" V 4000 6688 50  0000 L CNN
-F 1 "TestPoint" V 4045 6688 50  0001 L CNN
-F 2 "pogoPins:pogo2mm" H 4200 6500 50  0001 C CNN
-F 3 "~" H 4200 6500 50  0001 C CNN
-	1    4000 6500
-	0    1    1    0   
-$EndComp
-$Comp
-L Connector:TestPoint TP54
-U 1 1 618D77AB
-P 4000 6600
-F 0 "TP54" V 4000 6788 50  0000 L CNN
-F 1 "TestPoint" V 4045 6788 50  0001 L CNN
-F 2 "pogoPins:pogo2mm" H 4200 6600 50  0001 C CNN
-F 3 "~" H 4200 6600 50  0001 C CNN
-	1    4000 6600
-	0    1    1    0   
-$EndComp
-$Comp
-L Connector:TestPoint TP56
-U 1 1 618D77B1
-P 4000 6700
-F 0 "TP56" V 4000 6888 50  0000 L CNN
-F 1 "TestPoint" V 4045 6888 50  0001 L CNN
-F 2 "pogoPins:pogo2mm" H 4200 6700 50  0001 C CNN
-F 3 "~" H 4200 6700 50  0001 C CNN
-	1    4000 6700
-	0    1    1    0   
-$EndComp
-$Comp
-L Connector:TestPoint TP58
-U 1 1 618D77B7
-P 4000 6800
-F 0 "TP58" V 4000 6988 50  0000 L CNN
-F 1 "TestPoint" V 4045 6988 50  0001 L CNN
-F 2 "pogoPins:pogo2mm" H 4200 6800 50  0001 C CNN
-F 3 "~" H 4200 6800 50  0001 C CNN
-	1    4000 6800
-	0    1    1    0   
-$EndComp
-$Comp
-L Connector:TestPoint TP57
-U 1 1 6190E504
-P 1850 6800
-F 0 "TP57" V 1850 6988 50  0000 L CNN
-F 1 "TestPoint" V 1895 6988 50  0001 L CNN
-F 2 "pogoPins:pogo2mm" H 2050 6800 50  0001 C CNN
-F 3 "~" H 2050 6800 50  0001 C CNN
-	1    1850 6800
-	0    -1   -1   0   
-$EndComp
-$Comp
-L Connector:TestPoint TP55
-U 1 1 6190E50A
-P 1850 6700
-F 0 "TP55" V 1850 6888 50  0000 L CNN
-F 1 "TestPoint" V 1895 6888 50  0001 L CNN
-F 2 "pogoPins:pogo2mm" H 2050 6700 50  0001 C CNN
-F 3 "~" H 2050 6700 50  0001 C CNN
-	1    1850 6700
-	0    -1   -1   0   
-$EndComp
-$Comp
-L Connector:TestPoint TP53
-U 1 1 6190E510
-P 1850 6600
-F 0 "TP53" V 1850 6788 50  0000 L CNN
-F 1 "TestPoint" V 1895 6788 50  0001 L CNN
-F 2 "pogoPins:pogo2mm" H 2050 6600 50  0001 C CNN
-F 3 "~" H 2050 6600 50  0001 C CNN
-	1    1850 6600
-	0    -1   -1   0   
-$EndComp
-$Comp
-L Connector:TestPoint TP51
-U 1 1 6190E516
-P 1850 6500
-F 0 "TP51" V 1850 6688 50  0000 L CNN
-F 1 "TestPoint" V 1895 6688 50  0001 L CNN
-F 2 "pogoPins:pogo2mm" H 2050 6500 50  0001 C CNN
-F 3 "~" H 2050 6500 50  0001 C CNN
-	1    1850 6500
-	0    -1   -1   0   
-$EndComp
-$Comp
-L Connector:TestPoint TP49
-U 1 1 6190E51C
-P 1850 6400
-F 0 "TP49" V 1850 6588 50  0000 L CNN
-F 1 "TestPoint" V 1895 6588 50  0001 L CNN
-F 2 "pogoPins:pogo2mm" H 2050 6400 50  0001 C CNN
-F 3 "~" H 2050 6400 50  0001 C CNN
-	1    1850 6400
-	0    -1   -1   0   
-$EndComp
-$Comp
-L Connector:TestPoint TP59
-U 1 1 61927B4B
-P 1850 6900
-F 0 "TP59" V 1850 7088 50  0000 L CNN
-F 1 "TestPoint" V 1895 7088 50  0001 L CNN
-F 2 "pogoPins:pogo2mm" H 2050 6900 50  0001 C CNN
-F 3 "~" H 2050 6900 50  0001 C CNN
-	1    1850 6900
-	0    -1   -1   0   
-$EndComp
-$Comp
-L Connector:TestPoint TP60
-U 1 1 6192832F
-P 4000 6900
-F 0 "TP60" V 4000 7088 50  0000 L CNN
-F 1 "TestPoint" V 4045 7088 50  0001 L CNN
-F 2 "pogoPins:pogo2mm" H 4200 6900 50  0001 C CNN
-F 3 "~" H 4200 6900 50  0001 C CNN
-	1    4000 6900
-	0    1    1    0   
-$EndComp
-$Comp
 L Connector:TestPoint TP63
 U 1 1 6192AE25
 P 3750 8100
 F 0 "TP63" V 3750 8288 50  0000 L CNN
 F 1 "TestPoint" V 3795 8288 50  0001 L CNN
-F 2 "pogoPins:pogo2mm" H 3950 8100 50  0001 C CNN
+F 2 "pogoPins:pogo1mm" H 3950 8100 50  0001 C CNN
 F 3 "~" H 3950 8100 50  0001 C CNN
 	1    3750 8100
 	0    1    1    0   
@@ -2043,7 +1905,7 @@ U 1 1 6192B1F1
 P 3750 8200
 F 0 "TP64" V 3750 8388 50  0000 L CNN
 F 1 "TestPoint" V 3795 8388 50  0001 L CNN
-F 2 "pogoPins:pogo2mm" H 3950 8200 50  0001 C CNN
+F 2 "pogoPins:pogo1mm" H 3950 8200 50  0001 C CNN
 F 3 "~" H 3950 8200 50  0001 C CNN
 	1    3750 8200
 	0    1    1    0   
@@ -2054,7 +1916,7 @@ U 1 1 6192B1FB
 P 3750 8300
 F 0 "TP65" V 3750 8488 50  0000 L CNN
 F 1 "TestPoint" V 3795 8488 50  0001 L CNN
-F 2 "pogoPins:pogo2mm" H 3950 8300 50  0001 C CNN
+F 2 "pogoPins:pogo1mm" H 3950 8300 50  0001 C CNN
 F 3 "~" H 3950 8300 50  0001 C CNN
 	1    3750 8300
 	0    1    1    0   
@@ -2065,7 +1927,7 @@ U 1 1 6192B205
 P 3750 8400
 F 0 "TP66" V 3750 8588 50  0000 L CNN
 F 1 "TestPoint" V 3795 8588 50  0001 L CNN
-F 2 "pogoPins:pogo2mm" H 3950 8400 50  0001 C CNN
+F 2 "pogoPins:pogo1mm" H 3950 8400 50  0001 C CNN
 F 3 "~" H 3950 8400 50  0001 C CNN
 	1    3750 8400
 	0    1    1    0   
@@ -2076,7 +1938,7 @@ U 1 1 6192B20F
 P 3750 8500
 F 0 "TP67" V 3750 8688 50  0000 L CNN
 F 1 "TestPoint" V 3795 8688 50  0001 L CNN
-F 2 "pogoPins:pogo2mm" H 3950 8500 50  0001 C CNN
+F 2 "pogoPins:pogo1mm" H 3950 8500 50  0001 C CNN
 F 3 "~" H 3950 8500 50  0001 C CNN
 	1    3750 8500
 	0    1    1    0   
@@ -2087,7 +1949,7 @@ U 1 1 6192B219
 P 3750 8600
 F 0 "TP68" V 3750 8788 50  0000 L CNN
 F 1 "TestPoint" V 3795 8788 50  0001 L CNN
-F 2 "pogoPins:pogo2mm" H 3950 8600 50  0001 C CNN
+F 2 "pogoPins:pogo1mm" H 3950 8600 50  0001 C CNN
 F 3 "~" H 3950 8600 50  0001 C CNN
 	1    3750 8600
 	0    1    1    0   
@@ -2272,29 +2134,10 @@ F 3 "~" H 3850 5200 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 Connection ~ 3850 5200
-$Comp
-L Connector:Conn_01x06_Female J32
-U 1 1 61FDC2E2
-P 3050 6600
-F 0 "J32" H 2942 6985 50  0000 C CNN
-F 1 "Conn_01x06_Female" H 2942 6894 50  0000 C CNN
-F 2 "Connector_PinSocket_2.54mm:PinSocket_1x06_P2.54mm_Vertical" H 3050 6600 50  0001 C CNN
-F 3 "~" H 3050 6600 50  0001 C CNN
-	1    3050 6600
-	-1   0    0    -1  
-$EndComp
 Text Label 3250 6500 0    50   ~ 0
 MOTOR_OUT
 Text Label 3250 6400 0    50   ~ 0
 CLOCK_OUT
-Text Label 1900 4500 0    50   ~ 0
-SENSOR_LATCH
-Wire Wire Line
-	1900 4500 2600 4500
-Wire Wire Line
-	1850 6800 2450 6800
-Text Label 2450 6800 2    50   ~ 0
-SENSOR_LATCH
 $Comp
 L power:PWR_FLAG #FLG0106
 U 1 1 6205E226
@@ -2307,8 +2150,8 @@ F 3 "~" H 1400 950 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 Wire Wire Line
-	3950 6900 3250 6900
-Connection ~ 3950 6900
+	3950 6800 3250 6800
+Connection ~ 3950 6800
 $Comp
 L Mechanical:MountingHole_Pad H6
 U 1 1 62780377
@@ -2957,75 +2800,73 @@ Wire Wire Line
 $Comp
 L BuckModule:Buck U7
 U 1 1 60777001
-P 4350 1000
-F 0 "U7" H 4387 1325 50  0000 C CNN
-F 1 "Buck" H 4387 1234 50  0000 C CNN
-F 2 "Buck:BuckModuleBackSilk" H 4350 1000 50  0001 C CNN
-F 3 "" H 4350 1000 50  0001 C CNN
-	1    4350 1000
+P 4150 1300
+F 0 "U7" H 4187 1625 50  0000 C CNN
+F 1 "Buck" H 4187 1534 50  0000 C CNN
+F 2 "Buck:BuckModuleBackSilk" H 4150 1300 50  0001 C CNN
+F 3 "" H 4150 1300 50  0001 C CNN
+	1    4150 1300
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	3900 900  3400 900 
-Text Label 3400 900  0    50   ~ 0
+Text Label 2750 1200 0    50   ~ 0
 SW_IN
 $Comp
 L power:GND #PWR08
 U 1 1 607A4A3C
-P 3800 1200
-F 0 "#PWR08" H 3800 950 50  0001 C CNN
-F 1 "GND" H 3805 1027 50  0000 C CNN
-F 2 "" H 3800 1200 50  0001 C CNN
-F 3 "" H 3800 1200 50  0001 C CNN
-	1    3800 1200
+P 3600 1500
+F 0 "#PWR08" H 3600 1250 50  0001 C CNN
+F 1 "GND" H 3605 1327 50  0000 C CNN
+F 2 "" H 3600 1500 50  0001 C CNN
+F 3 "" H 3600 1500 50  0001 C CNN
+	1    3600 1500
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	3800 1200 3800 1100
+	3600 1500 3600 1400
 Wire Wire Line
-	3800 1100 3900 1100
+	3600 1400 3700 1400
 $Comp
 L power:GND #PWR09
 U 1 1 607C7992
-P 4950 1200
-F 0 "#PWR09" H 4950 950 50  0001 C CNN
-F 1 "GND" H 4955 1027 50  0000 C CNN
-F 2 "" H 4950 1200 50  0001 C CNN
-F 3 "" H 4950 1200 50  0001 C CNN
-	1    4950 1200
+P 4750 1500
+F 0 "#PWR09" H 4750 1250 50  0001 C CNN
+F 1 "GND" H 4755 1327 50  0000 C CNN
+F 2 "" H 4750 1500 50  0001 C CNN
+F 3 "" H 4750 1500 50  0001 C CNN
+	1    4750 1500
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	4950 1200 4950 1100
+	4750 1500 4750 1400
 Wire Wire Line
-	4950 1100 4850 1100
+	4750 1400 4650 1400
 $Comp
 L power:+5V #PWR07
 U 1 1 607EAE8E
-P 5500 700
-F 0 "#PWR07" H 5500 550 50  0001 C CNN
-F 1 "+5V" H 5515 873 50  0000 C CNN
-F 2 "" H 5500 700 50  0001 C CNN
-F 3 "" H 5500 700 50  0001 C CNN
-	1    5500 700 
+P 5300 1000
+F 0 "#PWR07" H 5300 850 50  0001 C CNN
+F 1 "+5V" H 5315 1173 50  0000 C CNN
+F 2 "" H 5300 1000 50  0001 C CNN
+F 3 "" H 5300 1000 50  0001 C CNN
+	1    5300 1000
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	4850 900  5050 900 
+	4650 1200 4750 1200
 Wire Wire Line
-	5250 900  5500 900 
+	5050 1200 5300 1200
 Wire Wire Line
-	5500 900  5500 700 
+	5300 1200 5300 1000
 $Comp
 L Device:D_Schottky_Small D7
 U 1 1 6086A699
-P 5150 900
-F 0 "D7" H 5200 750 50  0000 R CNN
-F 1 "2A 500mV" H 5300 800 50  0000 R CNN
-F 2 "Diode_SMD:D_SOD-128" V 5150 900 50  0001 C CNN
-F 3 "~" V 5150 900 50  0001 C CNN
-F 4 "1727-1730-1-ND" H 5150 900 50  0001 C CNN "DK#"
-	1    5150 900 
+P 4950 1200
+F 0 "D7" H 5000 1050 50  0000 R CNN
+F 1 "2A 500mV" H 5100 1100 50  0000 R CNN
+F 2 "Diode_SMD:D_SOD-128" V 4950 1200 50  0001 C CNN
+F 3 "~" V 4950 1200 50  0001 C CNN
+F 4 "1727-1730-1-ND" H 4950 1200 50  0001 C CNN "DK#"
+	1    4950 1200
 	-1   0    0    1   
 $EndComp
 $Comp
@@ -3083,4 +2924,206 @@ NoConn ~ 2600 4700
 NoConn ~ 3600 4400
 Wire Wire Line
 	6300 1100 6700 1100
+$Comp
+L Regulator_Linear:LM7805_TO220 U6
+U 1 1 618B409A
+P 3600 750
+F 0 "U6" H 3600 992 50  0000 C CNN
+F 1 "LM7805_TO220" H 3600 901 50  0000 C CNN
+F 2 "Package_TO_SOT_THT:TO-220-3_Vertical" H 3600 975 50  0001 C CIN
+F 3 "https://www.onsemi.cn/PowerSolutions/document/MC7800-D.PDF" H 3600 700 50  0001 C CNN
+	1    3600 750 
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3600 1050 3600 1400
+Connection ~ 3600 1400
+Wire Wire Line
+	3300 750  3250 750 
+Wire Wire Line
+	3150 750  3150 1200
+Wire Wire Line
+	3150 1200 3700 1200
+Wire Wire Line
+	3150 1200 2750 1200
+Connection ~ 3150 1200
+Wire Wire Line
+	3900 750  3950 750 
+Wire Wire Line
+	4750 750  4750 1200
+Connection ~ 4750 1200
+Wire Wire Line
+	4750 1200 4850 1200
+$Comp
+L Connector:TestPoint TP60
+U 1 1 6192832F
+P 3250 6800
+F 0 "TP60" V 3250 6988 50  0000 L CNN
+F 1 "TestPoint" V 3295 6988 50  0001 L CNN
+F 2 "pogoPins:pogo1mm" H 3450 6800 50  0001 C CNN
+F 3 "~" H 3450 6800 50  0001 C CNN
+	1    3250 6800
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Connector:TestPoint TP56
+U 1 1 618D77B1
+P 3250 6700
+F 0 "TP56" V 3250 6888 50  0000 L CNN
+F 1 "TestPoint" V 3295 6888 50  0001 L CNN
+F 2 "pogoPins:pogo1mm" H 3450 6700 50  0001 C CNN
+F 3 "~" H 3450 6700 50  0001 C CNN
+	1    3250 6700
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Connector:TestPoint TP54
+U 1 1 618D77AB
+P 3250 6600
+F 0 "TP54" V 3250 6788 50  0000 L CNN
+F 1 "TestPoint" V 3295 6788 50  0001 L CNN
+F 2 "pogoPins:pogo1mm" H 3450 6600 50  0001 C CNN
+F 3 "~" H 3450 6600 50  0001 C CNN
+	1    3250 6600
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Connector:TestPoint TP52
+U 1 1 618D77A5
+P 3250 6500
+F 0 "TP52" V 3250 6688 50  0000 L CNN
+F 1 "TestPoint" V 3295 6688 50  0001 L CNN
+F 2 "pogoPins:pogo1mm" H 3450 6500 50  0001 C CNN
+F 3 "~" H 3450 6500 50  0001 C CNN
+	1    3250 6500
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Connector:TestPoint TP50
+U 1 1 618D779F
+P 3250 6400
+F 0 "TP50" V 3250 6588 50  0000 L CNN
+F 1 "TestPoint" V 3295 6588 50  0001 L CNN
+F 2 "pogoPins:pogo1mm" H 3450 6400 50  0001 C CNN
+F 3 "~" H 3450 6400 50  0001 C CNN
+	1    3250 6400
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Connector:TestPoint TP59
+U 1 1 61927B4B
+P 1850 6800
+F 0 "TP59" V 1850 6988 50  0000 L CNN
+F 1 "TestPoint" V 1895 6988 50  0001 L CNN
+F 2 "pogoPins:pogo1mm" H 2050 6800 50  0001 C CNN
+F 3 "~" H 2050 6800 50  0001 C CNN
+	1    1850 6800
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Connector:TestPoint TP49
+U 1 1 6190E51C
+P 1850 6400
+F 0 "TP49" V 1850 6588 50  0000 L CNN
+F 1 "TestPoint" V 1895 6588 50  0001 L CNN
+F 2 "pogoPins:pogo1mm" H 2050 6400 50  0001 C CNN
+F 3 "~" H 2050 6400 50  0001 C CNN
+	1    1850 6400
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Connector:TestPoint TP51
+U 1 1 6190E516
+P 1850 6500
+F 0 "TP51" V 1850 6688 50  0000 L CNN
+F 1 "TestPoint" V 1895 6688 50  0001 L CNN
+F 2 "pogoPins:pogo1mm" H 2050 6500 50  0001 C CNN
+F 3 "~" H 2050 6500 50  0001 C CNN
+	1    1850 6500
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Connector:TestPoint TP53
+U 1 1 6190E510
+P 1850 6600
+F 0 "TP53" V 1850 6788 50  0000 L CNN
+F 1 "TestPoint" V 1895 6788 50  0001 L CNN
+F 2 "pogoPins:pogo1mm" H 2050 6600 50  0001 C CNN
+F 3 "~" H 2050 6600 50  0001 C CNN
+	1    1850 6600
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Connector:TestPoint TP55
+U 1 1 6190E50A
+P 1850 6700
+F 0 "TP55" V 1850 6888 50  0000 L CNN
+F 1 "TestPoint" V 1895 6888 50  0001 L CNN
+F 2 "pogoPins:pogo1mm" H 2050 6700 50  0001 C CNN
+F 3 "~" H 2050 6700 50  0001 C CNN
+	1    1850 6700
+	0    -1   -1   0   
+$EndComp
+NoConn ~ 2600 4500
+$Comp
+L Connector_Generic:Conn_02x04_Odd_Even J101
+U 1 1 619E4686
+P 4200 6500
+F 0 "J101" H 4250 6817 50  0000 C CNN
+F 1 "Conn_02x04_Odd_Even" H 4250 6726 50  0000 C CNN
+F 2 "ModifiedSymbols:IDC-Header_2x04_P2.54mm_Vertical" H 4200 6500 50  0001 C CNN
+F 3 "~" H 4200 6500 50  0001 C CNN
+	1    4200 6500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4500 6800 4500 6700
+Wire Wire Line
+	3950 6800 4500 6800
+Connection ~ 4500 6500
+Wire Wire Line
+	4500 6500 4500 6400
+Connection ~ 4500 6600
+Wire Wire Line
+	4500 6600 4500 6500
+Connection ~ 4500 6700
+Wire Wire Line
+	4500 6700 4500 6600
+$Comp
+L Device:C_Small C3
+U 1 1 61A891A1
+P 3250 850
+F 0 "C3" H 3000 900 50  0000 L CNN
+F 1 "10uF" H 3000 800 50  0000 L CNN
+F 2 "Capacitor_SMD:C_1206_3216Metric" H 3250 850 50  0001 C CNN
+F 3 "~" H 3250 850 50  0001 C CNN
+	1    3250 850 
+	1    0    0    -1  
+$EndComp
+Connection ~ 3250 750 
+Wire Wire Line
+	3250 750  3150 750 
+$Comp
+L Device:C_Small C8
+U 1 1 61A898F1
+P 3950 850
+F 0 "C8" H 4042 896 50  0000 L CNN
+F 1 "22uF" H 4042 805 50  0000 L CNN
+F 2 "Capacitor_SMD:C_1206_3216Metric" H 3950 850 50  0001 C CNN
+F 3 "~" H 3950 850 50  0001 C CNN
+	1    3950 850 
+	1    0    0    -1  
+$EndComp
+Connection ~ 3950 750 
+Wire Wire Line
+	3950 750  4750 750 
+Wire Wire Line
+	3250 950  3250 1050
+Wire Wire Line
+	3250 1050 3600 1050
+Connection ~ 3600 1050
+Wire Wire Line
+	3600 1050 3950 1050
+Wire Wire Line
+	3950 1050 3950 950 
 $EndSCHEMATC

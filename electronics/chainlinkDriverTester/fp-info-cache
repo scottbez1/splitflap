@@ -1,4 +1,4 @@
-18762234828469137
+18770421019309137
 BK-6013
 BK-6013
 
@@ -50490,6 +50490,20 @@ T-DISPLAY_extra_pins
 0
 48
 24
+ESP32
+T-DISPLAY_extra_pins_labeled
+
+
+0
+48
+24
+ESP32
+T-DISPLAY_extra_pins_labeled_double
+
+
+0
+72
+24
 Fiducial
 Fiducial_0.5mm_Mask1.5mm
 Circular Fiducial, 0.5mm bare copper, 1.5mm soldermask opening
@@ -55993,6 +56007,13 @@ Yellow 5381 Series LED
 2
 2
 ModifiedSymbols
+IDC-Header_2x04_P2.54mm_Vertical
+Through hole IDC box header, 2x04, 2.54mm pitch, DIN 41651 / IEC 60603-13, double rows, https://docs.google.com/spreadsheets/d/16SsEcesNF15N3Lb4niX7dcUr-NY5_MFPQhobNuNppn4/edit#gid=0
+Through hole vertical IDC box header THT 2x04 2.54mm double row
+0
+8
+8
+ModifiedSymbols
 LED_0603_1608Metric_Silkscreen
 LED SMD 0603 (1608 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: http://www.tortai-tech.com/upload/download/2011102023233369053.pdf), generated with kicad-footprint-generator
 LED
@@ -56021,6 +56042,13 @@ Through hole pin header THT 1x03 2.54mm single row
 3
 3
 ModifiedSymbols
+PinHeader_1x05_P2.54mm_Vertical_NoSilk
+Through hole straight pin header, 1x05, 2.54mm pitch, single row
+Through hole pin header THT 1x05 2.54mm single row
+0
+5
+5
+ModifiedSymbols
 SOIC-14_3.9x8.7mm_P1.27mm_silk
 SOIC, 14 Pin (JEDEC MS-012AB, https://www.analog.com/media/en/package-pcb-resources/package/pkg_pdf/soic_narrow-r/r_14.pdf), generated with kicad-footprint-generator ipc_gullwing_generator.py
 SOIC SO
@@ -56034,6 +56062,13 @@ SOIC SO
 0
 16
 16
+ModifiedSymbols
+TO-220-3_Vertical
+TO-220-3, Vertical, RM 2.54mm, see https://www.vishay.com/docs/66542/to-220-1.pdf
+TO-220-3 Vertical RM 2.54mm
+0
+3
+3
 Module
 A20_OLINUXINO_LIME2
 A20 Olinuxino LIME2, 1.2GHz, 512-1024MB RAM, Micro-SD, NAND or eMMC, 1000Mbit Ethernet
