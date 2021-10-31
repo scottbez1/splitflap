@@ -421,7 +421,7 @@ jobs:
 
       - name: Render PCB 3D [chainlinkBuddyTDisplay]
         run: |
-          ./electronics/scripts/export_3d.py electronics/chainlinkBuddyTDisplay/chainlinkBuddyTDisplay.kicad_pcb --width 1600 --height 1100 --raytrace 0 transform z+ z+ z+ z+ mr mr mr rx+ rx+ ry- ry- rz-
+          ./electronics/scripts/export_3d.py electronics/chainlinkBuddyTDisplay/chainlinkBuddyTDisplay.kicad_pcb --width 1600 --height 1100 --skip-raytrace transform z+ z+ z+ z+ mr mr mr rx+ rx+ ry- ry- rz-
           cp electronics/build/chainlinkBuddyTDisplay-3d.png electronics/build/outputs/chainlinkBuddyTDisplay-3d.png
           ./scripts/annotate_image.sh electronics/build/outputs/chainlinkBuddyTDisplay-3d.png
         env:
