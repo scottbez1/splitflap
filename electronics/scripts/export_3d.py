@@ -137,7 +137,7 @@ def _pcbnew_export_3d(output_file, width, height, transforms):
     time.sleep(2)
 
 
-def export_3d(filename, width, height, transforms):
+def export_3d(filename, width, height, transforms, raytrace):
     pcb_file = os.path.abspath(filename)
     output_dir = os.path.join(electronics_root, 'build')
     file_util.mkdir_p(output_dir)
@@ -152,7 +152,7 @@ def export_3d(filename, width, height, transforms):
         'SMaskColor_Red': '0.1',
         'SMaskColor_Green': '0.1',
         'SMaskColor_Blue': '0.1',
-        'RenderEngine': '1',
+        'RenderEngine': '1' if raytrace else '0',
         'Render_RAY_ProceduralTextures': '0',
     }
     with patch_config(os.path.expanduser('~/.config/kicad/pcbnew'), settings):
@@ -168,6 +168,7 @@ if __name__ == '__main__':
     parser.add_argument('pcb')
     parser.add_argument('--width', type=int, default=2560)
     parser.add_argument('--height', type=int, default=1440)
+    parser.add_argument('--skip-raytrace', action='store_true')
 
     # Use subparsers to for an optional nargs="*" choices argument (workaround for https://bugs.python.org/issue9625)
     subparsers = parser.add_subparsers(dest='which')
@@ -178,4 +179,4 @@ if __name__ == '__main__':
 
     transforms = args.transform if args.which == 'transform' else []
 
-    export_3d(args.pcb, args.width, args.height, transforms)
+    export_3d(args.pcb, args.width, args.height, transforms, not args.skip_raytrace)

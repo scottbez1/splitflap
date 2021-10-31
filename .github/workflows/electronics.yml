@@ -415,13 +415,13 @@ jobs:
         run: |
           ./electronics/scripts/export_schematic.py electronics/chainlinkBuddyTDisplay/chainlinkBuddyTDisplay.sch
           cp electronics/build/chainlinkBuddyTDisplay.pdf electronics/build/outputs/chainlinkBuddyTDisplay-schematic.pdf
-          cp electronics/build/chainlinkBuddyTDisplay-0.png electronics/build/outputs/chainlinkBuddyTDisplay-schematic.png
+          cp electronics/build/chainlinkBuddyTDisplay.png electronics/build/outputs/chainlinkBuddyTDisplay-schematic.png
         env:
           PYTHONUNBUFFERED: 1
 
       - name: Render PCB 3D [chainlinkBuddyTDisplay]
         run: |
-          ./electronics/scripts/export_3d.py electronics/chainlinkBuddyTDisplay/chainlinkBuddyTDisplay.kicad_pcb --width 1000 --height 1500 transform z+ z+ mu rx+ rx+ ry- ry- rz-
+          ./electronics/scripts/export_3d.py electronics/chainlinkBuddyTDisplay/chainlinkBuddyTDisplay.kicad_pcb --width 1600 --height 1100 --raytrace 0 transform z+ z+ z+ z+ mr mr mr rx+ rx+ ry- ry- rz-
           cp electronics/build/chainlinkBuddyTDisplay-3d.png electronics/build/outputs/chainlinkBuddyTDisplay-3d.png
           ./scripts/annotate_image.sh electronics/build/outputs/chainlinkBuddyTDisplay-3d.png
         env:
@@ -449,11 +449,11 @@ jobs:
 
       - name: Panelize
         run: |
-          kikit panelize -p electronics/chainlinkBuddyTDisplay/kikit_panelize.json electronics/chainlinkBuddyTDisplay/chainlinkBuddyTDisplay.kicad_pcb electronics/build/chainlinkBuddyTDisplay/panelized_chainlinkBuddyTDisplay.kicad_pcb
+          kikit panelize -p electronics/chainlinkBuddyTDisplay/kikit_panelize.json electronics/chainlinkBuddyTDisplay/chainlinkBuddyTDisplay.kicad_pcb electronics/build/panelized_chainlinkBuddyTDisplay.kicad_pcb
 
       - name: Export panelized PCB SVG
         run: |
-          ./electronics/scripts/generate_svg.py electronics/build/chainlinkBuddyTDisplay/panelized_chainlinkBuddyTDisplay.kicad_pcb
+          ./electronics/scripts/generate_svg.py electronics/build/panelized_chainlinkBuddyTDisplay.kicad_pcb
           cp electronics/build/panelized_chainlinkBuddyTDisplay_merged.png electronics/build/outputs/chainlinkBuddyTDisplay-panelized-pcb-raster.png
           ./scripts/annotate_image.sh electronics/build/outputs/chainlinkBuddyTDisplay-panelized-pcb-raster.png
         env:
