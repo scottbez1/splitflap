@@ -1,4 +1,4 @@
-18737829927768050
+18762281884397189
 Battery
 BatteryHolder_Bulgin_BX0036_1xC
 Bulgin Battery Holder, BX0036, Battery Type C (https://www.bulgin.com/products/pub/media/bulgin/data/Battery_holders.pdf)
@@ -50462,6 +50462,13 @@ T-DISPLAY_extra_pins_labeled
 0
 48
 24
+ESP32
+T-DISPLAY_extra_pins_labeled_double
+
+
+0
+72
+24
 Fiducial
 Fiducial_0.5mm_Mask1.5mm
 Circular Fiducial, 0.5mm bare copper, 1.5mm soldermask opening
@@ -51407,6 +51414,20 @@ heatsink
 0
 2
 1
+INA219
+INA219_LARGE
+
+
+0
+10
+6
+INA219
+INA219_SMALL
+
+
+0
+8
+6
 Inductor_SMD
 L_6.3x6.3_H3
 Choke, SMD, 6.3x6.3mm 3mm height
@@ -54683,6 +54704,20 @@ L_Toroid Vertical series Radial pin pitch 31.80mm  length 67.6mm width 36.1mm Vi
 0
 2
 2
+JLCPCB
+AssemblyToolingHole
+
+
+0
+0
+0
+JST_XH_Connectors
+JST_XH_2-5mm_5pin
+
+
+0
+5
+5
 Jumper
 SolderJumper-2_P1.3mm_Bridged2Bar_Pad1.0x1.5mm
 SMD Solder Jumper, 1x1.5mm Pads, 0.3mm gap, bridged with 2 copper strips
@@ -55950,6 +55985,13 @@ Yellow 5381 Series LED
 0
 2
 2
+LevelShifterModule
+LevelShifterModule
+
+
+0
+12
+12
 ModifiedSymbols
 IDC-Header_2x04_P2.54mm_Vertical
 Through hole IDC box header, 2x04, 2.54mm pitch, DIN 41651 / IEC 60603-13, double rows, https://docs.google.com/spreadsheets/d/16SsEcesNF15N3Lb4niX7dcUr-NY5_MFPQhobNuNppn4/edit#gid=0
@@ -55986,6 +56028,13 @@ Through hole pin header THT 1x03 2.54mm single row
 3
 3
 ModifiedSymbols
+PinHeader_1x05_P2.54mm_Vertical_NoSilk
+Through hole straight pin header, 1x05, 2.54mm pitch, single row
+Through hole pin header THT 1x05 2.54mm single row
+0
+5
+5
+ModifiedSymbols
 SOIC-14_3.9x8.7mm_P1.27mm_silk
 SOIC, 14 Pin (JEDEC MS-012AB, https://www.analog.com/media/en/package-pcb-resources/package/pkg_pdf/soic_narrow-r/r_14.pdf), generated with kicad-footprint-generator ipc_gullwing_generator.py
 SOIC SO
@@ -55999,6 +56048,13 @@ SOIC SO
 0
 16
 16
+ModifiedSymbols
+TO-220-3_Vertical
+TO-220-3, Vertical, RM 2.54mm, see https://www.vishay.com/docs/66542/to-220-1.pdf
+TO-220-3 Vertical RM 2.54mm
+0
+3
+3
 Module
 A20_OLINUXINO_LIME2
 A20 Olinuxino LIME2, 1.2GHz, 512-1024MB RAM, Micro-SD, NAND or eMMC, 1000Mbit Ethernet
@@ -74556,6 +74612,55 @@ rotary encoder
 0
 5
 4
+ST7789
+ST7789_80x160
+
+
+0
+12
+8
+ST7789
+ST7789_240x240
+
+
+0
+11
+7
+ScrewTerminals
+C8465_WJ500V-5.08-2P
+
+
+0
+2
+2
+ScrewTerminals
+C72334_WJ500V-5.08-3P
+
+
+0
+3
+3
+ScrewTerminals
+EB147A-02-D
+
+
+0
+2
+2
+ScrewTerminals
+Generic-5.08-2P
+
+
+0
+2
+2
+ScrewTerminals
+Generic-5.08-3P
+
+
+0
+3
+3
 Sensor_Audio
 CUI_CMC-4013-SMT
 Omnidirectional, -42dB, reflowable, electret condenser microphone https://www.cuidevices.com/product/resource/cmc-4013-smt-tr.pdf

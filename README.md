@@ -301,11 +301,17 @@ for easy SMD/THT assembly
 * Neopixels replaced by shift-register-driven single-color LED per module (one fewer data line needed in the chain, lower current draw, and 3.3v IO friendly)
 * 2 bits of loopback (connecting 2 spare output bits on output shift registers to 2 spare inputs) allows the controller
 to validate data integrity up and down the whole chain
-* TPL7407L mosfet low-side drivers instead of ULN2003A/MIC5842 (lower on-resistance means less voltage drop in the driver = more torque, less waste heat, and less total current consumption)
+* ~~TPL7407L mosfet low-side drivers instead of ULN2003A/MIC5842 (lower on-resistance means less voltage drop in the driver = more torque, less waste heat, and less total current consumption)~~
+Due to the chip shortage, TPL7407L ICs are not currently available and will likely not be available again until mid-2022, so the auto-generated
+JLC component/bom files below currently use ULN2003A darlington drivers as a suitable drop-in replacement.
 * Module order goes from right-to-left since this is intended to be installed and accessed from *behind* the modules
 
 This design is optimized for assembly at JLCPCB, and files are automatically generated for ordering assembled PCBs there.
 However, if you wish to assemble this board yourself, you can view the [interactive BOM/placement tool](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/bom/chainlinkDriver-ibom.html)
+
+Depending on available stock at JLCPCB, you may need to manually modify the BOM file to use alternative components, or regenerate the files
+yourself using `export_jlcpcb.py` and specifying one or more `LCSC_ALT_*` field names to use a pre-selected alternative part number. See
+the schematic for available pre-selected alternatives (check the symbol's properties/fields).
 
 <a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/chainlinkDriver-schematic.pdf">
 <img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/chainlinkDriver-schematic.png"/>
