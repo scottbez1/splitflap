@@ -3,20 +3,18 @@
 This is a DIY [split-flap display](https://en.wikipedia.org/wiki/Split-flap_display).
 Prototype four-character display: [video](https://www.youtube.com/watch?v=vq4o_88kN8g).
 
-![animated rendering](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_animation.gif)
+![animated rendering](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/3d/3d_animation.gif)
 [![prototype video](renders/prototypeVideoThumbnail.jpg)](https://www.youtube.com/watch?v=vq4o_88kN8g)
 
-[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml/badge.svg?branch=master)](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml)
-[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml/badge.svg?branch=master)](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml)
-[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/pio.yml/badge.svg?branch=master)](https://github.com/scottbez1/splitflap/actions/workflows/pio.yml)
+[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml/badge.svg?branch=dev/chainlinkIdc)](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml)
+[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml/badge.svg?branch=dev/chainlinkIdc)](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml)
+[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/pio.yml/badge.svg?branch=dev/chainlinkIdc)](https://github.com/scottbez1/splitflap/actions/workflows/pio.yml)
 
 The goal is to make a low-cost display that's easy to fabricate at home in small/single quantities (e.g. custom materials can be ordered from Ponoko or similar, and other hardware is generally available).
 
-The 3d model is built using OpenSCAD in [`3d/splitflap.scad`](3d/splitflap.scad), the driver board is designed in KiCad in [`electronics/splitflap.pro`](electronics/splitflap.pro), and the driver firmware is written using Arduino (with PlatformIO support) in [`arduino/splitflap/Splitflap/Splitflap.ino`](arduino/splitflap/Splitflap/Splitflap.ino).
-
 You can view an interactive 3d model of the design on the [project website](https://scottbez1.github.io/splitflap/).
 
-**New:** Join the [community Slack group](https://join.slack.com/t/splitflap/shared_invite/zt-dpvol87b-3zUaxXrUd8WauPXr1uBj5Q) to discuss or ask questions about the project!
+The [splitflap community Slack group](https://join.slack.com/t/splitflap/shared_invite/zt-dpvol87b-3zUaxXrUd8WauPXr1uBj5Q) is the best place to keep up with the latest changes or ask questions about the project!
 
 Want to help support development or just say "thanks"? Consider a one-time or monthly sponsorship:
 
@@ -31,7 +29,7 @@ Want to help support development or just say "thanks"? Consider a one-time or mo
 # Current Status
 [You can download the **latest stable release** from the official 'releases' page.](https://github.com/scottbez1/splitflap/releases/latest)
 
-Releases have been tested and used to produce working units, but as this is a DIY project, there may always be minor issues and/or incomplete documentation.
+Releases have been tested and used to produce working units, but as this is a continuously evolving open-source project, there may always be minor issues and/or incomplete documentation from time to time.
 
 | Component | Status | Notes |
 | --- | --- | --- |
@@ -47,44 +45,7 @@ Here's a video of a large 108-module display powered by 18 Chainlink Driver boar
 
 [![Video: animations on 108-module display](https://raw.githubusercontent.com/wiki/scottbez1/splitflap/images/animationsThumb.gif)](https://youtu.be/g9EPabcxBsM)
 
-
 I'd love to hear your thoughts and questions about this project, and happy to incorporate any feedback you might have into these designs! Please feel free (and encouraged) to [open GitHub issues](https://github.com/scottbez1/splitflap/issues/new), email me directly, reach out [on Twitter](https://twitter.com/scottbez1), and [get involved](https://github.com/scottbez1/splitflap/pulls) in the open source development and let's keep chatting and building together!
-
-#### :warning: Latest Experimental Files:
-
-**Important:** the files linked below are EXPERIMENTAL and have been auto-generated from the latest commit. They may contain changes that are untested or outright broken. Do not use these unless you are actively making changes to the project and know what you're doing. Otherwise, use the [latest stable release](https://github.com/scottbez1/splitflap/releases/latest).
-
-* Lasercut Vector File
-    * For Ponoko 3mm MDF ([svg](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-ponoko-3mm-mdf.svg))
-    * For Ponoko 3mm acrylic ([svg](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-ponoko-3mm-acrylic.svg))
-    * For generic material (0.18mm kerf correction) ([svg](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector.svg))
-* Classic Controller electronics
-    * Bill of Materials ([csv](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/bom/splitflap-bom.csv), [interactive](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/bom/splitflap-ibom.html))
-    * PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/classic-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/classic-pcb-packet.pdf))
-    * Panelized PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/classic-panelized-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/classic-panelized-pcb-packet.pdf))
-* Sensor PCB, panelized ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/sensor-panelized-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/sensor-panelized-pcb-packet.pdf))
-* Chainlink Driver PCB
-    * Schematic [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/chainlinkDriver-schematic.pdf)
-    * PCB overview [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/chainlinkDriver-pcb-packet.pdf)
-    * PCB gerbers [zip](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/chainlinkDriver-jlc/gerbers.zip)
-    * PCB bom (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/chainlinkDriver-jlc/bom.csv)
-    * PCB CPL (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/chainlinkDriver-jlc/pos.csv)
-    * PCB bom (for manual assembly) [interactive](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/bom/chainlinkDriver-ibom.html)
-* Chainlink Base PCB
-    * Schematic [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/chainlinkBase-schematic.pdf)
-    * PCB overview [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/chainlinkBase-pcb-packet.pdf)
-    * PCB gerbers [zip](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/chainlinkBase-jlc/gerbers.zip)
-    * PCB bom (for manual assembly) [interactive](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/bom/chainlinkBase-ibom.html)
-If you are interested in building a display, I recommend using [one of the stable releases instead](https://github.com/scottbez1/splitflap/releases).
-
-### Design Highlights
-* laser cut enclosure and mechanisms from a single material
-* cheap, widely available 28byj-48 stepper motor (less expensive than NEMA-17 motors, and doesn't require an expensive high current stepper driver)
-* CR80 PVC cards for flaps, cheap in bulk
-* store-bought vinyl stickers for flap letters
-* control up to 12 modules from a single Arduino Uno
-
-![2d laser cut rendering](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_raster.png)
 
 # Build Your Own
 
@@ -92,7 +53,36 @@ If you are interested in building a display, I recommend using [one of the stabl
 * [**Latest stable release**](https://github.com/scottbez1/splitflap/releases/latest)
 * [**Assembly instructions (v0.5/0.6/0.7)**](https://paper.dropbox.com/doc/Splitflap-Kit-v0.5v1.0-Instructions--ASQDu1uoa6n4_t1pva1bM1MgAg-bxXJlke5ROmamcx4OH44r)
 
-## Rough Cost Breakdown
+# Table of Contents
+- [Rough Cost Breakdown](#rough-cost-breakdown)
+  * [Housing](#housing)
+  * [Hardware & Consumables](#hardware---consumables)
+  * [Flaps](#flaps)
+  * [PCB](#pcb)
+  * [Electronics & Motor](#electronics---motor)
+- [Design Overview](#design-overview)
+  * [Mechanical](#mechanical)
+  * [Electronics](#electronics)
+    + [Module Electronics](#module-electronics)
+    + [Classic Controller Electronics](#classic-controller-electronics)
+    + [Chainlink Electronics](#chainlink-electronics)
+      - [Chainlink Driver](#chainlink-driver)
+      - [Chainlink Buddy \[T-Display\]](#chainlink-buddy---t-display--)
+      - [Chainlink Buddy \[Breadboard\]](#chainlink-buddy---breadboard--)
+      - [Chainlink Base](#chainlink-base)
+    + [Miscellaneous Tools](#miscellaneous-tools)
+      - [Flaps and Fonts](#flaps-and-fonts)
+      - [3D Printed Tools](#3d-printed-tools)
+      - [Chainlink Driver Tester](#chainlink-driver-tester)
+  * [Code](#code)
+    + [Firmware](#firmware)
+    + [Computer Control Software](#computer-control-software)
+- [Contributing/Modifying/Local-Rendering Info](#contributing-modifying-local-rendering-info)
+  * [3D Design](#3d-design)
+  * [Electronics Design](#electronics-design)
+
+
+# Rough Cost Breakdown
 
 This is an _incomplete_ list of supplies needed to build a split-flap display module to get a rough sense of the overall cost.
 Many items have minimum package sizes, so per-unit-prices will be higher when building fewer units due to the need to
@@ -103,12 +93,12 @@ shipping costs and MOQs no longer dominate the cost.
 
 Overall, expect to spend somewhere around $200 to $250 for 4 standard 40-character modules.
 
-### Housing ###
+## Housing
 
 The laser-cut housing/mechanics can be ordered from Ponoko (high quality, US-based) or Elecrow. Or you can cut it yourself if
 you have a laser-cutter capable of cutting 3mm MDF or acrylic.
 
-#### Ponoko
+### Ponoko
 
 | Price  | Units per order | Name                               | Supplier | Notes |
 |--------|-----------------|------------------------------------|----------|-------|
@@ -117,7 +107,7 @@ you have a laser-cutter capable of cutting 3mm MDF or acrylic.
 
 **Total:** $16.75 per unit (at 4 units)
 
-#### Elecrow
+### Elecrow
 | Price | Units per order | Name                                   | Supplier | Notes |
 |-------|-----------------|----------------------------------------|----------|-------|
 | $15   | 5               | Wood laser cut, 3 mm, no engraving     | Elecrow  |       |
@@ -125,7 +115,7 @@ you have a laser-cutter capable of cutting 3mm MDF or acrylic.
 
 **Total:** $9.25 per unit (at 4 units)
 
-### Hardware & Consumables
+## Hardware & Consumables
 
 | Price | Units per order | Name                                | Supplier     | Notes                     |
 |-------|-----------------|-------------------------------------|--------------|---------------------------|
@@ -134,11 +124,11 @@ you have a laser-cutter capable of cutting 3mm MDF or acrylic.
 
 **Total:** $2.50-5.00 per unit (at 4 units)
 
-### Flaps
+## Flaps
 
 There are two options for flaps: hand-cut or professionally die-cut.
 
-#### Hand-Cut (Option 1)
+### Hand-Cut (Option 1)
 
 Each card needs to be cut in half and then have two pieces punched out of either side. Each display unit requires 40 flaps, or 20 cards per unit. 100 cards is enough for 5 units in theory, but 4 in practice because there are no spares for mistakes.
 
@@ -150,7 +140,7 @@ Each card needs to be cut in half and then have two pieces punched out of either
 
 **Total:** $7.00 per unit (at 4 units) + $9.17 upfront for the punch tool + a lot of time and effort
 
-#### Die-Cut (Option 2)
+### Die-Cut (Option 2)
 
 These professional die-cut flaps are manufactured specifically for this project (no manual cutting/punching required) and come in both white and matte black. Sold by Bezek Labs LLC, so proceeds help support continued development on this project.
 
@@ -161,11 +151,11 @@ These professional die-cut flaps are manufactured specifically for this project 
 
 **Total:** $16.75 per unit (at 4 units)
 
-### PCB ###
+## PCB
 
 Circuit boards are available either in small quantities from the Bezek Labs LLC store, or in bulk from PCB manufacturers such as SeeedStudio.
 
-#### Etsy - BezekLabs
+### Etsy - BezekLabs
 
 | Price | Units per order | Name           | Supplier                                                                                         | Notes                    |
 |-------|-----------------|----------------|--------------------------------------------------------------------------------------------------|--------------------------|
@@ -174,7 +164,7 @@ Circuit boards are available either in small quantities from the Bezek Labs LLC 
 
 **Total:** $1.75 per unit (at 4 units)
 
-#### SeeedStudio (Bulk)
+### SeeedStudio (Bulk)
 
 | Price | Units per order | Name           | Supplier    | Notes                              |
 |-------|-----------------|----------------|-------------|------------------------------------|
@@ -184,7 +174,7 @@ Circuit boards are available either in small quantities from the Bezek Labs LLC 
 
 **Total:** $6.25 per unit (at 4 units), or as low as $0.32 per unit (at 80 units)
 
-### Electronics & Motor
+## Electronics & Motor
 
 | Price  | Units per order | Name                             | Supplier                | Notes                                                                                  |
 |--------|-----------------|----------------------------------|-------------------------|----------------------------------------------------------------------------------------|
@@ -198,45 +188,20 @@ Circuit boards are available either in small quantities from the Bezek Labs LLC 
 
 You can find a more detailed breakout of electronics' bill of materials (BOM) in [the ordering instructions](https://paper.dropbox.com/doc/Ordering-Splitflap-v0.5--ATdB3cgS5GyvwTWq1kpunkD4Ag-iCwwMo0hRkkAlwdutccWf).
 
-# Design & Modification Guide
+# Design Overview
 
-## 3D Design
-The main design file is [`3d/splitflap.scad`](3d/splitflap.scad)
+## Mechanical
+The mechanical/structural components are made from laser-cut 3mm MDF or acrylic, and held together with M4 bolts and nuts. The design is parametric and built using OpenSCAD. See below for more info on rendering/modifying the design.
 
-You'll need a recent version of OpenSCAD (e.g. 2015-03), which may need to be installed through the PPA:
-`sudo add-apt-repository ppa:openscad/releases`
+![2d laser cut rendering](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/3d/3d_laser_raster.png)
 
-In general, solid objects such as the enclosure sides or spool components are built from 2d primitives and then extruded to the appropriate thickness for 3d rendering, rather than using 3d primitives. This simplifies the design without losing expressiveness; the perpendicular laser cut beam doesn't allow for cuts that vary in the Z dimension anyway.
+Latest auto-generated (:warning: untested :warning:) artifacts<sup>*</sup>:
+* For Ponoko 3mm MDF ([svg](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/3d/3d_laser_vector-ponoko-3mm-mdf.svg))
+* For Ponoko 3mm acrylic ([svg](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/3d/3d_laser_vector-ponoko-3mm-acrylic.svg))
+* For generic material (0.18mm kerf correction) ([svg](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/3d/3d_laser_vector.svg))
 
-Note that while the design is parameterized and many values may be tweaked, there is currently no error checking for invalid parameters or combinations of parameters. Please take care to validate the design if you change any parameters. For instance, while most of the design will adjust to a changed `num_modules` value, certain values may cause some elements to intersect with other elements or protrude beyond their expected dimensions.
+<sup>*</sup>For tested/stable artifacts, see the [latest release](https://github.com/scottbez1/splitflap/releases/latest)
 
-### Rendering
-#### Laser-cut vector files
-The design can be rendered to 2d for laser cutting by running [`3d/scripts/generate_2d.py [--panelize <number>]`](3d/scripts/generate_2d.py), which outputs to `3d/build/laser_parts/combined.svg`. The optional `--panelize` argument allows for rendering a panel of modules in a single SVG, for bulk laser-cutting.
-
-Internally, the design uses a `projection_renderer` module ([`3d/projection_renderer.scad`](3d/projection_renderer.scad)), which takes a list of child elements to render, and depending on the `render_index` renders a single child at a time. It also _adds_ material to each shape to account for the kerf that will be cut away by the laser.
-
-The [`generate_2d.py`](3d/scripts/generate_2d.py) script interacts with the `projection_renderer` module by first using it to determine the number of subcomponents to render, then runs OpenSCAD to export each component to an SVG file. It does some post-processing on the SVG output (notably adds "mm" to the document dimensions), and then combines all components into the single `combined.svg` output.
-
-Once the `combined.svg` file is generated, you'll want to double-check there aren't any redundant cut lines that are shared by multiple adjacent pieces, to save time/cost when cutting. They should be detected automatically (and highlighted in red in the rendering above), but it doesn't hurt to double-check. In Inkscape, select the "Edit paths by nodes" tool and select an edge to delete - the endpoints should turn blue. Then click "Delete segment between two non-endpoint nodes", and repeat this for all other redundant cut lines.
-
-#### Animated gif
-The design can be rendered to a rotating 3d animated gif (seen above) by running [`3d/scripts/generate_gif.py`](3d/scripts/generate_gif.py), which outputs to `3d/build/animation/animation.gif`
-
-The `generate_gif.py` script runs multiple OpenSCAD instances in parallel to render the design from 360 degrees to individual png frames, which are then combined into the final gif animation. As part of building the animation, `generate_gif.py` renders the design with multiple configurations (opaque enclosure, see-through enclosure, no-enclosure and no flaps) by setting the `render_enclosure` and `render_flaps` variables.
-
-#### STL models/web viewer
-The design can be rendered to a series of STL files (one per color used in the model) in order to be displayed in an [interactive web-based 3d viewer](https://scottbez1.github.io/splitflap/). Similar to the `projection_renderer` used to render individual components for laser-cutting, the [ColoredStlExporter](3d/scripts/colored_stl_exporter.py) detects all the colors used in the model and renders them one-by-one to separate STL files, along with a manifest that maps each STL file to its RGB color. The STL files and manifest are loaded using three.js to display an interactive model on a web site using WebGL. See this blog post for more details on how the export and three.js renderer work: [OpenSCAD Rendering Tricks, Part 3: Web viewer](http://scottbezek.blogspot.com/2016/08/openscad-rendering-tricks-part-3-web.html).
-
-### 3D Printed Tools
-The project also includes a number of optional 3D printed designs to make assembly easier. These include:
-
-* [a flap scoring jig](3d/tools/scoring_jig.scad) for precisely marking the cut point when splitting CR80 cards
-* [a flap punch jig](3d/tools/punch_jig.scad) for aligning the punch when making the pin cutouts on either side of a flap
-* [a flap container](3d/tools/flap_container.scad) for storing and organizing stacks of completed flaps
-* [a sensor PCB holder](3d/tools/pcb_case.scad) for storing and protecting soldered sensor boards
-
-All of these designs are parametric and customizable within OpenSCAD. To print them, open up the relevant file in OpenSCAD and use `File -> Export -> Export as STL` to render the design as an STL file for your slicer.
 
 ## Electronics
 The current recommended approach is the Classic controller board, which plugs into an Arduino Uno as a shield
@@ -260,13 +225,18 @@ approach is to use a small PCB, with an AH3391Q (or similar) sensor and connecto
 module with a single screw and can easily be adjusted for precise calibration.
 
 These boards are small (about 16mm x 16 mm) and the designs are available as a panelized PCB, which can be snapped
-apart. The panelization is configurable (see [generate_panelize_config.py](electronics/scripts/panelize/generate_panelize_config.py))
-and is optimized for production at SeeedStudio.
+apart. The panelization is configurable and is optimized for production at low-cost PCB fabricators like SeeedStudio, JLCPCB, or PCBWay.
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/sensor-panelized-pcb-raster.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/sensor-panelized-pcb-raster.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-classic/sensor-panelized-pcb-raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-classic/sensor-panelized-pcb-raster.png"/>
 </a>
 
+Latest auto-generated (:warning: untested :warning:) artifacts<sup>*</sup>:
+
+* Sensor PCB, single ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-classic/sensor-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-classic/sensor-pcb-packet.pdf))
+* Sensor PCB, panelized ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-classic/sensor-panelized-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-classic/sensor-panelized-pcb-packet.pdf))
+
+<sup>*</sup>For tested/stable artifacts, see the [latest release](https://github.com/scottbez1/splitflap/releases/latest)
 
 ### Classic Controller Electronics
 The Classic driver board is designed to plug into an Arduino like a shield, and can control 4 stepper motors.
@@ -277,35 +247,46 @@ Nearly everything is a through-hole component rather than SMD, so it's very easy
 The driver uses 2 MIC5842 low-side shift-register drivers, with built-in transient-suppression diodes, to control the motors, and a 74HC165 shift register to read from 4 hall-effect magnetic home position sensors.
 There are optional WS2812B RGB LEDs which can be used to indicate the status of each of the 4 channels.
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/classic-schematic.pdf">
-<img height="320" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/classic-schematic.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-classic/classic-schematic.pdf">
+<img height="320" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-classic/classic-schematic.png"/>
 </a>
 
 The PCB layout is 10cm x 5cm which makes it fairly cheap to produce using a low-cost PCB manufacturer (e.g. Seeed Studio).
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/classic-pcb-raster.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/classic-pcb-raster.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-classic/classic-pcb-raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-classic/classic-pcb-raster.png"/>
 </a>
 
 
+Latest auto-generated (:warning: untested :warning:) artifacts<sup>*</sup>:
+
+* Bill of Materials ([csv](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-classic/bom/splitflap-bom.csv), [interactive](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-classic/bom/splitflap-ibom.html))
+* PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-classic/classic-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-classic/classic-pcb-packet.pdf))
+* Panelized PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-classic/classic-panelized-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-classic/classic-panelized-pcb-packet.pdf))
+
+<sup>*</sup>For tested/stable artifacts, see the [latest release](https://github.com/scottbez1/splitflap/releases/latest)
+
 
 ### Chainlink Electronics
-The Chainlink system is an upcoming alternative to the Classic controller/driver, which is designed to be easier and  
+The Chainlink system is an upcoming alternative to the Classic controller/driver, which is designed to be easier and 
 cheaper to build, especially in higher quantities due to its simplified BOM and surface-mount components. It's also
 designed to support longer chains of driver boards to control large displays (think 100+ split-flap modules).
 
 This electronics design is still in very active development, and not recommended unless you know what you're doing.
 
-The Chainlink system uses 2 PCB designs:
-* Each **Chainlink Driver** board accepts data and power and connects to **6** individual split-flap modules. Chainlink
+The Chainlink system requires 2 core elements:
+* One or more **Chainlink Driver** board accepts data and power and each Driver connects to **6** individual split-flap modules. Chainlink
 Driver boards can be chained together to construct a large display.
-* An optional **Chainlink Base** board holds the microcontroller (ESP32 with USB, Wifi, BLE capabilities), central
-power management/distribution, and sends data to the chained Driver boards. You can omit this PCB and wire an ESP32
-directly to one or more Chainlink Driver boards with no additional components (other than power supply).
+* Some kind of ESP32 microcontroller board. There are a few options:
+    * For small/medium displays, one of the **Chainlink Buddy** boards are recommended
+        * Chainlink Buddy [T-Display]  holds a Lilygo T-Display ESP32 module which includes a built-in LCD and 2 buttons
+        * Chainlink Buddy [Breadboard] makes it easy to connect a Chainlink Driver to a breadboard for prototyping, though you can also easily connect a Chainlink Driver to a breadboard with a few dupont wires.
+    * For large displays, the **Chainlink Base** provides a number of advanced features: central
+power management/distribution and fault monitoring, UART and RS-485 connections, configuration switches, and status LEDs.
 
 #### Chainlink Driver
-<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/chainlinkDriver-3d.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/chainlinkDriver-3d.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink/chainlinkDriver-3d.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink/chainlinkDriver-3d.png"/>
 </a>
 
 This is currently under active development. It has been tested and appears to work, but is not yet recommended for general use.
@@ -324,19 +305,91 @@ to validate data integrity up and down the whole chain
 * Module order goes from right-to-left since this is intended to be installed and accessed from *behind* the modules
 
 This design is optimized for assembly at JLCPCB, and files are automatically generated for ordering assembled PCBs there.
-However, if you wish to assemble this board yourself, you can view the [interactive BOM/placement tool](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/bom/chainlinkDriver-ibom.html)
+However, if you wish to assemble this board yourself, you can view the [interactive BOM/placement tool](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink/bom/chainlinkDriver-ibom.html)
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/chainlinkDriver-schematic.pdf">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/chainlinkDriver-schematic.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink/chainlinkDriver-schematic.pdf">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink/chainlinkDriver-schematic.png"/>
 </a>
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/chainlinkDriver-pcb-raster.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/chainlinkDriver-pcb-raster.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink/chainlinkDriver-pcb-raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink/chainlinkDriver-pcb-raster.png"/>
 </a>
+
+Latest auto-generated (:warning: untested :warning:) artifacts<sup>*</sup>:
+
+* Schematic [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink/chainlinkDriver-schematic.pdf)
+* PCB overview [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink/chainlinkDriver-pcb-packet.pdf)
+* PCB gerbers [zip](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink/chainlinkDriver-jlc/gerbers.zip)
+* PCB bom (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink/chainlinkDriver-jlc/bom.csv)
+* PCB CPL (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink/chainlinkDriver-jlc/pos.csv)
+* PCB bom (for manual assembly) [interactive](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink/bom/chainlinkDriver-ibom.html)
+
+<sup>*</sup>For tested/stable artifacts, see the [latest release](https://github.com/scottbez1/splitflap/releases/latest)
+
+#### Chainlink Buddy \[T-Display\]
+<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-3d.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-3d.png"/>
+</a>
+
+This is currently under very active development. It is untested.
+
+The Chainlink Buddy \[T-Display\] is a convenient way to connect a T-Display ESP32 board (recommended microcontroller) to a chain
+of Chainlink Drivers.
+
+Key features:
+* TTGO T-Display ESP32 module as the controller, which includes USB-C, color IPS LCD display and buttons
+* Extra terminals for every pin of the T-Display allow you to connect any other peripherals to the ESP32 (the connection to the Chainlink Driver requires _only 4_ of the GPIOs)
+* Optional barrel jack makes it easy to use a "wall wart" AC adapter/power-supply (since the Chainlink Driver only has screw terminals for power) -- plug in a 12V supply
+and then run a wire from the onboard screw terminals to the Chainlink Driver's motor power screw terminals.
+* Optional 5V regulator allows for powering the ESP32 without a USB connection, using the 12V motor power supply
+
+<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-schematic.pdf">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-schematic.png"/>
+</a>
+
+<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-pcb-raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-pcb-raster.png"/>
+</a>
+
+Latest auto-generated (:warning: untested :warning:) artifacts<sup>*</sup>:
+
+* Schematic [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-schematic.pdf)
+* PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-pcb-packet.pdf))
+* Panelized PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-panelized-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-panelized-pcb-packet.pdf))
+* PCB bom (for manual assembly) [interactive](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-t-display/bom/chainlinkBuddyTDisplay-ibom.html)
+
+<sup>*</sup>For tested/stable artifacts, see the [latest release](https://github.com/scottbez1/splitflap/releases/latest)
+
+#### Chainlink Buddy \[Breadboard\]
+<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-3d.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-3d.png"/>
+</a>
+
+This is currently under very active development. It is untested.
+
+The Chainlink Buddy \[Breadboard\] makes it easy to connect a Chainlink Driver to a breadboard for prototyping. You could use 5 dupont wires, or use a ribbon cable and this slick breakout board.
+
+<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-schematic.pdf">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-schematic.png"/>
+</a>
+
+<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-pcb-raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-pcb-raster.png"/>
+</a>
+
+Latest auto-generated (:warning: untested :warning:) artifacts<sup>*</sup>:
+
+* Schematic [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-schematic.pdf)
+* PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-pcb-packet.pdf))
+* Panelized PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-panelized-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-panelized-pcb-packet.pdf))
+* PCB bom (for manual assembly) [interactive](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-breadboard/bom/chainlinkBuddyBreadboard-ibom.html)
+
+<sup>*</sup>For tested/stable artifacts, see the [latest release](https://github.com/scottbez1/splitflap/releases/latest)
+
 
 #### Chainlink Base
-<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/chainlinkBase-3d.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/chainlinkBase-3d.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-base/chainlinkBase-3d.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-base/chainlinkBase-3d.png"/>
 </a>
 
 This is currently under very active development. It has been tested and appears to work, but is not yet recommended for general use.
@@ -351,7 +404,7 @@ large (50+ module) display.
 
 Key features:
 * TTGO T-Display ESP32 module as the controller, which includes USB-C, color IPS LCD display and buttons
-* Optional master relay output for 12V PSU control (5V relay, up to ~500mA coil current)
+* Optional dev/chainlinkIdc relay output for 12V PSU control (5V relay, up to ~500mA coil current)
   * Future firmware will power on the 12V PSU after a startup self-test, and power off PSU in case of any faults
 * 5 channels of independently monitored 12V switches for powering groups of Chainlink Driver boards (6-10A max per channel)
   * Depending on the motors you use, each channel may be able to power about 6 Chainlink Driver boards which is 36 splitflap modules
@@ -362,23 +415,57 @@ Key features:
 * Flexible controller input power
   * USB power from the T-Display works by default, though external power is recommended for larger displays
   * Regulated 5V can be connected directly to the screw terminals, or
-  * if you are using an always-on 12V PSU without a master relay, you can install a buck module and power the board from 12V using the 7-28V screw terminals
+  * if you are using an always-on 12V PSU without a dev/chainlinkIdc relay, you can install a buck module and power the board from 12V using the 7-28V screw terminals
 
-[View the interactive BOM/placement tool](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/bom/chainlinkBase-ibom.html)
-
-<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/chainlinkBase-schematic.pdf">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/chainlinkBase-schematic.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-base/chainlinkBase-schematic.pdf">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-base/chainlinkBase-schematic.png"/>
 </a>
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/chainlinkBase-pcb-raster.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/chainlinkBase-pcb-raster.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-base/chainlinkBase-pcb-raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-base/chainlinkBase-pcb-raster.png"/>
 </a>
 
-### Electrical tools
+Latest auto-generated (:warning: untested :warning:) artifacts<sup>*</sup>:
+
+* Schematic [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-base/chainlinkBase-schematic.pdf)
+* PCB overview [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-base/chainlinkBase-pcb-packet.pdf)
+* PCB gerbers [zip](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-base/chainlinkBase-jlc/gerbers.zip)
+* PCB bom (for manual assembly) [interactive](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-base/bom/chainlinkBase-ibom.html)
+
+<sup>*</sup>For tested/stable artifacts, see the [latest release](https://github.com/scottbez1/splitflap/releases/latest)
+
+
+### Miscellaneous Tools
+
+#### Flaps and Fonts
+If you'd like to print your own flaps, or cut custom vinyl letter stickers, the project includes a script to generate vector design files
+that is extremely configurable:
+
+* Font for text (this is further customizable in OpenSCAD)
+* Character-set - which letters/numbers/symbols/colors are included and in what order
+* Bleed - extends rendering past the borders of the flaps to compensate for slight misalignment of printing and cutting operations
+* Keepout areas - option to highlight keepout violations for manual review, automatically clip them, or ignore them
+* Rendering options:
+    * Single-sided - useful for previewing how all letters will look on flaps
+    * Front/back - for batch duplex printing, generate separate front-side and back-side files (e.g. sign shop printing on a flat sheet of PVC)
+    * Side-by-side - for individual flap printing, each flap's front design is laid out side-by-side with its back design
+
+TODO: finish documenting this and render some example images...
+
+#### 3D Printed Tools
+The project also includes a number of optional 3D printed designs to make assembly easier. These include:
+
+* [a flap scoring jig](3d/tools/scoring_jig.scad) for precisely marking the cut point when splitting CR80 cards
+* [a flap punch jig](3d/tools/punch_jig.scad) for aligning the punch when making the pin cutouts on either side of a flap
+* [a flap container](3d/tools/flap_container.scad) for storing and organizing stacks of completed flaps
+* [a sensor PCB holder](3d/tools/pcb_case.scad) for storing and protecting soldered sensor boards
+
+All of these designs are parametric and customizable within OpenSCAD. To print them, open up the relevant file in OpenSCAD and use `File -> Export -> Export as STL` to render the design as an STL file for your slicer.
+
 
 #### Chainlink Driver Tester
-<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-tester/chainlinkDriverTester-3d.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-tester/chainlinkDriverTester-3d.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-tester/chainlinkDriverTester-3d.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-tester/chainlinkDriverTester-3d.png"/>
 </a>
 
 This is not likely to be useful unless you're planning to manufacture dozens to hundreds of Chainlink Driver boards, but the Chainlink Driver Tester is a complete testbed
@@ -398,32 +485,30 @@ Key features:
 * Buzzer option for audible pass/fail feedback
 
 
-[Download gerbers](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-tester/chainlinkDriverTester-jlc/gerbers.zip)
+[Download gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-tester/chainlinkDriverTester-jlc/gerbers.zip)
 
-[View the interactive BOM/placement tool](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-tester/bom/chainlinkDriverTester-ibom.html)
+[View the interactive BOM/placement tool](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-tester/bom/chainlinkDriverTester-ibom.html)
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-tester/chainlinkDriverTester-schematic.pdf">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-tester/chainlinkDriverTester-schematic.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-tester/chainlinkDriverTester-schematic.pdf">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-tester/chainlinkDriverTester-schematic.png"/>
 </a>
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-tester/chainlinkDriverTester-pcb-raster.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-tester/chainlinkDriverTester-pcb-raster.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-tester/chainlinkDriverTester-pcb-raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-tester/chainlinkDriverTester-pcb-raster.png"/>
 </a>
 
-### Rendering
-The mechanical and electrical design renderings and links above are automatically updated on every commit with the latest rendering. See this blog post for more details on how that works: [Automated KiCad, OpenSCAD rendering using Travis CI](http://scottbezek.blogspot.com/2016/04/automated-kicad-openscad-rendering.html).
 
-The PCB layout can be rendered to an svg or png (seen above) by running [`electronics/scripts/generate_svg.py file.kicad_pcb`](electronics/scripts/generate_svg.py).
-This uses KiCad's [Python scripting API](https://docs.kicad-pcb.org/doxygen/md_Documentation_development_pcbnew-plugins.html)
-to render several layers to individual svg files, manipulates them to apply color and opacity settings, and then merges them to a single svg.
-For additional details, see this blog post: [Scripting KiCad Pcbnew exports](http://scottbezek.blogspot.com/2016/04/scripting-kicad-pcbnew-exports.html).
+Latest auto-generated (:warning: untested :warning:) artifacts<sup>*</sup>:
 
-For reviewing the design, a pdf packet with copper, silkscreen, and drill info can be produced by running [`electronics/scripts/generate_pdf.py file.kicad_pcb`](electronics/scripts/generate_pdf.py).
+* Schematic [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-base/chainlinkBase-schematic.pdf)
+* PCB overview [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-base/chainlinkBase-pcb-packet.pdf)
+* PCB gerbers [zip](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-base/chainlinkBase-jlc/gerbers.zip)
+* PCB bom (for manual assembly) [interactive](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-base/bom/chainlinkBase-ibom.html)
 
-Gerber files for fabrication can be exported by running [`electronics/scripts/generate_gerber.py file.kicad_pcb`](electronics/scripts/generate_gerber.py).
-This generates gerber files and an Excellon drill file with Seeed Studio's [naming conventions](http://support.seeedstudio.com/knowledgebase/articles/1176532-how-to-generate-the-gerber-manufacturing-files) and produces a `.zip` which can be sent for fabrication.
+<sup>*</sup>For tested/stable artifacts, see the [latest release](https://github.com/scottbez1/splitflap/releases/latest)
 
-EESchema isn't easily scriptable, so to export the schematic and bill of materials [`electronics/scripts/export_schematic.py`](electronics/scripts/export_schematic.py) and [`export_bom.py`](electronics/scripts/export_bom.py) start an X Virtual Frame Buffer (Xvfb) and open the `eeschema` GUI within that virtual display, and then send a series of hardcoded key presses via `xdotool` to interact with the GUI and click through the dialogs. This is very fragile but seems to work ok for now. For additional details, see this blog post: [Using UI automation to export KiCad schematics](http://scottbezek.blogspot.com/2016/04/automated-kicad-schematic-export.html).
+
+
 
 ## Code
 ### Firmware
@@ -474,6 +559,64 @@ If you want to make all modules recalibrate their home position, send a single @
 @
 ```
 This recalibrates all modules, including any that were in the `sensor_error` state; if recalibration succeeds they will return to the `normal` state and start responding to movement commands again.
+
+
+
+
+
+# Contributing/Modifying/Local-Rendering Info
+
+Looking to make some modifications or play around with the design on your local machine? Jump right in! Note that all of the scripts and automation are developed for Ubuntu. Mac OS support is planned,
+but not currently implemented (but feel free to open a PR if you want to help!).
+
+## 3D Design
+
+The main design file is [`3d/splitflap.scad`](3d/splitflap.scad)
+
+You'll need a recent version of OpenSCAD (e.g. 2015-03), which may need to be installed through the PPA:
+`sudo add-apt-repository ppa:openscad/releases`
+
+In general, solid objects such as the enclosure sides or spool components are built from 2d primitives and then extruded to the appropriate thickness for 3d rendering, rather than using 3d primitives. This simplifies the design without losing expressiveness; the perpendicular laser cut beam doesn't allow for cuts that vary in the Z dimension anyway.
+
+Note that while the design is parameterized and many values may be tweaked, there is currently no error checking for invalid parameters or combinations of parameters. Please take care to validate the design if you change any parameters. For instance, while most of the design will adjust to a changed `num_modules` value, certain values may cause some elements to intersect with other elements or protrude beyond their expected dimensions.
+
+### Rendering
+#### Laser-cut vector files
+The design can be rendered to 2d for laser cutting by running [`3d/scripts/generate_2d.py [--panelize <number>]`](3d/scripts/generate_2d.py), which outputs to `3d/build/laser_parts/combined.svg`. The optional `--panelize` argument allows for rendering a panel of modules in a single SVG, for bulk laser-cutting.
+
+Internally, the design uses a `projection_renderer` module ([`3d/projection_renderer.scad`](3d/projection_renderer.scad)), which takes a list of child elements to render, and depending on the `render_index` renders a single child at a time. It also _adds_ material to each shape to account for the kerf that will be cut away by the laser.
+
+The [`generate_2d.py`](3d/scripts/generate_2d.py) script interacts with the `projection_renderer` module by first using it to determine the number of subcomponents to render, then runs OpenSCAD to export each component to an SVG file. It does some post-processing on the SVG output (notably adds "mm" to the document dimensions), and then combines all components into the single `combined.svg` output.
+
+Once the `combined.svg` file is generated, you'll want to double-check there aren't any redundant cut lines that are shared by multiple adjacent pieces, to save time/cost when cutting. They should be detected automatically (and highlighted in red in the rendering above), but it doesn't hurt to double-check. In Inkscape, select the "Edit paths by nodes" tool and select an edge to delete - the endpoints should turn blue. Then click "Delete segment between two non-endpoint nodes", and repeat this for all other redundant cut lines.
+
+#### Animated gif
+The design can be rendered to a rotating 3d animated gif (seen above) by running [`3d/scripts/generate_gif.py`](3d/scripts/generate_gif.py), which outputs to `3d/build/animation/animation.gif`
+
+The `generate_gif.py` script runs multiple OpenSCAD instances in parallel to render the design from 360 degrees to individual png frames, which are then combined into the final gif animation. As part of building the animation, `generate_gif.py` renders the design with multiple configurations (opaque enclosure, see-through enclosure, no-enclosure and no flaps) by setting the `render_enclosure` and `render_flaps` variables.
+
+#### STL models/web viewer
+The design can be rendered to a series of STL files (one per color used in the model) in order to be displayed in an [interactive web-based 3d viewer](https://scottbez1.github.io/splitflap/). Similar to the `projection_renderer` used to render individual components for laser-cutting, the [ColoredStlExporter](3d/scripts/colored_stl_exporter.py) detects all the colors used in the model and renders them one-by-one to separate STL files, along with a manifest that maps each STL file to its RGB color. The STL files and manifest are loaded using three.js to display an interactive model on a web site using WebGL. See this blog post for more details on how the export and three.js renderer work: [OpenSCAD Rendering Tricks, Part 3: Web viewer](http://scottbezek.blogspot.com/2016/08/openscad-rendering-tricks-part-3-web.html).
+
+
+## Electronics Design
+All of the electronics are developed using KiCad 5. Panelization is provided by (KiKit)[https://github.com/yaqwsx/KiKit] and gerber/BOM generation is provided by (KiBot)[https://github.com/INTI-CMNB/KiBot].
+
+### Rendering
+The mechanical and electrical design renderings and links above are automatically updated on every commit with the latest rendering. See this blog post for more details on how that works: [Automated KiCad, OpenSCAD rendering using Travis CI](http://scottbezek.blogspot.com/2016/04/automated-kicad-openscad-rendering.html).
+
+The PCB layout can be rendered to an svg or png (seen above) by running [`electronics/scripts/generate_svg.py file.kicad_pcb`](electronics/scripts/generate_svg.py).
+This uses KiCad's [Python scripting API](https://docs.kicad-pcb.org/doxygen/md_Documentation_development_pcbnew-plugins.html)
+to render several layers to individual svg files, manipulates them to apply color and opacity settings, and then merges them to a single svg.
+For additional details, see this blog post: [Scripting KiCad Pcbnew exports](http://scottbezek.blogspot.com/2016/04/scripting-kicad-pcbnew-exports.html).
+
+For reviewing the design, a pdf packet with copper, silkscreen, and drill info can be produced by running [`electronics/scripts/generate_pdf.py file.kicad_pcb`](electronics/scripts/generate_pdf.py).
+
+Gerber files for fabrication can be exported by running [`electronics/scripts/generate_gerber.py file.kicad_pcb`](electronics/scripts/generate_gerber.py).
+This generates gerber files and an Excellon drill file with Seeed Studio's [naming conventions](http://support.seeedstudio.com/knowledgebase/articles/1176532-how-to-generate-the-gerber-manufacturing-files) and produces a `.zip` which can be sent for fabrication.
+
+EESchema isn't easily scriptable, so to export the schematic [`electronics/scripts/export_schematic.py`](electronics/scripts/export_schematic.py) starts an X Virtual Frame Buffer (Xvfb) and open the `eeschema` GUI within that virtual display, and then send a series of hardcoded key presses via `xdotool` to interact with the GUI and click through the dialogs. This is very fragile but seems to work ok for now. For additional details, see this blog post: [Using UI automation to export KiCad schematics](http://scottbezek.blogspot.com/2016/04/automated-kicad-schematic-export.html).
+
 
 
 # License

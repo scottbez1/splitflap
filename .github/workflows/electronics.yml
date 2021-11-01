@@ -81,6 +81,18 @@ jobs:
         env:
           PYTHONUNBUFFERED: 1
 
+      - name: Export sensor PCB fabrication files
+        run: |
+          ./electronics/scripts/export_jlcpcb.py electronics/build/sensor.kicad_pcb
+          cp -r electronics/build/sensor-jlc electronics/build/outputs/sensor-jlc
+
+      - name: Export sensor PCB overview PDF
+        run: |
+          ./electronics/scripts/generate_pdf.py electronics/build/sensor.kicad_pcb
+          cp electronics/build/sensor-pcb-packet.pdf electronics/build/outputs/sensor-pcb-packet.pdf
+        env:
+          PYTHONUNBUFFERED: 1
+
       - name: Panelize sensor PCB
         run: |
           kikit panelize -p electronics/scripts/config/kikit_panelize_sensor.json electronics/sensor/sensor.kicad_pcb electronics/build/panelized_sensor.kicad_pcb
