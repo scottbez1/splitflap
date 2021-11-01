@@ -83,12 +83,12 @@ jobs:
 
       - name: Export sensor PCB fabrication files
         run: |
-          ./electronics/scripts/export_jlcpcb.py electronics/sensor.kicad_pcb
+          ./electronics/scripts/export_jlcpcb.py electronics/sensor/sensor.kicad_pcb
           cp -r electronics/build/sensor-jlc electronics/build/outputs/sensor-jlc
 
       - name: Export sensor PCB overview PDF
         run: |
-          ./electronics/scripts/generate_pdf.py electronics/sensor.kicad_pcb
+          ./electronics/scripts/generate_pdf.py electronics/sensor/sensor.kicad_pcb
           cp electronics/build/sensor-pcb-packet.pdf electronics/build/outputs/sensor-pcb-packet.pdf
         env:
           PYTHONUNBUFFERED: 1
