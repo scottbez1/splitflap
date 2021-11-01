@@ -3,12 +3,12 @@
 This is a DIY [split-flap display](https://en.wikipedia.org/wiki/Split-flap_display).
 Prototype four-character display: [video](https://www.youtube.com/watch?v=vq4o_88kN8g).
 
-![animated rendering](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/3d/3d_animation.gif)
+![animated rendering](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_animation.gif)
 [![prototype video](renders/prototypeVideoThumbnail.jpg)](https://www.youtube.com/watch?v=vq4o_88kN8g)
 
-[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml/badge.svg?branch=dev/chainlinkIdc)](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml)
-[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml/badge.svg?branch=dev/chainlinkIdc)](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml)
-[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/pio.yml/badge.svg?branch=dev/chainlinkIdc)](https://github.com/scottbez1/splitflap/actions/workflows/pio.yml)
+[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml/badge.svg?branch=master)](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml)
+[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml/badge.svg?branch=master)](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml)
+[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/pio.yml/badge.svg?branch=master)](https://github.com/scottbez1/splitflap/actions/workflows/pio.yml)
 
 The goal is to make a low-cost display that's easy to fabricate at home in small/single quantities (e.g. custom materials can be ordered from Ponoko or similar, and other hardware is generally available).
 
@@ -193,12 +193,12 @@ You can find a more detailed breakout of electronics' bill of materials (BOM) in
 ## Mechanical
 The mechanical/structural components are made from laser-cut 3mm MDF or acrylic, and held together with M4 bolts and nuts. The design is parametric and built using OpenSCAD. See below for more info on rendering/modifying the design.
 
-![2d laser cut rendering](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/3d/3d_laser_raster.png)
+![2d laser cut rendering](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_raster.png)
 
 Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
-* For Ponoko 3mm MDF ([svg](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/3d/3d_laser_vector-ponoko-3mm-mdf.svg))
-* For Ponoko 3mm acrylic ([svg](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/3d/3d_laser_vector-ponoko-3mm-acrylic.svg))
-* For generic material (0.18mm kerf correction) ([svg](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/3d/3d_laser_vector.svg))
+* For Ponoko 3mm MDF ([svg](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-ponoko-3mm-mdf.svg))
+* For Ponoko 3mm acrylic ([svg](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-ponoko-3mm-acrylic.svg))
+* For generic material (0.18mm kerf correction) ([svg](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector.svg))
 
 <sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases/latest) instead
 
@@ -227,14 +227,14 @@ module with a single screw and can easily be adjusted for precise calibration.
 These boards are small (about 16mm x 16 mm) and the designs are available as a panelized PCB, which can be snapped
 apart. The panelization is configurable and is optimized for production at low-cost PCB fabricators like SeeedStudio, JLCPCB, or PCBWay.
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-classic/sensor-panelized-pcb-raster.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-classic/sensor-panelized-pcb-raster.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/sensor-panelized-pcb-raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/sensor-panelized-pcb-raster.png"/>
 </a>
 
 Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 
-* Sensor PCB, single ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-classic/sensor-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-classic/sensor-pcb-packet.pdf))
-* Sensor PCB, panelized ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-classic/sensor-panelized-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-classic/sensor-panelized-pcb-packet.pdf))
+* Sensor PCB, single ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/sensor-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/sensor-pcb-packet.pdf))
+* Sensor PCB, panelized ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/sensor-panelized-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/sensor-panelized-pcb-packet.pdf))
 
 <sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases/latest) instead
 
@@ -247,22 +247,22 @@ Nearly everything is a through-hole component rather than SMD, so it's very easy
 The driver uses 2 MIC5842 low-side shift-register drivers, with built-in transient-suppression diodes, to control the motors, and a 74HC165 shift register to read from 4 hall-effect magnetic home position sensors.
 There are optional WS2812B RGB LEDs which can be used to indicate the status of each of the 4 channels.
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-classic/classic-schematic.pdf">
-<img height="320" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-classic/classic-schematic.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/classic-schematic.pdf">
+<img height="320" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/classic-schematic.png"/>
 </a>
 
 The PCB layout is 10cm x 5cm which makes it fairly cheap to produce using a low-cost PCB manufacturer (e.g. Seeed Studio).
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-classic/classic-pcb-raster.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-classic/classic-pcb-raster.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/classic-pcb-raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/classic-pcb-raster.png"/>
 </a>
 
 
 Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 
-* Bill of Materials ([csv](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-classic/bom/splitflap-bom.csv), [interactive](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-classic/bom/splitflap-ibom.html))
-* PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-classic/classic-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-classic/classic-pcb-packet.pdf))
-* Panelized PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-classic/classic-panelized-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-classic/classic-panelized-pcb-packet.pdf))
+* Bill of Materials ([csv](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/bom/splitflap-bom.csv), [interactive](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/bom/splitflap-ibom.html))
+* PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/classic-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/classic-pcb-packet.pdf))
+* Panelized PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/classic-panelized-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/classic-panelized-pcb-packet.pdf))
 
 <sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases/latest) instead
 
@@ -285,8 +285,8 @@ Driver boards can be chained together to construct a large display.
 power management/distribution and fault monitoring, UART and RS-485 connections, configuration switches, and status LEDs.
 
 #### Chainlink Driver
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink/chainlinkDriver-3d.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink/chainlinkDriver-3d.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/chainlinkDriver-3d.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/chainlinkDriver-3d.png"/>
 </a>
 
 This is currently under active development. It has been tested and appears to work, but is not yet recommended for general use.
@@ -305,30 +305,30 @@ to validate data integrity up and down the whole chain
 * Module order goes from right-to-left since this is intended to be installed and accessed from *behind* the modules
 
 This design is optimized for assembly at JLCPCB, and files are automatically generated for ordering assembled PCBs there.
-However, if you wish to assemble this board yourself, you can view the [interactive BOM/placement tool](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink/bom/chainlinkDriver-ibom.html)
+However, if you wish to assemble this board yourself, you can view the [interactive BOM/placement tool](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/bom/chainlinkDriver-ibom.html)
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink/chainlinkDriver-schematic.pdf">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink/chainlinkDriver-schematic.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/chainlinkDriver-schematic.pdf">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/chainlinkDriver-schematic.png"/>
 </a>
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink/chainlinkDriver-pcb-raster.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink/chainlinkDriver-pcb-raster.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/chainlinkDriver-pcb-raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/chainlinkDriver-pcb-raster.png"/>
 </a>
 
 Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 
-* Schematic [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink/chainlinkDriver-schematic.pdf)
-* PCB overview [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink/chainlinkDriver-pcb-packet.pdf)
-* PCB gerbers [zip](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink/chainlinkDriver-jlc/gerbers.zip)
-* PCB bom (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink/chainlinkDriver-jlc/bom.csv)
-* PCB CPL (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink/chainlinkDriver-jlc/pos.csv)
-* PCB bom (for manual assembly) [interactive](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink/bom/chainlinkDriver-ibom.html)
+* Schematic [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/chainlinkDriver-schematic.pdf)
+* PCB overview [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/chainlinkDriver-pcb-packet.pdf)
+* PCB gerbers [zip](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/chainlinkDriver-jlc/gerbers.zip)
+* PCB bom (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/chainlinkDriver-jlc/bom.csv)
+* PCB CPL (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/chainlinkDriver-jlc/pos.csv)
+* PCB bom (for manual assembly) [interactive](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/bom/chainlinkDriver-ibom.html)
 
 <sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases/latest) instead
 
 #### Chainlink Buddy \[T-Display\]
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-3d.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-3d.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-3d.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-3d.png"/>
 </a>
 
 This is currently under very active development. It is untested.
@@ -343,53 +343,53 @@ Key features:
 and then run a wire from the onboard screw terminals to the Chainlink Driver's motor power screw terminals.
 * Optional 5V regulator allows for powering the ESP32 without a USB connection, using the 12V motor power supply
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-schematic.pdf">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-schematic.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-schematic.pdf">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-schematic.png"/>
 </a>
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-pcb-raster.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-pcb-raster.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-pcb-raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-pcb-raster.png"/>
 </a>
 
 Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 
-* Schematic [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-schematic.pdf)
-* PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-pcb-packet.pdf))
-* Panelized PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-panelized-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-panelized-pcb-packet.pdf))
-* PCB bom (for manual assembly) [interactive](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-t-display/bom/chainlinkBuddyTDisplay-ibom.html)
+* Schematic [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-schematic.pdf)
+* PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-pcb-packet.pdf))
+* Panelized PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-panelized-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-panelized-pcb-packet.pdf))
+* PCB bom (for manual assembly) [interactive](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-t-display/bom/chainlinkBuddyTDisplay-ibom.html)
 
 <sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases/latest) instead
 
 #### Chainlink Buddy \[Breadboard\]
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-3d.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-3d.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-3d.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-3d.png"/>
 </a>
 
 This is currently under very active development. It is untested.
 
 The Chainlink Buddy \[Breadboard\] makes it easy to connect a Chainlink Driver to a breadboard for prototyping. You could use 5 dupont wires, or use a ribbon cable and this slick breakout board.
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-schematic.pdf">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-schematic.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-schematic.pdf">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-schematic.png"/>
 </a>
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-pcb-raster.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-pcb-raster.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-pcb-raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-pcb-raster.png"/>
 </a>
 
 Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 
-* Schematic [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-schematic.pdf)
-* PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-pcb-packet.pdf))
-* Panelized PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-panelized-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-panelized-pcb-packet.pdf))
-* PCB bom (for manual assembly) [interactive](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-buddy-breadboard/bom/chainlinkBuddyBreadboard-ibom.html)
+* Schematic [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-schematic.pdf)
+* PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-pcb-packet.pdf))
+* Panelized PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-panelized-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-panelized-pcb-packet.pdf))
+* PCB bom (for manual assembly) [interactive](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-breadboard/bom/chainlinkBuddyBreadboard-ibom.html)
 
 <sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases/latest) instead
 
 
 #### Chainlink Base
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-base/chainlinkBase-3d.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-base/chainlinkBase-3d.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/chainlinkBase-3d.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/chainlinkBase-3d.png"/>
 </a>
 
 This is currently under very active development. It has been tested and appears to work, but is not yet recommended for general use.
@@ -404,7 +404,7 @@ large (50+ module) display.
 
 Key features:
 * TTGO T-Display ESP32 module as the controller, which includes USB-C, color IPS LCD display and buttons
-* Optional dev/chainlinkIdc relay output for 12V PSU control (5V relay, up to ~500mA coil current)
+* Optional master relay output for 12V PSU control (5V relay, up to ~500mA coil current)
   * Future firmware will power on the 12V PSU after a startup self-test, and power off PSU in case of any faults
 * 5 channels of independently monitored 12V switches for powering groups of Chainlink Driver boards (6-10A max per channel)
   * Depending on the motors you use, each channel may be able to power about 6 Chainlink Driver boards which is 36 splitflap modules
@@ -415,22 +415,22 @@ Key features:
 * Flexible controller input power
   * USB power from the T-Display works by default, though external power is recommended for larger displays
   * Regulated 5V can be connected directly to the screw terminals, or
-  * if you are using an always-on 12V PSU without a dev/chainlinkIdc relay, you can install a buck module and power the board from 12V using the 7-28V screw terminals
+  * if you are using an always-on 12V PSU without a master relay, you can install a buck module and power the board from 12V using the 7-28V screw terminals
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-base/chainlinkBase-schematic.pdf">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-base/chainlinkBase-schematic.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/chainlinkBase-schematic.pdf">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/chainlinkBase-schematic.png"/>
 </a>
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-base/chainlinkBase-pcb-raster.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-base/chainlinkBase-pcb-raster.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/chainlinkBase-pcb-raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/chainlinkBase-pcb-raster.png"/>
 </a>
 
 Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 
-* Schematic [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-base/chainlinkBase-schematic.pdf)
-* PCB overview [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-base/chainlinkBase-pcb-packet.pdf)
-* PCB gerbers [zip](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-base/chainlinkBase-jlc/gerbers.zip)
-* PCB bom (for manual assembly) [interactive](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-base/bom/chainlinkBase-ibom.html)
+* Schematic [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/chainlinkBase-schematic.pdf)
+* PCB overview [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/chainlinkBase-pcb-packet.pdf)
+* PCB gerbers [zip](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/chainlinkBase-jlc/gerbers.zip)
+* PCB bom (for manual assembly) [interactive](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/bom/chainlinkBase-ibom.html)
 
 <sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases/latest) instead
 
@@ -464,8 +464,8 @@ All of these designs are parametric and customizable within OpenSCAD. To print t
 
 
 #### Chainlink Driver Tester
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-tester/chainlinkDriverTester-3d.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-tester/chainlinkDriverTester-3d.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-tester/chainlinkDriverTester-3d.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-tester/chainlinkDriverTester-3d.png"/>
 </a>
 
 This is not likely to be useful unless you're planning to manufacture dozens to hundreds of Chainlink Driver boards, but the Chainlink Driver Tester is a complete testbed
@@ -485,25 +485,25 @@ Key features:
 * Buzzer option for audible pass/fail feedback
 
 
-[Download gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-tester/chainlinkDriverTester-jlc/gerbers.zip)
+[Download gerbers](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-tester/chainlinkDriverTester-jlc/gerbers.zip)
 
-[View the interactive BOM/placement tool](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-tester/bom/chainlinkDriverTester-ibom.html)
+[View the interactive BOM/placement tool](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-tester/bom/chainlinkDriverTester-ibom.html)
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-tester/chainlinkDriverTester-schematic.pdf">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-tester/chainlinkDriverTester-schematic.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-tester/chainlinkDriverTester-schematic.pdf">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-tester/chainlinkDriverTester-schematic.png"/>
 </a>
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-tester/chainlinkDriverTester-pcb-raster.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-tester/chainlinkDriverTester-pcb-raster.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-tester/chainlinkDriverTester-pcb-raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-tester/chainlinkDriverTester-pcb-raster.png"/>
 </a>
 
 
 Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 
-* Schematic [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-base/chainlinkBase-schematic.pdf)
-* PCB overview [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-base/chainlinkBase-pcb-packet.pdf)
-* PCB gerbers [zip](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-base/chainlinkBase-jlc/gerbers.zip)
-* PCB bom (for manual assembly) [interactive](https://s3.amazonaws.com/splitflap-artifacts/dev/chainlinkIdc/electronics-chainlink-base/bom/chainlinkBase-ibom.html)
+* Schematic [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/chainlinkBase-schematic.pdf)
+* PCB overview [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/chainlinkBase-pcb-packet.pdf)
+* PCB gerbers [zip](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/chainlinkBase-jlc/gerbers.zip)
+* PCB bom (for manual assembly) [interactive](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/bom/chainlinkBase-ibom.html)
 
 <sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases/latest) instead
 
