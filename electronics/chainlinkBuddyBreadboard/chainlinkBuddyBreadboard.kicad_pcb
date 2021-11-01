@@ -2,7 +2,7 @@
 
   (general
     (thickness 1.6)
-    (drawings 27)
+    (drawings 28)
     (tracks 16)
     (zones 0)
     (modules 2)
@@ -34,7 +34,7 @@
   )
 
   (setup
-    (last_trace_width 0.5)
+    (last_trace_width 0.25)
     (user_trace_width 0.25)
     (user_trace_width 0.5)
     (trace_clearance 0.2)
@@ -123,9 +123,6 @@
     (fp_text value Conn_01x05_Male (at 0 -12.49) (layer B.Fab)
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
     )
-    (fp_text user %R (at 0 -5.08 -90) (layer B.Fab)
-      (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
-    )
     (fp_line (start 1.8 1.8) (end -1.8 1.8) (layer B.CrtYd) (width 0.05))
     (fp_line (start 1.8 -11.95) (end 1.8 1.8) (layer B.CrtYd) (width 0.05))
     (fp_line (start -1.8 -11.95) (end 1.8 -11.95) (layer B.CrtYd) (width 0.05))
@@ -135,6 +132,9 @@
     (fp_line (start 1.27 -11.43) (end -1.27 -11.43) (layer B.Fab) (width 0.1))
     (fp_line (start 1.27 1.27) (end 1.27 -11.43) (layer B.Fab) (width 0.1))
     (fp_line (start -0.635 1.27) (end 1.27 1.27) (layer B.Fab) (width 0.1))
+    (fp_text user %R (at 0 -5.08 -90) (layer B.Fab)
+      (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
+    )
     (pad 5 thru_hole oval (at 0 -10.16) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask)
       (net 5 /CLOCK))
     (pad 4 thru_hole oval (at 0 -7.62) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask)
@@ -218,6 +218,9 @@
     )
   )
 
+  (gr_text v1.0 (at 95.885 81.28) (layer F.SilkS) (tstamp 61813620)
+    (effects (font (size 0.8 0.8) (thickness 0.09) italic) (justify right))
+  )
   (dimension 19.05 (width 0.15) (layer Cmts.User)
     (gr_text "19.050 mm" (at 59.660001 73.025 270) (layer Cmts.User)
       (effects (font (size 1 1) (thickness 0.15)))
@@ -303,8 +306,8 @@
   (gr_text GND (at 71.12 69.215) (layer B.SilkS) (tstamp 617D937F)
     (effects (font (size 1 1) (thickness 0.12)) (justify right mirror))
   )
-  (gr_text "Splitflap Chainlink Buddy\n[Breadboard]" (at 83.82 65.405) (layer F.SilkS) (tstamp 617D5187)
-    (effects (font (size 1 1) (thickness 0.1) italic))
+  (gr_text "Splitflap Chainlink Buddy\n[Breadboard]" (at 83.82 65.405) (layer F.SilkS) (tstamp 61813BD6)
+    (effects (font (size 1 1) (thickness 0.12)))
   )
   (gr_line (start 63.5 82.55) (end 63.5 63.5) (layer Edge.Cuts) (width 0.05) (tstamp 617D3FFE))
   (gr_line (start 96.52 82.55) (end 63.5 82.55) (layer Edge.Cuts) (width 0.05) (tstamp 617D599A))
