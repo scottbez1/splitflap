@@ -77,7 +77,7 @@ I'd love to hear your thoughts and questions about this project, and happy to in
   * [Code](#code)
     + [Firmware](#firmware)
     + [Computer Control Software](#computer-control-software)
-- [Contributing/Modifying](#contributing--modifying)
+- [Contributing/Modifying](#contributingmodifying)
   * [3D Design](#3d-design)
   * [Electronics Design](#electronics-design)
 
@@ -324,7 +324,7 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 * PCB CPL (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/chainlinkDriver-jlc/pos.csv)
 * PCB bom (for manual assembly) [interactive](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/bom/chainlinkDriver-ibom.html)
 
-<sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases/latest) instead
+<sup>:warning:</sup>There are currently no stable releases of this board. Once the board design is tested and recommended, a stable release will be created on the [Releases dashboard](https://github.com/scottbez1/splitflap/releases/latest)
 
 #### Chainlink Buddy \[T-Display\]
 <a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-3d.png">
@@ -358,7 +358,7 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 * Panelized PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-panelized-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-panelized-pcb-packet.pdf))
 * PCB bom (for manual assembly) [interactive](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-t-display/bom/chainlinkBuddyTDisplay-ibom.html)
 
-<sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases/latest) instead
+<sup>:warning:</sup>There are currently no stable releases of this board. Once the board design is tested and recommended, a stable release will be created on the [Releases dashboard](https://github.com/scottbez1/splitflap/releases/latest)
 
 #### Chainlink Buddy \[Breadboard\]
 <a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-3d.png">
@@ -384,7 +384,7 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 * Panelized PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-panelized-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-panelized-pcb-packet.pdf))
 * PCB bom (for manual assembly) [interactive](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-breadboard/bom/chainlinkBuddyBreadboard-ibom.html)
 
-<sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases/latest) instead
+<sup>:warning:</sup>There are currently no stable releases of this board. Once the board design is tested and recommended, a stable release will be created on the [Releases dashboard](https://github.com/scottbez1/splitflap/releases/latest)
 
 
 #### Chainlink Base
@@ -432,7 +432,7 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 * PCB gerbers [zip](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/chainlinkBase-jlc/gerbers.zip)
 * PCB bom (for manual assembly) [interactive](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/bom/chainlinkBase-ibom.html)
 
-<sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases/latest) instead
+<sup>:warning:</sup>There are currently no stable releases of this board. Once the board design is tested and recommended, a stable release will be created on the [Releases dashboard](https://github.com/scottbez1/splitflap/releases/latest)
 
 
 ### Miscellaneous Tools
@@ -505,9 +505,9 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 * PCB gerbers [zip](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/chainlinkBase-jlc/gerbers.zip)
 * PCB bom (for manual assembly) [interactive](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/bom/chainlinkBase-ibom.html)
 
-<sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases/latest) instead
-
-
+<sup>:warning:</sup>There are currently no stable releases of this board, and there may never be as it is a niche production tool, not an end product. If you
+need this tool, you are likely actively involved in development and should understand the revision history and current status of development enough to make
+an informed decision about which revision(s) to use.
 
 
 ## Code
@@ -600,7 +600,7 @@ The design can be rendered to a series of STL files (one per color used in the m
 
 
 ## Electronics Design
-All of the electronics are developed using KiCad 5. Panelization is provided by (KiKit)[https://github.com/yaqwsx/KiKit] and gerber/BOM generation is provided by (KiBot)[https://github.com/INTI-CMNB/KiBot].
+All of the electronics are developed using KiCad 5. Panelization is provided by [KiKit](https://github.com/yaqwsx/KiKit) and gerber/BOM generation is provided by [KiBot](https://github.com/INTI-CMNB/KiBot).
 
 ### Rendering
 The mechanical and electrical design renderings and links above are automatically updated on every commit with the latest rendering. See this blog post for more details on how that works: [Automated KiCad, OpenSCAD rendering using Travis CI](http://scottbezek.blogspot.com/2016/04/automated-kicad-openscad-rendering.html).
