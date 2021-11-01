@@ -56,10 +56,10 @@ I'd love to hear your thoughts and questions about this project, and happy to in
 # Table of Contents
 - [Rough Cost Breakdown](#rough-cost-breakdown)
   * [Housing](#housing)
-  * [Hardware & Consumables](#hardware---consumables)
+  * [Hardware & Consumables](#hardware--consumables)
   * [Flaps](#flaps)
   * [PCB](#pcb)
-  * [Electronics & Motor](#electronics---motor)
+  * [Electronics & Motor](#electronics--motor)
 - [Design Overview](#design-overview)
   * [Mechanical](#mechanical)
   * [Electronics](#electronics)
@@ -67,8 +67,8 @@ I'd love to hear your thoughts and questions about this project, and happy to in
     + [Classic Controller Electronics](#classic-controller-electronics)
     + [Chainlink Electronics](#chainlink-electronics)
       - [Chainlink Driver](#chainlink-driver)
-      - [Chainlink Buddy \[T-Display\]](#chainlink-buddy---t-display--)
-      - [Chainlink Buddy \[Breadboard\]](#chainlink-buddy---breadboard--)
+      - [Chainlink Buddy \[T-Display\]](#chainlink-buddy-t-display)
+      - [Chainlink Buddy \[Breadboard\]](#chainlink-buddy-breadboard)
       - [Chainlink Base](#chainlink-base)
     + [Miscellaneous Tools](#miscellaneous-tools)
       - [Flaps and Fonts](#flaps-and-fonts)
@@ -77,7 +77,7 @@ I'd love to hear your thoughts and questions about this project, and happy to in
   * [Code](#code)
     + [Firmware](#firmware)
     + [Computer Control Software](#computer-control-software)
-- [Contributing/Modifying/Local-Rendering Info](#contributing-modifying-local-rendering-info)
+- [Contributing/Modifying](#contributing--modifying)
   * [3D Design](#3d-design)
   * [Electronics Design](#electronics-design)
 
@@ -279,8 +279,8 @@ The Chainlink system requires 2 core elements:
 Driver boards can be chained together to construct a large display.
 * Some kind of ESP32 microcontroller board. There are a few options:
     * For small/medium displays, one of the **Chainlink Buddy** boards are recommended
-        * Chainlink Buddy [T-Display]  holds a Lilygo T-Display ESP32 module which includes a built-in LCD and 2 buttons
-        * Chainlink Buddy [Breadboard] makes it easy to connect a Chainlink Driver to a breadboard for prototyping, though you can also easily connect a Chainlink Driver to a breadboard with a few dupont wires.
+        * **Chainlink Buddy [T-Display]**  holds a Lilygo T-Display ESP32 module which includes a built-in LCD and 2 buttons
+        * **Chainlink Buddy [Breadboard]** makes it easy to connect a Chainlink Driver to a breadboard for prototyping, though you can also easily connect a Chainlink Driver to a breadboard with a few dupont wires.
     * For large displays, the **Chainlink Base** provides a number of advanced features: central
 power management/distribution and fault monitoring, UART and RS-485 connections, configuration switches, and status LEDs.
 
@@ -564,7 +564,7 @@ This recalibrates all modules, including any that were in the `sensor_error` sta
 
 
 
-# Contributing/Modifying/Local-Rendering Info
+# Contributing/Modifying
 
 Looking to make some modifications or play around with the design on your local machine? Jump right in! Note that all of the scripts and automation are developed for Ubuntu. Mac OS support is planned,
 but not currently implemented (but feel free to open a PR if you want to help!).
