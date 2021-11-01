@@ -60,7 +60,7 @@ Connection ~ 2200 8400
 Wire Wire Line
 	1800 9100 1150 9100
 Text Label 1150 9100 0    50   ~ 0
-MOTOR_LATCH_IN
+LATCH_IN
 $Comp
 L power:GND #PWR08
 U 1 1 5F49587F
@@ -103,7 +103,7 @@ Connection ~ 4650 8400
 Wire Wire Line
 	4250 9100 3600 9100
 Text Label 3600 9100 0    50   ~ 0
-MOTOR_LATCH_IN
+LATCH_IN
 $Comp
 L power:GND #PWR027
 U 1 1 5F4A62BC
@@ -200,7 +200,7 @@ Connection ~ 9550 8400
 Wire Wire Line
 	9150 9100 8500 9100
 Text Label 8500 9100 0    50   ~ 0
-MOTOR_LATCH_IN
+LATCH_IN
 $Comp
 L power:GND #PWR033
 U 1 1 5F5739F0
@@ -275,8 +275,6 @@ Wire Wire Line
 Wire Wire Line
 	15050 5250 15050 5300
 NoConn ~ 15650 6650
-Text Label 13250 5800 0    50   ~ 0
-SENSOR_LATCH_IN
 Text Label 13250 6000 0    50   ~ 0
 CLOCK_IN
 $Comp
@@ -1124,56 +1122,32 @@ Wire Wire Line
 $Comp
 L power:GND #PWR04
 U 1 1 60FBE6C2
-P 1500 6950
-F 0 "#PWR04" H 1500 6700 50  0001 C CNN
-F 1 "GND" H 1505 6777 50  0000 C CNN
-F 2 "" H 1500 6950 50  0001 C CNN
-F 3 "" H 1500 6950 50  0001 C CNN
-	1    1500 6950
+P 2550 6850
+F 0 "#PWR04" H 2550 6600 50  0001 C CNN
+F 1 "GND" H 2555 6677 50  0000 C CNN
+F 2 "" H 2550 6850 50  0001 C CNN
+F 3 "" H 2550 6850 50  0001 C CNN
+	1    2550 6850
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR020
 U 1 1 60FBEBB8
-P 3550 6950
-F 0 "#PWR020" H 3550 6700 50  0001 C CNN
-F 1 "GND" H 3555 6777 50  0000 C CNN
-F 2 "" H 3550 6950 50  0001 C CNN
-F 3 "" H 3550 6950 50  0001 C CNN
-	1    3550 6950
+P 4150 6850
+F 0 "#PWR020" H 4150 6600 50  0001 C CNN
+F 1 "GND" H 4155 6677 50  0000 C CNN
+F 2 "" H 4150 6850 50  0001 C CNN
+F 3 "" H 4150 6850 50  0001 C CNN
+	1    4150 6850
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	1450 6900 1500 6900
-Wire Wire Line
-	1500 6900 1500 6950
-Wire Wire Line
-	3600 6900 3550 6900
-Wire Wire Line
-	3550 6900 3550 6950
-Wire Wire Line
-	1450 6400 2050 6400
-Wire Wire Line
-	1450 6700 2050 6700
-Wire Wire Line
-	1450 6500 2050 6500
-Wire Wire Line
-	1450 6600 2050 6600
-Text Label 2050 6400 2    50   ~ 0
-CLOCK_IN
-Text Label 2050 6700 2    50   ~ 0
-MOTOR_LATCH_IN
-Text Label 2050 6500 2    50   ~ 0
-MOTOR_IN
-Text Label 2050 6600 2    50   ~ 0
-SENSOR_OUT
-Text Label 2850 6400 0    50   ~ 0
+Text Label 2900 6400 0    50   ~ 0
 CLOCK_OUT
-Text Label 2850 6700 0    50   ~ 0
-MOTOR_LATCH_OUT
-Text Label 2850 6500 0    50   ~ 0
+Text Label 2900 6700 0    50   ~ 0
+LATCH_OUT
+Text Label 2900 6500 0    50   ~ 0
 MOTOR_OUT
-Text Label 2850 6600 0    50   ~ 0
+Text Label 2900 6600 0    50   ~ 0
 SENSOR_IN
 $Comp
 L Device:LED_Small D1
@@ -1886,7 +1860,7 @@ Connection ~ 7100 8400
 Wire Wire Line
 	6700 9100 6050 9100
 Text Label 6050 9100 0    50   ~ 0
-MOTOR_LATCH_IN
+LATCH_IN
 $Comp
 L power:GND #PWR040
 U 1 1 6084DCEC
@@ -2167,14 +2141,10 @@ F 3 "~" H 15800 750 50  0001 C CNN
 $EndComp
 Text Label 8200 6200 0    50   ~ 0
 CLOCK_IN
-Text Label 8200 6400 0    50   ~ 0
-MOTOR_LATCH_IN
 Text Label 8200 6800 0    50   ~ 0
 MOTOR_OUT_PRE_BUFFER
 Text Label 11050 6250 2    50   ~ 0
 CLOCK_OUT
-Text Label 11050 6450 2    50   ~ 0
-MOTOR_LATCH_OUT
 Text Label 11050 6850 2    50   ~ 0
 MOTOR_OUT
 Wire Wire Line
@@ -2184,8 +2154,6 @@ Wire Wire Line
 Wire Wire Line
 	9450 6500 9350 6500
 Connection ~ 9350 6500
-Wire Wire Line
-	9350 6500 9350 6700
 Wire Wire Line
 	9350 6700 9450 6700
 Connection ~ 9350 6700
@@ -2221,56 +2189,20 @@ F 5 "0;0;-90" H 9850 6550 50  0001 C CNN "JLCPCB_CORRECTION"
 	1    9850 6550
 	1    0    0    -1  
 $EndComp
-Text Label 8200 6600 0    50   ~ 0
-SENSOR_LATCH_IN
-Wire Wire Line
-	8200 6600 9450 6600
 Wire Wire Line
 	10250 6250 11050 6250
 Wire Wire Line
 	10250 6450 11050 6450
 Wire Wire Line
 	10250 6850 11050 6850
-Text Label 11050 6650 2    50   ~ 0
-SENSOR_LATCH_OUT
 Wire Wire Line
-	10250 6650 11050 6650
+	2900 6400 3650 6400
 Wire Wire Line
-	1450 6800 2050 6800
-Text Label 2050 6800 2    50   ~ 0
-SENSOR_LATCH_IN
-Text Label 2850 6800 0    50   ~ 0
-SENSOR_LATCH_OUT
+	2900 6700 3650 6700
 Wire Wire Line
-	2850 6400 3600 6400
+	2900 6500 3650 6500
 Wire Wire Line
-	2850 6700 3600 6700
-Wire Wire Line
-	2850 6800 3600 6800
-Wire Wire Line
-	2850 6500 3600 6500
-Wire Wire Line
-	2850 6600 3600 6600
-Text Label 5350 6950 0    50   ~ 0
-MOTOR_LATCH_IN
-Text Label 7450 6950 2    50   ~ 0
-SENSOR_LATCH_IN
-Wire Wire Line
-	5350 6950 6250 6950
-Wire Wire Line
-	6450 6950 7450 6950
-$Comp
-L Device:R_Small R13
-U 1 1 60F91757
-P 6350 6950
-F 0 "R13" V 6154 6950 50  0000 C CNN
-F 1 "0R" V 6245 6950 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" H 6350 6950 50  0001 C CNN
-F 3 "~" H 6350 6950 50  0001 C CNN
-F 4 "C21189" V 6350 6950 50  0001 C CNN "LCSC"
-	1    6350 6950
-	0    1    1    0   
-$EndComp
+	2900 6600 3650 6600
 Wire Wire Line
 	9450 6900 9350 6900
 Connection ~ 9350 6900
@@ -2315,12 +2247,8 @@ Text Notes 7600 4600 0    50   ~ 0
 Do not use O7 on TPL7407L\n(see note above)
 Text Notes 10250 4600 0    50   ~ 0
 Do not use O7 on TPL7407L\n(see note above)
-Text Notes 5400 7200 0    50   ~ 0
-Output and input latches can be combined using R13\nto reduce number of wires needed between boards.
 Text Notes 10250 7550 0    50   ~ 0
 Motor data does not need to be buffered for transmission reasons\n(it is 1:1 from one board to the next, not bussed), but it is buffered\nto keep timing in sync with the buffered clock.\n\n74HC595 chaining relies on narrow propagation delay > hold time\nmargin to work, so we need to be cognizant of anything that may\ncause data to change sooner after the rising clock edge (reducing\neffective propagation delay)
-Text Notes 1350 6100 0    50   ~ 0
-Use shielded 5 conductor (or 4 conductor if using R13) cable.\nConnect shield to GND at both ends.
 $Comp
 L Connector:Screw_Terminal_01x02 J16
 U 1 1 604CA397
@@ -2361,84 +2289,6 @@ F 5 "2.40;0;0" H 1600 1300 50  0001 C CNN "JLCPCB_CORRECTION"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector:Screw_Terminal_01x02 J4
-U 1 1 605198F6
-P 1250 6900
-F 0 "J4" H 1500 6800 50  0000 C CNN
-F 1 "Inputs" H 1450 6900 50  0000 C CNN
-F 2 "ScrewTerminals:C8465_WJ500V-5.08-2P" H 1250 6900 50  0001 C CNN
-F 3 "~" H 1250 6900 50  0001 C CNN
-F 4 "C8465" H 1250 6900 50  0001 C CNN "LCSC"
-F 5 "2.40;0;0" H 1250 6900 50  0001 C CNN "JLCPCB_CORRECTION"
-	1    1250 6900
-	-1   0    0    1   
-$EndComp
-$Comp
-L Connector:Screw_Terminal_01x02 J2
-U 1 1 6055C477
-P 1250 6700
-F 0 "J2" H 1500 6600 50  0000 C CNN
-F 1 "Inputs" H 1450 6700 50  0000 C CNN
-F 2 "ScrewTerminals:C8465_WJ500V-5.08-2P" H 1250 6700 50  0001 C CNN
-F 3 "~" H 1250 6700 50  0001 C CNN
-F 4 "C8465" H 1250 6700 50  0001 C CNN "LCSC"
-F 5 "2.40;0;0" H 1250 6700 50  0001 C CNN "JLCPCB_CORRECTION"
-	1    1250 6700
-	-1   0    0    1   
-$EndComp
-$Comp
-L Connector:Screw_Terminal_01x02 J1
-U 1 1 6055C6FC
-P 1250 6500
-F 0 "J1" H 1500 6400 50  0000 C CNN
-F 1 "Inputs" H 1450 6500 50  0000 C CNN
-F 2 "ScrewTerminals:C8465_WJ500V-5.08-2P" H 1250 6500 50  0001 C CNN
-F 3 "~" H 1250 6500 50  0001 C CNN
-F 4 "C8465" H 1250 6500 50  0001 C CNN "LCSC"
-F 5 "2.40;0;0" H 1250 6500 50  0001 C CNN "JLCPCB_CORRECTION"
-	1    1250 6500
-	-1   0    0    1   
-$EndComp
-$Comp
-L Connector:Screw_Terminal_01x02 J19
-U 1 1 6055DB99
-P 3800 6400
-F 0 "J19" H 4050 6300 50  0000 C CNN
-F 1 "Outputs" H 4000 6400 50  0000 C CNN
-F 2 "ScrewTerminals:C8465_WJ500V-5.08-2P" H 3800 6400 50  0001 C CNN
-F 3 "~" H 3800 6400 50  0001 C CNN
-F 4 "C8465" H 3800 6400 50  0001 C CNN "LCSC"
-F 5 "2.40;0;0" H 3800 6400 50  0001 C CNN "JLCPCB_CORRECTION"
-	1    3800 6400
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector:Screw_Terminal_01x02 J20
-U 1 1 6056062F
-P 3800 6600
-F 0 "J20" H 4050 6500 50  0000 C CNN
-F 1 "Outputs" H 4000 6600 50  0000 C CNN
-F 2 "ScrewTerminals:C8465_WJ500V-5.08-2P" H 3800 6600 50  0001 C CNN
-F 3 "~" H 3800 6600 50  0001 C CNN
-F 4 "C8465" H 3800 6600 50  0001 C CNN "LCSC"
-F 5 "2.40;0;0" H 3800 6600 50  0001 C CNN "JLCPCB_CORRECTION"
-	1    3800 6600
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector:Screw_Terminal_01x02 J21
-U 1 1 60560DD4
-P 3800 6800
-F 0 "J21" H 4050 6700 50  0000 C CNN
-F 1 "Outputs" H 4000 6800 50  0000 C CNN
-F 2 "ScrewTerminals:C8465_WJ500V-5.08-2P" H 3800 6800 50  0001 C CNN
-F 3 "~" H 3800 6800 50  0001 C CNN
-F 4 "C8465" H 3800 6800 50  0001 C CNN "LCSC"
-F 5 "2.40;0;0" H 3800 6800 50  0001 C CNN "JLCPCB_CORRECTION"
-	1    3800 6800
-	1    0    0    -1  
-$EndComp
-$Comp
 L Device:R_Small R14
 U 1 1 60866A83
 P 14200 6750
@@ -2460,4 +2310,78 @@ Wire Wire Line
 Wire Wire Line
 	14200 7000 15050 7000
 Connection ~ 15050 7000
+Text Label 1450 6600 0    50   ~ 0
+SENSOR_OUT
+Text Label 1450 6500 0    50   ~ 0
+MOTOR_IN
+Text Label 1450 6700 0    50   ~ 0
+LATCH_IN
+Text Label 1450 6400 0    50   ~ 0
+CLOCK_IN
+Wire Wire Line
+	1450 6600 2050 6600
+Wire Wire Line
+	1450 6500 2050 6500
+Wire Wire Line
+	1450 6700 2050 6700
+Wire Wire Line
+	1450 6400 2050 6400
+$Comp
+L Connector_Generic:Conn_02x04_Odd_Even J19
+U 1 1 61861E9F
+P 2250 6500
+F 0 "J19" H 2300 6817 50  0000 C CNN
+F 1 "Input" H 2300 6726 50  0000 C CNN
+F 2 "ModifiedSymbols:IDC-Header_2x04_P2.54mm_Vertical" H 2250 6500 50  0001 C CNN
+F 3 "~" H 2250 6500 50  0001 C CNN
+	1    2250 6500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2550 6400 2550 6500
+Connection ~ 2550 6500
+Wire Wire Line
+	2550 6500 2550 6600
+Connection ~ 2550 6600
+Wire Wire Line
+	2550 6600 2550 6700
+Connection ~ 2550 6700
+Wire Wire Line
+	2550 6700 2550 6850
+$Comp
+L Connector_Generic:Conn_02x04_Odd_Even J20
+U 1 1 618D5E87
+P 3850 6500
+F 0 "J20" H 3900 6817 50  0000 C CNN
+F 1 "Output" H 3900 6726 50  0000 C CNN
+F 2 "ModifiedSymbols:IDC-Header_2x04_P2.54mm_Vertical" H 3850 6500 50  0001 C CNN
+F 3 "~" H 3850 6500 50  0001 C CNN
+	1    3850 6500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4150 6850 4150 6700
+Connection ~ 4150 6500
+Wire Wire Line
+	4150 6500 4150 6400
+Connection ~ 4150 6600
+Wire Wire Line
+	4150 6600 4150 6500
+Connection ~ 4150 6700
+Wire Wire Line
+	4150 6700 4150 6600
+Text Label 8200 6400 0    50   ~ 0
+LATCH_IN
+Text Label 11050 6450 2    50   ~ 0
+LATCH_OUT
+NoConn ~ 10250 6650
+Wire Wire Line
+	9450 6600 9350 6600
+Wire Wire Line
+	9350 6500 9350 6600
+Wire Wire Line
+	9350 6600 9350 6700
+Connection ~ 9350 6600
+Text Label 13250 5800 0    50   ~ 0
+LATCH_IN
 $EndSCHEMATC
