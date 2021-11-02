@@ -1,0 +1,22 @@
+(module Pin_Header_Right_Angle_1x03 (layer F.Cu) (tedit 61809C8C)
+  (descr "Through hole pin header")
+  (tags "pin header")
+  (fp_text reference P100 (at -2.032 0 -270) (layer F.SilkS) hide
+    (effects (font (size 1 1) (thickness 0.15)))
+  )
+  (fp_text value SENSOR (at -2.032 4.318 -270) (layer F.Fab) hide
+    (effects (font (size 1 1) (thickness 0.15)))
+  )
+  (fp_line (start -1.2 6.28) (end 1.2 6.28) (layer F.SilkS) (width 0.15))
+  (fp_line (start -1.2 -1.2) (end -1.2 6.28) (layer F.SilkS) (width 0.15))
+  (fp_line (start 1.2 -1.2) (end 1.2 6.28) (layer F.SilkS) (width 0.15))
+  (fp_line (start -1.2 -1.2) (end 1.2 -1.2) (layer F.SilkS) (width 0.15))
+  (pad 1 thru_hole rect (at 0 0) (size 1.75 1.75) (drill 1) (layers *.Cu *.Mask))
+  (pad 2 thru_hole circle (at 0 2.54) (size 1.75 1.75) (drill 1) (layers *.Cu *.Mask))
+  (pad 3 thru_hole circle (at 0 5.08) (size 1.75 1.75) (drill 1) (layers *.Cu *.Mask))
+  (model ${KISYS3DMOD}/Connector_PinHeader_2.54mm.3dshapes/PinHeader_1x03_P2.54mm_Horizontal.step
+    (at (xyz 0 0 0))
+    (scale (xyz 1 1 1))
+    (rotate (xyz 0 0 0))
+  )
+)

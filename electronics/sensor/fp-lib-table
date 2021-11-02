@@ -1,3 +1,4 @@
 (fp_lib_table
   (lib (name hall_effect)(type KiCad)(uri ${KIPRJMOD}/../lib/hall_effect.pretty)(options "")(descr ""))
+  (lib (name ModifiedSymbols)(type KiCad)(uri ${KIPRJMOD}/../lib/ModifiedSymbols.pretty)(options "")(descr ""))
 )
