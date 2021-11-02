@@ -483,4 +483,37 @@ $EndComp
 Wire Wire Line
 	2000 4100 2250 4100
 Connection ~ 2250 4100
+$Comp
+L Connector_Generic:Conn_01x04 J7
+U 1 1 61C9DDB1
+P 3300 5750
+F 0 "J7" H 3380 5742 50  0000 L CNN
+F 1 "Conn_01x04" H 3380 5651 50  0000 L CNN
+F 2 "ModifiedSymbols:PinHoles_1x04_P2.54mm_NoSilk" H 3300 5750 50  0001 C CNN
+F 3 "~" H 3300 5750 50  0001 C CNN
+	1    3300 5750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3100 5450 3100 5650
+Connection ~ 3100 5650
+Wire Wire Line
+	3100 5650 3100 5750
+Connection ~ 3100 5750
+Wire Wire Line
+	3100 5750 3100 5850
+Connection ~ 3100 5850
+Wire Wire Line
+	3100 5850 3100 5950
+$Comp
+L power:+12V #PWR0111
+U 1 1 61CA0D35
+P 3100 5450
+F 0 "#PWR0111" H 3100 5300 50  0001 C CNN
+F 1 "+12V" H 3115 5623 50  0000 C CNN
+F 2 "" H 3100 5450 50  0001 C CNN
+F 3 "" H 3100 5450 50  0001 C CNN
+	1    3100 5450
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
