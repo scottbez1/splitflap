@@ -1,11 +1,11 @@
-(module pogo1mm (layer F.Cu) (tedit 607389DA)
+(module pogo1mm (layer F.Cu) (tedit 617F1EC7)
   (fp_text reference REF** (at 0 0.5) (layer F.SilkS) hide
     (effects (font (size 1 1) (thickness 0.15)))
   )
   (fp_text value pogo1mm (at 0 -0.5) (layer F.Fab)
     (effects (font (size 1 1) (thickness 0.15)))
   )
-  (pad 1 thru_hole circle (at 0 0) (size 1.8 1.8) (drill 1.1) (layers *.Cu *.Mask))
+  (pad 1 thru_hole circle (at 0 0) (size 1.8 1.8) (drill 1) (layers *.Cu *.Mask))
   (model ../lib/Pogo.models/pogo1mmPoint.step
     (offset (xyz 0 0 -10.5))
     (scale (xyz 1 1 1))
