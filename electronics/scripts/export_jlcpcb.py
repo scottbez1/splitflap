@@ -33,7 +33,7 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
-def export_jlcpcb(pcb, schematic):
+def export_jlcpcb(pcb, schematic, alt_fields):
     pcb_file = os.path.abspath(pcb)
 
     output_dir = os.path.join(electronics_root, 'build', os.path.splitext(os.path.basename(pcb_file))[0] + '-jlc')
@@ -51,7 +51,9 @@ def export_jlcpcb(pcb, schematic):
                 '--assembly',
                 '--schematic',
                 schematic_file,
+                '--field',
             ]
+            command.append(','.join(alt_fields + ['LCSC']))
         command += [
             pcb_file,
             output_dir,
@@ -63,5 +65,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('pcb')
     parser.add_argument('--assembly-schematic')
+    parser.add_argument('--alt-fields', nargs='+')
     args = parser.parse_args()
-    export_jlcpcb(args.pcb, args.assembly_schematic)
+    export_jlcpcb(args.pcb, args.assembly_schematic, args.alt_fields)

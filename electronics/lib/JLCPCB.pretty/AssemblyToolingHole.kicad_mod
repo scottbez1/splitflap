@@ -1,4 +1,5 @@
-(module AssemblyToolingHole (layer F.Cu) (tedit 6019FC6C)
+(module AssemblyToolingHole (layer F.Cu) (tedit 61803CCC)
+  (attr virtual)
   (fp_text reference REF** (at 0 0.5) (layer F.SilkS) hide
     (effects (font (size 1 1) (thickness 0.15)))
   )
