@@ -35,7 +35,7 @@ render_3d = true;
 
 // 3d parameters:
 render_enclosure = 2; // 0=invisible; 1=translucent; 2=opaque color;
-render_flaps = 2; // 0=invisible; 1=front flap only; 2=all flaps
+render_flaps = 1; // 0=invisible; 1=front flap only; 2=all flaps
 render_flap_area = 0; // 0=invisible; 1=collapsed flap exclusion; 2=collapsed+extended flap exclusion
 render_letters = 1;  // 0=invisible; 1=front flap only; 2=all flaps
 render_string = "44";
@@ -177,7 +177,7 @@ enclosure_wall_to_wall_width = thickness + spool_width_slop/2 + spool_width_clea
 // Width of the front panel
 enclosure_width = enclosure_wall_to_wall_width + 28byj48_chassis_height() + 28byj48_chassis_height_clearance - thickness - 28byj48_mount_bracket_height();
 front_window_upper_base = (flap_height - flap_pin_width/2);
-front_window_overhang = 3;
+front_window_overhang = 1;
 front_window_upper = front_window_upper_base - front_window_overhang;
 front_window_lower = sqrt(outer_exclusion_radius*outer_exclusion_radius - front_forward_offset*front_forward_offset);
 front_window_height = front_window_lower+front_window_upper;

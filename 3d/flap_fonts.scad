@@ -20,12 +20,14 @@ use<roboto/RobotoCondensed-Regular.ttf>;
 
 use<../../../Dropbox/splitflap/font_selection/Epilogue/Epilogue-VariableFont_wght.ttf>;
 use<../../../Dropbox/splitflap/font_selection/PoiretOne/PoiretOne-Regular.ttf>;
+use<../../../Dropbox/splitflap/font_selection/Voltaire/Voltaire-Regular.otf>;
+use<../../../Dropbox/splitflap/font_selection/PTSansNarrow/PTSansNarrow-Regular.ttf>;
 
 // -----------------------
 // Configurable parameters
 // -----------------------
 
-font_preset = "Poiret";   // See available presets below
+font_preset = "Epilogue";   // See available presets below
 letter_gap_comp = true;         // Shifts letter positions to compensate for gap between flaps
 
 // ---------------------------
@@ -53,6 +55,7 @@ letter_gap_comp = true;         // Shifts letter positions to compensate for gap
 //              - Additional Y position offset, in mm (e.g. 2.5). Can be undef or 0 to omit.
 //              - Height override, as a value relative to flap height (e.g. 0.7). Replaces letter_height for this letter. Can be undef to omit.
 //              - Width override, as a value relative to default font width (e.g. 0.7). Replaces letter_width for this letter. Can be undef to omit.
+//              - Thickness offset override.
 _font_settings = [
     "Roboto", [
         "font", "RobotoCondensed",
@@ -91,29 +94,71 @@ _font_settings = [
     ],
 
     "Epilogue", [
-        "font", "Epilogue:style=ExtraLight",
-        "height", 0.55,
-        "width", 1,
-        "offset_x", -0.6,
+        "font", "Epilogue:style=Regular",
+        "height", 0.65,
+        "width", 0.95,
+        "offset_x", -0.65,
         "offset_y", 1.2,
-        "thickness_offset", 0.5,
+        "thickness_offset", -0.5,
         "overrides", [
-            ["@", 1.2, 0, undef, 0.88]
+            ["@", 1.2, 0, .65, 0.7, 0.4],
+            ["W", -0.15, undef, undef, 0.845, 0.005],
         ],
-        "color_height", 0.565,
+        // "color_height", 0.565,
         "color_offset_y", 1.7,
     ],
 
     "Poiret", [
         "font", "PoiretOne",
-        "height", 0.42,
-        "width", 1,
+        "height", 0.65,
+        "width", 0.75,
         "offset_x", -0.6,
         "offset_y", 0.65,
-        "overrides", [],
-        "thickness_offset", 0.5,
+        "overrides", [
+            ["W", 0, 0, 0.65, 0.7]
+        ],
+        "thickness_offset", 2,
         "color_height", 0.455,
         "color_offset_y", 1.4,
+    ],
+
+    "Voltaire", [
+        "font", "Voltaire:style=Regular",
+        "height", 0.75,
+        "width", 1,
+        "offset_x", -0.6,
+        "offset_y", -0.65,
+        "overrides", [],
+        // "color_height", 0.455,
+        // "color_offset_y", 1.4,
+    ],
+
+    "PTSansNarrow", [
+        "font", "PTSansNarrow",
+        "height", 0.7,
+        "width", 1,
+        "offset_x", -0.6,
+        "offset_y", 2,
+        "overrides", [
+            ["@", 0, 4, 0.65, 0.8],
+            ["Q", 0, 4, 0.6],
+        ],
+        // "color_height", 0.455,
+        // "color_offset_y", 1.4,
+    ],
+
+    "Righteous", [
+        "font", "Righteous",
+        "height", 0.6,
+        "width", 1,
+        "offset_x", 0,
+        "offset_y", 0,
+        "overrides", [
+            // ["@", 0, 4, 0.65, 0.8],
+            // ["Q", 0, 4, 0.6],
+        ],
+        // "color_height", 0.455,
+        // "color_offset_y", 1.4,
     ],
 ];
 

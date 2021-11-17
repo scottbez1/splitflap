@@ -21,7 +21,7 @@
 #define HOME_CALIBRATION_ENABLED true
 
 // 3) Flap Contents & Order
-#define NUM_FLAPS (40)
+#define NUM_FLAPS (52)
 
 // This should match the order of flaps on the spool, with the first being the
 // "home" flap.
@@ -33,6 +33,7 @@ const uint8_t flaps[NUM_FLAPS] = {
   '.',
   ',',
   '\'',
+  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
 };
 
 // 4) Hardware configuration and features

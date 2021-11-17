@@ -113,7 +113,7 @@ module _draw_letter(letter, flap_gap) {
     width = is_undef(overrides[4]) ? get_font_setting("width") : overrides[4];
     offset_x = is_undef(overrides[1]) ? get_font_setting("offset_x") : get_font_setting("offset_x") + overrides[1];
     offset_y = is_undef(overrides[2]) ? get_font_setting("offset_y") : get_font_setting("offset_y") + overrides[2];
-    thickness_offset = is_undef(get_font_setting("thickness_offset")) ? 0 : get_font_setting("thickness_offset");
+    thickness_offset = is_undef(overrides[5]) ? (is_undef(get_font_setting("thickness_offset")) ? 0 : get_font_setting("thickness_offset")) : overrides[5];
 
     color_index = search([letter], color_list);
     if (len(color_index) > 0 && is_num(color_index[0])) {

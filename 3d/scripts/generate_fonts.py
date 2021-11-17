@@ -36,8 +36,9 @@ from util import rev_info
 
 _MODES = {
     'double-sided': 0,
-    'full-font': 1,
-    'side-by-side': 2,
+    'front-back': 1,
+    'full-font': 2,
+    'side-by-side': 3,
 }
 
 def render(extra_variables, skip_optimize, output_directory):
@@ -73,7 +74,6 @@ if __name__ == '__main__':
 
     parser.add_argument('--no-comp', action='store_true', default=False, help='Don\'t compensate for the gap between top and bottom flaps')
     parser.add_argument('--alignment', action='store_true', help='Render alignment markers for registration when printing onto flaps')
-    parser.add_argument('--flip', action='store_true', help='Flip the design over')
 
     parser.add_argument('--bleed', type=float, help='Bleed amount for letters, in mm')
     parser.add_argument('--kerf', type=float, help='Override kerf_width value')
@@ -118,20 +118,26 @@ if __name__ == '__main__':
 
     extra_variables['layout_mode'] = _MODES[args.mode]
     
-    if args.mode == 'double-sided':
+    if args.mode in ['double-sided', 'front-back']:
         extra_variables['render_alignment_marks'] = args.alignment
 
         extra_variables['only_side'] = 1
-        extra_variables['flip_over'] = args.flip
+        extra_variables['flip_entire_layout'] = False
+        extra_variables['flip_individual_flaps'] = False
         render(extra_variables, args.skip_optimize, os.path.join(fonts_directory, 'front'))
 
         extra_variables['only_side'] = 2
-        extra_variables['flip_over'] = not args.flip
+        if args.mode == 'double-sided':
+            extra_variables['flip_entire_layout'] = True
+            extra_variables['flip_individual_flaps'] = False
+        elif args.mode == 'front-back':
+            extra_variables['flip_entire_layout'] = False
+            extra_variables['flip_individual_flaps'] = True
         render(extra_variables, args.skip_optimize, os.path.join(fonts_directory, 'back'))
     else:
         if args.alignment:
             raise RuntimeError('Alignment markers are only compatible with double-sided rendering')
 
         extra_variables['only_side'] = 1
-        extra_variables['flip_over'] = args.flip
+        extra_variables['flip_entire_layout'] = False
         render(extra_variables, args.skip_optimize, fonts_directory)
