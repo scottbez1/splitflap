@@ -196,9 +196,10 @@ The mechanical/structural components are made from laser-cut 3mm MDF or acrylic,
 ![2d laser cut rendering](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_raster.png)
 
 Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
-* For Ponoko 3mm MDF ([svg](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-ponoko-3mm-mdf.svg))
-* For Ponoko 3mm acrylic ([svg](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-ponoko-3mm-acrylic.svg))
-* For generic material (0.18mm kerf correction) ([svg](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector.svg))
+* For Ponoko 3mm MDF ([1x svg](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-ponoko-3mm-mdf_1x.svg), [4x svg](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-ponoko-3mm-mdf_4x.svg))
+* For Ponoko 3mm acrylic ([1x svg](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-ponoko-3mm-acrylic_1x.svg), [4x svg](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-ponoko-3mm-acrylic_4x.svg),)
+* For generic material (0.18mm kerf correction) ([1x svg](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector.svg))
+* For Elecrow 3mm Wood ([1x zipped pdf](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-elecrow-3mm-wood_1x.zip))
 
 <sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases/latest) instead
 
@@ -490,10 +491,6 @@ Key features:
 * Large cutout allows a barcode scanner or camera to be aimed at the bottom of the board-under-test for tracking serial numbers.
 * Buzzer option for audible pass/fail feedback
 
-
-[Download gerbers](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-tester/chainlinkDriverTester-jlc/gerbers.zip)
-
-[View the interactive BOM/placement tool](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-tester/bom/chainlinkDriverTester-ibom.html)
 
 <a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-tester/chainlinkDriverTester-schematic.pdf">
 <img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-tester/chainlinkDriverTester-schematic.png"/>

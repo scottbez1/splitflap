@@ -25,12 +25,15 @@
 #include "serial_task.h"
 
 SplitflapTask splitflapTask(1, LedMode::AUTO);
-DisplayTask displayTask(splitflapTask, 0);
 SerialTask serialTask(splitflapTask, 0);
 
 #ifdef MQTT
 #include "mqtt_task.h"
 MQTTTask mqttTask(splitflapTask, serialTask, 0);
+#endif
+
+#if ENABLE_DISPLAY
+DisplayTask displayTask(splitflapTask, 0);
 #endif
 
 #ifdef CHAINLINK_BASE
@@ -40,8 +43,11 @@ BaseSupervisorTask baseSupervisorTask(splitflapTask, serialTask, 0);
 
 void setup() {
   splitflapTask.begin();
-  displayTask.begin();
   serialTask.begin();
+
+  #if ENABLE_DISPLAY
+  displayTask.begin();
+  #endif
 
   #ifdef MQTT
   mqttTask.begin();

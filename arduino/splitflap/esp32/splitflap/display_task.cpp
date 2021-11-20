@@ -18,8 +18,8 @@
 
 DisplayTask::DisplayTask(SplitflapTask& splitflap_task, const uint8_t task_core) : Task{"Display", 8192, 1, task_core}, splitflap_task_{splitflap_task} {}
 
-static const int32_t MODULE_WIDTH = 8;
-static const int32_t MODULE_HEIGHT = 13;
+static const int32_t MODULE_WIDTH = 20;
+static const int32_t MODULE_HEIGHT = 26;
 
 void DisplayTask::run() {
     tft_.begin();
@@ -29,6 +29,7 @@ void DisplayTask::run() {
     spr_.setColorDepth(16);
     spr_.createSprite(TFT_HEIGHT, TFT_WIDTH);
     spr_.setTextFont(0);
+    spr_.setTextSize(3);
     spr_.setTextColor(0xFFFF, TFT_BLACK);
 
     uint8_t module_row, module_col;

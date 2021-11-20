@@ -71,7 +71,7 @@ void SplitflapTask::run() {
         for (uint8_t j = 0; j < NUM_LOOPBACKS; j++) {
           if (!loopback_result[i][j]) {
             char buffer[200] = {};
-            snprintf(buffer, sizeof(buffer), "Bad loopback. Set output %u but read incorrect value at input %u", i, j);
+            snprintf(buffer, sizeof(buffer), "Loopback ERROR. Set output %u but read incorrect value at input %u", i, j);
             log(buffer);
           }
         }
@@ -79,14 +79,12 @@ void SplitflapTask::run() {
       for (uint8_t j = 0; j < NUM_LOOPBACKS; j++) {
         if (!loopback_off_result[j]) {
             char buffer[200] = {};
-            snprintf(buffer, sizeof(buffer), "Bad loopback at input %u when all outputs off - should have been 0", j);
+            snprintf(buffer, sizeof(buffer), "Loopback ERROR. Loopback %u was set when all outputs off - should have been 0", j);
             log(buffer);
         }
       }
 
-      while(1) {
-          ESP_ERROR_CHECK(esp_task_wdt_reset());
-      }
+      disableAll();
     }
 #else
     loopback_all_ok_ = true;
@@ -132,7 +130,7 @@ void SplitflapTask::processQueue() {
                             // No-op
                             break;
                         case QCMD_RESET_AND_HOME:
-                            modules[i]->ResetErrorCounters();
+                            modules[i]->ResetState();
                             modules[i]->GoHome();
                             break;
                         case QCMD_LED_ON:
@@ -258,7 +256,8 @@ void SplitflapTask::runUpdate() {
       if (!ok && loopback_all_ok_) {
         // Publish failures immediately
         loopback_all_ok_ = false;
-        log("Loopback status changed to 0!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        log("Loopback ERROR!");
+        disableAll();
       }
     } else if (loopback_step_index_ == 50) {
       loopback_step_index_ = 0;
@@ -267,10 +266,8 @@ void SplitflapTask::runUpdate() {
       // If we've iterated through all loopbacks, save the results of this run and restart
       // from the first loopback again.
       if (loopback_current_out_index_ >= NUM_LOOPBACKS) {
-        if (loopback_all_ok_ != loopback_current_ok_) {
-            char buffer[200] = {};
-            snprintf(buffer, sizeof(buffer), "Loopback status changed to %u", loopback_current_ok_);
-            log(buffer);
+        if (loopback_current_ok_ && !loopback_all_ok_) {
+            log("Loopback is ok!");
         }
         loopback_all_ok_ = loopback_current_ok_;
         loopback_current_ok_ = true;

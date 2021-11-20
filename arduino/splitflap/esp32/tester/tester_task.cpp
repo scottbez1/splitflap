@@ -33,13 +33,13 @@
 #define PIN_BUTTON_BOTTOM 0
 
 #define MCP_PIN_LED_SENSOR_0 0
-#define MCP_PIN_CLAMP 6
+#define MCP_PIN_CLAMP 12
 #define MCP_PIN_BUZZER 11
 
 // Number of modules being tested (different than NUM_MODULES since we only need to test 1 module on the chained board)
 #define TEST_MODULES 7
 
-#define TEST_SUITE_VERSION 6
+#define TEST_SUITE_VERSION 9
 
 using namespace json11;
 
@@ -327,11 +327,11 @@ Result TesterTask::testPowerPreCheck() {
             disableHardware();
             return Result::fail("Timeout waiting for power test feed. Current voltage: " + String(voltage_));
         }
-        if (millis() - start > 200 && current_ > 10) {
+        if (millis() - start > 400 && current_ > 15) {
             disableHardware();
             return Result::fail("Over-current during test feed: " + String(current_));
         }
-        if (millis() - start > 200 && voltage_ > 2.5) {
+        if (millis() - start > 400 && voltage_ > 2.5) {
             digitalWrite(PIN_MOTOR_TEST_FEED, LOW);
             return Result::pass("Power pre-check OK. " + String(voltage_) + "V, " + String(current_) + "mA");
         }
@@ -571,7 +571,7 @@ void TesterTask::connectWifi() {
 void TesterTask::syncTime() {
     sntp_setoperatingmode(SNTP_OPMODE_POLL);
 
-    char server[] = "time-a-g.nist.gov"; // sntp_setservername takes a non-const char*, so use a non-const variable to avoid warning
+    char server[] = "time.nist.gov"; // sntp_setservername takes a non-const char*, so use a non-const variable to avoid warning
     sntp_setservername(0, server);
     sntp_init();
     time_t now = 0;
