@@ -341,6 +341,7 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 <a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-3d.png">
 <img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-3d.png"/>
 </a>
+
 The Chainlink Buddy \[T-Display\] is a convenient way to connect a T-Display ESP32 board (recommended microcontroller) to a chain
 of Chainlink Drivers.
 
@@ -381,6 +382,9 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 The Chainlink Buddy \[Breadboard\] makes it easy to connect a Chainlink Driver to a breadboard for prototyping. You could use 5 dupont wires and have a
 messy rats nest, or you could use a single ribbon cable and this slick breakout board.
 
+Chainlink Buddy \[Breadboard\] boards are [available in the Bezek Labs store](https://www.etsy.com/listing/1123863267/splitflap-chainlink-buddy-breadboard),
+and come with the additional connectors you'll need. Purchases support continued development of this project. 
+
 <a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-schematic.pdf">
 <img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-schematic.png"/>
 </a>
@@ -388,11 +392,6 @@ messy rats nest, or you could use a single ribbon cable and this slick breakout 
 <a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-pcb-raster.png">
 <img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-pcb-raster.png"/>
 </a>
-
-
-Chainlink Buddy \[Breadboard\] boards are [available in the Bezek Labs store](https://www.etsy.com/listing/1123863267/splitflap-chainlink-buddy-breadboard),
-and come with the additional connectors you'll need. Purchases support continued development of this project. 
-
 
 Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 
