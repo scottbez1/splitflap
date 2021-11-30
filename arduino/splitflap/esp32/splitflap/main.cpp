@@ -27,9 +27,14 @@
 SplitflapTask splitflapTask(1, LedMode::AUTO);
 SerialTask serialTask(splitflapTask, 0);
 
-#ifdef MQTT
+#if MQTT
 #include "mqtt_task.h"
 MQTTTask mqttTask(splitflapTask, serialTask, 0);
+#endif
+
+#if HTTP
+#include "http_task.h"
+HTTPTask httpTask(splitflapTask, serialTask, 0);
 #endif
 
 #if ENABLE_DISPLAY
@@ -42,20 +47,43 @@ BaseSupervisorTask baseSupervisorTask(splitflapTask, serialTask, 0);
 #endif
 
 void setup() {
-  splitflapTask.begin();
+  char buf[200];
   serialTask.begin();
+
+  snprintf(buf, sizeof(buf), "1 Free heap: %u, block: %u", ESP.getFreeHeap(), ESP.getMaxAllocHeap());
+  serialTask.log(buf);
+
+  splitflapTask.begin();
+
+  snprintf(buf, sizeof(buf), "2 Free heap: %u, block: %u", ESP.getFreeHeap(), ESP.getMaxAllocHeap());
+  serialTask.log(buf);
 
   #if ENABLE_DISPLAY
   displayTask.begin();
   #endif
 
-  #ifdef MQTT
+  snprintf(buf, sizeof(buf), "3 Free heap: %u, block: %u", ESP.getFreeHeap(), ESP.getMaxAllocHeap());
+  serialTask.log(buf);
+
+  delay(5000);
+
+  snprintf(buf, sizeof(buf), "4 Free heap: %u, block: %u", ESP.getFreeHeap(), ESP.getMaxAllocHeap());
+  serialTask.log(buf);
+
+  #if MQTT
   mqttTask.begin();
   #endif
+
+
+  #if HTTP
+  httpTask.begin();
+  #endif
+
 
   #ifdef CHAINLINK_BASE
   baseSupervisorTask.begin();
   #endif
+
 
   // Delete the default Arduino loopTask to free up Core 1
   vTaskDelete(NULL);

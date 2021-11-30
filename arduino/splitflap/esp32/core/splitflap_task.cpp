@@ -28,7 +28,7 @@
 
 static_assert(QCMD_FLAP + NUM_FLAPS <= 255, "Too many flaps to fit in uint8_t command structure");
 
-SplitflapTask::SplitflapTask(const uint8_t task_core, const LedMode led_mode) : Task("Splitflap", 8192, 1, task_core), led_mode_(led_mode), state_semaphore_(xSemaphoreCreateMutex()) {
+SplitflapTask::SplitflapTask(const uint8_t task_core, const LedMode led_mode) : Task("Splitflap", 2048, 1, task_core), led_mode_(led_mode), state_semaphore_(xSemaphoreCreateMutex()) {
   assert(state_semaphore_ != NULL);
   xSemaphoreGive(state_semaphore_);
 

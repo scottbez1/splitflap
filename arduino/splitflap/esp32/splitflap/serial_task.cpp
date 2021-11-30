@@ -18,7 +18,7 @@
 #include "../core/uart_stream.h"
 
 SerialTask::SerialTask(SplitflapTask& splitflap_task, const uint8_t task_core) :
-        Task("Serial", 16000, 1, task_core),
+        Task("Serial", 10000, 1, task_core),
         Logger(),
         splitflap_task_(splitflap_task),
         stream_(),
@@ -42,7 +42,6 @@ void SerialTask::run() {
 
     SplitflapState last_state = {};
     while(1) {
-        // TODO: set up task notifications or message queues for state changes instead of polling?
         SplitflapState new_state = splitflap_task_.getState();
 
         if (new_state != last_state) {
@@ -51,7 +50,6 @@ void SerialTask::run() {
         }
 
         current_protocol->loop();
-        // TODO: add mechanism for changing protocols...
 
         std::string* log_string;
         while (xQueueReceive(log_queue_, &log_string, 0) == pdTRUE) {
