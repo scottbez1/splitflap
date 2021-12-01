@@ -17,7 +17,9 @@
 #include "http_task.h"
 
 #include <HTTPClient.h>
+#include <lwip/apps/sntp.h>
 #include <json11.hpp>
+#include <time.h>
 
 #include "secrets.h"
 
@@ -40,10 +42,16 @@ using namespace json11;
 // Cycle the message that's showing more frequently, every 30 seconds (exaggerated for example purposes)
 #define MESSAGE_CYCLE_INTERVAL_MILLIS (30 * 1000)
 
+// Don't show stale data if it's been too long since successful data load
+#define STALE_TIME_MILLIS (REQUEST_INTERVAL_MILLIS * 3)
+
 // Public token for synoptic data api (it's not secret, but please don't abuse it)
 #define SYNOPTICDATA_TOKEN "e763d68537d9498a90fa808eb9d415d9"
 
-void HTTPTask::fetchData() {
+// Timezone for local time strings; this is America/Los_Angeles. See https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv
+#define TIMEZONE "PST8PDT,M3.2.0,M11.1.0"
+
+bool HTTPTask::fetchData() {
     char buf[200];
     uint32_t start = millis();
     HTTPClient http;
@@ -71,19 +79,21 @@ void HTTPTask::fetchData() {
         Json json = Json::parse(data.c_str(), err);
 
         if (err.empty()) {
-            handleData(json);
+            return handleData(json);
         } else {
             snprintf(buf, sizeof(buf), "Error parsing response! %s", err.c_str());
             logger_.log(buf);
+            return false;
         }
     } else {
         snprintf(buf, sizeof(buf), "Error on HTTP request (%d): %s", http_code, http.errorToString(http_code).c_str());
         logger_.log(buf);
         http.end();
+        return false;
     }
 }
 
-void HTTPTask::handleData(Json json) {
+bool HTTPTask::handleData(Json json) {
     // Extract data from the json response. You could use ArduinoJson, but I find json11 to be much
     // easier to use albeit not optimized for a microcontroller.
 
@@ -129,7 +139,7 @@ void HTTPTask::handleData(Json json) {
     auto station = json["STATION"];
     if (!station.is_array()) {
         logger_.log("Parse error: STATION");
-        return;
+        return false;
     }
     auto station_array = station.array_items();
 
@@ -176,7 +186,7 @@ void HTTPTask::handleData(Json json) {
     auto entries = temps.size();
     if (entries == 0) {
         logger_.log("No data found");
-        return;
+        return false;
     }
 
     // Calculate medians
@@ -204,27 +214,56 @@ void HTTPTask::handleData(Json json) {
 
     snprintf(buf, sizeof(buf), "%d mph", (int)(median_wind_speed * 1.151));
     messages_.push_back(String(buf));
+
+    // Show the data fetch time on the LCD
+    time_t now;
+    time(&now);
+    strftime(buf, sizeof(buf), "Data: %Y-%m-%d %H:%M:%S", localtime(&now));
+    display_task_.setMessage(0, String(buf));
+    return true;
 }
 
 
-HTTPTask::HTTPTask(SplitflapTask& splitflap_task, Logger& logger, const uint8_t task_core) :
+HTTPTask::HTTPTask(SplitflapTask& splitflap_task, DisplayTask& display_task, Logger& logger, const uint8_t task_core) :
         Task("HTTP", 8192, 1, task_core),
         splitflap_task_(splitflap_task),
+        display_task_(display_task),
         logger_(logger),
         wifi_client_() {
-
 }
 
 void HTTPTask::connectWifi() {
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+    char buf[256];
 
+    logger_.log("Establishing connection to WiFi..");
+    snprintf(buf, sizeof(buf), "Wifi connecting to %s", WIFI_SSID);
+    display_task_.setMessage(1, String(buf));
     while (WiFi.status() != WL_CONNECTED) {
         delay(1000);
-        logger_.log("Establishing connection to WiFi..");
     }
 
-    char buf[256];
     snprintf(buf, sizeof(buf), "Connected to network %s", WIFI_SSID);
+    logger_.log(buf);
+
+    // Sync SNTP
+    sntp_setoperatingmode(SNTP_OPMODE_POLL);
+
+    char server[] = "time.nist.gov"; // sntp_setservername takes a non-const char*, so use a non-const variable to avoid warning
+    sntp_setservername(0, server);
+    sntp_init();
+
+    logger_.log("Waiting for NTP time sync...");
+    snprintf(buf, sizeof(buf), "Syncing NTP time via %s...", server);
+    display_task_.setMessage(1, String(buf));
+    time_t now;
+    while (time(&now),now < 1625099485) {
+        delay(1000);
+    }
+
+    setenv("TZ", TIMEZONE, 1);
+    tzset();
+    strftime(buf, sizeof(buf), "Got time: %Y-%m-%d %H:%M:%S", localtime(&now));
     logger_.log(buf);
 }
 
@@ -233,17 +272,28 @@ void HTTPTask::run() {
 
     connectWifi();
 
+    bool stale = false;
     while(1) {
         long now = millis();
 
-        bool just_fetched = false;
+        bool update = false;
         if (http_last_request_time_ == 0 || now - http_last_request_time_ > REQUEST_INTERVAL_MILLIS) {
-            fetchData();
+            if (fetchData()) {
+                http_last_success_time_ = millis();
+                stale = false;
+                update = true;
+            }
             http_last_request_time_ = millis();
-            just_fetched = true;
         }
 
-        if (just_fetched || now - last_message_change_time_ > MESSAGE_CYCLE_INTERVAL_MILLIS) {
+        if (!stale && http_last_success_time_ > 0 && millis() - http_last_success_time_ > STALE_TIME_MILLIS) {
+            stale = true;
+            messages_.clear();
+            messages_.push_back("stale");
+            update = true;
+        }
+
+        if (update || now - last_message_change_time_ > MESSAGE_CYCLE_INTERVAL_MILLIS) {
             if (current_message_index_ >= messages_.size()) {
                 current_message_index_ = 0;
             }
@@ -264,6 +314,33 @@ void HTTPTask::run() {
             current_message_index_++;
             last_message_change_time_ = millis();
         }
+
+        String wifi_status;
+        switch (WiFi.status()) {
+            case WL_IDLE_STATUS:
+                wifi_status = "Idle";
+                break;
+            case WL_NO_SSID_AVAIL:
+                wifi_status = "No SSID";
+                break;
+            case WL_CONNECTED:
+                wifi_status = String(WIFI_SSID) + " " + WiFi.localIP().toString();
+                break;
+            case WL_CONNECT_FAILED:
+                wifi_status = "Connection failed";
+                break;
+            case WL_CONNECTION_LOST:
+                wifi_status = "Connection lost";
+                break;
+            case WL_DISCONNECTED:
+                wifi_status = "Disconnected";
+                break;
+            default:
+                wifi_status = "Unknown";
+                break;
+        }
+        display_task_.setMessage(1, String("Wifi: ") + wifi_status);
+
         delay(1000);
     }
 }

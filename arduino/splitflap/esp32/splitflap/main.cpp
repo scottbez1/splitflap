@@ -27,16 +27,6 @@
 SplitflapTask splitflapTask(1, LedMode::AUTO);
 SerialTask serialTask(splitflapTask, 0);
 
-#if MQTT
-#include "mqtt_task.h"
-MQTTTask mqttTask(splitflapTask, serialTask, 0);
-#endif
-
-#if HTTP
-#include "http_task.h"
-HTTPTask httpTask(splitflapTask, serialTask, 0);
-#endif
-
 #if ENABLE_DISPLAY
 DisplayTask displayTask(splitflapTask, 0);
 #endif
@@ -44,6 +34,16 @@ DisplayTask displayTask(splitflapTask, 0);
 #ifdef CHAINLINK_BASE
 #include "../base/base_supervisor_task.h"
 BaseSupervisorTask baseSupervisorTask(splitflapTask, serialTask, 0);
+#endif
+
+#if MQTT
+#include "mqtt_task.h"
+MQTTTask mqttTask(splitflapTask, serialTask, 0);
+#endif
+
+#if HTTP
+#include "http_task.h"
+HTTPTask httpTask(splitflapTask, displayTask, serialTask, 0);
 #endif
 
 void setup() {
