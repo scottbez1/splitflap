@@ -28,7 +28,7 @@
 
 static_assert(QCMD_FLAP + NUM_FLAPS <= 255, "Too many flaps to fit in uint8_t command structure");
 
-SplitflapTask::SplitflapTask(const uint8_t task_core, const LedMode led_mode) : Task("Splitflap", 8192, 1, task_core), led_mode_(led_mode), state_semaphore_(xSemaphoreCreateMutex()) {
+SplitflapTask::SplitflapTask(const uint8_t task_core, const LedMode led_mode) : Task("Splitflap", 2048, 1, task_core), led_mode_(led_mode), state_semaphore_(xSemaphoreCreateMutex()) {
   assert(state_semaphore_ != NULL);
   xSemaphoreGive(state_semaphore_);
 
@@ -176,6 +176,7 @@ void SplitflapTask::processQueue() {
                     }
 
                     if (config.target_flap_index != current_configs_.config[i].target_flap_index ||
+                            config.target_flap_index != modules[i]->GetTargetFlapIndex() ||
                             config.movement_nonce != current_configs_.config[i].movement_nonce) {
                         if (config.target_flap_index >= NUM_FLAPS) {
                             char buffer[200] = {};
@@ -316,13 +317,13 @@ void SplitflapTask::log(const char* msg) {
     }
 }
 
-void SplitflapTask::showString(const char* str, uint8_t length) {
+void SplitflapTask::showString(const char* str, uint8_t length, bool force_full_rotation) {
     Command command = {};
     command.command_type = CommandType::MODULES;
     for (uint8_t i = 0; i < length; i++) {
         int8_t index = findFlapIndex(str[i]);
         if (index != -1) {
-            if (FORCE_FULL_ROTATION || index != modules[i]->GetTargetFlapIndex()) {
+            if (force_full_rotation || index != modules[i]->GetTargetFlapIndex()) {
                 command.data.module_command[i] = QCMD_FLAP + index;
             }
         }

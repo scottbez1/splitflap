@@ -38,11 +38,27 @@ void SerialTask::run() {
     legacy_protocol_.init();
     SerialProtocol* current_protocol = &legacy_protocol_;
 
+    ProtocolChangeCallback protocol_change_callback = [this, &current_protocol] (uint8_t protocol) {
+        switch (protocol) {
+            case SERIAL_PROTOCOL_LEGACY:
+                current_protocol = &legacy_protocol_;
+                break;
+            case SERIAL_PROTOCOL_PROTO:
+                current_protocol = &proto_protocol_;
+                break;
+            default:
+                log("Unknown protocol requested");
+                break;
+        }
+    };
+
+    legacy_protocol_.setProtocolChangeCallback(protocol_change_callback);
+    proto_protocol_.setProtocolChangeCallback(protocol_change_callback);
+
     splitflap_task_.setLogger(this);
 
     SplitflapState last_state = {};
     while(1) {
-        // TODO: set up task notifications or message queues for state changes instead of polling?
         SplitflapState new_state = splitflap_task_.getState();
 
         if (new_state != last_state) {
@@ -51,7 +67,6 @@ void SerialTask::run() {
         }
 
         current_protocol->loop();
-        // TODO: add mechanism for changing protocols...
 
         std::string* log_string;
         while (xQueueReceive(log_queue_, &log_string, 0) == pdTRUE) {

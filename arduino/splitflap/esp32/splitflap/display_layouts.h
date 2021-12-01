@@ -17,20 +17,19 @@
 
 #include <stdint.h>
 
-
 // Customize these settings and select a layout algorithm at the bottom if you have a different arrangement of modules:
-static const uint8_t COLUMNS = 6;
+#define DISPLAY_COLUMNS 6
 
 
 // EXAMPLE LAYOUT ALGORITHMS:
 static void getLayoutPositionSingleRowZigZag(const uint8_t module_index, uint8_t* out_row, uint8_t* out_col) {
-    *out_row = module_index / COLUMNS;
+    *out_row = module_index / DISPLAY_COLUMNS;
 
     // Each row alternates left-to-right, then right-to-left so data can be easily chained,
     // winding back and forth down the rows.
     *out_col = (*out_row % 2) ?
-        (COLUMNS - 1 - (module_index % COLUMNS))
-        : module_index % COLUMNS;
+        (DISPLAY_COLUMNS - 1 - (module_index % DISPLAY_COLUMNS))
+        : module_index % DISPLAY_COLUMNS;
 
 }
 
@@ -55,7 +54,7 @@ static void getLayoutPositionSingleRowZigZag(const uint8_t module_index, uint8_t
  * viewed from the front side)
  */
 static void getLayoutPositionDualRowZigZag(const bool flip_first_rows, const uint8_t module_index, uint8_t* out_row, uint8_t* out_col) {
-    uint8_t row_pair = module_index / 2 / COLUMNS;
+    uint8_t row_pair = module_index / 2 / DISPLAY_COLUMNS;
     bool upside_down_row_pair = (row_pair + flip_first_rows) % 2;
 
     uint8_t row_base = row_pair * 2;
@@ -65,8 +64,8 @@ static void getLayoutPositionDualRowZigZag(const bool flip_first_rows, const uin
     // Every set of 2 rows alternates left-to-right, then right-to-left so data can be easily chained,
     // winding back and forth down the groups of rows.
     *out_col = upside_down_row_pair ?
-        (COLUMNS - 1 - ((module_index / 2) % COLUMNS))
-        : ((module_index / 2) % COLUMNS);
+        (DISPLAY_COLUMNS - 1 - ((module_index / 2) % DISPLAY_COLUMNS))
+        : ((module_index / 2) % DISPLAY_COLUMNS);
 }
 
 

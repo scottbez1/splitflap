@@ -1,5 +1,5 @@
 /*
-   Copyright 2020 Scott Bezek and the splitflap contributors
+   Copyright 2021 Scott Bezek and the splitflap contributors
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -16,21 +16,35 @@
 #pragma once
 
 #include <Arduino.h>
-#include <TFT_eSPI.h>
+#include <json11.hpp>
+#include <WiFi.h>
 
+#include "../core/logger.h"
 #include "../core/splitflap_task.h"
 #include "../core/task.h"
 
-class DisplayTask : public Task<DisplayTask> {
-    friend class Task<DisplayTask>; // Allow base Task to invoke protected run()
+
+class HTTPTask : public Task<HTTPTask> {
+    friend class Task<HTTPTask>; // Allow base Task to invoke protected run()
 
     public:
-        DisplayTask(SplitflapTask& splitflapTask, const uint8_t taskCore);
+        HTTPTask(SplitflapTask& splitflapTask, Logger& logger, const uint8_t taskCore);
 
     protected:
         void run();
 
     private:
+        void connectWifi();
+        void fetchData();
+        void handleData(json11::Json json);
+
         SplitflapTask& splitflap_task_;
-        TFT_eSPI tft_ = TFT_eSPI();
+        Logger& logger_;
+        WiFiClient wifi_client_;
+        uint32_t http_last_request_time_ = 0;
+
+        std::vector<String> messages_ = {};
+        uint8_t current_message_index_ = 0;
+        uint32_t last_message_change_time_ = 0;
+
 };

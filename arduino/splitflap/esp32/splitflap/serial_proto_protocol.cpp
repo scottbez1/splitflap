@@ -54,7 +54,7 @@ void SerialProtoProtocol::log(const char* msg) {
     pb_tx_buffer_ = {};
     pb_tx_buffer_.which_payload = PB_FromSplitflap_log_tag;
 
-    strncpy(pb_tx_buffer_.payload.log.msg, msg, sizeof(pb_tx_buffer_.payload.log.msg));
+    strlcpy(pb_tx_buffer_.payload.log.msg, msg, sizeof(pb_tx_buffer_.payload.log.msg));
 
     sendPbTxBuffer();
 }

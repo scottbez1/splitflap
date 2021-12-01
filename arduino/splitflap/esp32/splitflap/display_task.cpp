@@ -16,100 +16,118 @@
 #include "display_layouts.h"
 #include "display_task.h"
 
-DisplayTask::DisplayTask(SplitflapTask& splitflap_task, const uint8_t task_core) : Task{"Display", 8192, 1, task_core}, splitflap_task_{splitflap_task} {}
+DisplayTask::DisplayTask(SplitflapTask& splitflap_task, const uint8_t task_core) : Task{"Display", 6000, 1, task_core}, splitflap_task_{splitflap_task} {}
 
-static const int32_t MODULE_WIDTH = 20;
-static const int32_t MODULE_HEIGHT = 26;
+static const int32_t X_OFFSET = 10;
+static const int32_t Y_OFFSET = 10;
 
 void DisplayTask::run() {
     tft_.begin();
     tft_.invertDisplay(1);
     tft_.setRotation(1);
 
-    spr_.setColorDepth(16);
-    spr_.createSprite(TFT_HEIGHT, TFT_WIDTH);
-    spr_.setTextFont(0);
-    spr_.setTextSize(3);
-    spr_.setTextColor(0xFFFF, TFT_BLACK);
+    tft_.setTextFont(0);
+    tft_.setTextColor(0xFFFF, TFT_BLACK);
+
+    tft_.fillScreen(TFT_BLACK);
+
+    // Automatically scale display based on DISPLAY_COLUMNS (see display_layouts.h)
+    int32_t module_width = 20;
+    int32_t module_height = 26;
+    uint8_t text_size = 3;
+
+    uint8_t rows = ((NUM_MODULES + DISPLAY_COLUMNS - 1) / DISPLAY_COLUMNS);
+
+    if (DISPLAY_COLUMNS > 16 || rows > 6) {
+        module_width = 7;
+        module_height = 10;
+        text_size = 1;
+    } else if (DISPLAY_COLUMNS > 10 || rows > 4) {
+        module_width = 14;
+        module_height = 18;
+        text_size = 2;
+    }
+
+    tft_.setTextSize(text_size);
+    tft_.fillRect(X_OFFSET, Y_OFFSET, DISPLAY_COLUMNS * (module_width + 1) + 1, rows * (module_height + 1) + 1, 0x2104);
 
     uint8_t module_row, module_col;
     int32_t module_x, module_y;
+    SplitflapState last_state = {};
     while(1) {
         SplitflapState state = splitflap_task_.getState();
+        if (state != last_state) {
+            for (uint8_t i = 0; i < NUM_MODULES; i++) {
+                SplitflapModuleState& s = state.modules[i];
+                if (s == last_state.modules[i]) {
+                    continue;
+                }
 
-        static uint32_t loop_count = 0;
-        loop_count++;
+                uint16_t background = 0x0000;
+                uint16_t foreground = 0xFFFF;
 
-        spr_.fillSprite(TFT_BLACK);
-        spr_.fillRect(MODULE_WIDTH, MODULE_HEIGHT, COLUMNS * (MODULE_WIDTH + 1) + 1, ((NUM_MODULES + COLUMNS - 1) / COLUMNS) * (MODULE_HEIGHT + 1) + 1, 0x2104);
+                bool blink = (millis() / 400) % 2;
 
-        for (uint8_t i = 0; i < NUM_MODULES; i++) {
-            SplitflapModuleState& s = state.modules[i];
+                char c;
+                switch (s.state) {
+                    case NORMAL:
+                        c = flaps[s.flap_index];
+                        if (s.moving) {
+                            // use a dimmer color when moving
+                            foreground = 0x6b4d;
+                        }
 
-            uint16_t background = 0x0000;
-            uint16_t foreground = 0xFFFF;
+                        // You can add special-case color handling here if desired:
+                        // if (c == 'w') {
+                        //     c = ' ';
+                        //     background = 0xFFFF;
+                        // } else if (c == 'y') {
+                        //     c = ' ';
+                        //     background = 0xffe0;
+                        // } else if (c == 'o') {
+                        //     c = ' ';
+                        //     background = 0xfd00;
+                        // } else if (c == 'g') {
+                        //     c = ' ';
+                        //     background = 0x46a0;
+                        // } else if (c == 'p') {
+                        //     c = ' ';
+                        //     background = 0xd938;
+                        // }
+                        break;
+                    case PANIC:
+                        c = '~';
+                        background = blink ? 0xD000 : 0;
+                        break;
+                    case STATE_DISABLED:
+                        c = '*';
+                        break;
+                    case LOOK_FOR_HOME:
+                        c = '?';
+                        background = blink ? 0x6018 : 0;
+                        break;
+                    case SENSOR_ERROR:
+                        c = ' ';
+                        background = blink ? 0xD461 : 0;
+                        break;
+                    default:
+                        c = ' ';
+                        break;
+                }
+                getLayoutPosition(i, &module_row, &module_col);
 
-            bool blink = (millis() / 400) % 2;
+                // Add 1 to width/height as a separator line between modules
+                module_x = X_OFFSET + 1 + module_col * (module_width + 1);
+                module_y = Y_OFFSET + 1 + module_row * (module_height + 1);
 
-            char c;
-            switch (s.state) {
-                case NORMAL:
-                    c = flaps[s.flap_index];
-                    if (s.moving) {
-                        // use a dimmer color when moving
-                        foreground = 0x6b4d;
-                    }
-
-                    // You can add special-case color handling here if desired:
-                    // if (c == 'w') {
-                    //     c = ' ';
-                    //     background = 0xFFFF;
-                    // } else if (c == 'y') {
-                    //     c = ' ';
-                    //     background = 0xffe0;
-                    // } else if (c == 'o') {
-                    //     c = ' ';
-                    //     background = 0xfd00;
-                    // } else if (c == 'g') {
-                    //     c = ' ';
-                    //     background = 0x46a0;
-                    // } else if (c == 'p') {
-                    //     c = ' ';
-                    //     background = 0xd938;
-                    // }
-                    break;
-                case PANIC:
-                    c = '~';
-                    background = blink ? 0xD000 : 0;
-                    break;
-                case STATE_DISABLED:
-                    c = '*';
-                    break;
-                case LOOK_FOR_HOME:
-                    c = '?';
-                    background = blink ? 0x6018 : 0;
-                    break;
-                case SENSOR_ERROR:
-                    c = ' ';
-                    background = blink ? 0xD461 : 0;
-                    break;
-                default:
-                    c = ' ';
-                    break;
+                tft_.setTextColor(foreground, background);
+                tft_.fillRect(module_x, module_y, module_width, module_height, background);
+                tft_.setCursor(module_x + 1, module_y + 2);
+                tft_.printf("%c", c);
             }
-            getLayoutPosition(i, &module_row, &module_col);
-
-            // Leave an empty row and column for headers, and add 1 to width/height as a separator line between modules
-            module_x = (module_col + 1) * (MODULE_WIDTH + 1);
-            module_y = (module_row + 1) * (MODULE_HEIGHT + 1);
-
-            spr_.setTextColor(foreground, background);
-            spr_.fillRect(module_x, module_y, MODULE_WIDTH, MODULE_HEIGHT, background);
-            spr_.setCursor(module_x + 1, module_y + 2);
-            spr_.printf("%c", c);
+            last_state = state;
         }
 
-        spr_.pushSprite(0, 0);
         delay(10);
     }
 }
