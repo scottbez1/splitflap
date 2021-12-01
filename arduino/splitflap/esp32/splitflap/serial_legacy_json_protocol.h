@@ -18,8 +18,6 @@
 #include "serial_protocol.h"
 #include "../proto_gen/splitflap.pb.h"
 
-
-
 class SerialLegacyJsonProtocol : public SerialProtocol {
     public:
         SerialLegacyJsonProtocol(SplitflapTask& splitflap_task, Stream& stream) : SerialProtocol(splitflap_task), stream_(stream) {}

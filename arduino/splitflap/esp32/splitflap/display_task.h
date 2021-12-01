@@ -33,7 +33,4 @@ class DisplayTask : public Task<DisplayTask> {
     private:
         SplitflapTask& splitflap_task_;
         TFT_eSPI tft_ = TFT_eSPI();
-
-        // /** Full-size sprite used as a framebuffer */
-        // TFT_eSprite spr_ = TFT_eSprite(&tft_);
 };

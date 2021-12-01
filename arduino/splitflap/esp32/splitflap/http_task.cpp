@@ -66,7 +66,7 @@ void HTTPTask::fetchData() {
 
         snprintf(buf, sizeof(buf), "Response code: %d Data length: %d", http_code, data.length());
         logger_.log(buf);
-        
+
         std::string err;
         Json json = Json::parse(data.c_str(), err);
 

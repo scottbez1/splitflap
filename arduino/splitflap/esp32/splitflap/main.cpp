@@ -47,40 +47,25 @@ BaseSupervisorTask baseSupervisorTask(splitflapTask, serialTask, 0);
 #endif
 
 void setup() {
-  char buf[200];
   serialTask.begin();
 
-  snprintf(buf, sizeof(buf), "1 Free heap: %u, block: %u", ESP.getFreeHeap(), ESP.getMaxAllocHeap());
-  serialTask.log(buf);
-
   splitflapTask.begin();
-
-  snprintf(buf, sizeof(buf), "2 Free heap: %u, block: %u", ESP.getFreeHeap(), ESP.getMaxAllocHeap());
-  serialTask.log(buf);
 
   #if ENABLE_DISPLAY
   displayTask.begin();
   #endif
 
-  snprintf(buf, sizeof(buf), "3 Free heap: %u, block: %u", ESP.getFreeHeap(), ESP.getMaxAllocHeap());
-  serialTask.log(buf);
-
   #if MQTT
   mqttTask.begin();
   #endif
-
 
   #if HTTP
   httpTask.begin();
   #endif
 
-  snprintf(buf, sizeof(buf), "4 Free heap: %u, block: %u", ESP.getFreeHeap(), ESP.getMaxAllocHeap());
-  serialTask.log(buf);
-
   #ifdef CHAINLINK_BASE
   baseSupervisorTask.begin();
   #endif
-
 
   // Delete the default Arduino loopTask to free up Core 1
   vTaskDelete(NULL);
