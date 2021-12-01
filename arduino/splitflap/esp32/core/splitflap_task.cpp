@@ -176,6 +176,7 @@ void SplitflapTask::processQueue() {
                     }
 
                     if (config.target_flap_index != current_configs_.config[i].target_flap_index ||
+                            config.target_flap_index != modules[i]->GetTargetFlapIndex() ||
                             config.movement_nonce != current_configs_.config[i].movement_nonce) {
                         if (config.target_flap_index >= NUM_FLAPS) {
                             char buffer[200] = {};
