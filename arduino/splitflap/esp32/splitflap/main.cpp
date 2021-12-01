@@ -65,11 +65,6 @@ void setup() {
   snprintf(buf, sizeof(buf), "3 Free heap: %u, block: %u", ESP.getFreeHeap(), ESP.getMaxAllocHeap());
   serialTask.log(buf);
 
-  delay(5000);
-
-  snprintf(buf, sizeof(buf), "4 Free heap: %u, block: %u", ESP.getFreeHeap(), ESP.getMaxAllocHeap());
-  serialTask.log(buf);
-
   #if MQTT
   mqttTask.begin();
   #endif
@@ -79,6 +74,8 @@ void setup() {
   httpTask.begin();
   #endif
 
+  snprintf(buf, sizeof(buf), "4 Free heap: %u, block: %u", ESP.getFreeHeap(), ESP.getMaxAllocHeap());
+  serialTask.log(buf);
 
   #ifdef CHAINLINK_BASE
   baseSupervisorTask.begin();

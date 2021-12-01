@@ -55,6 +55,12 @@ void SerialLegacyJsonProtocol::loop() {
 
     while (stream_.available() > 0) {
         int b = stream_.read();
+        if (b == 0) {
+            if (protocol_change_callback_) {
+                protocol_change_callback_(SERIAL_PROTOCOL_PROTO);
+            }
+            break;
+        }
         if (b == '%') {
             bool new_sensor_test_state = latest_state_.mode != SplitflapMode::MODE_SENSOR_TEST;
             splitflap_task_.setSensorTest(new_sensor_test_state);

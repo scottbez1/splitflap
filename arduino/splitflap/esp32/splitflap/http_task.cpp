@@ -24,46 +24,53 @@
 using namespace json11;
 
 // About this example:
-// - Fetches current weather data from weather.gov for a Downtown San Francisco weather station
-// - Demonstrates a simple JSON GET request with custom headers (see fetchData)
-// - Demonstrates json response parsing using json11 (see handleData)
-// - Demonstrates cycling through messages and re-requesting data periodically (see run)
+// - Fetches current weather data for an area in San Francisco (updating infrequently)
+// - Cycles between showing the temperature and the wind speed on the split-flaps (cycles frequently)
+//
+// Make sure to set up secrets.h - see secrets.h.example for more.
+//
+// What this example demonstrates:
+// - a simple JSON GET request (see fetchData)
+// - json response parsing using json11 (see handleData)
+// - cycling through messages at a different interval than data is loaded (see run)
 
-// Update every 10 minutes
+// Update data every 10 minutes
 #define REQUEST_INTERVAL_MILLIS (10 * 60 * 1000)
+
+// Cycle the message that's showing more frequently, every 30 seconds (exaggerated for example purposes)
+#define MESSAGE_CYCLE_INTERVAL_MILLIS (30 * 1000)
+
+// Public token for synoptic data api (it's not secret, but please don't abuse it)
+#define SYNOPTICDATA_TOKEN "e763d68537d9498a90fa808eb9d415d9"
 
 void HTTPTask::fetchData() {
     char buf[200];
     uint32_t start = millis();
-    http_last_request_time_ = start;
     HTTPClient http;
 
-    snprintf(buf, sizeof(buf), "Free heap: %u, block: %u", ESP.getFreeHeap(), ESP.getMaxAllocHeap());
-    logger_.log(buf);
-
     // Construct the http request
-    http.begin("https://api.weather.gov/stations/SFOC1/observations/latest");
-    http.addHeader("User-Agent", "(splitflap example ESP32)");
-    http.addHeader("Accept", "application/ld+json");
+    http.begin("https://api.synopticdata.com/v2/stations/latest?&token=" SYNOPTICDATA_TOKEN "&within=30&units=english&vars=air_temp,wind_speed&varsoperator=and&radius=37.765157,-122.419702,4&limit=20&fields=stid");
 
-    // Send the request
+    // If you wanted to add headers, you would do so like this:
+    // http.addHeader("Accept", "application/json");
+
+    // Send the request as a GET
     logger_.log("Sending request");
     int http_code = http.GET();
 
     snprintf(buf, sizeof(buf), "Finished request in %lu millis.", millis() - start);
     logger_.log(buf);
     if (http_code > 0) {
-        snprintf(buf, sizeof(buf), "Response code: %d", http_code);
-        logger_.log(buf);
-
         String data = http.getString();
         http.end();
+
+        snprintf(buf, sizeof(buf), "Response code: %d Data length: %d", http_code, data.length());
+        logger_.log(buf);
         
         std::string err;
         Json json = Json::parse(data.c_str(), err);
 
         if (err.empty()) {
-            logger_.log(json.dump().c_str());
             handleData(json);
         } else {
             snprintf(buf, sizeof(buf), "Error parsing response! %s", err.c_str());
@@ -74,61 +81,129 @@ void HTTPTask::fetchData() {
         logger_.log(buf);
         http.end();
     }
-    http_last_request_time_ = millis();
 }
 
 void HTTPTask::handleData(Json json) {
     // Extract data from the json response. You could use ArduinoJson, but I find json11 to be much
     // easier to use albeit not optimized for a microcontroller.
 
-    char buf[200];
-
     // Example data:
     /*
         {
             ...
-            "station": "https://api.weather.gov/stations/SFOC1",
-            "timestamp": "2021-11-30T08:00:00+00:00",
-            ...
-            "temperature": {
-                "unitCode": "wmoUnit:degC",
-                "value": 11.109999999999999,
-                "qualityControl": "V"
-            },
-            ...
+            "STATION": [
+                {
+                    "STID": "F4637",
+                    "OBSERVATIONS": {
+                        "wind_speed_value_1": {
+                            "date_time": "2021-11-30T23:25:00Z",
+                            "value": 0.87
+                        },
+                        "air_temp_value_1": {
+                            "date_time": "2021-11-30T23:25:00Z",
+                            "value": 69
+                        }
+                    },
+                    ...
+                },
+                {
+                    "STID": "C5988",
+                    "OBSERVATIONS": {
+                        "wind_speed_value_1": {
+                            "date_time": "2021-11-30T23:24:00Z",
+                            "value": 1.74
+                        },
+                        "air_temp_value_1": {
+                            "date_time": "2021-11-30T23:24:00Z",
+                            "value": 68
+                        }
+                    },
+                    ...
+                },
+                ...
+            ]
         }
     */
 
    // Validate json structure and extract data:
-    auto temperature = json["temperature"];
-    if (!temperature.is_object()) {
-        logger_.log("Parse error: temperature");
+    auto station = json["STATION"];
+    if (!station.is_array()) {
+        logger_.log("Parse error: STATION");
         return;
     }
-    auto unit_code = temperature["unitCode"];
-    if (!unit_code.is_string()) {
-        logger_.log("Parse error: unitCode");
-        return;
+    auto station_array = station.array_items();
+
+    std::vector<double> temps;
+    std::vector<double> wind_speeds;
+
+    for (uint8_t i = 0; i < station_array.size(); i++) {
+        auto item = station_array[i];
+        if (!item.is_object()) {
+            logger_.log("Bad station item, ignoring");
+            continue;
+        }
+        auto observations = item["OBSERVATIONS"];
+        if (!observations.is_object()) {
+            logger_.log("Bad station observations, ignoring");
+            continue;
+        }
+
+        auto air_temp_value = observations["air_temp_value_1"];
+        if (!air_temp_value.is_object()) {
+            logger_.log("Bad air_temp_value_1, ignoring");
+            continue;
+        }
+        auto value = air_temp_value["value"];
+        if (!value.is_number()) {
+            logger_.log("Bad air temp, ignoring");
+            continue;
+        }
+        temps.push_back(value.number_value());
+
+        auto wind_speed_value = observations["wind_speed_value_1"];
+        if (!wind_speed_value.is_object()) {
+            logger_.log("Bad wind_speed_value_1, ignoring");
+            continue;
+        }
+        value = wind_speed_value["value"];
+        if (!value.is_number()) {
+            logger_.log("Bad wind speed, ignoring");
+            continue;
+        }
+        wind_speeds.push_back(value.number_value());
     }
-    auto value = temperature["value"];
-    if (!value.is_number()) {
-        logger_.log("Parse error: value");
+
+    auto entries = temps.size();
+    if (entries == 0) {
+        logger_.log("No data found");
         return;
     }
 
-    // Make sure units are degrees C as expected
-    if (unit_code.string_value() != "wmoUnit:degC") {
-        snprintf(buf, sizeof(buf), "Bad unitCode: %s", unit_code.string_value().c_str());
-        logger_.log(buf);
-        return;
+    // Calculate medians
+    std::sort(temps.begin(), temps.end());
+    std::sort(wind_speeds.begin(), wind_speeds.end());
+    double median_temp;
+    double median_wind_speed;
+    if ((entries % 2) == 0) {
+        median_temp = (temps[entries/2 - 1] + temps[entries/2]) / 2;
+        median_wind_speed = (wind_speeds[entries/2 - 1] + wind_speeds[entries/2]) / 2;
+    } else {
+        median_temp = temps[entries/2];
+        median_wind_speed = wind_speeds[entries/2];
     }
 
-    // Convert value to sane units ;-)
-    double fahrenheit = value.number_value() * 9 / 5 + 32;
+    char buf[200];
+    snprintf(buf, sizeof(buf), "Medians from %d stations: temp=%dºF, wind speed=%d knots", entries, (int)median_temp, (int)median_wind_speed);
+    logger_.log(buf);
 
-    // Display the string directly
-    int len = snprintf(buf, sizeof(buf), "%d f", (int)fahrenheit);
-    splitflap_task_.showString(buf, len);
+    // Construct the messages to display
+    messages_.clear();
+
+    snprintf(buf, sizeof(buf), "%d f", (int)median_temp);
+    messages_.push_back(String(buf));
+
+    snprintf(buf, sizeof(buf), "%d mph", (int)(median_wind_speed * 1.151));
+    messages_.push_back(String(buf));
 }
 
 
@@ -154,12 +229,40 @@ void HTTPTask::connectWifi() {
 }
 
 void HTTPTask::run() {
+    char buf[max(NUM_MODULES + 1, 200)];
+
     connectWifi();
 
     while(1) {
         long now = millis();
+
+        bool just_fetched = false;
         if (http_last_request_time_ == 0 || now - http_last_request_time_ > REQUEST_INTERVAL_MILLIS) {
             fetchData();
+            http_last_request_time_ = millis();
+            just_fetched = true;
+        }
+
+        if (just_fetched || now - last_message_change_time_ > MESSAGE_CYCLE_INTERVAL_MILLIS) {
+            if (current_message_index_ >= messages_.size()) {
+                current_message_index_ = 0;
+            }
+
+            if (messages_.size() > 0) {
+                String message = messages_[current_message_index_].c_str();
+
+                snprintf(buf, sizeof(buf), "Cycling to next message: %s", message.c_str());
+                logger_.log(buf);
+
+                // Pad message for display
+                size_t len = strlcpy(buf, message.c_str(), sizeof(buf));
+                memset(buf + len, ' ', sizeof(buf) - len);
+
+                splitflap_task_.showString(buf, NUM_MODULES, false);
+            }
+
+            current_message_index_++;
+            last_message_change_time_ = millis();
         }
         delay(1000);
     }

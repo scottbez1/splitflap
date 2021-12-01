@@ -18,34 +18,38 @@
 
 DisplayTask::DisplayTask(SplitflapTask& splitflap_task, const uint8_t task_core) : Task{"Display", 6000, 1, task_core}, splitflap_task_{splitflap_task} {}
 
-// static const int32_t MODULE_WIDTH = 20;
-// static const int32_t MODULE_HEIGHT = 26;
-// static const uint8_t TEXT_SIZE = 3;
-
-static const int32_t MODULE_WIDTH = 10;
-static const int32_t MODULE_HEIGHT = 10;
-static const uint8_t TEXT_SIZE = 1;
+static const int32_t X_OFFSET = 10;
+static const int32_t Y_OFFSET = 10;
 
 void DisplayTask::run() {
     tft_.begin();
     tft_.invertDisplay(1);
     tft_.setRotation(1);
 
-    // spr_.setColorDepth(8);
-    // spr_.createSprite(TFT_HEIGHT, TFT_WIDTH);
-    // spr_.setTextFont(0);
-    // spr_.setTextSize(TEXT_SIZE);
-    // spr_.setTextColor(0xFFFF, TFT_BLACK);
-
-    // spr_.fillSprite(TFT_BLACK);
-    // spr_.fillRect(MODULE_WIDTH, MODULE_HEIGHT, COLUMNS * (MODULE_WIDTH + 1) + 1, ((NUM_MODULES + COLUMNS - 1) / COLUMNS) * (MODULE_HEIGHT + 1) + 1, 0x2104);
-
     tft_.setTextFont(0);
-    tft_.setTextSize(TEXT_SIZE);
     tft_.setTextColor(0xFFFF, TFT_BLACK);
 
     tft_.fillScreen(TFT_BLACK);
-    tft_.fillRect(MODULE_WIDTH, MODULE_HEIGHT, COLUMNS * (MODULE_WIDTH + 1) + 1, ((NUM_MODULES + COLUMNS - 1) / COLUMNS) * (MODULE_HEIGHT + 1) + 1, 0x2104);
+
+    // Automatically scale display based on DISPLAY_COLUMNS (see display_layouts.h)
+    int32_t module_width = 20;
+    int32_t module_height = 26;
+    uint8_t text_size = 3;
+
+    uint8_t rows = ((NUM_MODULES + DISPLAY_COLUMNS - 1) / DISPLAY_COLUMNS);
+
+    if (DISPLAY_COLUMNS > 16 || rows > 6) {
+        module_width = 7;
+        module_height = 10;
+        text_size = 1;
+    } else if (DISPLAY_COLUMNS > 10 || rows > 4) {
+        module_width = 14;
+        module_height = 18;
+        text_size = 2;
+    }
+
+    tft_.setTextSize(text_size);
+    tft_.fillRect(X_OFFSET, Y_OFFSET, DISPLAY_COLUMNS * (module_width + 1) + 1, rows * (module_height + 1) + 1, 0x2104);
 
     uint8_t module_row, module_col;
     int32_t module_x, module_y;
@@ -112,20 +116,17 @@ void DisplayTask::run() {
                 }
                 getLayoutPosition(i, &module_row, &module_col);
 
-                // Leave an empty row and column for headers, and add 1 to width/height as a separator line between modules
-                module_x = (module_col + 1) * (MODULE_WIDTH + 1);
-                module_y = (module_row + 1) * (MODULE_HEIGHT + 1);
+                // Add 1 to width/height as a separator line between modules
+                module_x = X_OFFSET + 1 + module_col * (module_width + 1);
+                module_y = Y_OFFSET + 1 + module_row * (module_height + 1);
 
                 tft_.setTextColor(foreground, background);
-                tft_.fillRect(module_x, module_y, MODULE_WIDTH, MODULE_HEIGHT, background);
+                tft_.fillRect(module_x, module_y, module_width, module_height, background);
                 tft_.setCursor(module_x + 1, module_y + 2);
                 tft_.printf("%c", c);
             }
-            // spr_.pushSprite(0, 0);
             last_state = state;
-
         }
-
 
         delay(10);
     }

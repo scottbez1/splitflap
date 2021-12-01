@@ -18,7 +18,7 @@
 #include "../core/uart_stream.h"
 
 SerialTask::SerialTask(SplitflapTask& splitflap_task, const uint8_t task_core) :
-        Task("Serial", 10000, 1, task_core),
+        Task("Serial", 16000, 1, task_core),
         Logger(),
         splitflap_task_(splitflap_task),
         stream_(),
@@ -37,6 +37,23 @@ void SerialTask::run() {
     // Start in legacy protocol mode
     legacy_protocol_.init();
     SerialProtocol* current_protocol = &legacy_protocol_;
+
+    ProtocolChangeCallback protocol_change_callback = [this, &current_protocol] (uint8_t protocol) {
+        switch (protocol) {
+            case SERIAL_PROTOCOL_LEGACY:
+                current_protocol = &legacy_protocol_;
+                break;
+            case SERIAL_PROTOCOL_PROTO:
+                current_protocol = &proto_protocol_;
+                break;
+            default:
+                log("Unknown protocol requested");
+                break;
+        }
+    };
+
+    legacy_protocol_.setProtocolChangeCallback(protocol_change_callback);
+    proto_protocol_.setProtocolChangeCallback(protocol_change_callback);
 
     splitflap_task_.setLogger(this);
 
