@@ -99,10 +99,11 @@ _font_settings = [
         "width", 0.95,
         "offset_x", -0.65,
         "offset_y", 1.2,
-        "thickness_offset", -0.5,
+        "thickness_offset", 0,
         "overrides", [
             ["@", 1.2, 0, .65, 0.7, 0.4],
             ["W", -0.15, undef, undef, 0.845, 0.005],
+            ["M", -0.15, undef, undef, 0.93],
         ],
         // "color_height", 0.565,
         "color_offset_y", 1.7,
