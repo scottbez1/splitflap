@@ -117,11 +117,14 @@ message SplitflapConfig {
     repeated ModuleConfig modules = 1 [(nanopb).max_count = 255];
 }
 
+message RequestState {}
+
 message ToSplitflap {
     uint32 nonce = 1;
     
     oneof payload {
         SplitflapCommand splitflap_command = 2;
         SplitflapConfig splitflap_config = 3;
+        RequestState request_state = 4;
     }
 }

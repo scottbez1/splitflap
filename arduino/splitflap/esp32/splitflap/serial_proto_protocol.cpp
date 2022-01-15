@@ -23,6 +23,8 @@
 
 static SerialProtoProtocol* singleton_for_packet_serial = 0;
 
+static const uint16_t MIN_STATE_INTERVAL_MILLIS = 250;
+static const uint16_t PERIODIC_STATE_INTERVAL_MILLIS = 5000;
 
 SerialProtoProtocol::SerialProtoProtocol(SplitflapTask& splitflap_task, Stream& stream) :
         SerialProtocol(splitflap_task),
@@ -71,9 +73,13 @@ void SerialProtoProtocol::loop() {
         packet_serial_.update();
     } while (stream_.available());
 
-    // Rate limit state change transmissions, but also re-send state periodically
-    if ((latest_state_ != last_sent_state_ && millis() - last_sent_state_millis_ >= 250) ||
-            millis() - last_sent_state_millis_ > 5000) {
+    // Rate limit state change transmissions
+    bool state_changed = latest_state_ != last_sent_state_ && millis() - last_sent_state_millis_ >= MIN_STATE_INTERVAL_MILLIS;
+
+    // Send state periodically or when forced, regardless of rate limit for state changes
+    bool force_send_state = state_requested_ || millis() - last_sent_state_millis_ > PERIODIC_STATE_INTERVAL_MILLIS;
+    if (state_changed || force_send_state) {
+        state_requested_ = false;
         pb_tx_buffer_ = {};
         pb_tx_buffer_.which_payload = PB_FromSplitflap_splitflap_state_tag;
         pb_tx_buffer_.payload.splitflap_state.modules_count = NUM_MODULES;
@@ -176,6 +182,9 @@ void SerialProtoProtocol::handlePacket(const uint8_t* buffer, size_t size) {
             splitflap_task_.postRawCommand(c);
             break;
         }
+        case PB_ToSplitflap_request_state_tag:
+            state_requested_ = true;
+            break;
         default: {
             char buf[200];
             snprintf(buf, sizeof(buf), "Unknown ToSplitflap type: %d", pb_rx_buffer_.which_payload);
