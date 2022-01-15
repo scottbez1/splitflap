@@ -42,6 +42,9 @@ PB_BIND(PB_SplitflapConfig, PB_SplitflapConfig, 2)
 PB_BIND(PB_SplitflapConfig_ModuleConfig, PB_SplitflapConfig_ModuleConfig, AUTO)
 
 
+PB_BIND(PB_RequestState, PB_RequestState, AUTO)
+
+
 PB_BIND(PB_ToSplitflap, PB_ToSplitflap, 2)
 
 
