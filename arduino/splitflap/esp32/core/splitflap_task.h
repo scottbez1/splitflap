@@ -157,6 +157,7 @@ class SplitflapTask : public Task<SplitflapTask> {
         SplitflapState state_cache_;
         void updateStateCache();
 
+        void checkInitialLoopbacks();
         void processQueue();
         void runUpdate();
         void sensorTestUpdate();

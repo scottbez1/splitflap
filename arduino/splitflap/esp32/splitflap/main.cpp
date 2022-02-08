@@ -68,10 +68,26 @@ void setup() {
   #endif
 
   // Delete the default Arduino loopTask to free up Core 1
-  vTaskDelete(NULL);
+  // vTaskDelete(NULL);
 }
 
+  char buf[200] = {};
 
 void loop() {
-  assert(false);
+  heap_caps_print_heap_info(MALLOC_CAP_8BIT);
+  
+  snprintf(buf, sizeof(buf), "Main high water: %d", uxTaskGetStackHighWaterMark(NULL));
+  serialTask.log(buf);
+
+  snprintf(buf, sizeof(buf), "Splitflap high water: %d", uxTaskGetStackHighWaterMark(splitflapTask.getHandle()));
+  serialTask.log(buf);
+
+  snprintf(buf, sizeof(buf), "Serial high water: %d", uxTaskGetStackHighWaterMark(serialTask.getHandle()));
+  serialTask.log(buf);
+
+  snprintf(buf, sizeof(buf), "Display high water: %d", uxTaskGetStackHighWaterMark(displayTask.getHandle()));
+  serialTask.log(buf);
+
+  delay(5000);
+  // assert(false);
 }

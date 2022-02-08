@@ -28,7 +28,7 @@
 
 static_assert(QCMD_FLAP + NUM_FLAPS <= 255, "Too many flaps to fit in uint8_t command structure");
 
-SplitflapTask::SplitflapTask(const uint8_t task_core, const LedMode led_mode) : Task("Splitflap", 2048, 1, task_core), led_mode_(led_mode), state_semaphore_(xSemaphoreCreateMutex()) {
+SplitflapTask::SplitflapTask(const uint8_t task_core, const LedMode led_mode) : Task("Splitflap", 4096, 1, task_core), led_mode_(led_mode), state_semaphore_(xSemaphoreCreateMutex()) {
   assert(state_semaphore_ != NULL);
   xSemaphoreGive(state_semaphore_);
 
@@ -60,36 +60,9 @@ void SplitflapTask::run() {
     digitalWrite(OUTPUT_ENABLE_PIN, LOW);
 #endif
 
+    checkInitialLoopbacks();
+
 #if (defined(CHAINLINK) && !defined(CHAINLINK_DRIVER_TESTER))
-#if CHAINLINK_ENFORCE_LOOPBACKS
-    bool loopback_result[NUM_LOOPBACKS][NUM_LOOPBACKS];
-    bool loopback_off_result[NUM_LOOPBACKS];
-    bool loopback_success = chainlink_test_all_loopbacks(loopback_result, loopback_off_result);
-
-    if (!loopback_success) {
-      for (uint8_t i = 0; i < NUM_LOOPBACKS; i++) {
-        for (uint8_t j = 0; j < NUM_LOOPBACKS; j++) {
-          if (!loopback_result[i][j]) {
-            char buffer[200] = {};
-            snprintf(buffer, sizeof(buffer), "Loopback ERROR. Set output %u but read incorrect value at input %u", i, j);
-            log(buffer);
-          }
-        }
-      }
-      for (uint8_t j = 0; j < NUM_LOOPBACKS; j++) {
-        if (!loopback_off_result[j]) {
-            char buffer[200] = {};
-            snprintf(buffer, sizeof(buffer), "Loopback ERROR. Loopback %u was set when all outputs off - should have been 0", j);
-            log(buffer);
-        }
-      }
-
-      disableAll();
-    }
-#else
-    loopback_all_ok_ = true;
-#endif
-
     if (led_mode_ == LedMode::AUTO) {
         for (uint8_t i = 0; i < NUM_MODULES; i++) {
             chainlink_set_led(i, 1);
@@ -109,13 +82,55 @@ void SplitflapTask::run() {
         modules[i]->GoHome();
 #endif
     }
-
     while(1) {
         processQueue();
         runUpdate();
         result = esp_task_wdt_reset();
         ESP_ERROR_CHECK(result);
     }
+}
+
+void SplitflapTask::checkInitialLoopbacks() {
+#if defined(CHAINLINK) && !defined(CHAINLINK_DRIVER_TESTER) && CHAINLINK_ENFORCE_LOOPBACKS
+    loopback_all_ok_ = true;
+    char buffer[200] = {};
+
+    {
+        // Turn one loopback bit on at a time and make sure only that loopback bit is set
+        bool loopback_result[NUM_LOOPBACKS];
+        for (uint8_t loop_out_index = 0; loop_out_index < NUM_LOOPBACKS; loop_out_index++) {
+            chainlink_set_loopback(loop_out_index);
+            motor_sensor_io();
+            motor_sensor_io();
+            if (!chainlink_validate_loopback(loop_out_index, loopback_result)) {
+                for (uint8_t loop_in_index = 0; loop_in_index < NUM_LOOPBACKS; loop_in_index++) {
+                    if (!loopback_result[loop_in_index]) {
+                        snprintf(buffer, sizeof(buffer), "Loopback ERROR. Set output %u but read incorrect value at input %u", loop_out_index, loop_in_index);
+                        log(buffer);
+                        loopback_all_ok_ = false;
+                    }
+                }
+            }
+        }
+    }
+
+    // Check that we read 0 on all loopback inputs when all loopback outputs are disabled
+    bool loopback_off_result[NUM_LOOPBACKS];
+    if (!chainlink_test_startup_loopback(loopback_off_result)) {
+      for (uint8_t j = 0; j < NUM_LOOPBACKS; j++) {
+        if (!loopback_off_result[j]) {
+            snprintf(buffer, sizeof(buffer), "Loopback ERROR. Loopback %u was set when all outputs off - should have been 0", j);
+            log(buffer);
+            loopback_all_ok_ = false;
+        }
+      }
+    }
+    if (!loopback_all_ok_) {
+        disableAll();
+    }
+#else
+    loopback_all_ok_ = true;
+#endif
 }
 
 void SplitflapTask::processQueue() {

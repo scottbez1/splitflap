@@ -37,13 +37,16 @@ using namespace json11;
 // - cycling through messages at a different interval than data is loaded (see run)
 
 // Update data every 10 minutes
-#define REQUEST_INTERVAL_MILLIS (10 * 60 * 1000)
+#define REQUEST_INTERVAL_MILLIS (60 * 60 * 1000)
 
-// Cycle the message that's showing more frequently, every 30 seconds (exaggerated for example purposes)
-#define MESSAGE_CYCLE_INTERVAL_MILLIS (30 * 1000)
+// Wait a minute before retrying a failed request
+#define RETRY_INTERVAL_MILLIS (30 * 1000)
 
 // Don't show stale data if it's been too long since successful data load
-#define STALE_TIME_MILLIS (REQUEST_INTERVAL_MILLIS * 3)
+#define STALE_TIME_MILLIS (REQUEST_INTERVAL_MILLIS * 3 / 2)
+
+// Cycle the message that's showing more frequently, every 30 seconds (exaggerated for example purposes)
+#define MESSAGE_CYCLE_INTERVAL_MILLIS (15 * 60 * 1000)
 
 // Public token for synoptic data api (it's not secret, but please don't abuse it)
 #define SYNOPTICDATA_TOKEN "e763d68537d9498a90fa808eb9d415d9"
@@ -209,11 +212,13 @@ bool HTTPTask::handleData(Json json) {
     // Construct the messages to display
     messages_.clear();
 
+    messages_.push_back(std::pair<String, uint32_t>("temp..", 8000));
     snprintf(buf, sizeof(buf), "%d f", (int)median_temp);
-    messages_.push_back(String(buf));
+    messages_.push_back(std::pair<String, uint32_t>(String(buf), MESSAGE_CYCLE_INTERVAL_MILLIS));
 
+    messages_.push_back(std::pair<String, uint32_t>("wind..", 8000));
     snprintf(buf, sizeof(buf), "%d mph", (int)(median_wind_speed * 1.151));
-    messages_.push_back(String(buf));
+    messages_.push_back(std::pair<String, uint32_t>(String(buf), MESSAGE_CYCLE_INTERVAL_MILLIS));
 
     // Show the data fetch time on the LCD
     time_t now;
@@ -272,46 +277,66 @@ void HTTPTask::run() {
 
     connectWifi();
 
+    messages_.push_back(std::pair<String, uint32_t>("fluffy", MESSAGE_CYCLE_INTERVAL_MILLIS));
+    messages_.push_back(std::pair<String, uint32_t>("test12", MESSAGE_CYCLE_INTERVAL_MILLIS));
+
     bool stale = false;
     while(1) {
+        bool update = false;
         long now = millis();
 
-        bool update = false;
-        if (http_last_request_time_ == 0 || now - http_last_request_time_ > REQUEST_INTERVAL_MILLIS) {
-            if (fetchData()) {
-                http_last_success_time_ = millis();
-                stale = false;
-                update = true;
-            }
-            http_last_request_time_ = millis();
-        }
+        // if (http_last_request_time_ == 0
+        //         || (now - http_last_success_time_ > REQUEST_INTERVAL_MILLIS && now - http_last_request_time_ > RETRY_INTERVAL_MILLIS)) {
+        //     if (fetchData()) {
+        //         http_last_success_time_ = millis();
+        //         stale = false;
+        //         update = true;
+        //     }
+        //     http_last_request_time_ = millis();
+        // }
 
-        if (!stale && http_last_success_time_ > 0 && millis() - http_last_success_time_ > STALE_TIME_MILLIS) {
-            stale = true;
+        // if (!stale && http_last_success_time_ > 0 && millis() - http_last_success_time_ > STALE_TIME_MILLIS) {
+        //     stale = true;
+        //     messages_.clear();
+        //     messages_.push_back(std::pair<String, uint32_t>("stale", MESSAGE_CYCLE_INTERVAL_MILLIS));
+        //     update = true;
+        // }
+
+        time_t t;
+        time(&t);
+        tm* l = localtime(&t);
+        bool sleep = l->tm_hour < 8 || l->tm_hour >= 21;
+        static bool was_sleeping;
+        if (sleep && !was_sleeping) {
+            was_sleeping = true;
             messages_.clear();
-            messages_.push_back("stale");
+            messages_.push_back(std::pair<String, uint32_t>("sleeep", UINT32_MAX));
+            update = true;
+        } else if (was_sleeping && !sleep) {
+            was_sleeping = false;
+            messages_.clear();
+            messages_.push_back(std::pair<String, uint32_t>("fluffy", MESSAGE_CYCLE_INTERVAL_MILLIS));
+            messages_.push_back(std::pair<String, uint32_t>("test12", MESSAGE_CYCLE_INTERVAL_MILLIS));
             update = true;
         }
 
-        if (update || now - last_message_change_time_ > MESSAGE_CYCLE_INTERVAL_MILLIS) {
-            if (current_message_index_ >= messages_.size()) {
+        if (messages_.size() > 0 && (update || now - last_message_change_time_ > messages_[current_message_index_].second)) {
+            current_message_index_++;
+            if (update || current_message_index_ >= messages_.size()) {
                 current_message_index_ = 0;
             }
 
-            if (messages_.size() > 0) {
-                String message = messages_[current_message_index_].c_str();
+            const char* message = messages_[current_message_index_].first.c_str();
 
-                snprintf(buf, sizeof(buf), "Cycling to next message: %s", message.c_str());
-                logger_.log(buf);
+            snprintf(buf, sizeof(buf), "Cycling to next message: %s", message);
+            logger_.log(buf);
 
-                // Pad message for display
-                size_t len = strlcpy(buf, message.c_str(), sizeof(buf));
-                memset(buf + len, ' ', sizeof(buf) - len);
+            // Pad message for display
+            size_t len = strlcpy(buf, message, sizeof(buf));
+            memset(buf + len, ' ', sizeof(buf) - len);
 
-                splitflap_task_.showString(buf, NUM_MODULES, false);
-            }
+            splitflap_task_.showString(buf, NUM_MODULES, false);
 
-            current_message_index_++;
             last_message_change_time_ = millis();
         }
 

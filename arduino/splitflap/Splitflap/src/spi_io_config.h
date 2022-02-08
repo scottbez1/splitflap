@@ -321,6 +321,20 @@ void chainlink_set_loopback(uint8_t loop_out_index) {
  * register input.
  */
 bool chainlink_validate_loopback(uint8_t loop_out_index, bool results[NUM_LOOPBACKS]) {
+  // XXX DO NOT COMMIT!!!!!!!!!!!!!!
+  // Disabling loopback validation for loopbacks beyond the first Chainlink Driver board (loopbacks 0 and 1) in order
+  // to run some tests with NUM_MODULES much higher than the actual number of modules connected. This will still validate
+  // loopbacks on the first Chainlink Driver board, but silence the (expected) loopback errors caused by having no other
+  // boards connected beyond that.
+  if (loop_out_index > 1) {
+    return true;
+  }
+  // XXX DO NOT COMMIT!!!!!!!!!!!!!!
+
+
+
+
+
     bool success = true;
     for (uint8_t loop_in_index = 0; loop_in_index < NUM_LOOPBACKS; loop_in_index++) {
       uint8_t expected_bit_mask = (loop_out_index == loop_in_index) ? chainlink_loopbackSensorBitMask(loop_in_index) : 0;

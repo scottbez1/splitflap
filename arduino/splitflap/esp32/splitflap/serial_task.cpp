@@ -18,7 +18,7 @@
 #include "../core/uart_stream.h"
 
 SerialTask::SerialTask(SplitflapTask& splitflap_task, const uint8_t task_core) :
-        Task("Serial", 16000, 1, task_core),
+        Task("Serial", 9000, 1, task_core),
         Logger(),
         splitflap_task_(splitflap_task),
         stream_(),
