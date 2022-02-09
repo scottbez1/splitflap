@@ -52,7 +52,7 @@ void MQTTTask::connectMQTT() {
     char buf[256];
     mqtt_client_.setServer(MQTT_SERVER, 1883);
     logger_.log("Attempting MQTT connection...");
-    if (mqtt_client_.connect(HOSTNAME, MQTT_USER, MQTT_PASSWORD)) {
+    if (mqtt_client_.connect(HOSTNAME "-" MQTT_USER, MQTT_USER, MQTT_PASSWORD)) {
         logger_.log("MQTT connected");
         mqtt_client_.subscribe(MQTT_COMMAND_TOPIC);
     } else {
