@@ -1,28 +1,24 @@
 
+from functools import lru_cache
 import logging
 import re
 import subprocess
 
 import util.app_paths as app_paths
 
-_inkscape_version_cache = None
-
 logger = logging.getLogger(__name__)
 
+@lru_cache()
 def _version():
-    global _inkscape_version_cache
-    if _inkscape_version_cache is not None:
-        return _inkscape_version_cache
-    
     info = subprocess.check_output([
         app_paths.get('inkscape'),
         '--version'
     ]).decode('utf-8')
 
     m = re.match(r'Inkscape (\d+\.\d+)', info)
-    _inkscape_version_cache = float(m.group(1))
-    logger.debug(f'Found Inkscape version {_inkscape_version_cache}')
-    return _inkscape_version_cache
+    version = float(m.group(1))
+    logger.debug(f'Found Inkscape version {version}')
+    return version
 
 def without_gui():
     if _version() >= 1:
