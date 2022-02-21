@@ -14,12 +14,16 @@
 
 from __future__ import print_function
 from collections import defaultdict
+import os
+try:
+    from svg.path import (
+        Path,
+        Line,
+        parse_path,
+    )
+except:
+    raise RuntimeError(f'Error loading svg.path library. Run "python3 -m pip install -r {os.path.join(os.path.dirname(__file__), "requirements.txt")}" to install it')
 
-from svg.path import (
-    Path,
-    Line,
-    parse_path,
-)
 from xml.dom import minidom
 
 eps = 0.001

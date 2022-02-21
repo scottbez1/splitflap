@@ -32,7 +32,11 @@ source_parts_dir = os.path.dirname(script_dir)
 repo_root = os.path.dirname(source_parts_dir)
 sys.path.append(repo_root)
 
-from util import rev_info
+from util import (
+    app_paths,
+    inkscape,
+    rev_info,
+)
 
 ZIP_TIE_MODES = {
     'NONE': 0,
@@ -129,15 +133,15 @@ if __name__ == '__main__':
         processor.write(svg_for_dimensions)
         logging.info('Read dimensions')
         width_px = float(subprocess.check_output([
-            'inkscape',
-            '--without-gui',
+            app_paths.get('inkscape'),
+        ] + inkscape.without_gui() + [
             '--query-width',
             svg_for_dimensions,
         ]))
         width_mm = width_px * 25.4 / 96 # Assuming 96dpi...
         height_px = float(subprocess.check_output([
-            'inkscape',
-            '--without-gui',
+            app_paths.get('inkscape'),
+        ] + inkscape.without_gui() + [
             '--query-height',
             svg_for_dimensions,
         ]))
@@ -158,7 +162,7 @@ if __name__ == '__main__':
 
         logging.info('Resize SVG canvas')
         subprocess.check_call([
-            'inkscape',
+            app_paths.get('inkscape'),
             '--verb=FitCanvasToDrawing',
             '--verb=FileSave',
             '--verb=FileClose',
@@ -168,15 +172,13 @@ if __name__ == '__main__':
 
         logging.info('Output PDF')
         subprocess.check_call([
-            'inkscape',
+            app_paths.get('inkscape'),
             elecrow_svg,
-            '--export-pdf',
-            elecrow_intermediate_pdf,
-        ])
+        ] + inkscape.export_pdf(elecrow_intermediate_pdf))
 
         logging.info('Resize PDF')
         subprocess.check_call([
-            'pdfjam',
+            app_paths.get('pdfjam'),
             '--letterpaper',
             '--landscape',
             '--noautoscale',
@@ -206,7 +208,7 @@ if __name__ == '__main__':
 
         logging.info('Resize SVG canvas')
         subprocess.check_call([
-            'inkscape',
+            app_paths.get('inkscape'),
             '--verb=FitCanvasToDrawing',
             '--verb=FileSave',
             '--verb=FileClose',
@@ -216,9 +218,9 @@ if __name__ == '__main__':
 
         logging.info('Export PNG')
         subprocess.check_call([
-            'inkscape',
+            app_paths.get('inkscape'),
             '--export-width=320',
-            '--export-png', raster_png,
+        ] + inkscape.export_png(raster_png) + [
             raster_svg,
         ])
 
