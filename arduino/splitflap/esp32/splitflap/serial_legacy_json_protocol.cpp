@@ -98,6 +98,9 @@ void SerialLegacyJsonProtocol::loop() {
                         splitflap_task_.showString(recv_buffer_, NUM_MODULES);
                     }
                     break;
+                case '\r':
+                    // Ignore
+                    break;
                 default:
                     if (recv_count_ > NUM_MODULES - 1) {
                         break;
