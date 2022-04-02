@@ -116,7 +116,7 @@ class SplitflapModule {
   );
 
 #if HOME_CALIBRATION_ENABLED
-  State state = LOOK_FOR_HOME;
+  State state = SENSOR_ERROR; // Start in SENSOR_ERROR state until initialized
 #else
   State state = NORMAL;
 #endif
@@ -548,6 +548,7 @@ void SplitflapModule::ResetErrorCounters() {
 
 void SplitflapModule::ResetState() {
     ResetErrorCounters();
+    CheckSensor();
 
     target_flap_index = 0;
     current_step = 0;

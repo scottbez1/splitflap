@@ -17,8 +17,15 @@ from __future__ import print_function
 
 import logging
 import numbers
+import os
 import re
 import subprocess
+import sys
+
+repo_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+sys.path.append(repo_root)
+
+from util import app_paths
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +54,7 @@ def run(
         ):
 
     command = [
-        'openscad',
+        app_paths.get('openscad'),
         '-o', output_file,
     ]
 

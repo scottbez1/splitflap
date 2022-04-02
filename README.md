@@ -23,11 +23,11 @@ Want to help support development or just say "thanks"? Consider a one-time or mo
 
 [![Video: how a split-flap display works](renders/howItWorksThumbnail.jpg)](https://www.youtube.com/watch?v=UAQJJAQSg_g)
 
-**Using this project in a commercial setting or for paid client work?** Go right ahead - it's open source! All I ask is that you consider [sponsoring the project](https://github.com/sponsors/scottbez1). I've been developing and maintaining this project in my free time for over 6 years, and I'd love to continue working on it. Sponsorships allow me to pay for prototypes and development tools that make this project possible. Unlike pure software projects, every iteration has real hardware costs; sponsorships allow me to keep iterating and improving the project faster. Thank you!
+**Using this project in a commercial setting or for paid client work?** Go right ahead - it's open source (just make sure to follow the terms of the Apache License)! I would, however, ask that you consider [sponsoring the project](https://github.com/sponsors/scottbez1). I've been developing and maintaining this project in my free time for over 6 years, and I'd love to continue working on it. Sponsorships allow me to pay for prototypes and development tools that make this project possible. Unlike pure software projects, every iteration has real hardware costs; sponsorships allow me to keep iterating and improving the project faster. Thank you!
 
 
 # Current Status
-[You can download the **latest stable release** from the official 'releases' page.](https://github.com/scottbez1/splitflap/releases/latest)
+[You can download the **latest stable release** from the official 'releases' page.](https://github.com/scottbez1/splitflap/releases)
 
 Releases have been tested and used to produce working units, but as this is a continuously evolving open-source project, there may always be minor issues and/or incomplete documentation from time to time.
 
@@ -39,7 +39,7 @@ Releases have been tested and used to produce working units, but as this is a co
 | Control Software Example | *Stable* | Example python code for driving the display is in the [software](software) directory|
 
 
-:bulb: There's an upcoming major redesign of the electronics, called the *Chainlink* system (more on this [below](#chainlink-electronics)), which makes assembly easier and supports large displays (100+ modules), using an ESP32 for the controller. It's not quite recommended yet, but is expected to be stable by the end of Q1 2022. 
+:bulb: There's a new electronics system, called the *Chainlink* system (more on this [below](#chainlink-electronics)), which makes assembly easier and supports larger displays (100+ modules), using an ESP32 for the controller. It's a stable design and will become the recommended electronics in the near future (Q1 2022), but documentation is still in progress so you may hit more bumps in the road for now.
 
 Here's a video of a large 108-module display powered by 18 Chainlink Driver boards and a Chainlink Base:
 
@@ -50,7 +50,7 @@ I'd love to hear your thoughts and questions about this project, and happy to in
 # Build Your Own
 
 * [**Ordering guide (v0.5/0.6/0.7)**](https://paper.dropbox.com/doc/Ordering-Splitflap-v0.5--AS8OCZ~75DLuHBGHhxn94YAMAg-iCwwMo0hRkkAlwdutccWf)
-* [**Latest stable release**](https://github.com/scottbez1/splitflap/releases/latest)
+* [**Latest stable release**](https://github.com/scottbez1/splitflap/releases)
 * [**Assembly instructions (v0.5/0.6/0.7)**](https://paper.dropbox.com/doc/Splitflap-Kit-v0.5v1.0-Instructions--ASQDu1uoa6n4_t1pva1bM1MgAg-bxXJlke5ROmamcx4OH44r)
 
 # Table of Contents
@@ -142,7 +142,7 @@ Each card needs to be cut in half and then have two pieces punched out of either
 
 ### Die-Cut (Option 2)
 
-These professional die-cut flaps are manufactured specifically for this project (no manual cutting/punching required) and come in both white and matte black. Sold by Bezek Labs LLC, so proceeds help support continued development on this project.
+These professional die-cut flaps are manufactured specifically for this project (no manual cutting/punching required) and come in both white and matte black. Sold by Bezek Labs, so proceeds help support continued development on this project.
 
 | Price  | Units per order | Name                  | Supplier                                                                                 | Notes                                       |
 |--------|-----------------|-----------------------|------------------------------------------------------------------------------------------|---------------------------------------------|
@@ -153,7 +153,7 @@ These professional die-cut flaps are manufactured specifically for this project 
 
 ## PCB
 
-Circuit boards are available either in small quantities from the Bezek Labs LLC store, or in bulk from PCB manufacturers such as SeeedStudio.
+Circuit boards are available either in small quantities from the Bezek Labs store, or in bulk from PCB manufacturers such as SeeedStudio.
 
 ### Etsy - BezekLabs
 
@@ -196,11 +196,14 @@ The mechanical/structural components are made from laser-cut 3mm MDF or acrylic,
 ![2d laser cut rendering](https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/3d/3d_laser_raster.png)
 
 Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
-* For Ponoko 3mm MDF ([svg](https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/3d/3d_laser_vector-ponoko-3mm-mdf.svg))
-* For Ponoko 3mm acrylic ([svg](https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/3d/3d_laser_vector-ponoko-3mm-acrylic.svg))
-* For generic material (0.18mm kerf correction) ([svg](https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/3d/3d_laser_vector.svg))
+* For Ponoko 3mm MDF ([1x svg](https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/3d/3d_laser_vector-ponoko-3mm-mdf_1x.svg), [4x svg](https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/3d/3d_laser_vector-ponoko-3mm-mdf_4x.svg))
+* For Ponoko 3mm acrylic ([1x svg](https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/3d/3d_laser_vector-ponoko-3mm-acrylic_1x.svg), [4x svg](https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/3d/3d_laser_vector-ponoko-3mm-acrylic_4x.svg),)
+* For generic material (0.18mm kerf correction) ([1x svg](https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/3d/3d_laser_vector.svg))
+* For Elecrow 3mm Wood ([1x zipped pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/3d/3d_laser_vector-elecrow-3mm-wood_1x.zip), note that Elecrow orders are automatically 5x)
+* For Elecrow 3mm Acrylic ([1x zipped pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/3d/3d_laser_vector-elecrow-3mm-acrylic_1x.zip), note that Elecrow orders are automatically 5x)
 
-<sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases/latest) instead
+
+<sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases) instead
 
 
 ## Electronics
@@ -213,7 +216,7 @@ modules plugged into an Arduino Uno. This is [partially documented in the wiki](
 but may require some additional tinkering to get it to work. _Help wanted: if you'd like to help improve these instructions,
 please reach out in the Slack group, thanks!_
 
-A new design (Chainlink) is currently under development, which allows for larger-scale displays by chaining more
+A new electronics design (Chainlink) is now available, which allows for larger-scale displays by chaining more
 modules together and uses a more powerful microcontroller (ESP32). This also adds the possibility of wifi and BLE
 control, though this isn't currently implemented in firmware yet. For the latest on the Chainlink system, join the
 Slack group.
@@ -236,7 +239,7 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 * Sensor PCB, single ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-classic/sensor-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-classic/sensor-pcb-packet.pdf))
 * Sensor PCB, panelized ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-classic/sensor-panelized-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-classic/sensor-panelized-pcb-packet.pdf))
 
-<sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases/latest) instead
+<sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases) instead
 
 ### Classic Controller Electronics
 The Classic driver board is designed to plug into an Arduino like a shield, and can control 4 stepper motors.
@@ -264,7 +267,7 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 * PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-classic/classic-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-classic/classic-pcb-packet.pdf))
 * Panelized PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-classic/classic-panelized-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-classic/classic-panelized-pcb-packet.pdf))
 
-<sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases/latest) instead
+<sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases) instead
 
 
 ### Chainlink Electronics
@@ -272,7 +275,8 @@ The Chainlink system is an upcoming alternative to the Classic controller/driver
 cheaper to build, especially in higher quantities due to its simplified BOM and surface-mount components. It's also
 designed to support longer chains of driver boards to control large displays (think 100+ split-flap modules).
 
-This electronics design is still in very active development, and not recommended unless you know what you're doing.
+Chainlink is stable and will become the recommended electronics system in the near future, but documentation is still
+in progress so there is not an easy guide for ordering/building it yet.
 
 The Chainlink system requires 2 core elements:
 * One or more **Chainlink Driver** board accepts data and power and each Driver connects to **6** individual split-flap modules. Chainlink
@@ -289,15 +293,12 @@ power management/distribution and fault monitoring, UART and RS-485 connections,
 <img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-chainlink/chainlinkDriver-3d.png"/>
 </a>
 
-This is currently under active development. It has been tested and appears to work, but is not yet recommended for general use.
-Firmware support is in progress.
-
-Key features:
+Key features (vs Classic Controller):
 * Controls 6 split-flap modules per board instead of just 4 - fewer PCBs means lower cost and less wiring
 * Longer PCB (200mm) gets connectors closer to each module so wires have more slack
 * Primarily SMD and all components (except the pin headers and motor connectors) are available in JLCPCB's parts library
 for easy SMD/THT assembly
-* Clock and latch lines are buffered with a 74HC125 to support longer chains
+* Clock and latch lines are buffered on each board with a 74HC125 to support longer chains
 * Neopixels replaced by shift-register-driven single-color LED per module (one fewer data line needed in the chain, lower current draw, and 3.3v IO friendly)
 * 2 bits of loopback (connecting 2 spare output bits on output shift registers to 2 spare inputs) allows the controller
 to validate data integrity up and down the whole chain
@@ -306,8 +307,14 @@ Due to the chip shortage, TPL7407L ICs are not currently available and will like
 JLC component/bom files below currently use ULN2003A darlington drivers as a suitable drop-in replacement.
 * Module order goes from right-to-left since this is intended to be installed and accessed from *behind* the modules
 
-This design is optimized for assembly at JLCPCB, and files are automatically generated for ordering assembled PCBs there.
-However, if you wish to assemble this board yourself, you can view the [interactive BOM/placement tool](https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-chainlink/bom/chainlinkDriver-ibom.html)
+Chainlink Driver boards are [available mostly-assembled in the Bezek Labs store](https://www.etsy.com/listing/1123280069/splitflap-chainlink-driver-v11),
+and come with the additional connectors and ribbon cables you'll need. Purchases support continued development of this project.
+
+More information on building and using Chainlink Drivers is available in the [Chainlink Driver User Guide](https://paper.dropbox.com/doc/Chainlink-Driver-v1.1-Electronics-User-Guide--BW2lxdjVkAxva68kYw2doWQEAg-U0DAXrSxEoOhgSoRU39hq).
+
+Or if you'd like to order these directly from a fab, this design is optimized for assembly at JLCPCB, and files are automatically generated
+for ordering *assembled* PCBs there. Or if you wish to assemble this board yourself instead of paying for assembly, 
+you can view the [interactive BOM/placement tool](https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-chainlink/bom/chainlinkDriver-ibom.html)
 
 Depending on available stock at JLCPCB, you may need to manually modify the BOM file to use alternative components, or regenerate the files
 yourself using `export_jlcpcb.py` and specifying one or more `LCSC_ALT_*` field names to use a pre-selected alternative part number. See
@@ -330,14 +337,12 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 * PCB CPL (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-chainlink/chainlinkDriver-jlc/pos.csv)
 * PCB bom (for manual assembly) [interactive](https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-chainlink/bom/chainlinkDriver-ibom.html)
 
-<sup>:warning:</sup>There are currently no stable releases of this board. Once the board design is tested and recommended, a stable release will be created on the [Releases dashboard](https://github.com/scottbez1/splitflap/releases/latest)
+<sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases) instead
 
 #### Chainlink Buddy \[T-Display\]
 <a href="https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-3d.png">
 <img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-3d.png"/>
 </a>
-
-This is currently under very active development. It is untested.
 
 The Chainlink Buddy \[T-Display\] is a convenient way to connect a T-Display ESP32 board (recommended microcontroller) to a chain
 of Chainlink Drivers.
@@ -348,6 +353,10 @@ Key features:
 * Optional barrel jack makes it easy to use a "wall wart" AC adapter/power-supply (since the Chainlink Driver only has screw terminals for power) -- plug in a 12V supply
 and then run a wire from the onboard screw terminals to the Chainlink Driver's motor power screw terminals.
 * Optional 5V regulator allows for powering the ESP32 without a USB connection, using the 12V motor power supply
+
+Chainlink Buddy \[T-Display\] boards are [available in the Bezek Labs store](https://www.etsy.com/listing/1109357786/splitflap-chainlink-buddy-t-display),
+and come with the additional connectors you'll need. Purchases support continued development of this project. 
+
 
 <a href="https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-schematic.pdf">
 <img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-schematic.png"/>
@@ -364,16 +373,18 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 * Panelized PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-panelized-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-panelized-pcb-packet.pdf))
 * PCB bom (for manual assembly) [interactive](https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-chainlink-buddy-t-display/bom/chainlinkBuddyTDisplay-ibom.html)
 
-<sup>:warning:</sup>There are currently no stable releases of this board. Once the board design is tested and recommended, a stable release will be created on the [Releases dashboard](https://github.com/scottbez1/splitflap/releases/latest)
+<sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases) instead
 
 #### Chainlink Buddy \[Breadboard\]
 <a href="https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-3d.png">
 <img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-3d.png"/>
 </a>
 
-This is currently under very active development. It is untested.
+The Chainlink Buddy \[Breadboard\] makes it easy to connect a Chainlink Driver to a breadboard for prototyping. You could use 5 dupont wires and have a
+messy rats nest, or you could use a single ribbon cable and this slick breakout board.
 
-The Chainlink Buddy \[Breadboard\] makes it easy to connect a Chainlink Driver to a breadboard for prototyping. You could use 5 dupont wires, or use a ribbon cable and this slick breakout board.
+Chainlink Buddy \[Breadboard\] boards are [available in the Bezek Labs store](https://www.etsy.com/listing/1123863267/splitflap-chainlink-buddy-breadboard),
+and come with the additional connectors you'll need. Purchases support continued development of this project. 
 
 <a href="https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-schematic.pdf">
 <img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-schematic.png"/>
@@ -390,8 +401,7 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 * Panelized PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-panelized-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-panelized-pcb-packet.pdf))
 * PCB bom (for manual assembly) [interactive](https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-chainlink-buddy-breadboard/bom/chainlinkBuddyBreadboard-ibom.html)
 
-<sup>:warning:</sup>There are currently no stable releases of this board. Once the board design is tested and recommended, a stable release will be created on the [Releases dashboard](https://github.com/scottbez1/splitflap/releases/latest)
-
+<sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases) instead
 
 #### Chainlink Base
 <a href="https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-chainlink-base/chainlinkBase-3d.png">
@@ -438,7 +448,7 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 * PCB gerbers [zip](https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-chainlink-base/chainlinkBase-jlc/gerbers.zip)
 * PCB bom (for manual assembly) [interactive](https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-chainlink-base/bom/chainlinkBase-ibom.html)
 
-<sup>:warning:</sup>There are currently no stable releases of this board. Once the board design is tested and recommended, a stable release will be created on the [Releases dashboard](https://github.com/scottbez1/splitflap/releases/latest)
+<sup>:warning:</sup>There are currently no stable releases of this board. Once the board design is tested and recommended, a stable release will be created on the [Releases dashboard](https://github.com/scottbez1/splitflap/releases)
 
 
 ### Miscellaneous Tools
@@ -490,10 +500,6 @@ Key features:
 * Large cutout allows a barcode scanner or camera to be aimed at the bottom of the board-under-test for tracking serial numbers.
 * Buzzer option for audible pass/fail feedback
 
-
-[Download gerbers](https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-chainlink-tester/chainlinkDriverTester-jlc/gerbers.zip)
-
-[View the interactive BOM/placement tool](https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-chainlink-tester/bom/chainlinkDriverTester-ibom.html)
 
 <a href="https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-chainlink-tester/chainlinkDriverTester-schematic.pdf">
 <img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/dev/moreFlaps/electronics-chainlink-tester/chainlinkDriverTester-schematic.png"/>

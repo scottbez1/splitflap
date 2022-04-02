@@ -15,10 +15,16 @@
 */
 #pragma once
 
+#include <functional>
+
 #include "../core/logger.h"
 #include "../core/splitflap_task.h"
 #include "../proto_gen/splitflap.pb.h"
 
+#define SERIAL_PROTOCOL_LEGACY 0
+#define SERIAL_PROTOCOL_PROTO 1
+
+typedef std::function<void(uint8_t)> ProtocolChangeCallback;
 class SerialProtocol : public Logger {
     public:
         SerialProtocol(SplitflapTask& splitflap_task) : Logger(), splitflap_task_(splitflap_task) {}
@@ -28,7 +34,12 @@ class SerialProtocol : public Logger {
 
         virtual void handleState(const SplitflapState& old_state, const SplitflapState& new_state) = 0;
         virtual void sendSupervisorState(PB_SupervisorState& supervisor_state) = 0;
+
+        virtual void setProtocolChangeCallback(ProtocolChangeCallback cb) {
+            protocol_change_callback_ = cb;
+        }
     
     protected:
         SplitflapTask& splitflap_task_;
+        ProtocolChangeCallback protocol_change_callback_;
 };

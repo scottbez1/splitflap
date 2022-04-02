@@ -58,9 +58,9 @@ def render(extra_variables, skip_optimize, output_directory):
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
 
-    parser = argparse.ArgumentParser(add_help=False)  # avoid conflict with '-h' for height
+    parser = argparse.ArgumentParser()
 
-    parser.add_argument('--mode', choices=_MODES.keys())
+    parser.add_argument('--mode', choices=_MODES.keys(), required=True)
 
     parser.add_argument('-f', '--font', type=str, help='Name of font preset to use - see flap_fonts.scad')
     parser.add_argument('-t', '--text', type=str, help='String of text to generate')
@@ -79,8 +79,7 @@ if __name__ == '__main__':
     parser.add_argument('--kerf', type=float, help='Override kerf_width value')
     parser.add_argument('--fill', action='store_true', help='Fill the text solid (disables optimization)')
     parser.add_argument('--skip-optimize', action='store_true', help='Don\'t remove redundant/overlapping cut lines')
-
-    parser.add_argument("--help", action="help", help="show this help message and exit")
+    parser.add_argument('--vertical-keepout-clip', action='store_true', help='Clip letters that violate vertical keepout zones')
 
     args = parser.parse_args()
 
@@ -113,6 +112,9 @@ if __name__ == '__main__':
         args.skip_optimize = True
     if args.bleed is not None:
         extra_variables['bleed'] = args.bleed
+
+    if args.vertical_keepout_clip:
+        extra_variables['vertical_keepout_mode'] = 2
 
     fonts_directory = os.path.join(source_parts_dir, 'build', 'fonts')
 

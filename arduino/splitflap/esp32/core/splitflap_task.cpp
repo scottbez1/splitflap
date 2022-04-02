@@ -28,7 +28,7 @@
 
 static_assert(QCMD_FLAP + NUM_FLAPS <= 255, "Too many flaps to fit in uint8_t command structure");
 
-SplitflapTask::SplitflapTask(const uint8_t task_core, const LedMode led_mode) : Task("Splitflap", 8192, 1, task_core), led_mode_(led_mode), state_semaphore_(xSemaphoreCreateMutex()) {
+SplitflapTask::SplitflapTask(const uint8_t task_core, const LedMode led_mode) : Task("Splitflap", 2048, 1, task_core), led_mode_(led_mode), state_semaphore_(xSemaphoreCreateMutex()) {
   assert(state_semaphore_ != NULL);
   xSemaphoreGive(state_semaphore_);
 
@@ -71,7 +71,7 @@ void SplitflapTask::run() {
         for (uint8_t j = 0; j < NUM_LOOPBACKS; j++) {
           if (!loopback_result[i][j]) {
             char buffer[200] = {};
-            snprintf(buffer, sizeof(buffer), "Bad loopback. Set output %u but read incorrect value at input %u", i, j);
+            snprintf(buffer, sizeof(buffer), "Loopback ERROR. Set output %u but read incorrect value at input %u", i, j);
             log(buffer);
           }
         }
@@ -79,14 +79,12 @@ void SplitflapTask::run() {
       for (uint8_t j = 0; j < NUM_LOOPBACKS; j++) {
         if (!loopback_off_result[j]) {
             char buffer[200] = {};
-            snprintf(buffer, sizeof(buffer), "Bad loopback at input %u when all outputs off - should have been 0", j);
+            snprintf(buffer, sizeof(buffer), "Loopback ERROR. Loopback %u was set when all outputs off - should have been 0", j);
             log(buffer);
         }
       }
 
-      while(1) {
-          ESP_ERROR_CHECK(esp_task_wdt_reset());
-      }
+      disableAll();
     }
 #else
     loopback_all_ok_ = true;
@@ -132,7 +130,7 @@ void SplitflapTask::processQueue() {
                             // No-op
                             break;
                         case QCMD_RESET_AND_HOME:
-                            modules[i]->ResetErrorCounters();
+                            modules[i]->ResetState();
                             modules[i]->GoHome();
                             break;
                         case QCMD_LED_ON:
@@ -178,6 +176,7 @@ void SplitflapTask::processQueue() {
                     }
 
                     if (config.target_flap_index != current_configs_.config[i].target_flap_index ||
+                            config.target_flap_index != modules[i]->GetTargetFlapIndex() ||
                             config.movement_nonce != current_configs_.config[i].movement_nonce) {
                         if (config.target_flap_index >= NUM_FLAPS) {
                             char buffer[200] = {};
@@ -258,7 +257,8 @@ void SplitflapTask::runUpdate() {
       if (!ok && loopback_all_ok_) {
         // Publish failures immediately
         loopback_all_ok_ = false;
-        log("Loopback status changed to 0!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        log("Loopback ERROR!");
+        disableAll();
       }
     } else if (loopback_step_index_ == 50) {
       loopback_step_index_ = 0;
@@ -267,10 +267,8 @@ void SplitflapTask::runUpdate() {
       // If we've iterated through all loopbacks, save the results of this run and restart
       // from the first loopback again.
       if (loopback_current_out_index_ >= NUM_LOOPBACKS) {
-        if (loopback_all_ok_ != loopback_current_ok_) {
-            char buffer[200] = {};
-            snprintf(buffer, sizeof(buffer), "Loopback status changed to %u", loopback_current_ok_);
-            log(buffer);
+        if (loopback_current_ok_ && !loopback_all_ok_) {
+            log("Loopback is ok!");
         }
         loopback_all_ok_ = loopback_current_ok_;
         loopback_current_ok_ = true;
@@ -319,13 +317,13 @@ void SplitflapTask::log(const char* msg) {
     }
 }
 
-void SplitflapTask::showString(const char* str, uint8_t length) {
+void SplitflapTask::showString(const char* str, uint8_t length, bool force_full_rotation) {
     Command command = {};
     command.command_type = CommandType::MODULES;
     for (uint8_t i = 0; i < length; i++) {
         int8_t index = findFlapIndex(str[i]);
         if (index != -1) {
-            if (FORCE_FULL_ROTATION || index != modules[i]->GetTargetFlapIndex()) {
+            if (force_full_rotation || index != modules[i]->GetTargetFlapIndex()) {
                 command.data.module_command[i] = QCMD_FLAP + index;
             }
         }

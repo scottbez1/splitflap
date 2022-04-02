@@ -26,14 +26,18 @@ class DisplayTask : public Task<DisplayTask> {
 
     public:
         DisplayTask(SplitflapTask& splitflapTask, const uint8_t taskCore);
+        ~DisplayTask();
+
+        void setMessage(uint8_t i, String message);
 
     protected:
         void run();
 
     private:
         SplitflapTask& splitflap_task_;
+        const SemaphoreHandle_t semaphore_;
+
         TFT_eSPI tft_ = TFT_eSPI();
 
-        /** Full-size sprite used as a framebuffer */
-        TFT_eSprite spr_ = TFT_eSprite(&tft_);
+        String messages_[2] = {};
 };
