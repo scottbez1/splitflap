@@ -55,13 +55,7 @@ I'd love to hear your thoughts and questions about this project, and happy to in
 
 # Table of Contents
 - [Rough Cost Breakdown](Documentation/Cost.md)
-  * [Housing](Documentation/Cost.md#housing)
-  * [Hardware & Consumables](Documentation/Cost.md#hardware--consumables)
-  * [Flaps](Documentation/Cost.md#flaps)
-  * [PCB](Documentation/Cost.md#pcb)
-  * [Electronics & Motor](Documentation/Cost.md#electronics--motor)
-- [Design Overview](#design-overview)
-
+- [Design Overview](Documentation/Design.md)
 - [Contributing/Modifying](#contributingmodifying)
   * [3D Design](#3d-design)
   * [Electronics Design](#electronics-design)

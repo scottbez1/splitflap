@@ -1,5 +1,11 @@
 # Rough Cost Breakdown
 
+* [Housing](#housing)
+* [Hardware & Consumables](#hardware--consumables)
+* [Flaps](#flaps)
+* [PCB](#pcb)
+* [Electronics & Motor](#electronics--motor)
+
 This is an _incomplete_ list of supplies needed to build a split-flap display module to get a rough sense of the overall cost.
 Many items have minimum package sizes, so per-unit-prices will be higher when building fewer units due to the need to
 buy more items than will actually be used.
