@@ -60,7 +60,6 @@ I'd love to hear your thoughts and questions about this project, and happy to in
 
 
 # License
-I'd love to hear your thoughts and questions about this project, and happy to incorporate any feedback you might have into these designs! Please feel free (and encouraged) to [open GitHub issues](https://github.com/scottbez1/splitflap/issues/new), email me directly, reach out [on Twitter](https://twitter.com/scottbez1), and [get involved](https://github.com/scottbez1/splitflap/pulls) in the open source development and let's keep chatting and building together!
 
 This project is licensed under Apache v2 (see [LICENSE.txt](LICENSE.txt)).
 
