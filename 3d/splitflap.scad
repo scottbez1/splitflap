@@ -31,7 +31,7 @@ include<m4_dimensions.scad>;
 
 // ##### RENDERING OPTIONS #####
 
-render_3d = true;
+render_3d = false;
 
 // 3d parameters:
 render_enclosure = 2; // 0=invisible; 1=translucent; 2=opaque color;
@@ -83,7 +83,7 @@ spool_horizontal_explosion = lookup(spool_explosion, [
 
 // Ponoko kerf values are 0.2 mm for MDF and acrylic (all thicknesses)
 // Remember: it's better to underestimate (looser fit) than overestimate (no fit)
-kerf_width = 0.2 - 0.02;
+kerf_width = 0.185;
 
 // MDF, .120in nominal
 // https://www.ponoko.com/materials/mdf-fiberboard
@@ -128,11 +128,11 @@ spool_joint_clearance = 0.10;  // for the notched joints on the spool struts
 num_flaps = 52;
 assert(len(get_character_list()) == num_flaps, "num_flaps and character_list mismatch!");
 
-flap_hole_radius = (flap_pin_width + 0.6) / 2;
-flap_hole_separation = 0.8;  // additional spacing between hole edges
+flap_hole_radius = (flap_pin_width + 0.5) / 2;
+flap_hole_separation = 1.06;  // additional spacing between hole edges
 flap_gap = (flap_hole_radius * 2 - flap_pin_width) + flap_hole_separation;
 
-flap_spool_outset = flap_hole_radius;
+flap_spool_outset = 0.6;
 flap_pitch_radius = flap_spool_pitch_radius(num_flaps, flap_hole_radius, flap_hole_separation); //num_flaps * (flap_hole_radius*2 + flap_hole_separation) / (2*PI);
 spool_outer_radius = flap_spool_outer_radius(num_flaps, flap_hole_radius, flap_hole_separation, flap_spool_outset); //flap_pitch_radius + 2*flap_hole_radius;
 
