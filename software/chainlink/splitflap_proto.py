@@ -35,6 +35,17 @@ class Splitflap(object):
 
     RETRY_TIMEOUT = 0.25
 
+    # TODO: read alphabet from splitflap once this is possible
+    _DEFAULT_ALPHABET = [
+        ' ',
+        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+        'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+        '.',
+        ',',
+        '\'',
+    ]
+
     def __init__(self, serial_instance):
         self._serial = serial_instance
         self._logger = logging.getLogger('splitflap')
@@ -48,6 +59,8 @@ class Splitflap(object):
 
         self._current_config = splitflap_pb2.SplitflapConfig()
         self._num_modules = None
+
+        self._alphabet = Splitflap._DEFAULT_ALPHABET
 
     def _read_loop(self):
         self._logger.debug('Read loop started')
@@ -171,6 +184,17 @@ class Splitflap(object):
         if approx_q_length > 10:
             self._logger.warning(f'Output queue length is high! ({approx_q_length}) Is the splitflap still connected and functional?')
 
+    def get_alphabet(self):
+        return self._alphabet
+
+    def set_text(self, text):
+        """Helper for setting a string message. Using set_positions is preferable for more control."""
+
+        # Transform text to a list of flap indexes (and pad with blanks so that all modules get updated even if text is shorter)
+        positions = [self._alphabet.index(c) if c in self._alphabet else 0 for c in text] + [self._alphabet.index(' ')] * (self._num_modules - len(text))
+
+        self.set_positions(positions)
+
     def set_positions(self, positions, force_movement=None):
         assert self._num_modules is not None, 'Cannot set positions before number of modules is known'
 
@@ -282,17 +306,7 @@ def _run_example():
     p = ask_for_serial_port()
     with splitflap_context(p) as s:
         modules = s.get_num_modules()
-
-        # TODO: read alphabet from splitflap once this is possible
-        alphabet = [
-            ' ',
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-            '.',
-            ',',
-            '\'',
-        ]
+        alphabet = s.get_alphabet()
 
         # Set up a handler to log reported state changes
         def state_str(s):
