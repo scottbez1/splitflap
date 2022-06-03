@@ -10,7 +10,7 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "protobufjs": "^6.11.2"
+    "protobufjs": "^6.11.3"
   },
   "devDependencies": {
   }
