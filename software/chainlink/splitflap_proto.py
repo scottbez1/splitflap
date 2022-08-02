@@ -4,6 +4,7 @@ from collections import (
     defaultdict,
 )
 from contextlib import contextmanager
+from enum import Enum
 import logging
 import os
 from queue import (
@@ -33,7 +34,23 @@ SPLITFLAP_BAUD = 230400
 
 class Splitflap(object):
 
+    class ForceMovement(Enum):
+        NONE = 1            # No movement if module is already at the specified character
+        ONLY_NON_BLANK = 2  # Force a full revolution if module is already at the specified character, but only if it's not the blank (' ') character
+        ALL = 3             # All modules move on every command, regardless of whether they are already at the specified character
+
     RETRY_TIMEOUT = 0.25
+
+    # TODO: read alphabet from splitflap once this is possible
+    _DEFAULT_ALPHABET = [
+        ' ',
+        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+        'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+        '.',
+        ',',
+        '\'',
+    ]
 
     def __init__(self, serial_instance):
         self._serial = serial_instance
@@ -48,6 +65,8 @@ class Splitflap(object):
 
         self._current_config = splitflap_pb2.SplitflapConfig()
         self._num_modules = None
+
+        self._alphabet = Splitflap._DEFAULT_ALPHABET
 
     def _read_loop(self):
         self._logger.debug('Read loop started')
@@ -171,6 +190,26 @@ class Splitflap(object):
         if approx_q_length > 10:
             self._logger.warning(f'Output queue length is high! ({approx_q_length}) Is the splitflap still connected and functional?')
 
+    def get_alphabet(self):
+        return self._alphabet
+
+    def set_text(self, text, force_movement=ForceMovement.NONE):
+        """Helper for setting a string message. Using set_positions is preferable for more control."""
+
+        # Transform text to a list of flap indexes (and pad with blanks so that all modules get updated even if text is shorter)
+        positions = [self._alphabet.index(c) if c in self._alphabet else 0 for c in text] + [self._alphabet.index(' ')] * (self._num_modules - len(text))
+
+        if force_movement == Splitflap.ForceMovement.NONE:
+            force_movement = None
+        elif force_movement == Splitflap.ForceMovement.ONLY_NON_BLANK:
+            force_movement = [c in self._alphabet and c != ' ' for c in text] + [False] * (self._num_modules - len(text))
+        elif force_movement == Splitflap.ForceMovement.ALL:
+            force_movement = [True] * self._num_modules
+        else:
+            raise RuntimeError(f'bad value {force_movement}')
+
+        self.set_positions(positions, force_movement)
+
     def set_positions(self, positions, force_movement=None):
         assert self._num_modules is not None, 'Cannot set positions before number of modules is known'
 
@@ -282,17 +321,7 @@ def _run_example():
     p = ask_for_serial_port()
     with splitflap_context(p) as s:
         modules = s.get_num_modules()
-
-        # TODO: read alphabet from splitflap once this is possible
-        alphabet = [
-            ' ',
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-            '.',
-            ',',
-            '\'',
-        ]
+        alphabet = s.get_alphabet()
 
         # Set up a handler to log reported state changes
         def state_str(s):
@@ -322,12 +351,7 @@ def _run_example():
         while True:
             text = input()[:modules]
 
-            # Transform text to a list of flap indexes (and pad with blanks so that all modules get updated even if text is shorter)
-            positions = [alphabet.index(c) if c in alphabet else 0 for c in text] + [alphabet.index(' ')] * (modules - len(text))
-
-            # Generate an update mask (force update all modules except any invalid characters that were entered)
-            update = [c in alphabet for c in text] + [True] * (modules - len(text))
-            s.set_positions(positions, update)
+            s.set_text(text, Splitflap.ForceMovement.ALL)
 
 
 if __name__ == '__main__':

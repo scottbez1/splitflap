@@ -73,8 +73,8 @@ const uint8_t flaps[NUM_FLAPS] = {
  * Suggested Pinouts
  *
  * Arduino Uno - Basic IO - Up to 3 modules
- *    A: Motor: D4-7 = pins 4-7         Sensor: B4 = pin 12
- *    B: Motor: B0-3 = pins 8-11        Sensor: C4 = pin A4
+ *    A: Motor: B0-3 = pins 8-11        Sensor: B4 = pin 12
+ *    B: Motor: D4-7 = pins 4-7         Sensor: C4 = pin A4
  *    C: Motor: C0-3 = pins A0-A3       Sensor: C5 = pin A5
  *
  *    Neopixel: 3
