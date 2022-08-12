@@ -57,10 +57,6 @@ Wire Wire Line
 Wire Wire Line
 	1750 8400 2200 8400
 Connection ~ 2200 8400
-Wire Wire Line
-	1800 9100 1150 9100
-Text Label 1150 9100 0    50   ~ 0
-LATCH_IN
 $Comp
 L power:GND #PWR08
 U 1 1 5F49587F
@@ -1381,27 +1377,6 @@ Wire Wire Line
 	13250 5800 14450 5800
 Wire Wire Line
 	13250 6000 14450 6000
-Wire Wire Line
-	1800 9200 1750 9200
-Wire Wire Line
-	1750 9200 1750 9750
-Wire Wire Line
-	1750 9750 2200 9750
-Connection ~ 2200 9750
-Wire Wire Line
-	4250 9200 4200 9200
-Wire Wire Line
-	4200 9200 4200 9750
-Wire Wire Line
-	4200 9750 4650 9750
-Connection ~ 4650 9750
-Wire Wire Line
-	9150 9200 9100 9200
-Wire Wire Line
-	9100 9200 9100 9750
-Wire Wire Line
-	9100 9750 9550 9750
-Connection ~ 9550 9750
 $Comp
 L Device:R_Small R6
 U 1 1 612FA26A
@@ -1919,13 +1894,6 @@ F 3 "" H 7100 8350 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	6700 9200 6650 9200
-Wire Wire Line
-	6650 9200 6650 9750
-Wire Wire Line
-	6650 9750 7100 9750
-Connection ~ 7100 9750
-Wire Wire Line
 	7500 8800 8350 8800
 Text Label 8350 8800 2    50   ~ 0
 LED_F
@@ -2237,7 +2205,7 @@ $EndComp
 Text Notes 14750 1250 0    50   ~ 0
 JLCPCB Assembly Tooling Holes
 Text Notes 700  3300 0    50   ~ 0
-TPL7407L or TPL7407LA will work. OUT7 is avoided because the datasheet recommends an external flyback diode for TPL7407L, and we have spare channels we can use instead.
+TPL7407L or TPL7407LA will work. OUT7 is avoided because the datasheet recommends an external flyback diode for TPL7407L, and we have spare channels we can use instead.\nULN2003A is an acceptable replacement, but less efficient.
 Text Notes 2350 4600 0    50   ~ 0
 Do not use O7 on TPL7407L\n(see note above)
 Text Notes 4950 4600 0    50   ~ 0
@@ -2329,14 +2297,14 @@ Wire Wire Line
 Wire Wire Line
 	1450 6400 2050 6400
 $Comp
-L Connector_Generic:Conn_02x04_Odd_Even J19
+L Connector_Generic:Conn_02x05_Odd_Even J19
 U 1 1 61861E9F
-P 2250 6500
-F 0 "J19" H 2300 6817 50  0000 C CNN
-F 1 "IDC" H 2300 6726 50  0000 C CNN
-F 2 "ModifiedSymbols:IDC-Header_2x04_P2.54mm_Vertical" H 2250 6500 50  0001 C CNN
-F 3 "~" H 2250 6500 50  0001 C CNN
-	1    2250 6500
+P 2250 6600
+F 0 "J19" H 2300 6917 50  0000 C CNN
+F 1 "IDC" H 2300 6826 50  0000 C CNN
+F 2 "ModifiedSymbols:IDC-Header_2x05_P2.54mm_Vertical_2x04Silk" H 2250 6600 50  0001 C CNN
+F 3 "~" H 2250 6600 50  0001 C CNN
+	1    2250 6600
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
@@ -2349,41 +2317,32 @@ Wire Wire Line
 	2550 6600 2550 6700
 Connection ~ 2550 6700
 Wire Wire Line
-	2550 6700 2550 6850
+	2550 6700 2550 6800
 $Comp
-L Connector_Generic:Conn_02x04_Odd_Even J20
+L Connector_Generic:Conn_02x05_Odd_Even J20
 U 1 1 618D5E87
-P 3850 6500
-F 0 "J20" H 3900 6817 50  0000 C CNN
-F 1 "IDC" H 3900 6726 50  0000 C CNN
-F 2 "ModifiedSymbols:IDC-Header_2x04_P2.54mm_Vertical" H 3850 6500 50  0001 C CNN
-F 3 "~" H 3850 6500 50  0001 C CNN
-	1    3850 6500
+P 3850 6600
+F 0 "J20" H 3900 6917 50  0000 C CNN
+F 1 "IDC" H 3900 6826 50  0000 C CNN
+F 2 "ModifiedSymbols:IDC-Header_2x05_P2.54mm_Vertical_2x04Silk" H 3850 6600 50  0001 C CNN
+F 3 "~" H 3850 6600 50  0001 C CNN
+	1    3850 6600
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	4150 6850 4150 6700
+	4150 6850 4150 6800
 Connection ~ 4150 6500
 Wire Wire Line
 	4150 6500 4150 6400
 Connection ~ 4150 6600
 Wire Wire Line
 	4150 6600 4150 6500
-Connection ~ 4150 6700
 Wire Wire Line
 	4150 6700 4150 6600
 Text Label 8200 6400 0    50   ~ 0
 LATCH_IN
 Text Label 11050 6450 2    50   ~ 0
 LATCH_OUT
-NoConn ~ 10250 6650
-Wire Wire Line
-	9450 6600 9350 6600
-Wire Wire Line
-	9350 6500 9350 6600
-Wire Wire Line
-	9350 6600 9350 6700
-Connection ~ 9350 6600
 Text Label 13250 5800 0    50   ~ 0
 LATCH_IN
 $Comp
@@ -2400,4 +2359,80 @@ F 6 "C176661" H 3500 1050 50  0001 C CNN "LCSC_ALT_3V3_CAP"
 	1    3500 1050
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	9350 6500 9350 6700
+Wire Wire Line
+	8200 6600 9450 6600
+Text Label 8200 6600 0    50   ~ 0
+nOE_IN
+Wire Wire Line
+	10250 6650 11050 6650
+Text Label 11050 6650 2    50   ~ 0
+nOE_OUT
+Text Label 1150 9100 0    50   ~ 0
+LATCH_IN
+Wire Wire Line
+	1800 9100 1150 9100
+Text Label 1150 9200 0    50   ~ 0
+nOE_IN
+Wire Wire Line
+	1800 9200 1150 9200
+Text Label 3600 9200 0    50   ~ 0
+nOE_IN
+Wire Wire Line
+	4250 9200 3600 9200
+Text Label 6050 9200 0    50   ~ 0
+nOE_IN
+Wire Wire Line
+	6700 9200 6050 9200
+Text Label 8500 9200 0    50   ~ 0
+nOE_IN
+Wire Wire Line
+	9150 9200 8500 9200
+Text Label 5350 6700 0    50   ~ 0
+nOE_IN
+Wire Wire Line
+	6000 6700 5350 6700
+$Comp
+L power:+3.3V #PWR0101
+U 1 1 634A3C40
+P 6000 6200
+F 0 "#PWR0101" H 6000 6050 50  0001 C CNN
+F 1 "+3.3V" H 6015 6373 50  0000 C CNN
+F 2 "" H 6000 6200 50  0001 C CNN
+F 3 "" H 6000 6200 50  0001 C CNN
+	1    6000 6200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6000 6350 6000 6200
+Wire Wire Line
+	6000 6700 6000 6550
+$Comp
+L Device:R_Small R13
+U 1 1 6352DF17
+P 6000 6450
+F 0 "R13" H 6059 6496 50  0000 L CNN
+F 1 "47k" H 6059 6405 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" H 6000 6450 50  0001 C CNN
+F 3 "~" H 6000 6450 50  0001 C CNN
+F 4 "C25819" H 6000 6450 50  0001 C CNN "LCSC"
+	1    6000 6450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2550 6850 2550 6800
+Connection ~ 2550 6800
+Wire Wire Line
+	4150 6800 4150 6700
+Connection ~ 4150 6800
+Connection ~ 4150 6700
+Text Label 1450 6800 0    50   ~ 0
+nOE_IN
+Wire Wire Line
+	1450 6800 2050 6800
+Text Label 2900 6800 0    50   ~ 0
+nOE_OUT
+Wire Wire Line
+	2900 6800 3650 6800
 $EndSCHEMATC
