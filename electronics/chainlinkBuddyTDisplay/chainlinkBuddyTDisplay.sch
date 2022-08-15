@@ -25,14 +25,14 @@ F 3 "" H 2950 3550 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_02x04_Odd_Even J1
+L Connector_Generic:Conn_02x05_Odd_Even J1
 U 1 1 61A3A5EC
-P 6700 3400
-F 0 "J1" H 6750 3717 50  0000 C CNN
-F 1 "Output" H 6750 3626 50  0000 C CNN
-F 2 "ModifiedSymbols:IDC-Header_2x04_P2.54mm_Vertical" H 6700 3400 50  0001 C CNN
-F 3 "~" H 6700 3400 50  0001 C CNN
-	1    6700 3400
+P 6700 3500
+F 0 "J1" H 6750 3817 50  0000 C CNN
+F 1 "Output" H 6750 3900 50  0000 C CNN
+F 2 "ModifiedSymbols:IDC-Header_2x05_P2.54mm_Vertical_2x04Silk" H 6700 3500 50  0001 C CNN
+F 3 "~" H 6700 3500 50  0001 C CNN
+	1    6700 3500
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -47,7 +47,7 @@ F 3 "" H 7000 3750 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	7000 3600 7000 3750
+	7000 3600 7000 3700
 Wire Wire Line
 	7000 3300 7000 3400
 Connection ~ 7000 3600
@@ -229,12 +229,12 @@ Wire Wire Line
 $Comp
 L power:+5V #PWR0106
 U 1 1 61A82D03
-P 3950 4000
-F 0 "#PWR0106" H 3950 3850 50  0001 C CNN
-F 1 "+5V" H 3965 4173 50  0000 C CNN
-F 2 "" H 3950 4000 50  0001 C CNN
-F 3 "" H 3950 4000 50  0001 C CNN
-	1    3950 4000
+P 3950 4050
+F 0 "#PWR0106" H 3950 3900 50  0001 C CNN
+F 1 "+5V" H 3965 4223 50  0000 C CNN
+F 2 "" H 3950 4050 50  0001 C CNN
+F 3 "" H 3950 4050 50  0001 C CNN
+	1    3950 4050
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -281,7 +281,6 @@ NoConn ~ 2650 3600
 NoConn ~ 2650 3700
 NoConn ~ 2650 3800
 NoConn ~ 3650 3900
-NoConn ~ 3650 3800
 NoConn ~ 3650 3300
 NoConn ~ 3650 3200
 NoConn ~ 3650 3100
@@ -416,8 +415,6 @@ $EndComp
 Wire Wire Line
 	3750 2050 3750 1950
 Wire Wire Line
-	3950 4000 3950 4100
-Wire Wire Line
 	3950 4100 3650 4100
 $Comp
 L power:+12V #PWR07
@@ -516,4 +513,19 @@ F 3 "" H 3100 5450 50  0001 C CNN
 	1    3100 5450
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	7000 3750 7000 3700
+Connection ~ 7000 3700
+Text Label 5900 3700 0    50   ~ 0
+nOE
+Wire Wire Line
+	6500 3700 5900 3700
+Wire Wire Line
+	3650 3800 4400 3800
+Text Label 4400 3800 2    50   ~ 0
+nOE
+Wire Wire Line
+	3950 4050 3950 4100
+Text Notes 7150 3800 0    50   ~ 0
+Older versions of the Chainlink system\nused a 2x4 IDC connector and 8-pin\nribbon cable, omitting the output-enable \nsignal + GND on pins 9 and 10.\n\nFor backwards compatibility, you may use\na 2x4 IDC connector connected only to\npins 1-8.
 $EndSCHEMATC

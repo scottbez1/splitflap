@@ -1,4 +1,4 @@
-18960710632073189
+18933084987874744
 Battery
 BatteryHolder_Bulgin_BX0036_1xC
 Bulgin Battery Holder, BX0036, Battery Type C (https://www.bulgin.com/products/pub/media/bulgin/data/Battery_holders.pdf)
@@ -50434,41 +50434,6 @@ One digit LED 7 segment SA39-11 SC39-11 SA39-12 SC39-12
 0
 10
 10
-ESP32
-D1_32
-
-
-0
-40
-40
-ESP32
-T-DISPLAY
-
-
-0
-24
-24
-ESP32
-T-DISPLAY_extra_pins
-
-
-0
-48
-24
-ESP32
-T-DISPLAY_extra_pins_labeled
-
-
-0
-48
-24
-ESP32
-T-DISPLAY_extra_pins_labeled_double
-
-
-0
-72
-24
 Fiducial
 Fiducial_0.5mm_Mask1.5mm
 Circular Fiducial, 0.5mm bare copper, 1.5mm soldermask opening
@@ -51323,6 +51288,13 @@ Fuse Fuseholder TR5 Littelfuse/Wickmann No. 460 No560
 0
 2
 2
+GCT_USB
+USB4510
+
+
+0
+20
+17
 Heatsink
 Heatsink_35x26mm_1xFixation3mm_Fischer-SK486-35
 Heatsink, 35mm x 26mm, 1x Fixation 3mm, Fischer SK486-35
@@ -51414,20 +51386,13 @@ heatsink
 0
 2
 1
-INA219
-INA219_LARGE
-
-
+Holes
+MountingHole_M1.6
+Mounting Hole 2.2mm, no annular, M2, ISO7380
+mounting hole 2.2mm no annular m2 iso7380
 0
-10
-6
-INA219
-INA219_SMALL
-
-
-0
-8
-6
+1
+1
 Inductor_SMD
 L_6.3x6.3_H3
 Choke, SMD, 6.3x6.3mm 3mm height
@@ -54704,20 +54669,6 @@ L_Toroid Vertical series Radial pin pitch 31.80mm  length 67.6mm width 36.1mm Vi
 0
 2
 2
-JLCPCB
-AssemblyToolingHole
-
-
-0
-0
-0
-JST_XH_Connectors
-JST_XH_2-5mm_5pin
-
-
-0
-5
-5
 Jumper
 SolderJumper-2_P1.3mm_Bridged2Bar_Pad1.0x1.5mm
 SMD Solder Jumper, 1x1.5mm Pads, 0.3mm gap, bridged with 2 copper strips
@@ -55985,97 +55936,20 @@ Yellow 5381 Series LED
 0
 2
 2
-LevelShifterModule
-LevelShifterModule
-
-
-0
-12
-12
-ModifiedSymbols
-IDC-Header_2x04_P2.54mm_Vertical
-Through hole IDC box header, 2x04, 2.54mm pitch, DIN 41651 / IEC 60603-13, double rows, https://docs.google.com/spreadsheets/d/16SsEcesNF15N3Lb4niX7dcUr-NY5_MFPQhobNuNppn4/edit#gid=0
-Through hole vertical IDC box header THT 2x04 2.54mm double row
-0
-8
-8
-ModifiedSymbols
-IDC-Header_2x05_P2.54mm_Vertical
-Through hole IDC box header, 2x05, 2.54mm pitch, DIN 41651 / IEC 60603-13, double rows, https://docs.google.com/spreadsheets/d/16SsEcesNF15N3Lb4niX7dcUr-NY5_MFPQhobNuNppn4/edit#gid=0
-Through hole vertical IDC box header THT 2x05 2.54mm double row
-0
-10
-10
-ModifiedSymbols
-LED_0603_1608Metric_Silkscreen
-LED SMD 0603 (1608 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: http://www.tortai-tech.com/upload/download/2011102023233369053.pdf), generated with kicad-footprint-generator
-LED
+Modified
+CP_Radial_D5.0mm_P2.00mm_HorizontalCutout
+CP, Radial series, Radial, pin pitch=2.00mm, , diameter=5mm, Electrolytic Capacitor
+CP Radial series Radial pin pitch 2.00mm  diameter 5mm Electrolytic Capacitor
 0
 2
 2
-ModifiedSymbols
-LED_0805_2012Metric_Silkscreen
-LED SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator
-LED
+Modified
+QFN-20-1EP_3x3mm_P0.4mm_EP1.65x1.65mm_ThermalVias_LargerViaHoles
+QFN, 20 Pin (https://www.analog.com/media/en/technical-documentation/data-sheets/3553fc.pdf#page=34), generated with kicad-footprint-generator ipc_noLead_generator.py
+QFN NoLead
 0
-2
-2
-ModifiedSymbols
-LED_WS2812B_PLCC4_5.0x5.0mm_P3.2mm
-https://cdn-shop.adafruit.com/datasheets/WS2812B.pdf
-LED RGB NeoPixel
-0
-4
-4
-ModifiedSymbols
-PinHeader_1x03_P2.54mm_Vertical_SolderJumper
-Through hole straight pin header, 1x03, 2.54mm pitch, single row
-Through hole pin header THT 1x03 2.54mm single row
-0
-3
-3
-ModifiedSymbols
-PinHeader_1x05_P2.54mm_Vertical_NoSilk
-Through hole straight pin header, 1x05, 2.54mm pitch, single row
-Through hole pin header THT 1x05 2.54mm single row
-0
-5
-5
-ModifiedSymbols
-PinHoles_1x04_P2.54mm_NoSilk
-Through hole straight socket strip, 1x04, 2.54mm pitch, single row (from Kicad 4.0.7), script generated
-Through hole socket strip THT 1x04 2.54mm single row
-0
-4
-4
-ModifiedSymbols
-Pin_Header_Right_Angle_1x03
-Through hole pin header
-pin header
-0
-3
-3
-ModifiedSymbols
-SOIC-14_3.9x8.7mm_P1.27mm_silk
-SOIC, 14 Pin (JEDEC MS-012AB, https://www.analog.com/media/en/package-pcb-resources/package/pkg_pdf/soic_narrow-r/r_14.pdf), generated with kicad-footprint-generator ipc_gullwing_generator.py
-SOIC SO
-0
-14
-14
-ModifiedSymbols
-SOIC-16_3.9x9.9mm_P1.27mm_silk
-SOIC, 16 Pin (JEDEC MS-012AC, https://www.analog.com/media/en/package-pcb-resources/package/pkg_pdf/soic_narrow-r/r_16.pdf), generated with kicad-footprint-generator ipc_gullwing_generator.py
-SOIC SO
-0
-16
-16
-ModifiedSymbols
-TO-220-3_Vertical
-TO-220-3, Vertical, RM 2.54mm, see https://www.vishay.com/docs/66542/to-220-1.pdf
-TO-220-3 Vertical RM 2.54mm
-0
-3
-3
+30
+21
 Module
 A20_OLINUXINO_LIME2
 A20 Olinuxino LIME2, 1.2GHz, 512-1024MB RAM, Micro-SD, NAND or eMMC, 1000Mbit Ethernet
@@ -56223,6 +56097,13 @@ ESP8266 WiFi microcontroller
 0
 16
 16
+Molex
+532610371
+
+
+0
+5
+3
 MountingHole
 MountingHole_2.1mm
 Mounting Hole 2.1mm, no annular
@@ -74633,55 +74514,6 @@ rotary encoder
 0
 5
 4
-ST7789
-ST7789_80x160
-
-
-0
-12
-8
-ST7789
-ST7789_240x240
-
-
-0
-11
-7
-ScrewTerminals
-C8465_WJ500V-5.08-2P
-
-
-0
-2
-2
-ScrewTerminals
-C72334_WJ500V-5.08-3P
-
-
-0
-3
-3
-ScrewTerminals
-EB147A-02-D
-
-
-0
-2
-2
-ScrewTerminals
-Generic-5.08-2P
-
-
-0
-2
-2
-ScrewTerminals
-Generic-5.08-3P
-
-
-0
-3
-3
 Sensor_Audio
 CUI_CMC-4013-SMT
 Omnidirectional, -42dB, reflowable, electret condenser microphone https://www.cuidevices.com/product/resource/cmc-4013-smt-tr.pdf
@@ -80352,6 +80184,13 @@ transformer flyback
 0
 10
 10
+VEML7700
+VEML7700-TOP
+
+
+0
+4
+4
 Valve
 Valve_ECC-83-1
 Valve ECC-83-1 round pins
@@ -81122,3 +80961,45 @@ varistor SIOV
 0
 2
 2
+lilygo_micro32
+T-Micro32
+
+
+0
+38
+38
+sk6812
+SK6812-SIDE-A
+
+
+0
+4
+4
+strain
+BF350-3AA
+
+
+0
+0
+0
+view_custom
+SolderPads_2mm_3
+
+
+0
+3
+3
+view_custom
+SolderPads_2mm_8
+
+
+0
+8
+8
+view_custom
+ViewKeepouts3d
+
+
+0
+0
+0

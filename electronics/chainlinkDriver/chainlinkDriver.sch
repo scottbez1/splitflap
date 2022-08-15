@@ -449,12 +449,12 @@ $EndComp
 $Comp
 L Connector:Conn_01x05_Male J3
 U 1 1 6072FE6C
-P 1700 2700
-F 0 "J3" H 1672 2632 50  0000 R CNN
-F 1 "Motor" H 1672 2723 50  0000 R CNN
-F 2 "Connector_JST:JST_XH_B5B-XH-A_1x05_P2.50mm_Vertical" H 1700 2700 50  0001 C CNN
-F 3 "~" H 1700 2700 50  0001 C CNN
-	1    1700 2700
+P 1700 2500
+F 0 "J3" H 1672 2432 50  0000 R CNN
+F 1 "Motor" H 1672 2523 50  0000 R CNN
+F 2 "Connector_JST:JST_XH_B5B-XH-A_1x05_P2.50mm_Vertical" H 1700 2500 50  0001 C CNN
+F 3 "~" H 1700 2500 50  0001 C CNN
+	1    1700 2500
 	-1   0    0    -1  
 $EndComp
 $Comp
@@ -534,119 +534,119 @@ Wire Wire Line
 Connection ~ 1900 4800
 Wire Wire Line
 	1900 4800 1900 4850
-Text Label 750  2500 0    50   ~ 0
+Text Label 750  2300 0    50   ~ 0
 OUT_A_PHASE_A
-Text Label 750  2600 0    50   ~ 0
+Text Label 750  2400 0    50   ~ 0
 OUT_A_PHASE_B
-Text Label 750  2700 0    50   ~ 0
+Text Label 750  2500 0    50   ~ 0
 OUT_A_PHASE_C
-Text Label 750  2800 0    50   ~ 0
+Text Label 750  2600 0    50   ~ 0
 OUT_A_PHASE_D
+Wire Wire Line
+	750  2300 1500 2300
+Wire Wire Line
+	750  2400 1500 2400
 Wire Wire Line
 	750  2500 1500 2500
 Wire Wire Line
 	750  2600 1500 2600
 Wire Wire Line
-	750  2700 1500 2700
+	1400 2700 1500 2700
 Wire Wire Line
-	750  2800 1500 2800
-Wire Wire Line
-	1400 2900 1500 2900
-Wire Wire Line
-	1400 2300 1400 2900
+	1400 2100 1400 2700
 $Comp
 L Connector:Conn_01x05_Male J5
 U 1 1 63D07061
-P 3100 2700
-F 0 "J5" H 3072 2632 50  0000 R CNN
-F 1 "Motor" H 3072 2723 50  0000 R CNN
-F 2 "Connector_JST:JST_XH_B5B-XH-A_1x05_P2.50mm_Vertical" H 3100 2700 50  0001 C CNN
-F 3 "~" H 3100 2700 50  0001 C CNN
-	1    3100 2700
+P 3100 2500
+F 0 "J5" H 3072 2432 50  0000 R CNN
+F 1 "Motor" H 3072 2523 50  0000 R CNN
+F 2 "Connector_JST:JST_XH_B5B-XH-A_1x05_P2.50mm_Vertical" H 3100 2500 50  0001 C CNN
+F 3 "~" H 3100 2500 50  0001 C CNN
+	1    3100 2500
 	-1   0    0    -1  
 $EndComp
-Text Label 2150 2500 0    50   ~ 0
+Text Label 2150 2300 0    50   ~ 0
 OUT_B_PHASE_A
-Text Label 2150 2600 0    50   ~ 0
+Text Label 2150 2400 0    50   ~ 0
 OUT_B_PHASE_B
-Text Label 2150 2700 0    50   ~ 0
+Text Label 2150 2500 0    50   ~ 0
 OUT_B_PHASE_C
-Text Label 2150 2800 0    50   ~ 0
+Text Label 2150 2600 0    50   ~ 0
 OUT_B_PHASE_D
+Wire Wire Line
+	2150 2300 2900 2300
+Wire Wire Line
+	2150 2400 2900 2400
 Wire Wire Line
 	2150 2500 2900 2500
 Wire Wire Line
 	2150 2600 2900 2600
 Wire Wire Line
-	2150 2700 2900 2700
+	2800 2700 2900 2700
 Wire Wire Line
-	2150 2800 2900 2800
-Wire Wire Line
-	2800 2900 2900 2900
-Wire Wire Line
-	2800 2300 2800 2900
+	2800 2100 2800 2700
 $Comp
 L Connector:Conn_01x05_Male J6
 U 1 1 63DADADE
-P 4500 2700
-F 0 "J6" H 4472 2632 50  0000 R CNN
-F 1 "Motor" H 4472 2723 50  0000 R CNN
-F 2 "Connector_JST:JST_XH_B5B-XH-A_1x05_P2.50mm_Vertical" H 4500 2700 50  0001 C CNN
-F 3 "~" H 4500 2700 50  0001 C CNN
-	1    4500 2700
+P 4500 2500
+F 0 "J6" H 4472 2432 50  0000 R CNN
+F 1 "Motor" H 4472 2523 50  0000 R CNN
+F 2 "Connector_JST:JST_XH_B5B-XH-A_1x05_P2.50mm_Vertical" H 4500 2500 50  0001 C CNN
+F 3 "~" H 4500 2500 50  0001 C CNN
+	1    4500 2500
 	-1   0    0    -1  
 $EndComp
-Text Label 3550 2500 0    50   ~ 0
+Text Label 3550 2300 0    50   ~ 0
 OUT_C_PHASE_A
-Text Label 3550 2600 0    50   ~ 0
+Text Label 3550 2400 0    50   ~ 0
 OUT_C_PHASE_B
-Text Label 3550 2700 0    50   ~ 0
+Text Label 3550 2500 0    50   ~ 0
 OUT_C_PHASE_C
-Text Label 3550 2800 0    50   ~ 0
+Text Label 3550 2600 0    50   ~ 0
 OUT_C_PHASE_D
+Wire Wire Line
+	3550 2300 4300 2300
+Wire Wire Line
+	3550 2400 4300 2400
 Wire Wire Line
 	3550 2500 4300 2500
 Wire Wire Line
 	3550 2600 4300 2600
 Wire Wire Line
-	3550 2700 4300 2700
+	4200 2700 4300 2700
 Wire Wire Line
-	3550 2800 4300 2800
-Wire Wire Line
-	4200 2900 4300 2900
-Wire Wire Line
-	4200 2300 4200 2900
+	4200 2100 4200 2700
 $Comp
 L Connector:Conn_01x05_Male J7
 U 1 1 63DADAFC
-P 5900 2700
-F 0 "J7" H 5872 2632 50  0000 R CNN
-F 1 "Motor" H 5872 2723 50  0000 R CNN
-F 2 "Connector_JST:JST_XH_B5B-XH-A_1x05_P2.50mm_Vertical" H 5900 2700 50  0001 C CNN
-F 3 "~" H 5900 2700 50  0001 C CNN
-	1    5900 2700
+P 5900 2500
+F 0 "J7" H 5872 2432 50  0000 R CNN
+F 1 "Motor" H 5872 2523 50  0000 R CNN
+F 2 "Connector_JST:JST_XH_B5B-XH-A_1x05_P2.50mm_Vertical" H 5900 2500 50  0001 C CNN
+F 3 "~" H 5900 2500 50  0001 C CNN
+	1    5900 2500
 	-1   0    0    -1  
 $EndComp
-Text Label 4950 2500 0    50   ~ 0
+Text Label 4950 2300 0    50   ~ 0
 OUT_D_PHASE_A
-Text Label 4950 2600 0    50   ~ 0
+Text Label 4950 2400 0    50   ~ 0
 OUT_D_PHASE_B
-Text Label 4950 2700 0    50   ~ 0
+Text Label 4950 2500 0    50   ~ 0
 OUT_D_PHASE_C
-Text Label 4950 2800 0    50   ~ 0
+Text Label 4950 2600 0    50   ~ 0
 OUT_D_PHASE_D
+Wire Wire Line
+	4950 2300 5700 2300
+Wire Wire Line
+	4950 2400 5700 2400
 Wire Wire Line
 	4950 2500 5700 2500
 Wire Wire Line
 	4950 2600 5700 2600
 Wire Wire Line
-	4950 2700 5700 2700
+	5600 2700 5700 2700
 Wire Wire Line
-	4950 2800 5700 2800
-Wire Wire Line
-	5600 2900 5700 2900
-Wire Wire Line
-	5600 2300 5600 2900
+	5600 2100 5600 2700
 $Comp
 L Transistor_Array:ULN2003A U6
 U 1 1 6419F7E4
@@ -874,45 +874,45 @@ Connection ~ 4350 950
 $Comp
 L power:+12V #PWR05
 U 1 1 60CAB213
-P 1400 2300
-F 0 "#PWR05" H 1400 2150 50  0001 C CNN
-F 1 "+12V" H 1415 2473 50  0000 C CNN
-F 2 "" H 1400 2300 50  0001 C CNN
-F 3 "" H 1400 2300 50  0001 C CNN
-	1    1400 2300
+P 1400 2100
+F 0 "#PWR05" H 1400 1950 50  0001 C CNN
+F 1 "+12V" H 1415 2273 50  0000 C CNN
+F 2 "" H 1400 2100 50  0001 C CNN
+F 3 "" H 1400 2100 50  0001 C CNN
+	1    1400 2100
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:+12V #PWR019
 U 1 1 60CAB860
-P 2800 2300
-F 0 "#PWR019" H 2800 2150 50  0001 C CNN
-F 1 "+12V" H 2815 2473 50  0000 C CNN
-F 2 "" H 2800 2300 50  0001 C CNN
-F 3 "" H 2800 2300 50  0001 C CNN
-	1    2800 2300
+P 2800 2100
+F 0 "#PWR019" H 2800 1950 50  0001 C CNN
+F 1 "+12V" H 2815 2273 50  0000 C CNN
+F 2 "" H 2800 2100 50  0001 C CNN
+F 3 "" H 2800 2100 50  0001 C CNN
+	1    2800 2100
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:+12V #PWR029
 U 1 1 60CAC007
-P 4200 2300
-F 0 "#PWR029" H 4200 2150 50  0001 C CNN
-F 1 "+12V" H 4215 2473 50  0000 C CNN
-F 2 "" H 4200 2300 50  0001 C CNN
-F 3 "" H 4200 2300 50  0001 C CNN
-	1    4200 2300
+P 4200 2100
+F 0 "#PWR029" H 4200 1950 50  0001 C CNN
+F 1 "+12V" H 4215 2273 50  0000 C CNN
+F 2 "" H 4200 2100 50  0001 C CNN
+F 3 "" H 4200 2100 50  0001 C CNN
+	1    4200 2100
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:+12V #PWR031
 U 1 1 60CADACC
-P 5600 2300
-F 0 "#PWR031" H 5600 2150 50  0001 C CNN
-F 1 "+12V" H 5615 2473 50  0000 C CNN
-F 2 "" H 5600 2300 50  0001 C CNN
-F 3 "" H 5600 2300 50  0001 C CNN
-	1    5600 2300
+P 5600 2100
+F 0 "#PWR031" H 5600 1950 50  0001 C CNN
+F 1 "+12V" H 5615 2273 50  0000 C CNN
+F 2 "" H 5600 2100 50  0001 C CNN
+F 3 "" H 5600 2100 50  0001 C CNN
+	1    5600 2100
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -1549,85 +1549,85 @@ Wire Wire Line
 $Comp
 L Connector:Conn_01x05_Male J12
 U 1 1 606B94FD
-P 7250 2700
-F 0 "J12" H 7222 2632 50  0000 R CNN
-F 1 "Motor" H 7222 2723 50  0000 R CNN
-F 2 "Connector_JST:JST_XH_B5B-XH-A_1x05_P2.50mm_Vertical" H 7250 2700 50  0001 C CNN
-F 3 "~" H 7250 2700 50  0001 C CNN
-	1    7250 2700
+P 7250 2500
+F 0 "J12" H 7222 2432 50  0000 R CNN
+F 1 "Motor" H 7222 2523 50  0000 R CNN
+F 2 "Connector_JST:JST_XH_B5B-XH-A_1x05_P2.50mm_Vertical" H 7250 2500 50  0001 C CNN
+F 3 "~" H 7250 2500 50  0001 C CNN
+	1    7250 2500
 	-1   0    0    -1  
 $EndComp
-Text Label 6300 2500 0    50   ~ 0
+Text Label 6300 2300 0    50   ~ 0
 OUT_E_PHASE_A
-Text Label 6300 2600 0    50   ~ 0
+Text Label 6300 2400 0    50   ~ 0
 OUT_E_PHASE_B
-Text Label 6300 2700 0    50   ~ 0
+Text Label 6300 2500 0    50   ~ 0
 OUT_E_PHASE_C
-Text Label 6300 2800 0    50   ~ 0
+Text Label 6300 2600 0    50   ~ 0
 OUT_E_PHASE_D
+Wire Wire Line
+	6300 2300 7050 2300
+Wire Wire Line
+	6300 2400 7050 2400
 Wire Wire Line
 	6300 2500 7050 2500
 Wire Wire Line
 	6300 2600 7050 2600
 Wire Wire Line
-	6300 2700 7050 2700
+	6950 2700 7050 2700
 Wire Wire Line
-	6300 2800 7050 2800
-Wire Wire Line
-	6950 2900 7050 2900
-Wire Wire Line
-	6950 2300 6950 2900
+	6950 2100 6950 2700
 $Comp
 L Connector:Conn_01x05_Male J13
 U 1 1 606B9929
-P 8650 2700
-F 0 "J13" H 8622 2632 50  0000 R CNN
-F 1 "Motor" H 8622 2723 50  0000 R CNN
-F 2 "Connector_JST:JST_XH_B5B-XH-A_1x05_P2.50mm_Vertical" H 8650 2700 50  0001 C CNN
-F 3 "~" H 8650 2700 50  0001 C CNN
-	1    8650 2700
+P 8650 2500
+F 0 "J13" H 8622 2432 50  0000 R CNN
+F 1 "Motor" H 8622 2523 50  0000 R CNN
+F 2 "Connector_JST:JST_XH_B5B-XH-A_1x05_P2.50mm_Vertical" H 8650 2500 50  0001 C CNN
+F 3 "~" H 8650 2500 50  0001 C CNN
+	1    8650 2500
 	-1   0    0    -1  
 $EndComp
-Text Label 7700 2500 0    50   ~ 0
+Text Label 7700 2300 0    50   ~ 0
 OUT_F_PHASE_A
-Text Label 7700 2600 0    50   ~ 0
+Text Label 7700 2400 0    50   ~ 0
 OUT_F_PHASE_B
-Text Label 7700 2700 0    50   ~ 0
+Text Label 7700 2500 0    50   ~ 0
 OUT_F_PHASE_C
-Text Label 7700 2800 0    50   ~ 0
+Text Label 7700 2600 0    50   ~ 0
 OUT_F_PHASE_D
+Wire Wire Line
+	7700 2300 8450 2300
+Wire Wire Line
+	7700 2400 8450 2400
 Wire Wire Line
 	7700 2500 8450 2500
 Wire Wire Line
 	7700 2600 8450 2600
 Wire Wire Line
-	7700 2700 8450 2700
+	8350 2700 8450 2700
 Wire Wire Line
-	7700 2800 8450 2800
-Wire Wire Line
-	8350 2900 8450 2900
-Wire Wire Line
-	8350 2300 8350 2900
+	8350 2100 8350 2700
 $Comp
 L power:+12V #PWR041
 U 1 1 606B993D
-P 6950 2300
-F 0 "#PWR041" H 6950 2150 50  0001 C CNN
-F 1 "+12V" H 6965 2473 50  0000 C CNN
-F 2 "" H 6950 2300 50  0001 C CNN
-F 3 "" H 6950 2300 50  0001 C CNN
-	1    6950 2300
+P 6950 2100
+F 0 "#PWR041" H 6950 1950 50  0001 C CNN
+F 1 "+12V" H 6965 2273 50  0000 C CNN
+F 2 "" H 6950 2100 50  0001 C CNN
+F 3 "" H 6950 2100 50  0001 C CNN
+	1    6950 2100
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:+12V #PWR042
 U 1 1 606B9947
-P 8350 2300
-F 0 "#PWR042" H 8350 2150 50  0001 C CNN
-F 1 "+12V" H 8365 2473 50  0000 C CNN
-F 2 "" H 8350 2300 50  0001 C CNN
-F 3 "" H 8350 2300 50  0001 C CNN
-	1    8350 2300
+P 8350 2100
+F 0 "#PWR042" H 8350 1950 50  0001 C CNN
+F 1 "+12V" H 8365 2273 50  0000 C CNN
+F 2 "" H 8350 2100 50  0001 C CNN
+F 3 "" H 8350 2100 50  0001 C CNN
+	1    8350 2100
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -2205,7 +2205,7 @@ $EndComp
 Text Notes 14750 1250 0    50   ~ 0
 JLCPCB Assembly Tooling Holes
 Text Notes 700  3300 0    50   ~ 0
-TPL7407L or TPL7407LA will work. OUT7 is avoided because the datasheet recommends an external flyback diode for TPL7407L, and we have spare channels we can use instead.\nULN2003A is an acceptable replacement, but less efficient.
+Either TPL7407L or TPL7407LA is recommended.\nOutput channel 7 (OUT7) is intentionally unused -- the TPL7407L variant\nwould require an external flyback diode on that channel.\n\nULN2003A is also an acceptable pin-compatible replacement, but less efficient. [TODO: confirm that ULN2003A has internal pull-downs to allow inputs to be left floating safely when the shift register outputs are disabled]
 Text Notes 2350 4600 0    50   ~ 0
 Do not use O7 on TPL7407L\n(see note above)
 Text Notes 4950 4600 0    50   ~ 0
@@ -2435,4 +2435,6 @@ Text Label 2900 6800 0    50   ~ 0
 nOE_OUT
 Wire Wire Line
 	2900 6800 3650 6800
+Text Notes 1450 6200 0    50   ~ 0
+Older versions of the Chainlink system (pre v1.5)\nused 2x4 IDC connectors and 8-pin ribbon cables,\nOmitting the output-enable signal + GND on \npins 9 and 10.\n\nFor backwards compatibility, you may use 2x4 \nIDC connectors connected only to pins 1-8.
 $EndSCHEMATC
