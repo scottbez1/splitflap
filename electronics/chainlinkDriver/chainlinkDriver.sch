@@ -1291,7 +1291,7 @@ U 1 1 61119DE9
 P 14950 2350
 F 0 "J8" H 14922 2282 50  0000 R CNN
 F 1 "Sensor" H 14922 2373 50  0000 R CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical" H 14950 2350 50  0001 C CNN
+F 2 "ModifiedSymbols:PinHeader_1x03_P2.54mm_Vertical_Locking" H 14950 2350 50  0001 C CNN
 F 3 "~" H 14950 2350 50  0001 C CNN
 	1    14950 2350
 	-1   0    0    1   
@@ -1313,7 +1313,7 @@ U 1 1 6115565C
 P 14950 2750
 F 0 "J9" H 14922 2682 50  0000 R CNN
 F 1 "Sensor" H 14922 2773 50  0000 R CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical" H 14950 2750 50  0001 C CNN
+F 2 "ModifiedSymbols:PinHeader_1x03_P2.54mm_Vertical_Locking" H 14950 2750 50  0001 C CNN
 F 3 "~" H 14950 2750 50  0001 C CNN
 	1    14950 2750
 	-1   0    0    1   
@@ -1324,7 +1324,7 @@ U 1 1 61155EE4
 P 14950 3150
 F 0 "J10" H 14922 3082 50  0000 R CNN
 F 1 "Sensor" H 14922 3173 50  0000 R CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical" H 14950 3150 50  0001 C CNN
+F 2 "ModifiedSymbols:PinHeader_1x03_P2.54mm_Vertical_Locking" H 14950 3150 50  0001 C CNN
 F 3 "~" H 14950 3150 50  0001 C CNN
 	1    14950 3150
 	-1   0    0    1   
@@ -1335,7 +1335,7 @@ U 1 1 61156491
 P 14950 3550
 F 0 "J11" H 14922 3482 50  0000 R CNN
 F 1 "Sensor" H 14922 3573 50  0000 R CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical" H 14950 3550 50  0001 C CNN
+F 2 "ModifiedSymbols:PinHeader_1x03_P2.54mm_Vertical_Locking" H 14950 3550 50  0001 C CNN
 F 3 "~" H 14950 3550 50  0001 C CNN
 	1    14950 3550
 	-1   0    0    1   
@@ -2012,7 +2012,7 @@ U 1 1 60A61F26
 P 14950 3950
 F 0 "J14" H 14922 3882 50  0000 R CNN
 F 1 "Sensor" H 14922 3973 50  0000 R CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical" H 14950 3950 50  0001 C CNN
+F 2 "ModifiedSymbols:PinHeader_1x03_P2.54mm_Vertical_Locking" H 14950 3950 50  0001 C CNN
 F 3 "~" H 14950 3950 50  0001 C CNN
 	1    14950 3950
 	-1   0    0    1   
@@ -2023,7 +2023,7 @@ U 1 1 60A61F30
 P 14950 4350
 F 0 "J15" H 14922 4282 50  0000 R CNN
 F 1 "Sensor" H 14922 4373 50  0000 R CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical" H 14950 4350 50  0001 C CNN
+F 2 "ModifiedSymbols:PinHeader_1x03_P2.54mm_Vertical_Locking" H 14950 4350 50  0001 C CNN
 F 3 "~" H 14950 4350 50  0001 C CNN
 	1    14950 4350
 	-1   0    0    1   
