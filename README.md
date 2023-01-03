@@ -14,7 +14,7 @@ The goal is to make a low-cost display that's easy to fabricate at home in small
 
 You can view an interactive 3d model of the design on the [project website](https://scottbez1.github.io/splitflap/).
 
-The [splitflap community Slack group](https://join.slack.com/t/splitflap/shared_invite/zt-dpvol87b-3zUaxXrUd8WauPXr1uBj5Q) is the best place to keep up with the latest changes or ask questions about the project!
+The [splitflap community Discord server](https://discord.com/invite/wgehm3PcrC) is the best place to keep up with the latest changes or ask questions about the project!
 
 Want to help support development or just say "thanks"? Consider a one-time or monthly sponsorship:
 
@@ -48,7 +48,7 @@ Here's a video of a large 108-module display powered by 18 Chainlink Driver boar
 I'd love to hear your thoughts and questions about this project, and happy to incorporate any feedback you might have into these designs! Please feel free (and encouraged) to [open GitHub issues](https://github.com/scottbez1/splitflap/issues/new), email me directly, reach out [on Twitter](https://twitter.com/scottbez1), and [get involved](https://github.com/scottbez1/splitflap/pulls) in the open source development and let's keep chatting and building together!
 
 # Build Your Own
-Please note, updated documentation for the Chainlink system is still in progress; you may see outdated references to the "Classic" electronics in some documentation in the meantime. If you have any questions, please don't hesitate to ask in the Slack group!
+Please note, updated documentation for the Chainlink system is still in progress; you may see outdated references to the "Classic" electronics in some documentation in the meantime. If you have any questions, please don't hesitate to ask in the [community Discord server](https://discord.gg/Hxnftc8PyW)!
 
 * [**Ordering guide (the "easy" route) - updated for Chainlink**](https://paper.dropbox.com/doc/Splitflap-Ordering-the-easy-route--BsXzf8VyILR3nl1vUpOi28TWAg-0i6r3aqw6kZVXQOP2MyNr)
 * [**Chainlink Driver Electronics User Guide**]https://paper.dropbox.com/doc/Chainlink-Driver-v1.1-Electronics-User-Guide--BsVuP9OHVo952_ZdJDBomCCzAg-U0DAXrSxEoOhgSoRU39hq
@@ -98,7 +98,7 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 For small displays (up to 3 modules), you can skip the custom controller boards and use off-the-shelf ULN2003A driver
 modules plugged into an Arduino Uno. This is [partially documented in the wiki](https://github.com/scottbez1/splitflap/wiki/Electronics#basic-prototyping-alternative-electronics-approach)
 but may require some additional tinkering to get it to work. _Help wanted: if you'd like to help improve these instructions,
-please reach out in the Slack group, thanks!_
+please reach out in the Discord server, thanks!_
 
 The Chainlink electronics system is the current recommended design, which allows for larger-scale displays by chaining more
 modules together and uses a more powerful microcontroller (ESP32) compared to the older "Classic" controller. It also adds 
