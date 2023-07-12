@@ -1,0 +1,26 @@
+{
+  "name": "root",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "engines": {
+    "npm": ">=8.19.2",
+    "node": ">=18.11.0"
+  },
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "example-webserial-basic": "npm -w example-webserial-basic run start"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "//": "NOTE: Workspaces listed in dependency order; intentionally not alphabetical!",
+  "workspaces": [
+    "packages/splitflapjs-proto",
+    "packages/splitflapjs-core",
+    "packages/splitflapjs-webserial",
+    "packages/example-webserial-basic"
+  ],
+  "devDependencies": {
+    "eslint-config-prettier": "^8.5.0"
+  }
+}
