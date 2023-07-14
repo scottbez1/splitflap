@@ -1,12 +1,20 @@
-import React, {useEffect, useState} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import {PB} from 'splitflapjs-proto'
-import {Box, Button, CardActions, Paper} from '@mui/material'
+import {Box, Button, CardActions, Paper, TextField} from '@mui/material'
 import {NoUndefinedField} from './util'
 import {SplitflapWebSerial} from 'splitflapjs-webserial'
 
-// const FLAPS=' ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.#$'
+const FLAPS=' ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.  '
+const legalString = (s: string) => {
+    for (const c of s) {
+        if (!FLAPS.includes(c)) {
+            return false
+        }
+    }
+    return true
+}
 
 type Config = NoUndefinedField<PB.ISplitflapConfig>
 
@@ -22,7 +30,35 @@ export const App: React.FC<AppProps> = () => {
             defaults: true,
         }) as NoUndefinedField<PB.ISplitflapState>,
     )
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [inputValue, setInputValue] = useState('');
+
+    // FIXME
+    useEffect(() => {
+        const modules = []
+        for (let i = 0; i < 6; i++) {
+            modules.push(
+                {
+                    state: PB.SplitflapState.ModuleState.State.NORMAL,
+                    flapIndex: 0,
+                    moving: false,
+                    homeState: false,
+                    countMissedHome: 0,
+                    countUnexpectedHome: 0,
+                }
+            )
+        }
+        setSplitflapState({
+            modules
+        })
+    })
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const { value } = event.target;
+      const upper = value.toUpperCase()
+      if (legalString(upper)) {
+        setInputValue(upper);
+      }
+    };
     const [splitflapConfig, setSplitflapConfig] = useState<Config>(defaultConfig)
     useEffect(() => {
         console.log('send config', splitflapConfig)
@@ -66,6 +102,21 @@ export const App: React.FC<AppProps> = () => {
         }
     }
 
+    const updateSplitflap = useCallback(() => {
+        const newModules = []
+        for (let i = 0; i < splitflapState.modules.length; i++) {
+            newModules.push({
+                targetFlapIndex: inputValue[i] ? FLAPS.indexOf(inputValue[i]) : 0,
+                resetNonce: 0,
+                movementNonce: 0,
+            })
+        }
+        setSplitflapConfig({
+            modules: newModules,
+        })
+        setInputValue('')
+    }, [splitflapState.modules])
+
     return (
         <>
             <Container component="main" maxWidth="lg">
@@ -73,7 +124,7 @@ export const App: React.FC<AppProps> = () => {
                     <Typography component="h1" variant="h5">
                         Basic Splitflap Web Serial Demo
                     </Typography>
-                    {splitflap !== null ? (
+                    {splitflap === null ? (
                         <>
                             <Box
                                 component="form"
@@ -84,30 +135,17 @@ export const App: React.FC<AppProps> = () => {
                                 autoComplete="off"
                                 onSubmit={(event) => {
                                     event.preventDefault()
-                                    setSplitflapConfig({
-                                        modules: [
-                                            {
-                                                targetFlapIndex: Math.floor(Math.random()*39),
-                                                resetNonce: 0,
-                                                movementNonce: Math.floor(Math.random()*255),
-                                            }
-                                        ]
-                                    })
+                                    updateSplitflap()
                                 }}
                             >
-                                {/* <TextField
-                                    label="Position"
-                                    value={pendingSplitflapConfig.position}
-                                    type="number"
-                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                                        setPendingSplitflapConfig((cur) => {
-                                            return {
-                                                ...cur,
-                                                position: event.target.value,
-                                            }
-                                        })
+                                <TextField
+                                    label="Message"
+                                    value={inputValue}
+                                    onChange={handleInputChange}
+                                    inputProps={{
+                                        maxLength: splitflapState.modules.length,
                                     }}
-                                /> */}
+                                />
                                 <br />
                                 <Button type="submit" variant="contained">
                                     Apply
