@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react'
+import React, {useCallback, useEffect, useRef, useState} from 'react'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import {PB} from 'splitflapjs-proto'
@@ -21,6 +21,17 @@ type Config = NoUndefinedField<PB.ISplitflapConfig>
 const defaultConfig: Config = {
     modules: []
 }
+
+type MessageDelayMs = [string, number]
+
+const IDLE_MESSAGES: MessageDelayMs[] = [
+    ['OPEN', 6000],
+    [' SAUCE', 6000],
+    [' 2023', 9000],
+    ['BEZEK', 6000],
+    ['  LABS', 12000],
+    ['', 2 * 60 * 1000],
+]
 
 export type AppProps = object
 export const App: React.FC<AppProps> = () => {
@@ -82,12 +93,11 @@ export const App: React.FC<AppProps> = () => {
         }
     }
 
-    const updateSplitflap = useCallback(() => {
+    const updateSplitflap = useCallback((value: string) => {
         setSplitflapConfig((cur) => {
             const newModules = []
             for (let i = 0; i < splitflapState.modules.length; i++) {
-                console.log(inputValue[i])
-                const targetFlapIndex = inputValue[i] !== undefined ? FLAPS.indexOf(inputValue[i]) : 0
+                const targetFlapIndex = value[i] !== undefined ? FLAPS.indexOf(value[i]) : 0
                 newModules.push({
                     targetFlapIndex,
                     resetNonce: 0,
@@ -98,8 +108,23 @@ export const App: React.FC<AppProps> = () => {
                 modules: newModules,
             }
         })
-        setInputValue('')
-    }, [inputValue, splitflapState.modules])
+    }, [splitflapState.modules])
+
+    const idleTimeout = useRef<ReturnType<typeof setTimeout>>();
+    const curMessage = useRef<number>(0);
+    const nextMessage = () => {
+        const m = IDLE_MESSAGES[(curMessage.current++) % IDLE_MESSAGES.length]
+        updateSplitflap(m[0])
+        idleTimeout.current = setTimeout(nextMessage, m[1])
+    }
+    useEffect(() => {
+        const t = idleTimeout.current
+        if (t) {
+            clearTimeout(t)
+            curMessage.current = 0
+        }
+        idleTimeout.current = setTimeout(nextMessage, 30000)
+    }, [inputValue])
 
     return (
         <>
@@ -108,7 +133,8 @@ export const App: React.FC<AppProps> = () => {
                         <>
                             <form onSubmit={(event) => {
                                     event.preventDefault()
-                                    updateSplitflap()
+                                    updateSplitflap(inputValue)
+                                    setInputValue('')
                                 }}>
                                     <div style={{
                                         marginTop: '200px',
