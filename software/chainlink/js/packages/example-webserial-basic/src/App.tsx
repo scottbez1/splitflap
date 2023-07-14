@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from 'react'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import {PB} from 'splitflapjs-proto'
-import {Box, Button, CardActions, Paper, TextField} from '@mui/material'
+import {Button} from '@mui/material'
 import {NoUndefinedField} from './util'
 import {SplitflapWebSerial} from 'splitflapjs-webserial'
 
@@ -31,26 +31,6 @@ export const App: React.FC<AppProps> = () => {
         }) as NoUndefinedField<PB.ISplitflapState>,
     )
     const [inputValue, setInputValue] = useState('');
-
-    // FIXME
-    useEffect(() => {
-        const modules = []
-        for (let i = 0; i < 6; i++) {
-            modules.push(
-                {
-                    state: PB.SplitflapState.ModuleState.State.NORMAL,
-                    flapIndex: 0,
-                    moving: false,
-                    homeState: false,
-                    countMissedHome: 0,
-                    countUnexpectedHome: 0,
-                }
-            )
-        }
-        setSplitflapState({
-            modules
-        })
-    })
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
@@ -103,68 +83,79 @@ export const App: React.FC<AppProps> = () => {
     }
 
     const updateSplitflap = useCallback(() => {
-        const newModules = []
-        for (let i = 0; i < splitflapState.modules.length; i++) {
-            newModules.push({
-                targetFlapIndex: inputValue[i] ? FLAPS.indexOf(inputValue[i]) : 0,
-                resetNonce: 0,
-                movementNonce: 0,
-            })
-        }
-        setSplitflapConfig({
-            modules: newModules,
+        setSplitflapConfig((cur) => {
+            const newModules = []
+            for (let i = 0; i < splitflapState.modules.length; i++) {
+                console.log(inputValue[i])
+                const targetFlapIndex = inputValue[i] !== undefined ? FLAPS.indexOf(inputValue[i]) : 0
+                newModules.push({
+                    targetFlapIndex,
+                    resetNonce: 0,
+                    movementNonce: (cur.modules[i]?.movementNonce ?? 0) + (targetFlapIndex === 0 ? 0 : 1),
+                })
+            }
+            return {
+                modules: newModules,
+            }
         })
         setInputValue('')
-    }, [splitflapState.modules])
+    }, [inputValue, splitflapState.modules])
 
     return (
         <>
             <Container component="main" maxWidth="lg">
-                <Paper variant="outlined" sx={{my: {xs: 3, md: 6}, p: {xs: 2, md: 3}}}>
-                    <Typography component="h1" variant="h5">
-                        Basic Splitflap Web Serial Demo
-                    </Typography>
-                    {splitflap === null ? (
+                    {splitflap !== null ? (
                         <>
-                            <Box
-                                component="form"
-                                sx={{
-                                    '& .MuiTextField-root': {m: 1, width: '25ch'},
-                                }}
-                                noValidate
-                                autoComplete="off"
-                                onSubmit={(event) => {
+                            <form onSubmit={(event) => {
                                     event.preventDefault()
                                     updateSplitflap()
-                                }}
-                            >
-                                <TextField
-                                    label="Message"
-                                    value={inputValue}
-                                    onChange={handleInputChange}
-                                    inputProps={{
-                                        maxLength: splitflapState.modules.length,
-                                    }}
-                                />
-                                <br />
-                                <Button type="submit" variant="contained">
-                                    Apply
-                                </Button>
-                            </Box>
-                            <pre>{JSON.stringify(splitflapState, undefined, 2)}</pre>
+                                }}>
+                                    <div style={{
+                                        marginTop: '200px',
+                                        width: `${250 * splitflapState.modules.length}px`,
+                                        overflow: 'hidden',
+                                    }}>
+                                        <div style={{
+                                            left: 0,
+                                            position: 'sticky'
+                                        }}>
+                                            <input 
+                                                type="text"
+                                                maxLength={splitflapState.modules.length}
+                                                onChange={handleInputChange}
+                                                value={inputValue}
+                                                onBlur={e => e.target.focus()}
+                                                spellCheck="false"
+                                                style={{
+                                                    caret: 'block',
+                                                    paddingLeft: '42px',
+                                                    paddingTop: '20px',
+                                                    paddingBottom: '20px',
+                                                    letterSpacing: '130px',
+                                                    border: 0,
+                                                    outline: 'none',
+                                                    backgroundImage: 'url("/outline.svg")', 
+                                                    backgroundSize: '250px',
+                                                    backgroundRepeat: 'repeat-x',
+                                                    backgroundPosition: '0px 18px',
+                                                    fontSize: '200px',
+                                                    fontFamily: 'Roboto Mono',
+                                                    width: `${250 * splitflapState.modules.length + 50}px`,
+                                                }}
+                                                />
+                                        </div>
+                                    </div>
+                            </form>
                         </>
                     ) : navigator.serial ? (
-                        <CardActions>
-                            <Button onClick={connectToSerial} variant="contained">
-                                Connect via Web Serial
-                            </Button>
-                        </CardActions>
+                        <Button onClick={connectToSerial} variant="contained">
+                            Connect via Web Serial
+                        </Button>
                     ) : (
                         <Typography>
                             Sorry, Web Serial API isn't available in your browser. Try the latest version of Chrome.
                         </Typography>
                     )}
-                </Paper>
             </Container>
         </>
     )
