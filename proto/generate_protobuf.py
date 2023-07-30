@@ -45,7 +45,7 @@ def run():
 
     # Use nanopb's packaged protoc to generate python bindings
     protoc_path = nanopb_path / 'generator' / 'protoc'
-    python_generated_output_path = REPO_ROOT / 'software' / 'proto_gen'
+    python_generated_output_path = REPO_ROOT / 'software' / 'chainlink' / 'proto_gen'
     python_generated_output_path.mkdir(parents=True, exist_ok=True)
     subprocess.check_call([
         protoc_path,
