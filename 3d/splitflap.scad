@@ -31,14 +31,23 @@ include<m4_dimensions.scad>;
 
 // ##### RENDERING OPTIONS #####
 
-render_3d = false;
+render_3d = true;
+
+flap_color = [0.05, 0.05, 0.05];// get_flap_color();
+letter_color = [1, 1, 1]; //get_letter_color();
+assembly_colors = [
+    [0.2, 0.2, 0.2],
+    [0.2, 0.2, 0.2],
+    [0.2, 0.2, 0.2],
+    [0.2, 0.2, 0.2]
+]; // get_assembly_colors();
 
 // 3d parameters:
 render_enclosure = 2; // 0=invisible; 1=translucent; 2=opaque color;
-render_flaps = 1; // 0=invisible; 1=front flap only; 2=all flaps
+render_flaps = 2; // 0=invisible; 1=front flap only; 2=all flaps
 render_flap_area = 0; // 0=invisible; 1=collapsed flap exclusion; 2=collapsed+extended flap exclusion
-render_letters = 1;  // 0=invisible; 1=front flap only; 2=all flaps
-render_string = "44";
+render_letters = 2;  // 0=invisible; 1=front flap only; 2=all flaps
+render_string = "A";
 render_units = len(render_string);
 render_unit_separation = 0;
 render_spool = true;
@@ -102,15 +111,16 @@ etch_color = [0, 0, 0];  // black, "000000"
 
 hardware_color = [0.75, 0.75, 0.8];  // steel, "bfbfcc"
 
-flap_color = [1, 1, 1];  // white, "ffffff"
-letter_color = color_invert(flap_color);  // inverse of the flap color, for contrast
-
+//flap_color = [1, 1, 1];  // white, "ffffff"
+//letter_color = color_invert(flap_color);  // inverse of the flap color, for contrast
+/*
 assembly_colors = [
     color_multiply(assembly_color, [1.161, 1.157, 1.157, 1.0]),  // "e1b17c" with MDF
     color_multiply(assembly_color, [0.897, 0.895, 0.895, 1.0]),  // "ae8960" with MDF
     color_multiply(assembly_color, [0.547, 0.542, 0.540, 1.0]),  // "6a533a" with MDF
     color_multiply(assembly_color, [0.268, 0.268, 0.271, 1.0]),  // "34291d" with MDF
 ];
+*/
 
 bolt_color = hardware_color;
 nut_color = color_multiply(hardware_color, [0.933, 0.933, 0.9, 1.0]);  // "b2b2b7" with steel
@@ -126,6 +136,9 @@ spool_joint_clearance = 0.10;  // for the notched joints on the spool struts
 
 
 num_flaps = 52;
+//num_flaps = 40;
+echo(num_flaps=num_flaps); 
+echo(character_list=len(get_character_list()));
 assert(len(get_character_list()) == num_flaps, "num_flaps and character_list mismatch!");
 
 flap_hole_radius = (flap_pin_width + 0.5) / 2;
@@ -1192,7 +1205,7 @@ module split_flap_3d(front_flap_index, include_connector, include_front_panel=tr
             // motor spool
             translate([spool_width - thickness + 5*spool_horizontal_explosion, 0, 0]) {
                 rotate([0, 90, 0]) {
-                    color(assembly_color)
+                    color(assembly_colors[0])
                         flap_spool_complete(motor_shaft=true, magnet_hole=true);
                     translate([0, 0, -eps - thickness])
                         flap_spool_etch();
@@ -1207,7 +1220,7 @@ module split_flap_3d(front_flap_index, include_connector, include_front_panel=tr
             }
             translate([-5*spool_horizontal_explosion, 0, 0]) {
                 rotate([0, 90, 0]) {
-                    color(assembly_color)
+                    color(assembly_colors[0])
                         flap_spool_complete(captive_nut=true);
                     flap_spool_etch();
                 }

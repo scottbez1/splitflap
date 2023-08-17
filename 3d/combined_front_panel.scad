@@ -25,13 +25,13 @@ use<splitflap.scad>;
 // Configurable parameters
 // -----------------------
 
-rows = 6;
-cols = 18;
+rows = 9;
+cols = 13;
 
 // Set either frame_width/height, or frame_margin_x/y to set the overall frame dimensions. margin_x/y will calculate the necessary frame width
 // based on the number of modules and spacing and add the margin onto both sides.
-frame_width = 96*25.4;
-frame_height = 48*25.4;
+frame_width = 60*25.4;
+frame_height = 60*25.4;
 frame_margin_x = undef;
 frame_margin_y = undef;
 
@@ -58,12 +58,19 @@ kerf_width = 0;
 // Preview-only paramters:
 
 display_text = [
-    "THIS IS SOME TEXT ",
-    " ! @ $ # ? . , - '",
-    " THE QUICK BROWN",
-    "FOX JUMPS OVER THE",
-    "         LAZY DOG ",
-    "wbryg 0123456789 .",
+    " ABCDEFGHIJKL",
+    "MNOPQRSTUVWXY",
+    "Zg0123456789r.",
+    "?-#,!yb'@&$w",
+//    " wbryg0123456",
+//    "789ABCDEFGHIJ",
+//    "KLMNOPQRSTUVW",
+//    "XYZ!#.@,&'$-?",
+    "",
+    " wJBM.3R7$VK2",
+    "AE'NOyrGI0,DL",
+    "6@&CW-H4YQgb1",
+    "TZ!P5F?S#9XU8",
 ];
 
 // Number of full modules to render in 3d preview
@@ -79,8 +86,8 @@ render_etch = false;
 
 assert(is_undef(center_center_x) || center_center_x >= get_enclosure_width(), "Horizontal center-to-center value must be at least the enclosure width");
 assert(is_undef(center_center_y) || center_center_y >= get_enclosure_height(), "Vertical center-to-center value must be at least the enclosure height");
-assert(is_undef(gap_x) || gap_x >= 0);
-assert(is_undef(gap_y) || gap_y >= 0);
+//assert(is_undef(gap_x) || gap_x >= 0);
+//assert(is_undef(gap_y) || gap_y >= 0);
 
 layout_center_center_x = is_undef(gap_x) ? center_center_x : get_enclosure_width() + gap_x;
 layout_center_center_y = is_undef(gap_y) ? center_center_y : get_enclosure_height() + gap_y;
@@ -108,7 +115,7 @@ module centered_front() {
 flap_color = [0.05, 0.05, 0.05];// get_flap_color();
 letter_color = [1, 1, 1]; //get_letter_color();
 assembly_colors = [
-    [0.1, 0.1, 0.1]
+    [0.2, 0.2, 0.2]
 ]; // get_assembly_colors();
 frame_color = assembly_colors[0];
 

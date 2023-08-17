@@ -31,7 +31,7 @@ def generate_gif(output_folder):
     command = [
         'convert',
         os.path.join(output_folder, 'frame*.png'),
-        '-set', 'delay', '1x15',
+        '-set', 'delay', '20',
         os.path.join(output_folder, 'animation.gif'),
     ]
     logging.debug(command)
@@ -57,6 +57,27 @@ def render_rotation(input_file, output_folder, num_frames, start_frame, variable
     pool.close()
     pool.join()
 
+# character_list = " wJBM.3R7$VK2AE'NOyrGI0,DL6@&CW-H4YQgb1TZ!P5F?S#9XU8" # TODO: don't hard-code
+character_list = " wbryg0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ!#.@,&'$-?"
+def render_flaps(input_file, output_folder, variables):
+    def render_flap(i):
+        openscad.run(
+            input_file,
+            os.path.join(output_folder, 'frame_%05d.png' % (i)),
+            output_size = [600,800],
+            camera_translation = [0, 0, 0],
+            camera_rotation = [90, 0, 180],
+            camera_distance = 500,
+            variables = variables | {'render_string': character_list[i]},
+            colorscheme = 'Starnight',
+        )
+    pool = Pool()
+    for _ in pool.imap_unordered(render_flap, range(len(character_list))):
+        # Consume results as they occur so any exception is rethrown
+        pass
+    pool.close()
+    pool.join()
+
 script_dir = os.path.dirname(os.path.abspath(__file__))
 source_parts_dir = os.path.dirname(script_dir)
 
@@ -66,18 +87,23 @@ output_folder = os.path.join(source_parts_dir, 'build', 'animation')
 shutil.rmtree(output_folder, ignore_errors=True)
 os.makedirs(output_folder)
 
-num_frames = 50
-render_rotation(input_file, output_folder, num_frames, 0, {
+# num_frames = 50
+# render_rotation(input_file, output_folder, num_frames, 0, {
+#     'render_enclosure': 2,
+#     'render_flaps': 2,
+# })
+# render_rotation(input_file, output_folder, num_frames, num_frames, {
+#     'render_enclosure': 1,
+#     'render_flaps': 2,
+# })
+# render_rotation(input_file, output_folder, num_frames, num_frames*2, {
+#     'render_enclosure': 0,
+#     'render_flaps': 0,
+# })
+render_flaps(input_file, output_folder, {
     'render_enclosure': 2,
     'render_flaps': 2,
 })
-render_rotation(input_file, output_folder, num_frames, num_frames, {
-    'render_enclosure': 1,
-    'render_flaps': 2,
-})
-render_rotation(input_file, output_folder, num_frames, num_frames*2, {
-    'render_enclosure': 0,
-    'render_flaps': 0,
-})
+
 
 generate_gif(output_folder)

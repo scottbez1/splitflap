@@ -94,19 +94,25 @@ _font_settings = [
     ],
 
     "Epilogue", [
-        "font", "Epilogue:style=Regular",
-        "height", 0.65,
-        "width", 0.95,
+        "font", "Epilogue:style=Medium",
+        "height", 0.7,
+        "width", 1,
         "offset_x", -0.65,
-        "offset_y", 1.2,
+        "offset_y", -0.8,
         "thickness_offset", 0,
         "overrides", [
             ["@", 1.2, 0, .65, 0.7, 0.4],
-            ["W", -0.15, undef, undef, 0.845, 0.005],
-            ["M", -0.15, undef, undef, 0.93],
+            ["&", 1.2, 0, undef, 0.9],
+            ["C", 0, 0, undef, 0.95],
+            ["G", 0.9, 0, undef, 0.98],
+            ["W", -0.15, undef, undef, 0.72, 1],
+            ["M", -0.16, undef, undef, 0.795, 0.6],
+            ["O", 0, 0, undef, 0.92],
+            ["Q", 0, 3, 0.62, undef, 0.4],
+            [",", 0, -1.6, 0.6],
         ],
         // "color_height", 0.565,
-        "color_offset_y", 1.7,
+        "color_offset_y", 0.4,
     ],
 
     "Poiret", [
