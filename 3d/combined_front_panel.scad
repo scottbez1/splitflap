@@ -60,8 +60,8 @@ kerf_width = 0;
 display_text = [
     " ABCDEFGHIJKL",
     "MNOPQRSTUVWXY",
-    "Zg0123456789r.",
-    "?-#,!yb'@&$w",
+    "Zg0123456789r",
+    ".?-#,!yb'@&$w",
 //    " wbryg0123456",
 //    "789ABCDEFGHIJ",
 //    "KLMNOPQRSTUVW",

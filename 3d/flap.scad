@@ -21,7 +21,7 @@ use<flap_fonts.scad>;
 use<splitflap.scad>;
 
 //character_list = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.w?";
-character_list = " ABCDEFGHIJKLMNOPQRSTUVWXYZg0123456789r.?-#,!yb'@&$w";
+character_list = " ABCDEFGHIJKLMNOPQRSTUVWXYZg0123456789r.?-$'#yb,!@&w";
 //character_list = " wJBM.3R7$VK2AE'NOygGI0D,L6&@CW-H4YQrb1!TZP5F?S#9XU8";
 
 // color_list = [
