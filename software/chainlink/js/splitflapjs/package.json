@@ -19,6 +19,7 @@
     "splitflapjs-proto": "file:../splitflapjs-proto"
   },
   "devDependencies": {
+    "@types/node": "^17.0.25",
     "@types/serialport": "^8.0.2",
     "prettier": "^2.4.1",
     "ts-node": "^10.2.1",
