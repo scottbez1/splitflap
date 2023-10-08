@@ -10,6 +10,7 @@ export class SplitflapWebSerial extends SplitflapCore {
         })
         this.port = port
         this.portAvailable = true
+        this.onStart();
         this.port.addEventListener('disconnect', () => {
             console.log('shutting down on disconnect')
             this.port = null

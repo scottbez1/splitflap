@@ -9,15 +9,18 @@
   },
   "scripts": {
     "build": "npm run build --workspaces --if-present",
+    "example-node-cli": "npm -w example-node-cli run main",
     "example-webserial-basic": "npm -w example-webserial-basic run start"
   },
   "author": "",
   "license": "Apache-2.0",
-  "//": "NOTE: Workspaces listed in dependency order; intentionally not alphabetical!",
+  "//": "NOTE: Workspaces are listed in topological dependency order; intentionally not alphabetical!",
   "workspaces": [
     "packages/splitflapjs-proto",
     "packages/splitflapjs-core",
+    "packages/splitflapjs-node",
     "packages/splitflapjs-webserial",
+    "packages/example-node-cli",
     "packages/example-webserial-basic"
   ],
   "devDependencies": {

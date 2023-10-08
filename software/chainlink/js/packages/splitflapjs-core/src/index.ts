@@ -1,7 +1,8 @@
-import {encode as cobsEncode, decode as cobsDecode} from './cobs'
 import * as CRC32 from 'crc-32'
+import { PB } from 'splitflapjs-proto'
 
-import {PB} from 'splitflapjs-proto'
+import { decode as cobsDecode, encode as cobsEncode } from './cobs'
+import { convert1dChainlinkTo2dDualRowZigZag, convert2dDualRowZigZagTo1dChainlink } from './util'
 
 export type MessageCallback = (message: PB.FromSplitflap) => void
 export type SendBytes = (packet: Uint8Array) => void
@@ -11,7 +12,7 @@ type QueueEntry = {
     encodedToSplitflapPayload: Uint8Array
 }
 
-export {cobsEncode, cobsDecode}
+export { cobsDecode, cobsEncode, convert1dChainlinkTo2dDualRowZigZag, convert2dDualRowZigZagTo1dChainlink }
 
 export class SplitflapCore {
     private static readonly RETRY_MILLIS = 250
@@ -52,6 +53,19 @@ export class SplitflapCore {
                 splitflapConfig: config,
             }),
         )
+    }
+
+    /**
+     * Perform a hard reset of the splitflap MCU. May take a few seconds.
+     */
+    protected async hardReset(): Promise<void> {
+        throw new Error("Not implemented!")
+    }
+
+    protected onStart() {
+        this.enqueueMessage(PB.ToSplitflap.create({
+            requestState: PB.RequestState.create(),
+        }))
     }
 
     protected onReceivedData(data: Uint8Array) {
