@@ -243,7 +243,7 @@ export const App: React.FC<AppProps> = () => {
                                                     letterSpacing: `${0.4 * charWidth}px`,
                                                     border: 0,
                                                     outline: 'none',
-                                                    backgroundImage: 'url("/outline.svg")', 
+                                                    backgroundImage: 'url("outline.svg")',
                                                     backgroundSize: `${charWidth}px`,
                                                     backgroundRepeat: 'repeat-x',
                                                     backgroundPosition: `0px ${20 + charWidth*0.1}px`,
