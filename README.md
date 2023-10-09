@@ -51,7 +51,7 @@ I'd love to hear your thoughts and questions about this project, and happy to in
 Please note, updated documentation for the Chainlink system is still in progress; you may see outdated references to the "Classic" electronics in some documentation in the meantime. If you have any questions, please don't hesitate to ask in the [community Discord server](https://discord.gg/Hxnftc8PyW)!
 
 * [**Ordering guide (the "easy" route) - updated for Chainlink**](https://paper.dropbox.com/doc/Splitflap-Ordering-the-easy-route--BsXzf8VyILR3nl1vUpOi28TWAg-0i6r3aqw6kZVXQOP2MyNr)
-* [**Chainlink Driver Electronics User Guide**]https://paper.dropbox.com/doc/Chainlink-Driver-v1.1-Electronics-User-Guide--BsVuP9OHVo952_ZdJDBomCCzAg-U0DAXrSxEoOhgSoRU39hq
+* [**Chainlink Driver Electronics User Guide**](https://paper.dropbox.com/doc/Chainlink-Driver-v1.1-Electronics-User-Guide--BsVuP9OHVo952_ZdJDBomCCzAg-U0DAXrSxEoOhgSoRU39hq)
 * [**Latest stable release**](https://github.com/scottbez1/splitflap/releases)
 * [**Assembly instructions (v0.5/0.6/0.7)**](https://paper.dropbox.com/doc/Splitflap-Kit-v0.5v1.0-Instructions--ASQDu1uoa6n4_t1pva1bM1MgAg-bxXJlke5ROmamcx4OH44r)
 

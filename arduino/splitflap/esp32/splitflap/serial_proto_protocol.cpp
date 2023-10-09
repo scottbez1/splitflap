@@ -23,7 +23,7 @@
 
 static SerialProtoProtocol* singleton_for_packet_serial = 0;
 
-static const uint16_t MIN_STATE_INTERVAL_MILLIS = 250;
+static const uint16_t MIN_STATE_INTERVAL_MILLIS = 100;
 static const uint16_t PERIODIC_STATE_INTERVAL_MILLIS = 5000;
 
 SerialProtoProtocol::SerialProtoProtocol(SplitflapTask& splitflap_task, Stream& stream) :

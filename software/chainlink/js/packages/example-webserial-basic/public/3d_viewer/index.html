@@ -10,14 +10,6 @@
         <script src="js/STLLoader.js"></script>
         <script src="js/OrbitControls.js"></script>
         <script src="js/url-search-params/index.js"></script>
-        <!-- Global site tag (gtag.js) - Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114293392-1"></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'UA-114293392-1');
-        </script>
     </head>
     <body>
         <div class="header">
@@ -55,45 +47,42 @@
                     This meant using widely available materials and avoiding any tooling with a high upfront cost.
                 </p>
                 <p>
-                    Following that philosophy, the design uses store-bought vinyl stickers for the letters, is driven
+                    Following that philosophy, the design can use store-bought vinyl stickers for the letters, is driven
                     by an ubiquitous and cheap 28BYJ-48 stepper motor, and uses common PVC ID badge cards cut to shape
                     for the flaps (though custom die-cut flaps are also
-                    <a href="https://www.tindie.com/products/14844/">available</a>).
-                    Even the enclosure, spool, and gears, which are all made from laser-cut MDF, can be easily ordered online.
+                    <a href="https://www.etsy.com/listing/979720975/blank-splitflap-display-flaps" target="_blank">available</a>).
+                    Even the enclosure and spool, which are made from laser-cut MDF or acrylic, can be easily ordered online.
                 </p>
                 <p>
-                    This design is currently nearly stable. The source code in the
+                    This design is currently stable. The source code in the
                     <a href="https://github.com/scottbez1/splitflap" target="_blank">git repo</a>
-                    has been used to produce several working prototypes, and the v0.5 design is stable enough to
-                    have fairly comprehensive
+                    provides 3d designs, electronics schematics and PCBs, and software and firmware that has been tested
+                    and used to build displays with up to 108 modules. If you'd like to build your own, see the
                     <a href="https://paper.dropbox.com/doc/Ordering-Splitflap-v0.5--ATdB3cgS5GyvwTWq1kpunkD4Ag-iCwwMo0hRkkAlwdutccWf">Ordering Instructions</a>
-                    and an
+                    and
                     <a href="https://paper.dropbox.com/doc/Splitflap-Kit-v0.5-Assembly-Instructions--ATc8SYKflDsThTsXGZiRPOyTAg-bxXJlke5ROmamcx4OH44r">Assembly Guide</a>.
                     Of course, as this is an open source side-project, you may still come across minor issues or
-                    missing documentation.
+                    missing documentation; pull requests are appreciated.
                 </p>
-                <iframe class="video" width="560" height="315" src="https://www.youtube.com/embed/vq4o_88kN8g" frameborder="0" allowfullscreen></iframe>
+                <iframe class="video" width="560" height="315" src="https://www.youtube.com/embed/UAQJJAQSg_g" frameborder="0" allowfullscreen></iframe>
                 <h1>Open source, up to date</h1>
-                <a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/classic-schematic.pdf">
-                    <img class="floater right_float" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/classic-schematic.png" title="Driver schematic"/>
+                <a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/chainlinkDriver-schematic.pdf">
+                    <img class="floater right_float" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/chainlinkDriver-schematic.png" title="Driver schematic"/>
                 </a>
                 <p>
                     All of the designs are <a href="https://github.com/scottbez1/splitflap/">open source</a>. The 3d
                     model is built using OpenSCAD, the driver electronics board is designed in KiCad, and the driver
-                    firmware is written using Arduino.
+                    firmware is written using Arduino + PlatformIO.
                 </p>
                 <p>
-                    Most of the supporting materials, like the
-                    <a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/classic-schematic.pdf">schematic</a>,
-                    <a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/splitflap-bom.csv">bill of materials</a>,
-                    <a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/classic-jlc/gerbers.zip">PCB gerbers</a>, and
+                    Most of the supporting materials, like the schematic, bill of materials, PCB gerbers, and
                     even the interactive 3D rendering seen above are
                     <a href="https://scottbezek.blogspot.com/2016/04/automated-kicad-openscad-rendering.html">generated
                     automatically</a> as the design changes, using Github Actions. This way you can always see the latest
                     designs, even without having to check out the git repo or install any software yourself.
                 </p>
-                <a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/classic-pcb-raster.png">
-                    <img class="floater left_float" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/classic-pcb-raster.png" title="Driver PCB design"/>
+                <a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/chainlinkDriver-3d.png">
+                    <img class="floater left_float" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/chainlinkDriver-3d.png" title="Driver PCB design"/>
                 </a>
                 <p style="clear: right;">
                     I'd love to hear your thoughts and questions about this project, and happy to incorporate any
@@ -110,7 +99,7 @@
                     details).
                 </p>
                 <pre>
-Copyright 2015-2021 Scott Bezek and the splitflap contributors
+Copyright 2015-2023 Scott Bezek and the splitflap contributors
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

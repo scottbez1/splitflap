@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useRef, useState} from 'react'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import {PB} from 'splitflapjs-proto'
-import {AppBar, Button, Card, CardContent, CircularProgress, Toolbar, Tooltip,} from '@mui/material'
+import {AppBar, Button, Card, CardContent, CircularProgress, Link, Toolbar, Tooltip,} from '@mui/material'
 import {NoUndefinedField} from './util'
 import {SplitflapWebSerial} from 'splitflapjs-webserial'
 import { applyResetModule } from 'splitflapjs-core/dist/util'
@@ -135,7 +135,7 @@ export const App: React.FC<AppProps> = () => {
     }, [inputValue])
 
     const numModules = splitflapState.modules.length
-    const charWidth = Math.max(1280 / numModules, 40)
+    const charWidth = Math.max(1000 / numModules, 40)
 
     return (
         <>
@@ -146,7 +146,7 @@ export const App: React.FC<AppProps> = () => {
             </Typography>
           </Toolbar>
         </AppBar>
-            <Container component="main" maxWidth="xl">
+            <Container component="main" maxWidth="lg">
         <Card sx={{margin: '32px'}}>
             <CardContent>
                     {splitflap !== null ? (
@@ -190,15 +190,16 @@ export const App: React.FC<AppProps> = () => {
                                             <div
                                                 style={{
                                                     width: '100%',
-                                                    paddingLeft: `${charWidth*0.12}px`,
+                                                    paddingLeft: module.state === PB.SplitflapState.ModuleState.State.LOOK_FOR_HOME ? 0 : `${charWidth*0.12}px`,
                                                     backgroundColor: module.state === PB.SplitflapState.ModuleState.State.SENSOR_ERROR ? 'orange' : 'inherit',
                                                     minWidth: module.state,
+                                                    textAlign: 'center',
                                                 }}
                                             >{
                                                 module.state === PB.SplitflapState.ModuleState.State.NORMAL ?
                                                 <>{FLAPS[module.flapIndex]}&nbsp;</> :
                                                 module.state === PB.SplitflapState.ModuleState.State.LOOK_FOR_HOME ?
-                                                <CircularProgress /> :
+                                                <CircularProgress size={charWidth * 0.7} /> :
                                                 module.state === PB.SplitflapState.ModuleState.State.SENSOR_ERROR ?
                                                 <>&nbsp;</> :
                                                 'x'
@@ -256,9 +257,23 @@ export const App: React.FC<AppProps> = () => {
                             </form>
                         </>
                     ) : navigator.serial ? (
+                        <div>
+                        <Typography variant="h4" color="inherit">
+                            Welcome
+                        </Typography>
+                        <Typography variant="body1">
+                            <p>If you have a Splitflap Display built with the Chainlink electronics system and you have up-to-date firmware installed on it,
+                            you can connect it via USB and control it using this web page. This uses Web Serial to talk to the device without needing to
+                            install any software on your computer.</p>
+                        </Typography>
                         <Button onClick={connectToSerial} variant="contained">
                             Connect via Web Serial
                         </Button>
+                        <Typography variant="body1">
+                            <p><b>Haven't built a display yet, or want to learn more?</b> Check out the <Link href="3d_viewer/">project landing page</Link> to see
+                            an interactive 3d model and read more about the project.</p>
+                        </Typography>
+                        </div>
                     ) : (
                         <Typography>
                             Sorry, Web Serial API isn't available in your browser. Try the latest version of Chrome.
