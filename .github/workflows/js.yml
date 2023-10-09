@@ -28,15 +28,17 @@ jobs:
         with:
           node-version: 18
       - name: Install dependencies
+        working-directory: software/chainlink/js
         run: npm ci
       - name: Build
+        working-directory: software/chainlink/js
         run: PUBLIC_URL="/splitflap" npm run build
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: './packages/example-webserial-basic/build'
+          path: './software/chainlink/js/packages/example-webserial-basic/build'
 
   # Deployment job
   deploy:
