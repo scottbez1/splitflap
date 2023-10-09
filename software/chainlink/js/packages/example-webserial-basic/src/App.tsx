@@ -2,9 +2,10 @@ import React, {useCallback, useEffect, useRef, useState} from 'react'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import {PB} from 'splitflapjs-proto'
-import {Button} from '@mui/material'
+import {AppBar, Button, Card, CardContent, CircularProgress, Toolbar, Tooltip,} from '@mui/material'
 import {NoUndefinedField} from './util'
 import {SplitflapWebSerial} from 'splitflapjs-webserial'
+import { applyResetModule } from 'splitflapjs-core/dist/util'
 
 const FLAPS=' ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.  '
 const legalString = (s: string) => {
@@ -25,9 +26,9 @@ const defaultConfig: Config = {
 type MessageDelayMs = [string, number]
 
 const IDLE_MESSAGES: MessageDelayMs[] = [
-    ['OPEN', 6000],
-    [' SAUCE', 6000],
-    [' 2023', 9000],
+    ['SPLIT', 6000],
+    [' FLAP', 6000],
+    ['  BY', 6000],
     ['BEZEK', 6000],
     ['  LABS', 12000],
     ['', 2 * 60 * 1000],
@@ -41,13 +42,13 @@ export const App: React.FC<AppProps> = () => {
             defaults: true,
         }) as NoUndefinedField<PB.ISplitflapState>,
     )
-    const [inputValue, setInputValue] = useState('');
+    const [inputValue, setInputValue] = useState({val: '', user: true});
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
       const upper = value.toUpperCase()
       if (legalString(upper)) {
-        setInputValue(upper);
+        setInputValue({val: upper, user: true});
       }
     };
     const [splitflapConfig, setSplitflapConfig] = useState<Config>(defaultConfig)
@@ -94,13 +95,14 @@ export const App: React.FC<AppProps> = () => {
     }
 
     const updateSplitflap = useCallback((value: string) => {
+        // TODO: should probably change types and use applySetFlaps?
         setSplitflapConfig((cur) => {
             const newModules = []
             for (let i = 0; i < splitflapState.modules.length; i++) {
                 const targetFlapIndex = value[i] !== undefined ? FLAPS.indexOf(value[i]) : 0
                 newModules.push({
                     targetFlapIndex,
-                    resetNonce: 0,
+                    resetNonce: cur.modules[i]?.resetNonce ?? 0,
                     movementNonce: (cur.modules[i]?.movementNonce ?? 0) + (targetFlapIndex === 0 ? 0 : 1),
                 })
             }
@@ -118,27 +120,106 @@ export const App: React.FC<AppProps> = () => {
         idleTimeout.current = setTimeout(nextMessage, m[1])
     }
     useEffect(() => {
+        if (!inputValue.user) {
+            return
+        }
         const t = idleTimeout.current
         if (t) {
             clearTimeout(t)
             curMessage.current = 0
         }
-        idleTimeout.current = setTimeout(nextMessage, 30000)
+        idleTimeout.current = setTimeout(() => {
+            setInputValue({val:'', user: false})
+            nextMessage()
+        }, 1 * 60 * 1000)
     }, [inputValue])
+
+    const numModules = splitflapState.modules.length
+    const charWidth = Math.max(1280 / numModules, 40)
 
     return (
         <>
-            <Container component="main" maxWidth="lg">
+        <AppBar position="relative" color="default">
+          <Toolbar>
+            <Typography variant="h6" color="inherit" noWrap>
+              Splitflap Web Serial Demo
+            </Typography>
+          </Toolbar>
+        </AppBar>
+            <Container component="main" maxWidth="xl">
+        <Card sx={{margin: '32px'}}>
+            <CardContent>
                     {splitflap !== null ? (
                         <>
+                            <Typography variant="h4" color="inherit">
+                                Current state
+                            </Typography>
+                            <div style={{
+                            }}>
+                            {
+                                splitflapState.modules.map((module, i) => {
+                                    return (
+                                        <div
+                                            key={`reset-${i}`}
+                                            style={{
+                                                fontSize: `${charWidth}px`,
+                                                fontFamily: 'Roboto Mono',
+                                                letterSpacing: `${0.4 * charWidth}px`,
+                                                display: 'inline-block',
+                                                width: `${charWidth}px`,
+                                                cursor: 'pointer',
+                                                border: '1px solid black',
+                                            }}
+                                            onClick={() => {
+                                        setSplitflapConfig((curConfig) => {
+                                            return PB.SplitflapConfig.toObject(applyResetModule(PB.SplitflapConfig.create(curConfig), i), {
+                                                defaults: true,
+                                            }) as NoUndefinedField<PB.ISplitflapConfig>
+                                        })
+                                    }}>
+                                        <Tooltip title={
+                                        <div>
+                                            <div>State: {PB.SplitflapState.ModuleState.toObject(PB.SplitflapState.ModuleState.create(module), {
+                                                enums: String,
+                                            }).state}</div>
+                                            <div>Missed home: {module.countMissedHome}</div>
+                                            <div>Unexpected home: {module.countUnexpectedHome}</div>
+                                            <br />
+                                            <div><b>Click to reset module</b></div>
+                                        </div>}>
+                                            <div
+                                                style={{
+                                                    width: '100%',
+                                                    paddingLeft: `${charWidth*0.12}px`,
+                                                    backgroundColor: module.state === PB.SplitflapState.ModuleState.State.SENSOR_ERROR ? 'orange' : 'inherit',
+                                                    minWidth: module.state,
+                                                }}
+                                            >{
+                                                module.state === PB.SplitflapState.ModuleState.State.NORMAL ?
+                                                <>{FLAPS[module.flapIndex]}&nbsp;</> :
+                                                module.state === PB.SplitflapState.ModuleState.State.LOOK_FOR_HOME ?
+                                                <CircularProgress /> :
+                                                module.state === PB.SplitflapState.ModuleState.State.SENSOR_ERROR ?
+                                                <>&nbsp;</> :
+                                                'x'
+                                            }
+                                            </div>
+                                    </Tooltip>
+                                    </div>)
+                                })
+                            }
+                            </div>
+                            <br />
+                            <Typography variant="h4" color="inherit">
+                                Input
+                            </Typography>
                             <form onSubmit={(event) => {
                                     event.preventDefault()
-                                    updateSplitflap(inputValue)
-                                    setInputValue('')
+                                    updateSplitflap(inputValue.val)
+                                    setInputValue({val: '', user: true})
                                 }}>
                                     <div style={{
-                                        marginTop: '200px',
-                                        width: `${250 * splitflapState.modules.length}px`,
+                                        width: `${charWidth * numModules}px`,
                                         overflow: 'hidden',
                                     }}>
                                         <div style={{
@@ -147,26 +228,27 @@ export const App: React.FC<AppProps> = () => {
                                         }}>
                                             <input 
                                                 type="text"
-                                                maxLength={splitflapState.modules.length}
+                                                maxLength={numModules}
                                                 onChange={handleInputChange}
-                                                value={inputValue}
+                                                value={inputValue.val}
                                                 onBlur={e => e.target.focus()}
                                                 spellCheck="false"
                                                 style={{
+                                                    color: '#333',
                                                     caret: 'block',
-                                                    paddingLeft: '42px',
+                                                    paddingLeft: `${charWidth*0.12}px`,
                                                     paddingTop: '20px',
                                                     paddingBottom: '20px',
-                                                    letterSpacing: '130px',
+                                                    letterSpacing: `${0.4 * charWidth}px`,
                                                     border: 0,
                                                     outline: 'none',
                                                     backgroundImage: 'url("/outline.svg")', 
-                                                    backgroundSize: '250px',
+                                                    backgroundSize: `${charWidth}px`,
                                                     backgroundRepeat: 'repeat-x',
-                                                    backgroundPosition: '0px 18px',
-                                                    fontSize: '200px',
+                                                    backgroundPosition: `0px ${20 + charWidth*0.1}px`,
+                                                    fontSize: `${charWidth}px`,
                                                     fontFamily: 'Roboto Mono',
-                                                    width: `${250 * splitflapState.modules.length + 50}px`,
+                                                    width: `${charWidth * numModules + 50}px`,
                                                 }}
                                                 />
                                         </div>
@@ -182,6 +264,8 @@ export const App: React.FC<AppProps> = () => {
                             Sorry, Web Serial API isn't available in your browser. Try the latest version of Chrome.
                         </Typography>
                     )}
+                    </CardContent>
+                    </Card>
             </Container>
         </>
     )
