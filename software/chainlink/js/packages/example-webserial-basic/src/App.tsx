@@ -257,7 +257,7 @@ export const App: React.FC<AppProps> = () => {
                             </form>
                         </>
                     ) : navigator.serial ? (
-                        <div>
+                        <>
                         <Typography variant="h4" color="inherit">
                             Welcome
                         </Typography>
@@ -269,16 +269,21 @@ export const App: React.FC<AppProps> = () => {
                         <Button onClick={connectToSerial} variant="contained">
                             Connect via Web Serial
                         </Button>
-                        <Typography variant="body1">
-                            <p><b>Haven't built a display yet, or want to learn more?</b> Check out the <Link href="3d_viewer/">project landing page</Link> to see
-                            an interactive 3d model and read more about the project.</p>
-                        </Typography>
-                        </div>
+                        </>
                     ) : (
                         <Typography>
                             Sorry, Web Serial API isn't available in your browser. Try the latest version of Chrome.
                         </Typography>
                     )}
+
+                    { splitflap === null ?
+                        <Typography variant="body1">
+                            <p><b>Haven't built a display yet, or want to learn more?</b> Check out the <Link href="3d_viewer/">project landing page</Link> to see
+                            an interactive 3d model and read more about the project.</p>
+                        </Typography>
+                        :
+                        null
+                    }
                     </CardContent>
                     </Card>
             </Container>
