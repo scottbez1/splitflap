@@ -61,6 +61,9 @@ def render_rotation(input_file, output_folder, num_frames, start_frame, variable
 
 def render_flaps(input_file, output_folder, variables):
     def render_flap(i):
+        merged_variables = {}
+        merged_variables.update(variables)
+        merged_variables.update({'render_flap_index': i})
         openscad.run(
             input_file,
             os.path.join(output_folder, 'frames', 'frame_%05d.png' % (i)),
@@ -68,7 +71,7 @@ def render_flaps(input_file, output_folder, variables):
             camera_translation = [-5, 0, -9],
             camera_rotation = [90, 0, 180],
             camera_distance = 500,
-            variables = variables | {'render_flap_index': i},
+            variables = merged_variables,
             colorscheme = 'Starnight',
         )
     pool = Pool()
