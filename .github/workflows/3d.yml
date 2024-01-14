@@ -67,6 +67,7 @@ jobs:
         run: |
           xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python3 -u 3d/scripts/generate_gif.py
           cp 3d/build/animation/animation.gif 3d/build/outputs/3d_animation.gif
+          cp 3d/build/animation/all_flaps.gif 3d/build/outputs/all_flaps.gif
 
       - name: Generate STLs for web viewer
         run: |

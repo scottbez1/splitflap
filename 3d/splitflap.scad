@@ -18,6 +18,7 @@ use<28byj-48.scad>;
 use<assert.scad>;
 use<color_util.scad>;
 use<flap.scad>;
+use<flap_characters.scad>;
 use<label.scad>;
 use<pcb.scad>;
 use<projection_renderer.scad>;
@@ -33,22 +34,14 @@ include<m4_dimensions.scad>;
 
 render_3d = true;
 
-flap_color = [0.05, 0.05, 0.05];// get_flap_color();
-letter_color = [1, 1, 1]; //get_letter_color();
-assembly_colors = [
-    [0.2, 0.2, 0.2],
-    [0.2, 0.2, 0.2],
-    [0.2, 0.2, 0.2],
-    [0.2, 0.2, 0.2]
-]; // get_assembly_colors();
-
 // 3d parameters:
 render_enclosure = 2; // 0=invisible; 1=translucent; 2=opaque color;
 render_flaps = 2; // 0=invisible; 1=front flap only; 2=all flaps
 render_flap_area = 0; // 0=invisible; 1=collapsed flap exclusion; 2=collapsed+extended flap exclusion
 render_letters = 2;  // 0=invisible; 1=front flap only; 2=all flaps
-render_string = "A";
-render_units = len(render_string);
+
+render_message = "Ag";
+
 render_unit_separation = 0;
 render_spool = true;
 render_pcb = true;
@@ -89,6 +82,8 @@ spool_horizontal_explosion = lookup(spool_explosion, [
     [1, 8],
 ]);
 
+num_flaps = 52;
+echo(num_flaps=num_flaps);
 
 // Ponoko kerf values are 0.2 mm for MDF and acrylic (all thicknesses)
 // Remember: it's better to underestimate (looser fit) than overestimate (no fit)
@@ -106,21 +101,18 @@ assembly_inner_radius = m4_hole_diameter/2;
 
 
 // Rendering Colors
-assembly_color = [0.76, 0.60, 0.42];  // MDF, "c1996b"
-etch_color = [0, 0, 0];  // black, "000000"
+assembly_color = [0.15, 0.15, 0.15];
+etch_color = [0.3, 0.3, 0.3];
 
 hardware_color = [0.75, 0.75, 0.8];  // steel, "bfbfcc"
-
-//flap_color = [1, 1, 1];  // white, "ffffff"
-//letter_color = color_invert(flap_color);  // inverse of the flap color, for contrast
-/*
+flap_color = [0.05, 0.05, 0.05];
+letter_color = color_invert(flap_color);  // inverse of the flap color, for contrast
 assembly_colors = [
-    color_multiply(assembly_color, [1.161, 1.157, 1.157, 1.0]),  // "e1b17c" with MDF
-    color_multiply(assembly_color, [0.897, 0.895, 0.895, 1.0]),  // "ae8960" with MDF
-    color_multiply(assembly_color, [0.547, 0.542, 0.540, 1.0]),  // "6a533a" with MDF
-    color_multiply(assembly_color, [0.268, 0.268, 0.271, 1.0]),  // "34291d" with MDF
+    color_multiply(assembly_color, [1.161, 1.157, 1.157, 1.0]),
+    color_multiply(assembly_color, [0.897, 0.895, 0.895, 1.0]),
+    color_multiply(assembly_color, [0.547, 0.542, 0.540, 1.0]),
+    color_multiply(assembly_color, [0.268, 0.268, 0.271, 1.0]),
 ];
-*/
 
 bolt_color = hardware_color;
 nut_color = color_multiply(hardware_color, [0.933, 0.933, 0.9, 1.0]);  // "b2b2b7" with steel
@@ -135,11 +127,12 @@ spool_retaining_clearance = 0.10;  // for the notches in the spool retaining wal
 spool_joint_clearance = 0.10;  // for the notched joints on the spool struts
 
 
-num_flaps = 52;
-//num_flaps = 40;
-echo(num_flaps=num_flaps); 
-echo(character_list=len(get_character_list()));
-assert(len(get_character_list()) == num_flaps, "num_flaps and character_list mismatch!");
+character_list = get_character_list();
+echo(character_list=len(character_list));
+assert(len(character_list) == num_flaps, "WARNING: num_flaps and character_list mismatch!");
+render_flap_index = undef;
+render_string = is_undef(render_flap_index) ? render_message : character_list[render_flap_index];
+render_units = len(render_string);
 
 flap_hole_radius = (flap_pin_width + 0.5) / 2;
 flap_hole_separation = 1.06;  // additional spacing between hole edges

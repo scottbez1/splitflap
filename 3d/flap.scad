@@ -16,23 +16,14 @@
 include<flap_dimensions.scad>;
 include<global_constants.scad>;
 use<flap_fonts.scad>;
+use<flap_characters.scad>;
 
 // TODO: extract core flap spool dimensions used for vertical_keepout_size instead of using the full splitflap file
 use<splitflap.scad>;
 
-//character_list = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.w?";
-character_list = " ABCDEFGHIJKLMNOPQRSTUVWXYZg0123456789r.?-$'#yb,!@&w";
-//character_list = " wJBM.3R7$VK2AE'NOygGI0D,L6&@CW-H4YQrb1!TZP5F?S#9XU8";
-
-// color_list = [
-//     ["b", "#048ba8"],
-//     ["r", "#a4036f"],
-//     ["y", "#efea5a"],
-//     ["g", "#16db93"],
-//     ["w", "#ffffff"],
-// ];
+character_list = get_character_list();
 color_list = [
-    ["b", "#7a28cb"],
+    ["p", "#7a28cb"],
     ["r", "#e63946"],
     ["y", "#ffd639"],
     ["g", "#66d7d1"],
@@ -51,7 +42,6 @@ vertical_keepout_size_factor = 1.1;     // Expand calculated keepout region by t
 
 vertical_keepout_size = get_flap_arc_separation() * vertical_keepout_size_factor;
 
-function get_character_list() = character_list;
 function get_flap_index_for_letter(letter) = search(letter, character_list)[0];
 function get_letter_for_front(flap_index) =
     flap_index >= len(character_list) ? get_letter_for_front(flap_index - len(character_list)) :

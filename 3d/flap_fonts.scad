@@ -16,18 +16,19 @@
 
 include<flap_dimensions.scad>;
 
-use<roboto/RobotoCondensed-Regular.ttf>;
+use<fonts/roboto/RobotoCondensed-Regular.ttf>;
+use<fonts/Epilogue/Epilogue-VariableFont_wght.ttf>;
 
-use<../../../Dropbox/splitflap/font_selection/Epilogue/Epilogue-VariableFont_wght.ttf>;
-use<../../../Dropbox/splitflap/font_selection/PoiretOne/PoiretOne-Regular.ttf>;
-use<../../../Dropbox/splitflap/font_selection/Voltaire/Voltaire-Regular.otf>;
-use<../../../Dropbox/splitflap/font_selection/PTSansNarrow/PTSansNarrow-Regular.ttf>;
+// To try other experimental fonts, download fonts from Google Fonts to these locations and uncomment
+// use<fonts/PoiretOne/PoiretOne-Regular.ttf>;
+// use<fonts/Voltaire/Voltaire-Regular.otf>;
+// use<fonts/PTSansNarrow/PTSansNarrow-Regular.ttf>;
 
 // -----------------------
 // Configurable parameters
 // -----------------------
 
-font_preset = "Epilogue";   // See available presets below
+font_preset = "Epilogue";       // See available presets below
 letter_gap_comp = true;         // Shifts letter positions to compensate for gap between flaps
 
 // ---------------------------
@@ -95,24 +96,24 @@ _font_settings = [
 
     "Epilogue", [
         "font", "Epilogue:style=Medium",
-        "height", 0.7,
-        "width", 1,
-        "offset_x", -0.65,
-        "offset_y", -0.8,
-        "thickness_offset", 0,
+        "height",             0.7,
+        "width",                1,
+        "offset_x",         -0.65,
+        "offset_y",          -0.8,
+        "color_offset_y",     0.4,
+        "thickness_offset",     0,
         "overrides", [
-            ["@", 1.2, 0, .65, 0.7, 0.4],
-            ["&", 1.2, 0, undef, 0.9],
-            ["C", 0, 0, undef, 0.95],
-            ["G", 0.9, 0, undef, 0.98],
-            ["W", -0.15, undef, undef, 0.72, 1],
-            ["M", -0.16, undef, undef, 0.795, 0.6],
-            ["O", 0, 0, undef, 0.92],
-            ["Q", 0, 3, 0.62, undef, 0.4],
-            [",", 0, -1.6, 0.6],
+            //        x,     y, height, width, thickness
+            ["@",   1.2,     0,    .65,   0.7,       0.4],
+            ["&",   1.2,     0,  undef,   0.9,         0],
+            ["C",     0,     0,  undef,  0.95,         0],
+            ["G",   0.9,     0,  undef,  0.98,         0],
+            ["W", -0.15, undef,  undef,  0.72,         1],
+            ["M", -0.16, undef,  undef, 0.795,       0.6],
+            ["O",     0,     0,  undef,  0.92,         0],
+            ["Q",     0,     3,   0.62, undef,       0.4],
+            [",",     0,  -1.6,    0.6, undef,         0],
         ],
-        // "color_height", 0.565,
-        "color_offset_y", 0.4,
     ],
 
     "Poiret", [
@@ -170,7 +171,7 @@ _font_settings = [
 ];
 
 // Private functions
-function _get_entry_in_dict_array(arr, key) = arr[search([key], arr)[0] + 1];
+function _get_entry_in_dict_array(arr, key) = search([key], arr) != [[]] ? arr[search([key], arr)[0] + 1] : undef;
 function _get_font_settings() = _get_entry_in_dict_array(_font_settings, font_preset);
 
 // Public functions
@@ -178,4 +179,3 @@ function use_letter_gap_compensation() = letter_gap_comp;
 function get_font_setting(key) = _get_entry_in_dict_array(_get_font_settings(), key);
 function get_letter_overrides(letter) =
     get_font_setting("overrides")[search([letter], get_font_setting("overrides"))[0]];
-

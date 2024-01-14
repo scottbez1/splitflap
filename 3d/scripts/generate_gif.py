@@ -27,12 +27,14 @@ import openscad
 
 logging.basicConfig(level=logging.DEBUG)
 
-def generate_gif(output_folder):
+NUM_FLAPS = 52 # TODO: read from source?
+
+def generate_gif(output_folder, delay, filename):
     command = [
         'convert',
-        os.path.join(output_folder, 'frame*.png'),
-        '-set', 'delay', '20',
-        os.path.join(output_folder, 'animation.gif'),
+        os.path.join(output_folder, 'frames', 'frame*.png'),
+        '-set', 'delay', str(delay),
+        os.path.join(output_folder, filename),
     ]
     logging.debug(command)
     subprocess.check_call(command)
@@ -42,13 +44,13 @@ def render_rotation(input_file, output_folder, num_frames, start_frame, variable
         angle = 135 + i * 360 / num_frames
         openscad.run(
             input_file,
-            os.path.join(output_folder, 'frame_%05d.png' % (start_frame + i)),
-            output_size = [320, 240],
-            camera_translation = [0, 0, 0],
+            os.path.join(output_folder, 'frames', 'frame_%05d.png' % (start_frame + i)),
+            output_size = [320, 320],
+            camera_translation = [0, 0, -15],
             camera_rotation = [60, 0, angle],
             camera_distance = 600,
             variables = variables,
-            colorscheme = 'Nature',
+            colorscheme = 'DeepOcean',
         )
     pool = Pool()
     for _ in pool.imap_unordered(render_frame, range(num_frames)):
@@ -57,22 +59,20 @@ def render_rotation(input_file, output_folder, num_frames, start_frame, variable
     pool.close()
     pool.join()
 
-# character_list = " wJBM.3R7$VK2AE'NOyrGI0,DL6@&CW-H4YQgb1TZ!P5F?S#9XU8" # TODO: don't hard-code
-character_list = " wbryg0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ!#.@,&'$-?"
 def render_flaps(input_file, output_folder, variables):
     def render_flap(i):
         openscad.run(
             input_file,
-            os.path.join(output_folder, 'frame_%05d.png' % (i)),
+            os.path.join(output_folder, 'frames', 'frame_%05d.png' % (i)),
             output_size = [600,800],
-            camera_translation = [0, 0, 0],
+            camera_translation = [-5, 0, -9],
             camera_rotation = [90, 0, 180],
             camera_distance = 500,
-            variables = variables | {'render_string': character_list[i]},
+            variables = variables | {'render_flap_index': i},
             colorscheme = 'Starnight',
         )
     pool = Pool()
-    for _ in pool.imap_unordered(render_flap, range(len(character_list))):
+    for _ in pool.imap_unordered(render_flap, range(NUM_FLAPS)):
         # Consume results as they occur so any exception is rethrown
         pass
     pool.close()
@@ -85,25 +85,26 @@ input_file = os.path.join(source_parts_dir, 'splitflap.scad')
 output_folder = os.path.join(source_parts_dir, 'build', 'animation')
 
 shutil.rmtree(output_folder, ignore_errors=True)
-os.makedirs(output_folder)
+frames_folder = os.path.join(output_folder, 'frames')
+os.makedirs(frames_folder)
 
-# num_frames = 50
-# render_rotation(input_file, output_folder, num_frames, 0, {
-#     'render_enclosure': 2,
-#     'render_flaps': 2,
-# })
-# render_rotation(input_file, output_folder, num_frames, num_frames, {
-#     'render_enclosure': 1,
-#     'render_flaps': 2,
-# })
-# render_rotation(input_file, output_folder, num_frames, num_frames*2, {
-#     'render_enclosure': 0,
-#     'render_flaps': 0,
-# })
+num_frames = 50
+render_rotation(input_file, output_folder, num_frames, 0, {
+    'render_enclosure': 2,
+    'render_flaps': 2,
+})
+render_rotation(input_file, output_folder, num_frames, num_frames, {
+    'render_enclosure': 1,
+    'render_flaps': 2,
+})
+generate_gif(output_folder, '1x15', 'animation.gif')
+
+shutil.rmtree(frames_folder, ignore_errors=True)
+os.makedirs(frames_folder)
+
 render_flaps(input_file, output_folder, {
     'render_enclosure': 2,
     'render_flaps': 2,
 })
 
-
-generate_gif(output_folder)
+generate_gif(output_folder, '20', 'all_flaps.gif')
