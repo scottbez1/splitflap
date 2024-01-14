@@ -19,10 +19,10 @@ include<flap_dimensions.scad>;
 use<fonts/roboto/RobotoCondensed-Regular.ttf>;
 use<fonts/Epilogue/Epilogue-VariableFont_wght.ttf>;
 
-// To try other experimental fonts, download fonts from Google Fonts to these locations and uncomment
-// use<fonts/PoiretOne/PoiretOne-Regular.ttf>;
-// use<fonts/Voltaire/Voltaire-Regular.otf>;
-// use<fonts/PTSansNarrow/PTSansNarrow-Regular.ttf>;
+// To try other experimental fonts, download fonts from Google Fonts to these locations and add `use` statements
+// fonts/PoiretOne/PoiretOne-Regular.ttf
+// fonts/Voltaire/Voltaire-Regular.otf
+// fonts/PTSansNarrow/PTSansNarrow-Regular.ttf
 
 // -----------------------
 // Configurable parameters
