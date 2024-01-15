@@ -94,5 +94,5 @@ jobs:
       - name: Sync artifacts to S3
         if: github.event_name == 'push' && github.repository_owner == 'scottbez1'
         run: |
-          aws s3 sync 3d/build/outputs s3://splitflap-artifacts/${GITHUB_REF#refs/heads/}/3d --exclude '3d_colored_stl/*.stl' --delete --acl public-read --cache-control max-age=0,no-cache
-          aws s3 sync 3d/build/outputs s3://splitflap-artifacts/${GITHUB_REF#refs/heads/}/3d --exclude '*' --include '3d_colored_stl/*.stl' --delete --content-encoding gzip --acl public-read --cache-control max-age=0,no-cache
+          aws s3 sync 3d/build/outputs s3://splitflap-artifacts/${GITHUB_REF#refs/heads/}/3d --exclude '3d_colored_stl/*.stl.gz' --delete --acl public-read --cache-control max-age=0,no-cache
+          aws s3 sync 3d/build/outputs s3://splitflap-artifacts/${GITHUB_REF#refs/heads/}/3d --exclude '*' --include '3d_colored_stl/*.stl.gz' --delete --content-encoding gzip --acl public-read --cache-control max-age=0,no-cache
