@@ -74,7 +74,7 @@ class ColoredStlExporter(object):
         def render_color(color):
             file_name = self._export_stl(color)
             if file_name is not None:
-                manifest[file_name] = ColoredStlExporter.parse_openscad_color(color)
+                manifest[file_name + '.gz'] = ColoredStlExporter.parse_openscad_color(color)
 
         pool = Pool()
         for _ in pool.imap_unordered(render_color, color_values):
