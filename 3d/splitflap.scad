@@ -134,11 +134,11 @@ render_flap_index = undef;
 render_string = is_undef(render_flap_index) ? render_message : character_list[render_flap_index];
 render_units = len(render_string);
 
-flap_hole_radius = (flap_pin_width + 0.5) / 2;
-flap_hole_separation = 1.06;  // additional spacing between hole edges
+flap_hole_radius = (flap_pin_width + 0.8) / 2;
+flap_hole_separation = 1.2;  // additional spacing between hole edges
 flap_gap = (flap_hole_radius * 2 - flap_pin_width) + flap_hole_separation;
 
-flap_spool_outset = 0.6;
+flap_spool_outset = 0.8;
 flap_pitch_radius = flap_spool_pitch_radius(num_flaps, flap_hole_radius, flap_hole_separation); //num_flaps * (flap_hole_radius*2 + flap_hole_separation) / (2*PI);
 spool_outer_radius = flap_spool_outer_radius(num_flaps, flap_hole_radius, flap_hole_separation, flap_spool_outset); //flap_pitch_radius + 2*flap_hole_radius;
 
