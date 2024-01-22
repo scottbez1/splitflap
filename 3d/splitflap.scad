@@ -45,7 +45,6 @@ render_message = "Ag";
 render_unit_separation = 0;
 render_spool = true;
 render_pcb = true;
-render_sensor_jig = false;
 render_bolts = true;
 render_motor = true;
 
@@ -190,13 +189,14 @@ front_window_height = front_window_lower+front_window_upper;
 front_window_width = spool_width_slop + spool_width_clearance;
 front_window_right_inset = thickness;
 enclosure_horizontal_inset = (enclosure_width - front_window_width)/2 - front_window_right_inset; // center the window in the front face (the inset is measured with respect to the *outside* of the wall, hence the "front_window_right_inset" correction)
-enclosure_vertical_margin = 10; // gap between top/bottom of flaps and top/bottom of enclosure
+enclosure_vertical_clearance_top = 5; // gap between top of flaps and top of enclosure
+enclosure_vertical_clearance_bottom = 1; // gap between bottom of flaps and bottom of enclosure
 enclosure_vertical_inset = max(thickness*1.5, m4_nut_width_corners_padded/2); // distance from top of sides to top of the top piece
-enclosure_height_upper = exclusion_radius + enclosure_vertical_margin + thickness + enclosure_vertical_inset;
-enclosure_height_lower = flap_pitch_radius + flap_height + enclosure_vertical_margin + thickness + enclosure_vertical_inset;
+enclosure_height_upper = exclusion_radius + enclosure_vertical_clearance_top + thickness + enclosure_vertical_inset;
+enclosure_height_lower = flap_pitch_radius + flap_height + enclosure_vertical_clearance_bottom + thickness + enclosure_vertical_inset;
 enclosure_height = enclosure_height_upper + enclosure_height_lower;
 
-enclosure_horizontal_rear_margin = thickness; // minumum distance between the farthest feature and the rear
+enclosure_horizontal_rear_margin = 2; // minumum distance between the farthest feature and the rear
 
 enclosure_length = front_forward_offset + 28byj48_mount_center_offset() + m4_hole_diameter/2 + enclosure_horizontal_rear_margin;
 
@@ -209,7 +209,7 @@ enclosure_tab_clearance = 0.10;
 num_front_tabs = 2;
 front_tab_width = (front_window_width) / (num_front_tabs*2 - 1);
 
-enclosure_length_right = front_forward_offset + m4_hole_diameter/2 + 2;
+enclosure_length_right = front_forward_offset + m4_hole_diameter/2 + enclosure_horizontal_rear_margin;
 
 side_tab_width = 2.5;
 side_tab_bolt_head_clearance = m4_button_head_diameter / 2 + 0.5;
@@ -312,7 +312,6 @@ echo(front_forward_offset=front_forward_offset);
 echo(flap_exclusion_radius=exclusion_radius);
 echo(flap_hole_radius=flap_hole_radius);
 echo(flap_notch_height=flap_notch_height);
-echo(pcb_to_sensor=pcb_to_sensor(pcb_to_spool));
 
 
 module standard_m4_bolt(nut_distance=-1, bolt_length=10) {
@@ -597,17 +596,17 @@ module enclosure_front_etch() {
 
 // holes for 28byj-48 motor, centered around motor shaft
 module motor_mount() {
-    translate([-28byj48_mount_center_offset(), -28byj48_shaft_offset()]) {
+    translate([-28byj48_mount_center_offset(), 28byj48_shaft_offset()]) {
         circle(r=motor_mount_hole_radius, $fn=30);
     }
-    translate([28byj48_mount_center_offset(), -28byj48_shaft_offset()]) {
+    translate([28byj48_mount_center_offset(), 28byj48_shaft_offset()]) {
         circle(r=motor_mount_hole_radius, $fn=30);
     }
 
     hull() {
         x = -28byj48_chassis_radius() - motor_hole_slop/2 + motor_window_radius;
-        y = [-28byj48_shaft_offset() - motor_backpack_extent - motor_hole_slop/2 + motor_window_radius,
-            -28byj48_shaft_offset() + 28byj48_chassis_radius() + motor_hole_slop/2 - motor_window_radius];
+        y = [28byj48_shaft_offset() + motor_backpack_extent + motor_hole_slop/2 - motor_window_radius,
+            28byj48_shaft_offset() - 28byj48_chassis_radius() - motor_hole_slop/2 + motor_window_radius];
 
         translate([ x, y[0], 0]) circle(r=motor_window_radius, $fn=40);
         translate([-x, y[1], 0]) circle(r=motor_window_radius, $fn=40);
@@ -692,15 +691,6 @@ module enclosure_left() {
                 }
             }
 
-
-            // PCB mounting holes
-            translate([enclosure_height_lower - magnet_hole_offset - pcb_hole_to_sensor_y(), enclosure_length - front_forward_offset - pcb_hole_to_sensor_x()]) {
-                rotate([180, 0, 0]) {
-                    rotate([0, 0, -90]) {
-                        pcb_cutouts();
-                    }
-                }
-            }
 
             if (zip_tie_mode == 1) {
                 // Zip tie holes, sensor (leading to bottom)
@@ -1131,13 +1121,10 @@ module split_flap_3d(front_flap_index, include_connector, include_front_panel=tr
 
     positioned_enclosure();
     if (render_pcb) {
-        translate([enclosure_wall_to_wall_width + eps, -pcb_hole_to_sensor_x(), -magnet_hole_offset - pcb_hole_to_sensor_y()]) {
-            rotate([0, 90, 0]) {
-                rotate([0, 0, 90]) {
-                    pcb(pcb_to_spool, render_sensor_jig);
-                    translate([0, 0, -thickness - 2 * eps]) {
-                        standard_m4_bolt(nut_distance=thickness + pcb_thickness() + 4*eps);
-                    }
+        translate([enclosure_wall_to_wall_width - thickness - 28byj48_mount_bracket_height() - eps, 0, 0]) {
+            rotate([0, -90, 0]) {
+                rotate([0, 0, -90]) {
+                    pcb(pcb_to_spool);
                 }
             }
         }
@@ -1229,8 +1216,7 @@ module split_flap_3d(front_flap_index, include_connector, include_front_panel=tr
     if (render_motor) {
         translate([enclosure_wall_to_wall_width - thickness - 28byj48_mount_bracket_height(), 0, 0]) {
 
-            rotate([-90, 0, 0]) {
-
+            rotate([90, 0, 0]) {
                 rotate([0, -90, 0]) {
                     Stepper28BYJ48();
                 }
@@ -1245,7 +1231,9 @@ module split_flap_3d(front_flap_index, include_connector, include_front_panel=tr
                     translate([0, 0, 28byj48_mount_center_offset()]) {
                         rotate([0, 90, 0]) {
                             rotate([0, 0, 90]) {
-                                standard_m4_bolt(nut_distance=thickness+28byj48_mount_bracket_height());
+                                translate([0, 0, -pcb_thickness()]) { // One motor bolt is also used to clamp the sensor PCB
+                                    standard_m4_bolt(nut_distance=thickness+28byj48_mount_bracket_height() + pcb_thickness());
+                                }
                             }
                         }
                     }
