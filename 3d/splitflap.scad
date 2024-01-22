@@ -32,7 +32,7 @@ include<m4_dimensions.scad>;
 
 // ##### RENDERING OPTIONS #####
 
-render_3d = true;
+render_3d = false;
 
 // 3d parameters:
 render_enclosure = 2; // 0=invisible; 1=translucent; 2=opaque color;
@@ -167,7 +167,7 @@ m4_axle_hole_diameter = 4.3;    // Slightly closer fit than the standard m4_hole
 magnet_diameter = 4;
 magnet_hole_clearance = -0.05;  // interference fit
 magnet_hole_radius = (magnet_diameter + magnet_hole_clearance)/2;
-magnet_hole_offset = (spool_strut_exclusion_radius + flap_pitch_radius)/2;
+magnet_hole_offset = pcb_hole_to_sensor_x();
 
 // Clearance between the motor chassis and the outside right wall of the previous module
 28byj48_chassis_height_clearance = 1.4;
@@ -1334,9 +1334,9 @@ if (render_3d) {
             }
 
             if (enable_connectors) {
-                translate([enclosure_height + kerf_width + connector_bracket_width - connector_bracket_length_outer, 2 * enclosure_wall_to_wall_width + 3 * kerf_width - 4 * thickness + 4 * side_tab_length + connector_bracket_width + connector_bracket_length_outer, 0])
-                    rotate([0,0,-90])
-                        connector_bracket();
+                // Connector brackets on the top right
+                translate([enclosure_height + kerf_width, 2 * enclosure_wall_to_wall_width + 3 * kerf_width - 4 * thickness + 4 * side_tab_length + connector_bracket_length_outer, 0])
+                    connector_bracket();
             }
 
             // Flap spools in flap window
@@ -1368,15 +1368,8 @@ if (render_3d) {
             }
 
             // Spool retaining wall in motor window
-            translate([enclosure_height_lower + 28byj48_shaft_offset() - 28byj48_chassis_radius() + (28byj48_chassis_radius() + motor_backpack_extent)/2, enclosure_length - front_forward_offset - 28byj48_chassis_radius() - motor_hole_slop/2 + spool_strut_width/2 + kerf_width])
+            translate([enclosure_height_lower - 28byj48_shaft_offset() + 28byj48_chassis_radius() - (28byj48_chassis_radius() + motor_backpack_extent)/2, enclosure_length - front_forward_offset - 28byj48_chassis_radius() - motor_hole_slop/2 + spool_strut_width/2 + kerf_width])
                 spool_retaining_wall(m4_bolt_hole=true);
-
-            if (enable_sensor_jig) {
-                // Sensor soldering jig
-                translate([enclosure_height_lower + 28byj48_shaft_offset() - 28byj48_chassis_radius() + (28byj48_chassis_radius() + motor_backpack_extent)/2 + sensor_jig_width(pcb_to_spool)/2, enclosure_length - front_forward_offset + 28byj48_chassis_radius() + motor_hole_slop/2 - kerf_width])
-                    rotate([0, 0, 180])
-                        sensor_jig(pcb_to_spool, thickness);
-            }
         }
     }
 }
