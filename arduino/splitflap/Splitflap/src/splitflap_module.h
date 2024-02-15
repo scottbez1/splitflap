@@ -317,8 +317,6 @@ inline void SplitflapModule::UpdateExpectedHome() {
 #endif
 
 #if ASSERTIONS_ENABLED
-    // Values shouldn't be more than 2*GEAR_RATIO_INPUT_STEPS, so use subtraction to bound to GEAR_RATIO_INPUT_STEPS
-    // rather than using `%` which may be more expensive
     //assert 0 <= new_unexpected_home_start_step < 2*GEAR_RATIO_INPUT_STEPS
     if (new_unexpected_home_start_step >= 2 * GEAR_RATIO_INPUT_STEPS) {
         Panic("new_unexpected_home_start_step >= 2 * GEAR_RATIO_INPUT_STEPS");
@@ -333,6 +331,8 @@ inline void SplitflapModule::UpdateExpectedHome() {
     }
 #endif
 
+    // Values shouldn't be more than 2*GEAR_RATIO_INPUT_STEPS, so use subtraction to bound to GEAR_RATIO_INPUT_STEPS
+    // rather than using `%` which may be more expensive
     if (new_unexpected_home_start_step >= GEAR_RATIO_INPUT_STEPS) {
         new_unexpected_home_start_step -= GEAR_RATIO_INPUT_STEPS;
     }

@@ -32,11 +32,11 @@ include<m4_dimensions.scad>;
 
 // ##### RENDERING OPTIONS #####
 
-render_3d = false;
+render_3d = true;
 
 // 3d parameters:
-render_enclosure = 2; // 0=invisible; 1=translucent; 2=opaque color;
-render_flaps = 2; // 0=invisible; 1=front flap only; 2=all flaps
+render_enclosure = 1; // 0=invisible; 1=translucent; 2=opaque color;
+render_flaps = 0; // 0=invisible; 1=front flap only; 2=all flaps
 render_flap_area = 0; // 0=invisible; 1=collapsed flap exclusion; 2=collapsed+extended flap exclusion
 render_letters = 2;  // 0=invisible; 1=front flap only; 2=all flaps
 
