@@ -35,8 +35,8 @@ include<m4_dimensions.scad>;
 render_3d = true;
 
 // 3d parameters:
-render_enclosure = 1; // 0=invisible; 1=translucent; 2=opaque color;
-render_flaps = 0; // 0=invisible; 1=front flap only; 2=all flaps
+render_enclosure = 2; // 0=invisible; 1=translucent; 2=opaque color;
+render_flaps = 2; // 0=invisible; 1=front flap only; 2=all flaps
 render_flap_area = 0; // 0=invisible; 1=collapsed flap exclusion; 2=collapsed+extended flap exclusion
 render_letters = 2;  // 0=invisible; 1=front flap only; 2=all flaps
 
@@ -60,7 +60,6 @@ enable_alignment_bar = true;
 enable_mounting_holes = true;
 enable_sensor_jig = true;
 enable_source_info = true;
-zip_tie_mode = 1; // 0=none; 1=standard; 2=up&down
 
 // Panelization:
 panel_vertical = 0;
@@ -244,11 +243,6 @@ zip_tie_height = 3.0;  // height of the zip-tie hole
 zip_tie_width = 2.0;  // width of the zip-tie holes
 zip_tie_spacing = 6.5;  // spacing between each zip-tie hole, inside edges
 zip_tie_fillet = 0.5;  // radius of the rounded zip-tie hole corners
-
-enclosure_left_zip_side_inset = 5.0;  // inset from left for the bottom zip tie holes, edge to outside edge
-enclosure_left_zip_bottom_inset = 22.5;  // inset from bottom for the bottom zip tie holes, edge to group center
-
-enclosure_left_zip_top_inset = 22.5;  // inset from top for the top zip tie holes, edge to group center
 
 captive_nut_bolt_length = m4_bolt_length + 3; // 1mm tolerance + 2mm flexibility in bolt length
 
@@ -692,26 +686,10 @@ module enclosure_left() {
             }
 
 
-            if (zip_tie_mode == 1) {
-                // Zip tie holes, sensor (leading to bottom)
-                translate([enclosure_left_zip_bottom_inset, zip_tie_height/2 + enclosure_left_zip_side_inset, 0])
+            // Zip tie holes, bottom
+            translate([20, zip_tie_spacing/2 + 5, 0])
+                rotate([0, 0, 90])  // cable channel facing 'up/down'
                     zip_tie_holes();
-
-                // Zip tie holes, motor (leading to top)
-                translate([enclosure_height - enclosure_left_zip_top_inset, enclosure_length - front_forward_offset])
-                    rotate([0, 0, 90])  // cable channel facing 'up'
-                        zip_tie_holes();
-            } else if (zip_tie_mode == 2) {
-                // Zip tie holes, bottom
-                translate([10, zip_tie_spacing/2 + 5, 0])
-                    rotate([0, 0, 90])  // cable channel facing 'up/down'
-                        zip_tie_holes();
-
-                // Zip tie holes, top
-                translate([enclosure_height - 10, zip_tie_spacing/2 + 5])
-                    rotate([0, 0, 90])  // cable channel facing 'up/down'
-                        zip_tie_holes();
-            }
 
             if (enable_alignment_bar) {
                 // Alignment bar cutout

@@ -38,12 +38,6 @@ from util import (
     rev_info,
 )
 
-ZIP_TIE_MODES = {
-    'NONE': 0,
-    'STANDARD': 1,
-    'UPDOWN': 2,
-}
-
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
 
@@ -77,8 +71,6 @@ if __name__ == '__main__':
     parser.add_argument('--no-connectors', action='store_true', help='Do not include inter-module connector pieces.')
     parser.add_argument('--no-sensor-jig', action='store_true', help='Do not include the sensor spacing jig.')
     parser.add_argument('--no-source-info', action='store_true', help='Do not include the source info: revision, date, url.')
-    parser.add_argument('--zip-tie', choices=ZIP_TIE_MODES.keys(), default='STANDARD', help='Where to place zip-tie '
-                                                                                            'holes for wire management.')
     parser.add_argument('--cut-home-indicator', action='store_true', help='Cut, instead of etch, the home position '
                                                                           'indicator on the spool.')
 
@@ -101,7 +93,6 @@ if __name__ == '__main__':
         'enable_connectors': not args.no_connectors,
         'enable_sensor_jig': not args.no_sensor_jig,
         'enable_source_info': not args.no_source_info,
-        'zip_tie_mode': ZIP_TIE_MODES[args.zip_tie],
         'render_home_indicator_as_cut': args.cut_home_indicator,
     }
     if args.kerf is not None:
@@ -179,8 +170,8 @@ if __name__ == '__main__':
         logging.info('Resize PDF')
         subprocess.check_call([
             app_paths.get('pdfjam'),
-            '--letterpaper',
-            '--landscape',
+            '--papersize',
+            f'{{{width_mm + 80}mm,{height_mm + 80}mm}}',
             '--noautoscale',
             'true',
             '--outfile',
