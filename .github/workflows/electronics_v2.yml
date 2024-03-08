@@ -1,0 +1,74 @@
+name: Export Electronics (v2)
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  export-electronics-sensor-smd:
+    name: Export Electronics (Sensor SMD)
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up outputs directory
+        run: mkdir -p electronics/build/outputs
+
+      - name: Install dependencies
+        run: ./electronics/scripts/dependencies.sh
+
+# Sensor board:
+      - name: Panelize sensor PCB
+        run: |
+          kikit panelize -p electronics/sensor_smd/kikit_panelize.json electronics/sensor_smd/sensor_smd.kicad_pcb electronics/build/panelized_sensor_smd.kicad_pcb
+
+      - name: Export panelized sensor PCB fabrication files
+        run: |
+          ./electronics/scripts/export_jlcpcb.py electronics/build/panelized_sensor_smd.kicad_pcb
+          cp -r electronics/build/panelized_sensor_smd-jlc electronics/build/outputs/sensor-smd-panelized-jlc
+
+      # Note: These kibot scripts are run last because they mess with file permissions which breaks other scripts, not sure why
+      - name: Export BOM [sensors]
+        uses: INTI-CMNB/KiBot@c723b51327c2d9b7863672698ae5fd3da58b386e
+        with:
+          config: electronics/sensor_smd/sensor_smd.kibot.yml
+          dir: electronics/build
+          schema: 'electronics/sensor_smd/sensor_smd.kicad_sch'
+          board: 'electronics/sensor_smd/sensor_smd.kicad_pcb'
+
+      - name: Update 3D artifacts [sensors]
+        # Need to chown files back to runner, as ownership gets set to root by the KiBot Actions
+        run: |
+          sudo chown runner:docker electronics/build/outputs/*
+          mv electronics/build/outputs/sensor_smd-3D_top.png electronics/build/outputs/sensor_smd-front-3d.png
+          ./scripts/annotate_image.sh electronics/build/outputs/sensor_smd-front-3d.png
+          mv electronics/build/outputs/sensor_smd-3D_bottom.png electronics/build/outputs/sensor_smd-back-3d.png
+          ./scripts/annotate_image.sh electronics/build/outputs/sensor_smd-back-3d.png
+        env:
+          PYTHONUNBUFFERED: 1
+
+      - name: Copy BOM outputs
+        run: cp -r electronics/build/bom electronics/build/outputs
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: electronics-classic
+          path: |
+            electronics/build
+
+      - name: Configure AWS Credentials
+        if: github.event_name == 'push' && github.repository_owner == 'scottbez1'
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Sync artifacts to S3
+        if: github.event_name == 'push' && github.repository_owner == 'scottbez1'
+        run: |
+          aws s3 sync electronics/build/outputs s3://splitflap-artifacts/${GITHUB_REF#refs/heads/}/electronics-v2 --delete --acl public-read --cache-control max-age=0,no-cache

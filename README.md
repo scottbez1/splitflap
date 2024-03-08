@@ -1,16 +1,14 @@
-# DIY Split-Flap Display
+# Split-Flap Display
 
-This is a DIY [split-flap display](https://en.wikipedia.org/wiki/Split-flap_display).
-Prototype four-character display: [video](https://www.youtube.com/watch?v=vq4o_88kN8g).
+This is a DIY ESP32-based [split-flap display](https://en.wikipedia.org/wiki/Split-flap_display).
 
 ![animated rendering](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_animation.gif)
-[![prototype video](renders/prototypeVideoThumbnail.jpg)](https://www.youtube.com/watch?v=vq4o_88kN8g)
 
 [![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml/badge.svg?branch=master)](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml)
 [![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml/badge.svg?branch=master)](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml)
 [![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/pio.yml/badge.svg?branch=master)](https://github.com/scottbez1/splitflap/actions/workflows/pio.yml)
 
-The goal is to make a low-cost display that's easy to fabricate at home in small/single quantities (e.g. custom materials can be ordered from Ponoko or similar, and other hardware is generally available).
+The goal is to make a low-cost display that's easy to fabricate at home in small/single quantities (e.g. custom parts can be easily ordered online, and other hardware is generally available).
 
 You can view an interactive 3d model of the design on the [project website](https://scottbez1.github.io/splitflap/).
 
@@ -23,11 +21,11 @@ Want to help support development or just say "thanks"? Consider a one-time or mo
 
 [![Video: how a split-flap display works](renders/howItWorksThumbnail.jpg)](https://www.youtube.com/watch?v=UAQJJAQSg_g)
 
-**Using this project in a commercial setting or for paid client work?** Go right ahead - it's open source (just make sure to follow the terms of the Apache License)! I would, however, ask that you consider [sponsoring the project](https://github.com/sponsors/scottbez1). I've been developing and maintaining this project in my free time for over 6 years, and I'd love to continue working on it. Sponsorships allow me to pay for prototypes and development tools that make this project possible. Unlike pure software projects, every iteration has real hardware costs; sponsorships allow me to keep iterating and improving the project faster. Thank you!
+**Using this project in a commercial setting or for paid client work?** Go right ahead - it's open source (just make sure to follow the terms of the Apache License)! I would, however, ask that you consider [sponsoring the project](https://github.com/sponsors/scottbez1). I've been developing and maintaining this project in my free time for over 8 years, and I'd love to continue working on it. Sponsorships allow me to pay for prototypes and development tools that make this project possible. Unlike pure software projects, every iteration has real hardware costs; sponsorships allow me to keep iterating and improving the project faster. Thank you!
 
 
 # Current Status
-[You can download the **latest stable release** from the official 'releases' page.](https://github.com/scottbez1/splitflap/releases)
+[You can download the **latest stable releases** of the hardware designs from the official 'releases' page.](https://github.com/scottbez1/splitflap/releases)
 
 Releases have been tested and used to produce working units, but as this is a continuously evolving open-source project, there may always be minor issues and/or incomplete documentation from time to time.
 
@@ -39,7 +37,7 @@ Releases have been tested and used to produce working units, but as this is a co
 | Control Software Example | *Stable* | Example python code for driving the display is in the [software](software) directory|
 
 
-:bulb: There's a new electronics system, called the *Chainlink* system (more on this [below](#chainlink-electronics)), which makes assembly easier and supports larger displays (100+ modules), using an ESP32 for the controller. It's stable and recommended over the older "Classic" controller for new builds.
+:bulb: The *Chainlink* driver system (more on this [below](#chainlink-electronics)), is expandable for larger displays (tested with over 100 modules) using a single ESP32 for the controller.
 
 Here's a video of a large 108-module display powered by 18 Chainlink Driver boards and a Chainlink Base:
 
@@ -148,18 +146,13 @@ power management/distribution and fault monitoring, UART and RS-485 connections,
 <img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-chainlink/chainlinkDriver-3d.png"/>
 </a>
 
-Key features (compared to the older "Classic" Controller):
-* Controls 6 split-flap modules per board instead of just 4 - fewer PCBs means lower cost and less wiring
-* Longer PCB (200mm) gets connectors closer to each module so wires have more slack
+Key features:
+* Controls 6 split-flap modules per board
 * Primarily SMD and all components (except the pin headers and motor connectors) are available in JLCPCB's parts library
 for easy SMD/THT assembly
 * Clock and latch lines are buffered on each board with a 74HC125 to support longer chains
-* Neopixels replaced by shift-register-driven single-color LED per module (one fewer data line needed in the chain, lower current draw, and 3.3v IO friendly)
-* 2 bits of loopback (connecting 2 spare output bits on output shift registers to 2 spare inputs) allows the controller
+* 2 bits of loopback error checking per board (connecting 2 spare output bits on output shift registers to 2 spare inputs) allows the controller
 to validate data integrity up and down the whole chain
-* ~~TPL7407L mosfet low-side drivers instead of ULN2003A/MIC5842 (lower on-resistance means less voltage drop in the driver = more torque, less waste heat, and less total current consumption)~~
-Due to the chip shortage, TPL7407L ICs are not currently available and will likely not be available again until mid-2022, so the auto-generated
-JLC component/bom files below currently use ULN2003A darlington drivers as a suitable drop-in replacement.
 * Module order goes from right-to-left since this is intended to be installed and accessed from *behind* the modules
 
 Chainlink Driver boards are [available mostly-assembled in the Bezek Labs store](https://www.etsy.com/listing/1123280069/splitflap-chainlink-driver-v11),
@@ -264,9 +257,9 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 <img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-chainlink-base/chainlinkBase-3d.png"/>
 </a>
 
-This has been tested and appears to work, but is not yet recommended for general use. Firmware support is in progress.
+For larger displays, you should take additional care to make the hardware more robust to potential faults. The Chainlink Base is an experimental (but unsupported) controller design that adds some additional functionality. This has been tested and appears to work, but is not recommended for general use.
 
-The Chainlink Base PCB is an optional alternative to a Chainink Buddym, designed for particularly large displays.
+The Chainlink Base PCB is an optional alternative to a Chainink Buddy, designed for particularly large displays.
 It hosts the ESP32 and adds additional connectivity options (terminals for UART and RS485 serial) and
 power distribution (independently-monitored power channels for multiple "zones" of Driver boards).
 
@@ -300,39 +293,18 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 * PCB gerbers [zip](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-chainlink-base/chainlinkBase-jlc/gerbers.zip)
 * PCB bom (for manual assembly) [interactive](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-chainlink-base/bom/chainlinkBase-ibom.html)
 
-<sup>:warning:</sup>There are currently no stable releases of this board. Once the board design is tested and recommended, a stable release will be created on the [Releases dashboard](https://github.com/scottbez1/splitflap/releases)
+<sup>:warning:</sup>There are currently no stable releases of this board, and none are planned. Some past variants of this board have been used, to some success, but it is not considered an
+officially supported design
 
-
+## Older designs
 ### Classic Controller Electronics (deprecated)
-The Classic driver board is not recommended for new designs.
+The Classic driver board is deprecated and unsupported.
 
-The Classic controller board is designed to plug into an Arduino like a shield, and can control 4 stepper motors.
-Up to 3 driver boards can be chained together, for up to 12 modules controlled by a single Arduino.
-The designs for the controller can be found under [`electronics/splitflap.pro`](electronics/splitflap.pro) (KiCad 5 project).
-Nearly everything is a through-hole component rather than SMD, so it's very easy to hand-solder.
+The Classic controller board was designed to plug into an Arduino like a shield, and could control 4 stepper motors.
+Up to 3 driver boards could be chained together, for up to 12 modules controlled by a single Arduino.
 
 The driver uses 2 MIC5842 low-side shift-register drivers, with built-in transient-suppression diodes, to control the motors, and a 74HC165 shift register to read from 4 hall-effect magnetic home position sensors.
 There are optional WS2812B RGB LEDs which can be used to indicate the status of each of the 4 channels.
-
-<a href="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-classic/classic-schematic.pdf">
-<img height="320" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-classic/classic-schematic.png"/>
-</a>
-
-The PCB layout is 10cm x 5cm which makes it fairly cheap to produce using a low-cost PCB manufacturer (e.g. Seeed Studio).
-
-<a href="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-classic/classic-pcb-raster.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-classic/classic-pcb-raster.png"/>
-</a>
-
-
-Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
-
-* Bill of Materials ([csv](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-classic/bom/splitflap-bom.csv), [interactive](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-classic/bom/splitflap-ibom.html))
-* PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-classic/classic-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-classic/classic-pcb-packet.pdf))
-* Panelized PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-classic/classic-panelized-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-classic/classic-panelized-pcb-packet.pdf))
-
-<sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases) instead
-
 
 
 ### Miscellaneous Tools

@@ -6,7 +6,7 @@ on:
 
 jobs:
   export-electronics-classic:
-    name: Export Electronics (Classic + Sensor)
+    name: Export Electronics (Sensor)
     runs-on: ubuntu-20.04
 
     steps:
@@ -18,59 +18,6 @@ jobs:
 
       - name: Install dependencies
         run: ./electronics/scripts/dependencies.sh
-
-# Classic Controller board:
-      - name: Export Classic Controller schematic
-        run: |
-          ./electronics/scripts/export_schematic.py electronics/splitflap.sch
-          cp electronics/build/splitflap.pdf electronics/build/outputs/classic-schematic.pdf
-          cp electronics/build/splitflap.png electronics/build/outputs/classic-schematic.png
-        env:
-          PYTHONUNBUFFERED: 1
-
-      - name: Export Classic Controller PCB SVG
-        run: |
-          ./electronics/scripts/generate_svg.py electronics/splitflap.kicad_pcb
-          cp electronics/build/splitflap_merged.png electronics/build/outputs/classic-pcb-raster.png
-          ./scripts/annotate_image.sh electronics/build/outputs/classic-pcb-raster.png
-        env:
-          PYTHONUNBUFFERED: 1
-
-      - name: Export Classic Controller PCB fabrication files
-        run: |
-          ./electronics/scripts/export_jlcpcb.py electronics/splitflap.kicad_pcb
-          cp -r electronics/build/splitflap-jlc electronics/build/outputs/classic-jlc
-
-      - name: Export Classic Controller PCB overview PDF
-        run: |
-          ./electronics/scripts/generate_pdf.py electronics/splitflap.kicad_pcb
-          cp electronics/build/splitflap-pcb-packet.pdf electronics/build/outputs/classic-pcb-packet.pdf
-        env:
-          PYTHONUNBUFFERED: 1
-
-      - name: Panelize Classic Controller PCB
-        run: |
-          kikit panelize -p electronics/scripts/config/kikit_panelize_classic.json electronics/splitflap.kicad_pcb electronics/build/panelized_splitflap.kicad_pcb
-
-      - name: Export panelized Classic Controller PCB SVG
-        run: |
-          ./electronics/scripts/generate_svg.py electronics/build/panelized_splitflap.kicad_pcb
-          cp electronics/build/panelized_splitflap_merged.png electronics/build/outputs/classic-panelized-pcb-raster.png
-          ./scripts/annotate_image.sh electronics/build/outputs/classic-panelized-pcb-raster.png
-        env:
-          PYTHONUNBUFFERED: 1
-
-      - name: Export panelized Classic Controller PCB fabrication files
-        run: |
-          ./electronics/scripts/export_jlcpcb.py electronics/build/panelized_splitflap.kicad_pcb
-          cp -r electronics/build/panelized_splitflap-jlc electronics/build/outputs/classic-panelized-jlc
-
-      - name: Export panelized Classic Controller PCB overview PDF
-        run: |
-          ./electronics/scripts/generate_pdf.py electronics/build/panelized_splitflap.kicad_pcb
-          cp electronics/build/panelized_splitflap-pcb-packet.pdf electronics/build/outputs/classic-panelized-pcb-packet.pdf
-        env:
-          PYTHONUNBUFFERED: 1
 
 # Sensor board:
       - name: Export sensor schematic
@@ -118,7 +65,7 @@ jobs:
           PYTHONUNBUFFERED: 1
 
       # Note: These kibot scripts are run last because they mess with file permissions which breaks other scripts, not sure why
-      - name: Export BOM [classic + sensors]
+      - name: Export BOM [sensors]
         uses: INTI-CMNB/KiBot@c723b51327c2d9b7863672698ae5fd3da58b386e
         with:
           config: electronics/splitflap.kibot.yml
