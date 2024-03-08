@@ -119,7 +119,7 @@ jobs:
 
       # Note: These kibot scripts are run last because they mess with file permissions which breaks other scripts, not sure why
       - name: Export BOM [classic + sensors]
-        uses: INTI-CMNB/KiBot@2ddbea3e681de09147cb1677890694857def32a8
+        uses: INTI-CMNB/KiBot@c723b51327c2d9b7863672698ae5fd3da58b386e
         with:
           config: electronics/splitflap.kibot.yml
           dir: electronics/build
@@ -204,7 +204,7 @@ jobs:
 
       # Note: These kibot scripts are run last because they mess with file permissions which breaks other scripts, not sure why
       - name: Export BOM [chainlinkDriver]
-        uses: INTI-CMNB/KiBot@2ddbea3e681de09147cb1677890694857def32a8
+        uses: INTI-CMNB/KiBot@c723b51327c2d9b7863672698ae5fd3da58b386e
         with:
           config: electronics/chainlinkDriver/chainlinkDriver.kibot.yml
           dir: electronics/build
@@ -291,7 +291,7 @@ jobs:
 
       # Note: These kibot scripts are run last because they mess with file permissions which breaks other scripts, not sure why
       - name: Export BOM [chainlinkDriverTester]
-        uses: INTI-CMNB/KiBot@2ddbea3e681de09147cb1677890694857def32a8
+        uses: INTI-CMNB/KiBot@c723b51327c2d9b7863672698ae5fd3da58b386e
         with:
           config: electronics/chainlinkDriverTester/chainlinkDriverTester.kibot.yml
           dir: electronics/build
@@ -376,7 +376,7 @@ jobs:
 
       # Note: These kibot scripts are run last because they mess with file permissions which breaks other scripts, not sure why
       - name: Export BOM [chainlinkBase]
-        uses: INTI-CMNB/KiBot@2ddbea3e681de09147cb1677890694857def32a8
+        uses: INTI-CMNB/KiBot@c723b51327c2d9b7863672698ae5fd3da58b386e
         with:
           config: electronics/chainlinkBase/chainlinkBase.kibot.yml
           dir: electronics/build
@@ -484,7 +484,7 @@ jobs:
 
       # Note: These kibot scripts are run last because they mess with file permissions which breaks other scripts, not sure why
       - name: Export BOM [chainlinkBuddyTDisplay]
-        uses: INTI-CMNB/KiBot@2ddbea3e681de09147cb1677890694857def32a8
+        uses: INTI-CMNB/KiBot@c723b51327c2d9b7863672698ae5fd3da58b386e
         with:
           config: electronics/chainlinkBuddyTDisplay/chainlinkBuddyTDisplay.kibot.yml
           dir: electronics/build
@@ -592,7 +592,7 @@ jobs:
 
       # Note: These kibot scripts are run last because they mess with file permissions which breaks other scripts, not sure why
       - name: Export BOM [chainlinkBuddyBreadboard]
-        uses: INTI-CMNB/KiBot@2ddbea3e681de09147cb1677890694857def32a8
+        uses: INTI-CMNB/KiBot@c723b51327c2d9b7863672698ae5fd3da58b386e
         with:
           config: electronics/chainlinkBuddyBreadboard/chainlinkBuddyBreadboard.kibot.yml
           dir: electronics/build
