@@ -19,6 +19,9 @@ jobs:
       - name: Install dependencies
         run: ./electronics/scripts/dependencies.sh
 
+      - name: Update kikit
+        run: sudo python3 -m pip install kikit==1.0.5
+
 # Sensor board:
       - name: Panelize sensor PCB
         run: |
