@@ -4,7 +4,7 @@
         "rows": 3,
         "cols": 2,
         "space": "2mm",
-        "bakeText": false
+        "baketext": false
     },
     "tabs": {
         "type": "fixed",
