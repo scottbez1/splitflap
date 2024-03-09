@@ -7,8 +7,14 @@ preflight:
   run_erc: true
   filters:
     - filter: 'Silkscreen clipped by solder mask'
-      number: 58
-      regex: 'Arc on B.Silkscreen'
+      error: 'W058'
+      regex: '(?s)Line on Edge.Cuts(.*)Arc on B.Silkscreen'
+    - filter: 'Silkscreen clipped by solder mask'
+      error: 'W058'
+      regex: '(?s)Line on Edge.Cuts(.*)Line on B.Silkscreen'
+    - filter: 'Silkscreen clipped by solder mask'
+      error: 'W058'
+      regex: '(?s)Arc on Edge.Cuts(.*)Line on B.Silkscreen'
   update_xml: true
   set_text_variables:
     - name: COMMIT_DATE_LONG
