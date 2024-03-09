@@ -49,9 +49,6 @@ jobs:
         env:
           PYTHONUNBUFFERED: 1
 
-      - name: Copy BOM outputs
-        run: cp -r electronics/build/bom electronics/build/outputs
-
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
         if: always()
