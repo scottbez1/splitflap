@@ -122,7 +122,7 @@ apart. The panelization is configurable and is optimized for production at low-c
 </a>
 
 <a href="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-v2/sensor_smd-schematic.pdf">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-chainlink/sensor_smd-schematic.png"/>
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-v2/sensor_smd-schematic.png"/>
 </a>
 
 Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
@@ -204,7 +204,7 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 
 <sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases) instead
 
-#### Chainlink Buddy \[T-Display\] (1 per display)
+#### Chainlink Buddy \[T-Display\] (1 for many modules)
 <a href="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-3d.png">
 <img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-3d.png"/>
 </a>
@@ -241,7 +241,7 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 
 <sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases) instead
 
-#### Chainlink Buddy \[Breadboard\]
+#### Chainlink Buddy \[Breadboard\] (1 for many modules; alternative to T-Display)
 <a href="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-3d.png">
 <img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-3d.png"/>
 </a>

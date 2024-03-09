@@ -2,7 +2,11 @@
 
   (uuid 24995d16-e067-44ae-81b3-9e2b050f9cf3)
 
-  (paper "A5")
+  (paper "User" 150.012 119.99)
+
+  (title_block
+    (title "splitflap sensor smd")
+  )
 
   (lib_symbols
     (symbol "Connector:Conn_01x03_Male" (pin_names (offset 1.016) hide) (in_bom yes) (on_board yes)
