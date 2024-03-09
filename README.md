@@ -114,11 +114,11 @@ apart. The panelization is configurable and is optimized for production at low-c
 <a href="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-v2/sensor_smd-back-3d.png">
 <img width="320" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-v2/sensor_smd-back-3d.png"/>
 
-</a><a href="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-v2/sensor_smd-panelized-front-3d.png">
-<img width="320" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-v2/sensor_smd-panelized-front-3d.png"/>
+</a><a href="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-v2/panelized_sensor_smd-front-3d.png">
+<img width="320" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-v2/panelized_sensor_smd-front-3d.png"/>
 </a>
-<a href="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-v2/sensor_smd-panelized-back-3d.png">
-<img width="320" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-v2/sensor_smd-panelized-back-3d.png"/>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-v2/panelized_sensor_smd-back-3d.png">
+<img width="320" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-v2/panelized_sensor_smd-back-3d.png"/>
 </a>
 
 <a href="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-v2/sensor_smd-schematic.pdf">

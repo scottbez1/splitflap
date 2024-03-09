@@ -67,10 +67,10 @@ jobs:
 
       - name: Update 3D artifacts [sensor_smd, panelized]
         run: |
-          mv electronics/build/outputs/sensor_smd-panelized-3D_top.png electronics/build/outputs/sensor_smd-panelized-front-3d.png
-          ./scripts/annotate_image.sh electronics/build/outputs/sensor_smd-panelized-front-3d.png
-          mv electronics/build/outputs/sensor_smd-panelized-3D_bottom.png electronics/build/outputs/sensor_smd-panelized-back-3d.png
-          ./scripts/annotate_image.sh electronics/build/outputs/sensor_smd-panelized-back-3d.png
+          mv electronics/build/outputs/panelized_sensor_smd-3D_top.png electronics/build/outputs/panelized_sensor_smd-front-3d.png
+          ./scripts/annotate_image.sh electronics/build/outputs/panelized_sensor_smd-front-3d.png
+          mv electronics/build/outputs/panelized_sensor_smd-3D_bottom.png electronics/build/outputs/panelized_sensor_smd-back-3d.png
+          ./scripts/annotate_image.sh electronics/build/outputs/panelized_sensor_smd-back-3d.png
         env:
           PYTHONUNBUFFERED: 1
 
