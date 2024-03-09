@@ -31,7 +31,7 @@ jobs:
 
       # Note: These kibot scripts are run last because they mess with file permissions which breaks other scripts, not sure why
       - name: Export BOM [sensors]
-        uses: INTI-CMNB/KiBot@c723b51327c2d9b7863672698ae5fd3da58b386e
+        uses: INTI-CMNB/KiBot@v2_k6_1_6_3
         with:
           config: electronics/sensor_smd/sensor_smd.kibot.yml
           dir: electronics/build
