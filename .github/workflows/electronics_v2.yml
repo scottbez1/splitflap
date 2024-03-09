@@ -48,13 +48,13 @@ jobs:
         with:
           config: electronics/sensor_smd/sensor_smd-panelized.kibot.yml
           dir: electronics/build/outputs
+          schema: 'electronics/sensor_smd/sensor_smd.kicad_sch'
           board: 'electronics/build/panelized_sensor_smd.kicad_pcb'
 
       - name: Fix permissions
         # Need to chown files back to runner, as ownership gets set to root by the KiBot Actions
         run: |
           sudo chown runner:docker electronics/build/outputs/*
-          ls -lah electronics/build/outputs
 
       - name: Update 3D artifacts [sensor_smd, single]
         run: |
@@ -78,6 +78,11 @@ jobs:
         run: |
          convert -density 96 electronics/build/outputs/sensor_smd-schematic.pdf -background white -alpha remove electronics/build/outputs/sensor_smd-schematic.png
           ./scripts/annotate_image.sh electronics/build/outputs/sensor_smd-schematic.png
+
+      - name: Show artifacts
+        if: always()
+        run: |
+          ls -lah electronics/build/outputs
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v2

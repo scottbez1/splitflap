@@ -1,6 +1,9 @@
 kibot:
   version: 1
 
+global:
+  output: '%bf-%i%I%v.%x' # force pcb-based filename (%bf)
+
 preflight:
   check_zone_fills: true
   run_drc: true
