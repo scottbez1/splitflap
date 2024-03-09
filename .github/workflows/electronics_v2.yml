@@ -35,7 +35,7 @@ jobs:
           cp -r electronics/build/panelized_sensor_smd-jlc electronics/build/outputs/sensor_smd-panelized-jlc
 
       # Note: These kibot scripts are run last because they mess with file permissions which breaks other scripts, not sure why
-      - name: Export BOM [sensor_smd, single]
+      - name: Exports [sensor_smd, single]
         uses: INTI-CMNB/KiBot@v2_k6_1_6_3
         with:
           config: electronics/sensor_smd/sensor_smd.kibot.yml
@@ -43,18 +43,18 @@ jobs:
           schema: 'electronics/sensor_smd/sensor_smd.kicad_sch'
           board: 'electronics/sensor_smd/sensor_smd.kicad_pcb'
 
-      - name: Export BOM [sensor_smd, panelized]
+      - name: Exports [sensor_smd, panelized]
         uses: INTI-CMNB/KiBot@v2_k6_1_6_3
         with:
           config: electronics/sensor_smd/sensor_smd-panelized.kibot.yml
           dir: electronics/build/outputs
-          schema: 'electronics/sensor_smd/sensor_smd.kicad_sch'
           board: 'electronics/build/panelized_sensor_smd.kicad_pcb'
 
       - name: Fix permissions
         # Need to chown files back to runner, as ownership gets set to root by the KiBot Actions
         run: |
           sudo chown runner:docker electronics/build/outputs/*
+          ls -lah electronics/build/outputs
 
       - name: Update 3D artifacts [sensor_smd, single]
         run: |

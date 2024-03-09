@@ -4,7 +4,6 @@ kibot:
 preflight:
   check_zone_fills: true
   run_drc: true
-  run_erc: true
   filters:
     - filter: 'Silkscreen clipped by solder mask'
       error: 'silk_over_copper'
