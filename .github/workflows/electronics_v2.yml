@@ -55,6 +55,7 @@ jobs:
         # Need to chown files back to runner, as ownership gets set to root by the KiBot Actions
         run: |
           sudo chown runner:docker electronics/build/outputs/*
+          sudo chown runner:docker electronics/build/*
 
       - name: Update 3D artifacts [sensor_smd, single]
         run: |
@@ -82,6 +83,7 @@ jobs:
       - name: Show artifacts
         if: always()
         run: |
+          ls -lah electronics/build
           ls -lah electronics/build/outputs
 
       - name: Archive artifacts
