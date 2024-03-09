@@ -148,7 +148,7 @@
     (property "Sheetfile" "sensor_smd.kicad_sch")
     (property "Sheetname" "")
     (path "/8ebe0992-3c78-412e-8133-0bd4fbe3f2a6")
-    (attr exclude_from_pos_files)
+    (attr exclude_from_pos_files exclude_from_bom)
     (fp_text reference "H1" (at 0 -4.8) (layer "F.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)))
       (tstamp 4a3b2d37-ccb0-4e69-bf7c-d2dacdefe068)
@@ -219,7 +219,7 @@
     (property "Sheetfile" "sensor_smd.kicad_sch")
     (property "Sheetname" "")
     (path "/a42ba77e-7f12-467c-8411-ebb38194c333")
-    (attr through_hole)
+    (attr through_hole exclude_from_pos_files exclude_from_bom)
     (fp_text reference "H2" (at 0 -0.5 unlocked) (layer "F.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)))
       (tstamp c7d35d6f-3a73-4249-bfaa-4c37eccffe7a)
