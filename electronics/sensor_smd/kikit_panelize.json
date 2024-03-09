@@ -22,12 +22,12 @@
         "width": "5mm",
         "space": "3mm"
     },
-    "tooling": {
-        "type": "3hole",
-        "size": "1.152mm",
-        "soldermaskmargin": "1.3mm",
-        "paste": false
-    },
+    // "tooling": {
+    //     "type": "3hole",
+    //     "size": "1.152mm",
+    //     "soldermaskmargin": "1.3mm",
+    //     "paste": false
+    // },
     "text": {
         "type": "simple",
         "text": "splitflap smd sensor -- scottbez1",
