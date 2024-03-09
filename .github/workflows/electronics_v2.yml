@@ -26,7 +26,7 @@ jobs:
 
       - name: Export panelized sensor PCB fabrication files
         run: |
-          ./electronics/scripts/export_jlcpcb.py electronics/build/panelized_sensor_smd.kicad_pcb
+          ./electronics/scripts/export_jlcpcb.py electronics/build/panelized_sensor_smd.kicad_pcb --assembly-schematic electronics/sensor_smd/sensor_smd.kicad_sch
           cp -r electronics/build/panelized_sensor_smd-jlc electronics/build/outputs/sensor-smd-panelized-jlc
 
       # Note: These kibot scripts are run last because they mess with file permissions which breaks other scripts, not sure why
@@ -56,7 +56,7 @@ jobs:
         uses: actions/upload-artifact@v2
         if: always()
         with:
-          name: electronics-classic
+          name: electronics-v2
           path: |
             electronics/build
 
