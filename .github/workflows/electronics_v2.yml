@@ -20,17 +20,22 @@ jobs:
         run: ./electronics/scripts/dependencies_v2.sh
 
 # Sensor board:
+      - name: Export PCB fabrication files [sensor_smd, single]
+        run: |
+          ./electronics/scripts/export_jlcpcb.py electronics/sensor_smd/sensor_smd.kicad_pcb --assembly-schematic electronics/sensor_smd/sensor_smd.kicad_sch
+          cp -r electronics/build/sensor_smd-jlc electronics/build/outputs/sensor_smd-jlc
+
       - name: Panelize sensor PCB
         run: |
           kikit panelize -p electronics/sensor_smd/kikit_panelize.json electronics/sensor_smd/sensor_smd.kicad_pcb electronics/build/panelized_sensor_smd.kicad_pcb
 
-      - name: Export panelized sensor PCB fabrication files
+      - name: Export PCB fabrication files [sensor_smd, panelized]
         run: |
           ./electronics/scripts/export_jlcpcb.py electronics/build/panelized_sensor_smd.kicad_pcb --assembly-schematic electronics/sensor_smd/sensor_smd.kicad_sch
-          cp -r electronics/build/panelized_sensor_smd-jlc electronics/build/outputs/sensor-smd-panelized-jlc
+          cp -r electronics/build/panelized_sensor_smd-jlc electronics/build/outputs/sensor_smd-panelized-jlc
 
       # Note: These kibot scripts are run last because they mess with file permissions which breaks other scripts, not sure why
-      - name: Export BOM [sensors]
+      - name: Export BOM [sensor_smd, single]
         uses: INTI-CMNB/KiBot@v2_k6_1_6_3
         with:
           config: electronics/sensor_smd/sensor_smd.kibot.yml
@@ -38,16 +43,41 @@ jobs:
           schema: 'electronics/sensor_smd/sensor_smd.kicad_sch'
           board: 'electronics/sensor_smd/sensor_smd.kicad_pcb'
 
-      - name: Update 3D artifacts [sensors]
+      - name: Export BOM [sensor_smd, panelized]
+        uses: INTI-CMNB/KiBot@v2_k6_1_6_3
+        with:
+          config: electronics/sensor_smd/sensor_smd-panelized.kibot.yml
+          dir: electronics/build/outputs
+          schema: 'electronics/sensor_smd/sensor_smd.kicad_sch'
+          board: 'electronics/build/panelized_sensor_smd.kicad_pcb'
+
+      - name: Fix permissions
         # Need to chown files back to runner, as ownership gets set to root by the KiBot Actions
         run: |
           sudo chown runner:docker electronics/build/outputs/*
+
+      - name: Update 3D artifacts [sensor_smd, single]
+        run: |
           mv electronics/build/outputs/sensor_smd-3D_top.png electronics/build/outputs/sensor_smd-front-3d.png
           ./scripts/annotate_image.sh electronics/build/outputs/sensor_smd-front-3d.png
           mv electronics/build/outputs/sensor_smd-3D_bottom.png electronics/build/outputs/sensor_smd-back-3d.png
           ./scripts/annotate_image.sh electronics/build/outputs/sensor_smd-back-3d.png
         env:
           PYTHONUNBUFFERED: 1
+
+      - name: Update 3D artifacts [sensor_smd, panelized]
+        run: |
+          mv electronics/build/outputs/sensor_smd-panelized-3D_top.png electronics/build/outputs/sensor_smd-panelized-front-3d.png
+          ./scripts/annotate_image.sh electronics/build/outputs/sensor_smd-panelized-front-3d.png
+          mv electronics/build/outputs/sensor_smd-panelized-3D_bottom.png electronics/build/outputs/sensor_smd-panelized-back-3d.png
+          ./scripts/annotate_image.sh electronics/build/outputs/sensor_smd-panelized-back-3d.png
+        env:
+          PYTHONUNBUFFERED: 1
+
+      - name: Rasterise schematic [sensor_smd]
+        run: |
+         convert -density 96 electronics/build/outputs/sensor_smd-schematic.pdf -background white -alpha remove electronics/build/outputs/sensor_smd-schematic.png
+          ./scripts/annotate_image.sh electronics/build/outputs/sensor_smd-schematic.png
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v2

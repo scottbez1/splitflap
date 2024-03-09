@@ -102,33 +102,50 @@ The Chainlink electronics system is the current recommended design, which allows
 modules together and uses a more powerful microcontroller (ESP32) compared to the older "Classic" controller. It also adds 
 the possibility of wifi and BLE control, though firmware support for this is very limited for now.
 
-The older design ("Classic" controller board), which plugs into an Arduino Uno as a shield and can control up to 4 modules is
-no longer recommended and will not receive firmware updates going forward. New builds are recommended to use the Chainlink
-ESP32-based system instead.
+### Sensor PCBs (1 per module)
+Each module needs a hall-effect sensor for start-up calibration and fault monitoring. 
 
-### Module Electronics
-Each module needs a hall-effect sensor for start-up calibration and fault monitoring. This can be mounted in
-[different ways](https://github.com/scottbez1/splitflap/wiki/Electronics#sensor-board-alternative) but the recommended
-approach is to use a small PCB, with an AH3391Q (or similar) sensor and connector, which mounts to the side of the
-module with a single screw and can easily be adjusted for precise calibration.
+These boards are small and the designs are available as single PCBs or as a panel, which can be snapped
+apart. The panelization is configurable and is optimized for production at low-cost PCB fabricators like JLCPCB, or PCBWay.
 
-These boards are small (about 16mm x 16 mm) and the designs are available as a panelized PCB, which can be snapped
-apart. The panelization is configurable and is optimized for production at low-cost PCB fabricators like SeeedStudio, JLCPCB, or PCBWay.
+<a href="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-v2/sensor_smd-front-3d.png">
+<img width="320" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-v2/sensor_smd-front-3d.png"/>
+</a>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-v2/sensor_smd-back-3d.png">
+<img width="320" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-v2/sensor_smd-back-3d.png"/>
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics/sensor-panelized-pcb-raster.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics/sensor-panelized-pcb-raster.png"/>
+</a><a href="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-v2/sensor_smd-panelized-front-3d.png">
+<img width="320" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-v2/sensor_smd-panelized-front-3d.png"/>
+</a>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-v2/sensor_smd-panelized-back-3d.png">
+<img width="320" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-v2/sensor_smd-panelized-back-3d.png"/>
+</a>
+
+<a href="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-v2/sensor_smd-schematic.pdf">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-chainlink/sensor_smd-schematic.png"/>
 </a>
 
 Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 
-* Sensor PCB, single ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics/sensor-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics/sensor-pcb-packet.pdf))
-* Sensor PCB, panelized ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics/sensor-panelized-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics/sensor-panelized-pcb-packet.pdf))
+* Schematic [pdf](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-v2/sensor_smd-schematic.pdf)
+* Interactive BOM (for manual assembly) [interactive](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-v2/sensor_smd-ibom.html)
+* Fabrication files (single)
+  * PCB gerbers [zip](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-v2/sensor_smd-jlc/gerbers.zip)
+  * PCB BOM (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-v2/sensor_smd-jlc/bom.csv)
+  * PCB CPL (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-v2/sensor_smd-jlc/pos.csv)
+* Fabrication files (panelized)
+  * PCB gerbers [zip](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-v2/sensor_smd-panelized-jlc/gerbers.zip)
+  * PCB BOM (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-v2/sensor_smd-panelized-jlc/bom.csv)
+  * PCB CPL (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-v2/sensor_smd-panelized-jlc/pos.csv)
 
 <sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases) instead
 
-### Chainlink Electronics
-The Chainlink system replaces the older "Classic" controller electronics and is designed to support long chains of driver boards
-to control large displays (think 100+ split-flap modules). It's also designed to be easy and cheap to build, especially in higher
+
+
+
+### Driver Electronics
+The Chainlink system is designed to support long chains of driver boards to control large displays (think 100+ split-flap modules).
+It's also designed to be easy and cheap to order pre-assembled or build yourself, especially in higher
 quantities, due to its simple BOM and surface-mount components.
 
 The Chainlink system requires 2 core elements:
@@ -141,7 +158,7 @@ supports up to **6** individual split-flap modules. Chainlink Driver boards can 
     * For large displays, the **Chainlink Base** provides a number of advanced features: central
 power management/distribution and fault monitoring, UART and RS-485 connections, configuration switches, and status LEDs.
 
-#### Chainlink Driver
+#### Chainlink Driver (1 per 6 modules)
 <a href="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-chainlink/chainlinkDriver-3d.png">
 <img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-chainlink/chainlinkDriver-3d.png"/>
 </a>
@@ -187,7 +204,7 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 
 <sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases) instead
 
-#### Chainlink Buddy \[T-Display\]
+#### Chainlink Buddy \[T-Display\] (1 per display)
 <a href="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-3d.png">
 <img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-3d.png"/>
 </a>
@@ -297,6 +314,26 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 officially supported design
 
 ## Older designs
+### Legacy sensor PCBs (v1)
+The sensor can be mounted in
+[different ways](https://github.com/scottbez1/splitflap/wiki/Electronics#sensor-board-alternative) but the recommended
+approach is to use a small PCB, with an AH3391Q (or similar) sensor and connector, which mounts to the side of the
+module with a single screw and can easily be adjusted for precise calibration.
+
+These boards are small (about 16mm x 16 mm) and the designs are available as a panelized PCB, which can be snapped
+apart. The panelization is configurable and is optimized for production at low-cost PCB fabricators like SeeedStudio, JLCPCB, or PCBWay.
+
+<a href="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics/sensor-panelized-pcb-raster.png">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics/sensor-panelized-pcb-raster.png"/>
+</a>
+
+Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
+
+* Sensor PCB, single ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics/sensor-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics/sensor-pcb-packet.pdf))
+* Sensor PCB, panelized ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics/sensor-panelized-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics/sensor-panelized-pcb-packet.pdf))
+
+<sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases) instead
+
 ### Classic Controller Electronics (deprecated)
 The Classic driver board is deprecated and unsupported.
 
@@ -380,7 +417,7 @@ an informed decision about which revision(s) to use.
 
 ## Code
 ### Firmware
-The driver firmware is written using Arduino and is available at [`arduino/splitflap/Splitflap/Splitflap.ino`](arduino/splitflap/Splitflap/Splitflap.ino). 
+The driver firmware is written using PlatformIO with the Arduino framework and is available at [`arduino/splitflap/Splitflap/Splitflap.ino`](arduino/splitflap/Splitflap/Splitflap.ino). 
 
 The firmware implements a closed-loop controller that accepts letters as input over USB serial and drives the stepper motors using a precomputed acceleration ramp for smooth control. The firmware automatically calibrates the spool position at startup, using the hall-effect magnetic sensor, and will automatically recalibrate itself if it ever detects that the spool position has gotten out of sync. If a commanded rotation is expected to bring the spool past the "home" position, it will confirm that the sensor is triggered neither too early nor too late; otherwise it will search for the "home" position to get in sync before continuing to the desired letter.
 

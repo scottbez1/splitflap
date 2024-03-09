@@ -25,24 +25,6 @@ preflight:
       command: 'python3 util/rev_info.py git_short_rev'
 
 outputs:
-  - name: ibom
-    comment: 'Interactive BOM'
-    type: ibom
-    options:
-      dark_mode: true
-      netlist_file: '%F.xml'
-      extra_fields: 'LCSC'
-
-  - name: schematic
-    type: pdf_sch_print
-
-  - name: 'bom_csv'
-    comment: "Bill of Materials in CSV format"
-    type: bom
-    options:
-      use_alt: false
-      number: 1
-
   - name: 3d
     type: render_3d
     options:
@@ -54,7 +36,7 @@ outputs:
       zoom: 3
       orthographic: true
       ray_tracing: true
-      height: 768
+      height: 1024
       width: 1024
 
   - name: 3d_back
