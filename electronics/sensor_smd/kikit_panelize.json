@@ -3,7 +3,8 @@
         "type": "grid",
         "rows": 3,
         "cols": 2,
-        "space": "2mm"
+        "space": "2mm",
+        "bakeText": false
     },
     "tabs": {
         "type": "fixed",
