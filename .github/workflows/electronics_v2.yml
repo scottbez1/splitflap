@@ -34,7 +34,7 @@ jobs:
         uses: INTI-CMNB/KiBot@v2_k6_1_6_3
         with:
           config: electronics/sensor_smd/sensor_smd.kibot.yml
-          dir: electronics/build
+          dir: electronics/build/outputs
           schema: 'electronics/sensor_smd/sensor_smd.kicad_sch'
           board: 'electronics/sensor_smd/sensor_smd.kicad_pcb'
 
