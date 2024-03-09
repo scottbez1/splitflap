@@ -86,14 +86,19 @@ def recorded_xvfb(video_filename, **xvfb_args):
 def get_versioned_contents(filename):
     with open(filename, 'r') as f:
         original_contents = f.read()
-        date = rev_info.current_date()
+        date = rev_info.git_date()
+        date_long = rev_info.git_date(short=False)
         rev = rev_info.git_short_rev()
         logger.info('Replacing placeholders with %s and %s' % (date, rev))
         return original_contents, original_contents \
-            .replace('Date ""', 'Date "%s"' % date) \
+            .replace('Date ""', 'Date "%s"' % date_long) \
+            .replace('DATE: YYYY-MM-DD HH:MM:SS TZ', 'DATE: %s' % date_long) \
+            .replace('${COMMIT_DATE_LONG}', date_long) \
             .replace('DATE: YYYY-MM-DD', 'DATE: %s' % date) \
+            .replace('${COMMIT_DATE}', date) \
             .replace('Rev ""', 'Rev "%s"' % rev) \
-            .replace('COMMIT: deadbeef', 'COMMIT: %s' % rev)
+            .replace('COMMIT: deadbeef', 'COMMIT: %s' % rev) \
+            .replace('${COMMIT_HASH}', rev) \
 
 
 @contextmanager
