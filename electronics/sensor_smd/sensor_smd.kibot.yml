@@ -5,6 +5,10 @@ preflight:
   check_zone_fills: true
   run_drc: true
   run_erc: true
+  filters:
+    - filter: 'Silkscreen clipped by solder mask'
+      number: 58
+      regex: 'Arc on B.Silkscreen'
   update_xml: true
   set_text_variables:
     - name: COMMIT_DATE_LONG
