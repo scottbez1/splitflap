@@ -429,5 +429,8 @@
       ""
     ]
   ],
-  "text_variables": {}
+  "text_variables": {
+    "COMMIT_DATE": "YYYY-MM-DD",
+    "COMMIT_HASH": "deadbeef"
+  }
 }
