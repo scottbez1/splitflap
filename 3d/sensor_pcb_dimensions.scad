@@ -26,7 +26,7 @@ hall_effect_thickness = 1.22;
 // From sensor.kicad_pcb:
 pcb_height = 20;
 pcb_length = 40;
-pcb_hole_to_sensor_x = 17.5 + 5;
+pcb_hole_to_sensor_x = 17.5;
 pcb_hole_to_sensor_y = 0;
 pcb_hole_to_connector_pin_2_x = 28;
 pcb_hole_to_connector_pin_2_y = 10;
