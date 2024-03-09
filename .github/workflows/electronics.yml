@@ -64,18 +64,6 @@ jobs:
         env:
           PYTHONUNBUFFERED: 1
 
-      # Note: These kibot scripts are run last because they mess with file permissions which breaks other scripts, not sure why
-      - name: Export BOM [sensors]
-        uses: INTI-CMNB/KiBot@c723b51327c2d9b7863672698ae5fd3da58b386e
-        with:
-          config: electronics/splitflap.kibot.yml
-          dir: electronics/build
-          schema: 'electronics/splitflap.sch'
-          board: 'electronics/splitflap.kicad_pcb'
-
-      - name: Copy BOM outputs
-        run: cp -r electronics/build/bom electronics/build/outputs
-
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
         if: always()
