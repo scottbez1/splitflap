@@ -4,45 +4,38 @@
         "rows": 3,
         "cols": 2,
         "space": "2mm",
-        "baketext": false
+        "baketext": false,
     },
     "tabs": {
         "type": "fixed",
-        "width": "3mm",
-        "vcount": 2
+        "width": "4mm",
+        "vcount": 2,
     },
     "cuts": {
         "type": "mousebites",
-        "drill": "0.5mm",
+        "drill": "0.6mm",
         "spacing": "1mm",
-        "offset": "0.2mm",
-        "prolong": "0.5mm"
+        "offset": "-0.1mm",
+        // "prolong": "0.5mm"
     },
     "framing": {
-        "type": "railstb",
+        "type": "frame",
         "width": "5mm",
-        "space": "3mm"
+        "space": "3mm",
+        "cuts": "h",
     },
-    // "tooling": {
-    //     "type": "3hole",
-    //     "size": "1.152mm",
-    //     "soldermaskmargin": "1.3mm",
-    //     "paste": false
-    // },
     "text": {
         "type": "simple",
         "text": "splitflap smd sensor -- scottbez1",
         "anchor": "mt",
         "voffset": "2.5mm",
         "hjustify": "center",
-        "vjustify": "center"
+        "vjustify": "center",
     },
     "post": {
-        "millradius": "1mm"
+        "millradius": "1mm",
     },
     "source": {
         "type": "auto",
-        // Large tolerance for footprints to be included
-        "tolerance": "100mm"
-    }
+    },
 }
