@@ -31,6 +31,8 @@ Want to help support development or just say "thanks"? Consider a one-time or mo
 
 Releases have been tested and used to produce working units, but as this is a continuously evolving open-source project, there may always be minor issues and/or incomplete documentation from time to time.
 
+## v0 stable release status
+
 | Component | Status | Notes |
 | --- | --- | --- |
 | Enclosure/Mechanics | *Stable* | |
@@ -38,12 +40,31 @@ Releases have been tested and used to produce working units, but as this is a co
 | Firmware | *Stable* | |
 | Control Software Example | *Stable* | Example python code for driving the display is in the [software](software) directory|
 
-
-:bulb: There's a new electronics system, called the *Chainlink* system (more on this [below](#chainlink-electronics)), which makes assembly easier and supports larger displays (100+ modules), using an ESP32 for the controller. It's stable and recommended over the older "Classic" controller for new builds.
-
 Here's a video of a large 108-module display powered by 18 Chainlink Driver boards and a Chainlink Base:
 
 [![Video: animations on 108-module display](https://raw.githubusercontent.com/wiki/scottbez1/splitflap/images/animationsThumb.gif)](https://youtu.be/g9EPabcxBsM)
+
+## v2 (coming soon!)
+A minor refresh of the design is expected Summer 2024.
+
+<img src="https://github.com/scottbez1/splitflap/assets/414890/9ffab4fa-a2db-4b5e-915a-915f81faa193" height="200" />
+<img src="https://github.com/scottbez1/splitflap/assets/414890/d89254a4-46de-4303-8402-8a4d7989d25e" height="200" />
+<img src="https://github.com/scottbez1/splitflap/assets/414890/9193a9e3-a4f5-4a54-868a-badd74168181" height="200" />
+
+**Here's what to expect in v2:**
+
+- **52 flaps per module** for more character/symbol options
+- **New printed flap design** with 52 flaps per set (see image above), including several color-block flaps
+- **Updated enclosure** and mechanical parts (laser-cut) to accomodate 52 flaps
+  - Motor wires now exit downward for less awkward wiring!
+- **New sensor PCB** that's easier to assemble and includes an LED for checking the magnet status
+- **Software-configurable calibration** rather than mechanical sensor adjustment (expected shortly after launch)
+
+**But many things are staying the same for easy upgrades/compatibility:**
+- No change to flap dimensions!
+- No changes to Chainlink Driver, Chainlink Buddy boards, or system architecture!
+- Open source, as always!
+- v0 parts (sensor kits) will continue to be stocked at Bezek Labs through 2024; don't worry if you haven't finished your build yet, the old sensor kits aren't going away!
 
 I'd love to hear your thoughts and questions about this project, and happy to incorporate any feedback you might have into these designs! Please feel free (and encouraged) to [open GitHub issues](https://github.com/scottbez1/splitflap/issues/new), email me directly, reach out [on Twitter](https://twitter.com/scottbez1), and [get involved](https://github.com/scottbez1/splitflap/pulls) in the open source development and let's keep chatting and building together!
 
