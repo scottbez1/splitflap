@@ -106,7 +106,7 @@ void SplitflapTask::run() {
     for (uint8_t i = 0; i < NUM_MODULES; i++) {
         modules[i]->Init();
 #if !defined(CHAINLINK_DRIVER_TESTER) && !defined(CHAINLINK_BASE)
-        modules[i]->GoHome();
+        modules[i]->FindAndRecalibrateHome();
 #endif
     }
 
@@ -131,7 +131,7 @@ void SplitflapTask::processQueue() {
                             break;
                         case QCMD_RESET_AND_HOME:
                             modules[i]->ResetState();
-                            modules[i]->GoHome();
+                            modules[i]->FindAndRecalibrateHome();
                             break;
                         case QCMD_LED_ON:
                             any_leds = true;
@@ -172,7 +172,7 @@ void SplitflapTask::processQueue() {
 
                     if (config.reset_nonce != current_configs_.config[i].reset_nonce) {
                         modules[i]->ResetErrorCounters();
-                        modules[i]->GoHome();
+                        modules[i]->FindAndRecalibrateHome();
                     }
 
                     if (config.target_flap_index != current_configs_.config[i].target_flap_index ||

@@ -173,7 +173,7 @@ void setup() {
     recv_buffer[i] = 0;
     modules[i]->Init();
 #if !SENSOR_TEST
-    modules[i]->GoHome();
+    modules[i]->FindAndRecalibrateHome();
 #endif
   }
 
@@ -371,7 +371,7 @@ inline void run_iteration() {
 #endif
             for (uint8_t i = 0; i < NUM_MODULES; i++) {
               modules[i]->ResetErrorCounters();
-              modules[i]->GoHome();
+              modules[i]->FindAndRecalibrateHome();
             }
             break;
           case '#':

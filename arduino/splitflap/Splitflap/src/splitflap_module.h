@@ -30,26 +30,12 @@
 
 #define FAKE_HOME_SENSOR false
 
-#define STEPS_PER_MOTOR_REVOLUTION (32)
-
-// The gear ratio constants below represent the input:output ratio of the gearbox expressed as a simplified fraction.
-// For example, for a gear train with ratios 31:10, 26:9, 22:11, 32:9, the overall ratio expressed as integers would be
-// (31*26*22*32):(10*9*11*9) == 567424:8910 == 25792:405 ~= 63.684:1. To avoid floating point math, we would use the
-// simplified integer fraction values 25792 and 405.
-#define _GEAR_RATIO_INPUT (128)
-#define _GEAR_RATIO_OUTPUT (2)
-
-// All motion is tracked in terms of motor steps (rather than motor revolutions), so we pre-multiply the gear ratio input
-// by the number of motor steps per revolution as a more useful quantity to work with.
-#define GEAR_RATIO_INPUT_STEPS (STEPS_PER_MOTOR_REVOLUTION * _GEAR_RATIO_INPUT)
-
-// Likewise, we care about the number of flaps flipped, rather than the number of output shaft revolutions, so we
-// pre-multiply the gear ratio output by the number of flaps per revolution as a more useful quantity to work with.
-#define GEAR_RATIO_OUTPUT_FLAPS (_GEAR_RATIO_OUTPUT * NUM_FLAPS)
+// Must be an integer. This code does not support a fractional steps per revolution for motors with non-integral gear ratios
+#define STEPS_PER_REVOLUTION (2048)
 
 // This is "rough" because it's integer division; it shouldn't be used for movement calculations or the error would
 // accumulate.
-#define _ROUGH_STEPS_PER_FLAP (GEAR_RATIO_INPUT_STEPS / GEAR_RATIO_OUTPUT_FLAPS)
+#define _ROUGH_STEPS_PER_FLAP (STEPS_PER_REVOLUTION / NUM_FLAPS)
 
 #if HOME_CALIBRATION_ENABLED
 // The number of steps in either direction that's acceptable error for the home sensor
@@ -60,6 +46,13 @@
 
 // When recalibrating the home position, the number of steps to travel searching for home before giving up
 #define MAX_STEPS_LOOKING_FOR_HOME ((NUM_FLAPS + 2) * _ROUGH_STEPS_PER_FLAP)
+
+#define UNEXPECTED_HOME_START_STEP UNEXPECTED_HOME_START_BUFFER_STEPS  // Start of range where a home sensor blip is unexpected
+#define UNEXPECTED_HOME_END_STEP (STEPS_PER_REVOLUTION - HOME_ERROR_MARGIN_STEPS)  // End of range where a home sensor blip is unexpected
+
+// Expected home position step plus some margin of error. If we get to this step without having seen a home
+// sensor blip, something is wrong and we need to recalibrate.
+#define MISSED_HOME_STEP HOME_ERROR_MARGIN_STEPS
 #endif
 
 class SplitflapModule {
@@ -80,18 +73,14 @@ class SplitflapModule {
   uint8_t target_flap_index = 0;
 
   // Current position/destination. Numbers are modulo GEAR_RATIO_INPUT_STEPS
-  uint32_t current_step = 0;
-  uint32_t delta_steps = 0;
+  uint16_t current_step = 0;
+  uint16_t delta_steps = 0;
+
+  uint16_t offset_steps = 1969;
 
 #if HOME_CALIBRATION_ENABLED
-  // Home calibration state. All values recalculated whenever we see a home sensor blip
+  // Home calibration state
   HomeState home_state = IGNORE;
-  uint32_t unexpected_home_start_step = 0;  // Start of range where a home sensor blip is unexpected
-  uint32_t unexpected_home_end_step = 0;  // End of range where a home sensor blip is unexpected
-
-  // Expected home position step plus some margin of error. If we get to this step without having seen a home
-  // sensor blip, something is wrong and we need to recalibrate.
-  uint32_t missed_home_step = 0;
 #endif
 
   // Motor state
@@ -102,8 +91,8 @@ class SplitflapModule {
   bool CheckSensor();
   void SetMotor(uint8_t out);
 
-  uint8_t GetFlapFloor(uint32_t step);
-  uint32_t GetTargetStepForFlapIndex(uint32_t from_step, uint8_t target_flap_index);
+  uint8_t GetFlapFloor(uint16_t step);
+  uint16_t GetTargetStepForFlapIndex(uint8_t target_flap_index);
   void GoToTargetFlapIndex();
   void UpdateExpectedHome();
 
@@ -125,7 +114,7 @@ class SplitflapModule {
   void GoToFlapIndex(uint8_t index);
   uint8_t GetCurrentFlapIndex();
   uint8_t GetTargetFlapIndex();
-  void GoHome();
+  void FindAndRecalibrateHome();
   void ResetErrorCounters();
   void ResetState();
   inline void Update();
@@ -197,65 +186,24 @@ inline void SplitflapModule::SetMotor(uint8_t out) {
 }
 
 __attribute__((always_inline))
-inline uint8_t SplitflapModule::GetFlapFloor(uint32_t step) {
-    return step * GEAR_RATIO_OUTPUT_FLAPS / GEAR_RATIO_INPUT_STEPS;
+inline uint8_t SplitflapModule::GetFlapFloor(uint16_t step) {
+    uint16_t step_without_offset = step >= offset_steps ? step - offset_steps : STEPS_PER_REVOLUTION + step - offset_steps;
+    return (uint32_t)step_without_offset * NUM_FLAPS / STEPS_PER_REVOLUTION;
 }
 
 __attribute__((always_inline))
-inline uint32_t SplitflapModule::GetTargetStepForFlapIndex(uint32_t from_step, uint8_t target_flap_index) {
+inline uint16_t SplitflapModule::GetTargetStepForFlapIndex(uint8_t flap) {
+    uint32_t intermediate = (uint32_t)flap * STEPS_PER_REVOLUTION;
 
-#if ASSERTIONS_ENABLED
-    //assert 0 <= from_step < 2*GEAR_RATIO_INPUT_STEPS
-    if (from_step < 0 || from_step >= 2 * GEAR_RATIO_INPUT_STEPS) {
-        Panic("from_step < 0 || from_step >= 2 * GEAR_RATIO_INPUT_STEPS");
-    }
-#endif
-
-    uint8_t from_flap = GetFlapFloor(from_step);
-
-#if ASSERTIONS_ENABLED
-    //assert 0 <= from_flap < 2*NUM_FLAPS
-    if (from_flap < 0 || from_flap >= 2 * NUM_FLAPS) {
-        Panic("from_flap < 0 || from_flap >= 2 * NUM_FLAPS");
-    }
-#endif
-
-    uint8_t from_flap_index;
-    if (from_flap >= NUM_FLAPS) {
-        from_flap_index = from_flap - NUM_FLAPS;
-    } else {
-        from_flap_index = from_flap;
-    }
-
-    int8_t delta_flaps;
-    if (target_flap_index > from_flap_index) {
-        delta_flaps = target_flap_index - from_flap_index;
-    } else {
-        // Even if we're exactly at the target flap index, still do a full revolution to get to the target flap
-        // since we're working with rounded numbers
-        delta_flaps = NUM_FLAPS + target_flap_index - from_flap_index;
-    }
-
-#if VERBOSE_LOGGING
-    Serial.print("VERBOSE: DELTA FLAPS=");
-    Serial.print(delta_flaps);
-    Serial.print('\n');
-#endif
-
-#if ASSERTIONS_ENABLED
-    //assert 0 < delta_flaps <= 40
-    if (delta_flaps <= 0 || delta_flaps > NUM_FLAPS) {
-        Panic("delta_flaps <= 0 || delta_flaps > NUM_FLAPS");
-    }
-#endif
-
-    uint32_t gear_ratio_input_steps_flaps_destination = ((uint32_t)from_flap + (uint32_t)delta_flaps) * GEAR_RATIO_INPUT_STEPS;
-
-    // Round UP when dividing so that the inverse calculation on the result (_get_flap_floor) returns the expected
+    // Round UP when dividing so that the inverse calculation on the result (GetFlapFloor) returns the expected
     // result.
-    uint32_t result = gear_ratio_input_steps_flaps_destination / GEAR_RATIO_OUTPUT_FLAPS;
-    if (gear_ratio_input_steps_flaps_destination % GEAR_RATIO_OUTPUT_FLAPS != 0) {
+    uint16_t result = intermediate / NUM_FLAPS;
+    if (result % NUM_FLAPS != 0) {
         result++;
+    }
+    result += offset_steps;
+    if (result >= STEPS_PER_REVOLUTION) {
+        result -= STEPS_PER_REVOLUTION;
     }
     return result;
 }
@@ -265,100 +213,18 @@ inline void SplitflapModule::GoToTargetFlapIndex() {
     if (state != NORMAL) {
         return;
     }
-    delta_steps = GetTargetStepForFlapIndex(current_step, target_flap_index) - current_step;
+    uint16_t target_step = GetTargetStepForFlapIndex(target_flap_index);
 
+    uint16_t minimum_stopping_step = current_step + current_accel_step; // Can't come to a stop until we've used up any remaining deceleration steps
 
-#if VERBOSE_LOGGING
-    Serial.print("Going to flap index ");
-    Serial.print(target_flap_index);
-    Serial.print(". Current step is ");
-    Serial.print(current_step);
-    Serial.print(". Delta is ");
-    Serial.print(delta_steps);
-    Serial.print('\n');
-#endif
-
-#if ASSERTIONS_ENABLED
-    if (delta_steps > GEAR_RATIO_INPUT_STEPS) {
-        Panic("delta_steps > GEAR_RATIO_INPUT_STEPS");
+    if (target_step <= minimum_stopping_step) {
+        // Must go around
+        delta_steps = STEPS_PER_REVOLUTION - current_step + target_step;
+        // NB: delta_steps can be > 1 full revolution in the event we are not yet at current_step, but couldn't stop in time
+    } else {
+        delta_steps = target_step - current_step;
     }
-#endif
 }
-
-__attribute__((always_inline))
-inline void SplitflapModule::UpdateExpectedHome() {
-#if HOME_CALIBRATION_ENABLED
-    // Expected home position is the next 0 index flap position after the missed_home_step. This must be calculated
-    // from the missed_home_step, rather than current_step, so that in the event of an early home, we don't compute
-    // the next home as the one that is just a few steps away.
-
-    uint32_t expected_home = GetTargetStepForFlapIndex(missed_home_step, 0);
-
-    uint32_t new_unexpected_home_start_step = current_step + UNEXPECTED_HOME_START_BUFFER_STEPS;
-    uint32_t new_unexpected_home_end_step = expected_home - HOME_ERROR_MARGIN_STEPS;
-    uint32_t new_missed_home_step = expected_home + HOME_ERROR_MARGIN_STEPS;
-
-#if VERBOSE_LOGGING
-    Serial.print("Calculated new expected home ");
-    Serial.print(expected_home);
-    Serial.print(".\nOLD:us=");
-    Serial.print(unexpected_home_start_step);
-    Serial.print(", ue=");
-    Serial.print(unexpected_home_end_step);
-    Serial.print(", m=");
-    Serial.print(missed_home_step);
-    Serial.print("\nNEW:us=");
-    Serial.print(new_unexpected_home_start_step);
-    Serial.print(", ue=");
-    Serial.print(new_unexpected_home_end_step);
-    Serial.print(", m=");
-    Serial.print(new_missed_home_step);
-    Serial.print('\n');
-#endif
-
-#if ASSERTIONS_ENABLED
-    //assert 0 <= new_unexpected_home_start_step < 2*GEAR_RATIO_INPUT_STEPS
-    if (new_unexpected_home_start_step >= 2 * GEAR_RATIO_INPUT_STEPS) {
-        Panic("new_unexpected_home_start_step >= 2 * GEAR_RATIO_INPUT_STEPS");
-    }
-    //assert 0 <= new_unexpected_home_end_step < 2*GEAR_RATIO_INPUT_STEPS
-    if (new_unexpected_home_end_step >= 2 * GEAR_RATIO_INPUT_STEPS) {
-        Panic("new_unexpected_home_end_step >= 2 * GEAR_RATIO_INPUT_STEPS");
-    }
-    //assert 0 <= new_missed_home_step < 2*GEAR_RATIO_INPUT_STEPS
-    if (new_missed_home_step >= 2 * GEAR_RATIO_INPUT_STEPS) {
-        Panic("new_missed_home_step >= 2 * GEAR_RATIO_INPUT_STEPS");
-    }
-#endif
-
-    // Values shouldn't be more than 2*GEAR_RATIO_INPUT_STEPS, so use subtraction to bound to GEAR_RATIO_INPUT_STEPS
-    // rather than using `%` which may be more expensive
-    if (new_unexpected_home_start_step >= GEAR_RATIO_INPUT_STEPS) {
-        new_unexpected_home_start_step -= GEAR_RATIO_INPUT_STEPS;
-    }
-    if (new_unexpected_home_end_step >= GEAR_RATIO_INPUT_STEPS) {
-        new_unexpected_home_end_step -= GEAR_RATIO_INPUT_STEPS;
-    }
-    if (new_missed_home_step >= GEAR_RATIO_INPUT_STEPS) {
-        new_missed_home_step -= GEAR_RATIO_INPUT_STEPS;
-    }
-
-#if ASSERTIONS_ENABLED
-    // The "unexpected" range should never wrap around, since GEAR_RATIO_INPUT_STEPS represents an integer number of
-    // FULL revolutions.
-    //assert new_unexpected_home_end_step > new_unexpected_home_start_step
-    if (new_unexpected_home_end_step <= new_unexpected_home_start_step) {
-        Panic("new_unexpected_home_end_step <= new_unexpected_home_start_step");
-    }
-#endif
-
-    unexpected_home_start_step = new_unexpected_home_start_step;
-    unexpected_home_end_step = new_unexpected_home_end_step;
-    missed_home_step = new_missed_home_step;
-    home_state = IGNORE;
-#endif
-}
-
 
 __attribute__((always_inline))
 inline void SplitflapModule::GoToFlapIndex(uint8_t index) {
@@ -375,7 +241,7 @@ inline void SplitflapModule::GoToFlapIndex(uint8_t index) {
 
 __attribute__((always_inline))
 inline uint8_t SplitflapModule::GetCurrentFlapIndex() {
-   return (uint8_t)(GetFlapFloor(current_step) % NUM_FLAPS);
+   return GetFlapFloor(current_step);
 }
 
 uint8_t SplitflapModule::GetTargetFlapIndex() {
@@ -383,7 +249,7 @@ uint8_t SplitflapModule::GetTargetFlapIndex() {
 }
 
 __attribute__((always_inline))
-inline void SplitflapModule::GoHome() {
+inline void SplitflapModule::FindAndRecalibrateHome() {
 #if HOME_CALIBRATION_ENABLED
     if (state == PANIC || state == STATE_DISABLED) {
         return;
@@ -417,7 +283,7 @@ inline void SplitflapModule::Update() {
                     Serial.print("VERBOSE: Ignoring home");
                 }
 #endif
-                if (current_step == unexpected_home_start_step) {
+                if (current_step == UNEXPECTED_HOME_START_STEP) {
                     home_state = UNEXPECTED;
                 }
             } else if (home_state == UNEXPECTED) {
@@ -427,15 +293,15 @@ inline void SplitflapModule::Update() {
                     Serial.print("VERBOSE: Unexpected home! At ");
                     Serial.print(current_step);
                     Serial.print(". Unexpected range ");
-                    Serial.print(unexpected_home_start_step);
+                    Serial.print(UNEXPECTED_HOME_START_STEP);
                     Serial.print('-');
-                    Serial.print(unexpected_home_end_step);
+                    Serial.print(UNEXPECTED_HOME_END_STEP);
                     Serial.print("; missed at ");
-                    Serial.print(missed_home_step);
+                    Serial.print(MISSED_HOME_STEP);
                     Serial.print(".\n");
 #endif
                     reset_to_home = true;
-                } else if (current_step == unexpected_home_end_step) {
+                } else if (current_step == UNEXPECTED_HOME_END_STEP) {
                     home_state = EXPECTED;
                 }
             } else if (home_state == EXPECTED) {
@@ -443,16 +309,16 @@ inline void SplitflapModule::Update() {
 #if VERBOSE_LOGGING
                     Serial.print("VERBOSE: Found expected home.");
 #endif
-                    UpdateExpectedHome();
-                } else if (current_step == missed_home_step) {
+                    home_state = IGNORE;
+                } else if (current_step == MISSED_HOME_STEP) {
                   count_missed_home++;
 #if VERBOSE_LOGGING
                     Serial.print("VERBOSE: Missed expected home! At ");
                     Serial.print(current_step);
                     Serial.print(". Expected between ");
-                    Serial.print(unexpected_home_end_step);
+                    Serial.print(UNEXPECTED_HOME_END_STEP);
                     Serial.print(" and ");
-                    Serial.print(missed_home_step);
+                    Serial.print(MISSED_HOME_STEP);
                     Serial.print(".\n");
 #endif
                     reset_to_home = true;
@@ -461,7 +327,7 @@ inline void SplitflapModule::Update() {
 #endif
 
             if (reset_to_home) {
-                GoHome();
+                FindAndRecalibrateHome();
                 target_accel_step = 0;
             } else {
                 // Update speed based on distance to target
@@ -483,10 +349,7 @@ inline void SplitflapModule::Update() {
 
                 // Reset frame of reference
                 current_step = 0;
-                unexpected_home_start_step = 0;
-                unexpected_home_end_step = 0;
-                missed_home_step = 0;
-                UpdateExpectedHome();
+                home_state = IGNORE;
 
                 GoToTargetFlapIndex();
             } else {
@@ -516,7 +379,7 @@ inline void SplitflapModule::Update() {
 
         if (current_accel_step > 0) {
             current_step++;
-            if (current_step == GEAR_RATIO_INPUT_STEPS) {
+            if (current_step == STEPS_PER_REVOLUTION) {
                 current_step = 0;
             }
             current_phase++;
@@ -533,8 +396,8 @@ inline void SplitflapModule::Update() {
 
 #if ASSERTIONS_ENABLED
         // Check modular arithmetic invariant
-        if (current_step >= GEAR_RATIO_INPUT_STEPS) {
-            Panic("current_step >= GEAR_RATIO_INPUT_STEPS");
+        if (current_step >= STEPS_PER_REVOLUTION) {
+            Panic("current_step >= STEPS_PER_REVOLUTION");
         }
 #endif
     }
@@ -556,9 +419,6 @@ void SplitflapModule::ResetState() {
 
 #if HOME_CALIBRATION_ENABLED
     home_state = IGNORE;
-    unexpected_home_start_step = 0;
-    unexpected_home_end_step = 0;
-    missed_home_step = 0;
 #endif
 }
 
