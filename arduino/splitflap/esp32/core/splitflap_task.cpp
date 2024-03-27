@@ -148,6 +148,12 @@ void SplitflapTask::processQueue() {
                         case QCMD_DISABLE:
                             modules[i]->Disable();
                             break;
+                        case QCMD_INCR_OFFSET_SM:
+                            modules[i]->IncreaseOffset(1);
+                            break;
+                        case QCMD_INCR_OFFSET_LG:
+                            modules[i]->IncreaseOffset(10);
+                            break;
                         default:
                             assert(data[i] >= QCMD_FLAP && data[i] < QCMD_FLAP + NUM_FLAPS);
                             modules[i]->GoToFlapIndex(data[i] - QCMD_FLAP);
@@ -367,6 +373,13 @@ void SplitflapTask::setSensorTest(bool sensor_test) {
 SplitflapState SplitflapTask::getState() {
     SemaphoreGuard lock(state_semaphore_);
     return state_cache_;
+}
+
+void SplitflapTask::increaseOffset(const uint8_t id, const bool full_flap) {
+    Command command = {};
+    command.command_type = CommandType::MODULES;
+    command.data.module_command[id] = full_flap ? QCMD_INCR_OFFSET_LG : QCMD_INCR_OFFSET_SM;
+    assert(xQueueSendToBack(queue_, &command, portMAX_DELAY) == pdTRUE);
 }
 
 void SplitflapTask::setLogger(Logger* logger) {

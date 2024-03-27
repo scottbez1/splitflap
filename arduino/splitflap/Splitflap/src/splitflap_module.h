@@ -76,7 +76,7 @@ class SplitflapModule {
   uint16_t current_step = 0;
   uint16_t delta_steps = 0;
 
-  uint16_t offset_steps = 1969;
+  uint16_t offset_steps = 0;
 
 #if HOME_CALIBRATION_ENABLED
   // Home calibration state
@@ -121,6 +121,7 @@ class SplitflapModule {
   void Init();
   bool GetHomeState();
   void Disable();
+  void IncreaseOffset(uint8_t flap_tenths);
   
   uint8_t count_unexpected_home = 0;
   uint8_t count_missed_home = 0;
@@ -428,6 +429,12 @@ void SplitflapModule::Init() {
 
 bool SplitflapModule::GetHomeState() {
   return (sensor_in & sensor_bitmask) != 0;
+}
+
+void SplitflapModule::IncreaseOffset(uint8_t flap_tenths) {
+    offset_steps += flap_tenths * STEPS_PER_REVOLUTION / NUM_FLAPS / 10;
+    offset_steps %= STEPS_PER_REVOLUTION;
+    GoToTargetFlapIndex();
 }
 
 #endif

@@ -26,11 +26,17 @@
 // This should match the order of flaps on the spool, with the first being the
 // "home" flap.
 const uint8_t flaps[NUM_FLAPS] = {
-  ' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 
-  'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 
-  'Z', 'g', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'r', 
-  '.', '?', '-', '$', '\'', '#', 'y', 'p', ',', '!', '~', '&', 'w',
+  ' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+  'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y',
+  'Z', 'g', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'r',
+  '.', '?', '-', '$', '\'', '#', 'y', 'p', ',', '!', '~', '&', 'w'
 };
+// const uint8_t flaps[NUM_FLAPS] = {
+//   ' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+//   'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y',
+//   'Z', 'g', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'r',
+//   '.',
+// };
 
 // 4) Hardware configuration and features
 #ifndef SPLITFLAP_PIO_HARDWARE_CONFIG
@@ -39,7 +45,6 @@ const uint8_t flaps[NUM_FLAPS] = {
   #define SPI_IO true
   #define REVERSE_MOTOR_DIRECTION false
   #define NEOPIXEL_DEBUGGING_ENABLED true
-  #define SSD1306_DISPLAY false
   #define INA219_POWER_SENSE false
 #endif
 
@@ -103,7 +108,7 @@ const uint8_t flaps[NUM_FLAPS] = {
  *
  *    Neopixel: 4
  *
- *    INA219 & SSD1306 Oled:
+ *    INA219:
  *      SDA: 20
  *      SCL: 21
  *
