@@ -161,6 +161,18 @@ void SerialProtoProtocol::handlePacket(const uint8_t* buffer, size_t size) {
                             c.data.module_command[i] = QCMD_FLAP + command.modules[i].param;
                         }
                         break;
+                    case PB_SplitflapCommand_ModuleCommand_Action_INCREASE_OFFSET_TENTH:
+                        c.data.module_command[i] = QCMD_INCR_OFFSET_TENTH;
+                        break;
+                    case PB_SplitflapCommand_ModuleCommand_Action_INCREASE_OFFSET_HALF:
+                        c.data.module_command[i] = QCMD_INCR_OFFSET_HALF;
+                        break;
+                    case PB_SplitflapCommand_ModuleCommand_Action_SET_OFFSET:
+                        c.data.module_command[i] = QCMD_SET_OFFSET;
+                        break;
+                    case PB_SplitflapCommand_ModuleCommand_Action_SAVE_OFFSET:
+                        c.data.module_command[i] = QCMD_SAVE_OFFSET;
+                        break;
                     default:
                         // Ignore unknown action
                         break;

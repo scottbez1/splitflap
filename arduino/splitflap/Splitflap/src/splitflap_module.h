@@ -121,7 +121,9 @@ class SplitflapModule {
   void Init();
   bool GetHomeState();
   void Disable();
+
   void IncreaseOffset(uint8_t flap_tenths);
+  void SetOffset();
   
   uint8_t count_unexpected_home = 0;
   uint8_t count_missed_home = 0;
@@ -434,6 +436,12 @@ bool SplitflapModule::GetHomeState() {
 void SplitflapModule::IncreaseOffset(uint8_t flap_tenths) {
     offset_steps += flap_tenths * STEPS_PER_REVOLUTION / NUM_FLAPS / 10;
     offset_steps %= STEPS_PER_REVOLUTION;
+    GoToTargetFlapIndex();
+}
+
+void SplitflapModule::SetOffset() {
+    offset_steps = current_step;
+    target_flap_index = 0;
     GoToTargetFlapIndex();
 }
 

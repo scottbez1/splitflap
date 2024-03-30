@@ -40,7 +40,11 @@ typedef enum _PB_SupervisorState_FaultInfo_FaultType {
 typedef enum _PB_SplitflapCommand_ModuleCommand_Action { 
     PB_SplitflapCommand_ModuleCommand_Action_NO_OP = 0, 
     PB_SplitflapCommand_ModuleCommand_Action_GO_TO_FLAP = 1, 
-    PB_SplitflapCommand_ModuleCommand_Action_RESET_AND_HOME = 2 
+    PB_SplitflapCommand_ModuleCommand_Action_RESET_AND_HOME = 2, 
+    PB_SplitflapCommand_ModuleCommand_Action_INCREASE_OFFSET_TENTH = 90, 
+    PB_SplitflapCommand_ModuleCommand_Action_INCREASE_OFFSET_HALF = 91, 
+    PB_SplitflapCommand_ModuleCommand_Action_SET_OFFSET = 92, 
+    PB_SplitflapCommand_ModuleCommand_Action_SAVE_OFFSET = 93 
 } PB_SplitflapCommand_ModuleCommand_Action;
 
 /* Struct definitions */
@@ -147,8 +151,8 @@ typedef struct _PB_ToSplitflap {
 #define _PB_SupervisorState_FaultInfo_FaultType_ARRAYSIZE ((PB_SupervisorState_FaultInfo_FaultType)(PB_SupervisorState_FaultInfo_FaultType_UNEXPECTED_POWER+1))
 
 #define _PB_SplitflapCommand_ModuleCommand_Action_MIN PB_SplitflapCommand_ModuleCommand_Action_NO_OP
-#define _PB_SplitflapCommand_ModuleCommand_Action_MAX PB_SplitflapCommand_ModuleCommand_Action_RESET_AND_HOME
-#define _PB_SplitflapCommand_ModuleCommand_Action_ARRAYSIZE ((PB_SplitflapCommand_ModuleCommand_Action)(PB_SplitflapCommand_ModuleCommand_Action_RESET_AND_HOME+1))
+#define _PB_SplitflapCommand_ModuleCommand_Action_MAX PB_SplitflapCommand_ModuleCommand_Action_SAVE_OFFSET
+#define _PB_SplitflapCommand_ModuleCommand_Action_ARRAYSIZE ((PB_SplitflapCommand_ModuleCommand_Action)(PB_SplitflapCommand_ModuleCommand_Action_SAVE_OFFSET+1))
 
 
 #ifdef __cplusplus

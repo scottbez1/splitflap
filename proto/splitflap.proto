@@ -85,6 +85,10 @@ message SplitflapCommand {
             NO_OP = 0;
             GO_TO_FLAP = 1;
             RESET_AND_HOME = 2;
+            INCREASE_OFFSET_TENTH = 90;
+            INCREASE_OFFSET_HALF = 91;
+            SET_OFFSET = 92;
+            SAVE_OFFSET = 93;
         }
         Action action = 1;
         uint32 param = 2 [(nanopb).int_size = IS_8];

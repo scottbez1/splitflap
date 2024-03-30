@@ -148,11 +148,17 @@ void SplitflapTask::processQueue() {
                         case QCMD_DISABLE:
                             modules[i]->Disable();
                             break;
-                        case QCMD_INCR_OFFSET_SM:
+                        case QCMD_INCR_OFFSET_TENTH:
                             modules[i]->IncreaseOffset(1);
                             break;
-                        case QCMD_INCR_OFFSET_LG:
-                            modules[i]->IncreaseOffset(10);
+                        case QCMD_INCR_OFFSET_HALF:
+                            modules[i]->IncreaseOffset(5);
+                            break;
+                        case QCMD_SET_OFFSET:
+                            modules[i]->SetOffset();
+                            break;
+                        case QCMD_SAVE_OFFSET:
+                            // Not implemented yet
                             break;
                         default:
                             assert(data[i] >= QCMD_FLAP && data[i] < QCMD_FLAP + NUM_FLAPS);
@@ -375,10 +381,31 @@ SplitflapState SplitflapTask::getState() {
     return state_cache_;
 }
 
-void SplitflapTask::increaseOffset(const uint8_t id, const bool full_flap) {
+void SplitflapTask::increaseOffsetTenth(const uint8_t id) {
     Command command = {};
     command.command_type = CommandType::MODULES;
-    command.data.module_command[id] = full_flap ? QCMD_INCR_OFFSET_LG : QCMD_INCR_OFFSET_SM;
+    command.data.module_command[id] = QCMD_INCR_OFFSET_TENTH;
+    assert(xQueueSendToBack(queue_, &command, portMAX_DELAY) == pdTRUE);
+}
+
+void SplitflapTask::increaseOffsetHalf(const uint8_t id) {
+    Command command = {};
+    command.command_type = CommandType::MODULES;
+    command.data.module_command[id] = QCMD_INCR_OFFSET_HALF;
+    assert(xQueueSendToBack(queue_, &command, portMAX_DELAY) == pdTRUE);
+}
+
+void SplitflapTask::setOffset(const uint8_t id) {
+    Command command = {};
+    command.command_type = CommandType::MODULES;
+    command.data.module_command[id] = QCMD_SET_OFFSET;
+    assert(xQueueSendToBack(queue_, &command, portMAX_DELAY) == pdTRUE);
+}
+
+void SplitflapTask::saveOffset(const uint8_t id) {
+    Command command = {};
+    command.command_type = CommandType::MODULES;
+    command.data.module_command[id] = QCMD_SAVE_OFFSET;
     assert(xQueueSendToBack(queue_, &command, portMAX_DELAY) == pdTRUE);
 }
 

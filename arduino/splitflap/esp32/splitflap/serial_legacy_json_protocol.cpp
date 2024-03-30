@@ -100,11 +100,11 @@ void SerialLegacyJsonProtocol::loop() {
                     break;
                 case '>':
                     // TODO: make the index configurable
-                    splitflap_task_.increaseOffset(0, false);
+                    splitflap_task_.increaseOffsetTenth(0);
                     break;
                 case '<':
                     // TODO: make the index configurable
-                    splitflap_task_.increaseOffset(0, true);
+                    splitflap_task_.increaseOffsetHalf(0);
                     break;
                 case '\r':
                     // Ignore
