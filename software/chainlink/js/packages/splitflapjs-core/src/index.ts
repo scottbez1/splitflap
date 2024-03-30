@@ -55,6 +55,30 @@ export class SplitflapCore {
         )
     }
 
+    private sendModuleCommand(position: number, command: PB.SplitflapCommand.ModuleCommand): void {
+        const modules = Array(position + 1).fill(PB.SplitflapCommand.ModuleCommand.create({action: PB.SplitflapCommand.ModuleCommand.Action.NO_OP}))
+        modules[position] = command
+        this.enqueueMessage(
+            PB.ToSplitflap.create({
+                splitflapCommand: PB.SplitflapCommand.create({
+                    modules,
+                })
+            }),
+        )
+    }
+
+    public offsetIncrementTenth(position: number): void {
+        this.sendModuleCommand(position, PB.SplitflapCommand.ModuleCommand.create({action: PB.SplitflapCommand.ModuleCommand.Action.INCREASE_OFFSET_TENTH}))
+    }
+
+    public offsetIncrementHalf(position: number): void {
+        this.sendModuleCommand(position, PB.SplitflapCommand.ModuleCommand.create({action: PB.SplitflapCommand.ModuleCommand.Action.INCREASE_OFFSET_HALF}))
+    }
+
+    public offsetSetToCurrentStep(position: number): void {
+        this.sendModuleCommand(position, PB.SplitflapCommand.ModuleCommand.create({action: PB.SplitflapCommand.ModuleCommand.Action.SET_OFFSET}))
+    }
+
     /**
      * Perform a hard reset of the splitflap MCU. May take a few seconds.
      */

@@ -1,13 +1,18 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react'
+import React, {SyntheticEvent, useCallback, useEffect, useRef, useState} from 'react'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import {PB} from 'splitflapjs-proto'
-import {AppBar, Button, Card, CardContent, CircularProgress, Link, Toolbar, Tooltip,} from '@mui/material'
+import {AppBar, Button, Card, CardContent, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Link, Toolbar, Tooltip,} from '@mui/material'
 import {NoUndefinedField} from './util'
 import {SplitflapWebSerial} from 'splitflapjs-webserial'
-import { applyResetModule } from 'splitflapjs-core/dist/util'
+import { applyResetModule, applySetFlaps } from 'splitflapjs-core/dist/util'
 
-const FLAPS=' ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.  '
+const FLAPS = [
+    ' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+    'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y',
+    'Z', 'g', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'r',
+    '.', '?', '-', '$', '\'', '#', 'y', 'p', ',', '!', '~', '&', 'w',
+]
 const legalString = (s: string) => {
     for (const c of s) {
         if (!FLAPS.includes(c)) {
@@ -158,55 +163,24 @@ export const App: React.FC<AppProps> = () => {
                             }}>
                             {
                                 splitflapState.modules.map((module, i) => {
-                                    return (
-                                        <div
-                                            key={`reset-${i}`}
-                                            style={{
-                                                fontSize: `${charWidth}px`,
-                                                fontFamily: 'Roboto Mono',
-                                                letterSpacing: `${0.4 * charWidth}px`,
-                                                display: 'inline-block',
-                                                width: `${charWidth}px`,
-                                                cursor: 'pointer',
-                                                border: '1px solid black',
+                                    return (<SplitflapModuleDisplay
+                                            i={i}
+                                            module={module}
+                                            charWidth={charWidth}
+                                            setSplitflapConfig={setSplitflapConfig}
+                                            increaseOffsetTenth={() => splitflap?.offsetIncrementTenth(i)}
+                                            increaseOffsetHalf={() => splitflap?.offsetIncrementHalf(i)}
+                                            goToFlap={(flapIndex) => {
+                                                const update: (number | null)[] = Array(i + 1).fill(null)
+                                                update[i] = flapIndex
+                                                setSplitflapConfig((curConfig) => {
+                                                    return PB.SplitflapConfig.toObject(applySetFlaps(PB.SplitflapConfig.create(curConfig), update), {
+                                                        defaults: true,
+                                                    }) as NoUndefinedField<PB.ISplitflapConfig>
+                                                })
                                             }}
-                                            onClick={() => {
-                                        setSplitflapConfig((curConfig) => {
-                                            return PB.SplitflapConfig.toObject(applyResetModule(PB.SplitflapConfig.create(curConfig), i), {
-                                                defaults: true,
-                                            }) as NoUndefinedField<PB.ISplitflapConfig>
-                                        })
-                                    }}>
-                                        <Tooltip title={
-                                        <div>
-                                            <div>State: {PB.SplitflapState.ModuleState.toObject(PB.SplitflapState.ModuleState.create(module), {
-                                                enums: String,
-                                            }).state}</div>
-                                            <div>Missed home: {module.countMissedHome}</div>
-                                            <div>Unexpected home: {module.countUnexpectedHome}</div>
-                                            <br />
-                                            <div><b>Click to reset module</b></div>
-                                        </div>}>
-                                            <div
-                                                style={{
-                                                    width: '100%',
-                                                    paddingLeft: module.state === PB.SplitflapState.ModuleState.State.LOOK_FOR_HOME ? 0 : `${charWidth*0.12}px`,
-                                                    backgroundColor: module.state === PB.SplitflapState.ModuleState.State.SENSOR_ERROR ? 'orange' : 'inherit',
-                                                    minWidth: module.state,
-                                                    textAlign: 'center',
-                                                }}
-                                            >{
-                                                module.state === PB.SplitflapState.ModuleState.State.NORMAL ?
-                                                <>{FLAPS[module.flapIndex]}&nbsp;</> :
-                                                module.state === PB.SplitflapState.ModuleState.State.LOOK_FOR_HOME ?
-                                                <CircularProgress size={charWidth * 0.7} /> :
-                                                module.state === PB.SplitflapState.ModuleState.State.SENSOR_ERROR ?
-                                                <>&nbsp;</> :
-                                                'x'
-                                            }
-                                            </div>
-                                    </Tooltip>
-                                    </div>)
+                                            setOffsetToCurrentStep={() => splitflap?.offsetSetToCurrentStep(i)}
+                                        />)
                                 })
                             }
                             </div>
@@ -288,5 +262,184 @@ export const App: React.FC<AppProps> = () => {
                     </Card>
             </Container>
         </>
+    )
+}
+
+type SplitflapModuleDisplayProps = {
+    charWidth: number,
+    i: number,
+    setSplitflapConfig: React.Dispatch<React.SetStateAction<NoUndefinedField<PB.ISplitflapConfig>>>,
+    module: NoUndefinedField<PB.SplitflapState.IModuleState>,
+    increaseOffsetTenth: () => void,
+    increaseOffsetHalf: () => void,
+    goToFlap: (i: number) => void,
+    setOffsetToCurrentStep: () => void,
+}
+
+enum CalibrationStep {
+    FIND_FLAP_BOUNDARY = 0,
+    ADJUST_WHOLE_FLAP_OFFSET = 1,
+    CALIBRATING = 2,
+    CONFIRM = 3,
+}
+
+const SplitflapModuleDisplay: React.FC<SplitflapModuleDisplayProps> = (props) => {
+    const {charWidth, i, setSplitflapConfig, module, increaseOffsetTenth, increaseOffsetHalf, goToFlap, setOffsetToCurrentStep } = props
+    const [dialogOpen, setDialogOpen] = useState<boolean>(false)
+    const [calibrationStep, setCalibrationStep] = useState<CalibrationStep>(CalibrationStep.FIND_FLAP_BOUNDARY);
+
+    const calibrationComponent: Record<CalibrationStep, React.FC<void>> = {
+        [CalibrationStep.FIND_FLAP_BOUNDARY]: () => 
+            <>
+            <DialogContent>
+                <DialogContentText>
+                    Keep clicking this button until the flap flips...
+                </DialogContentText>
+                <Button variant='contained' onClick={() => {
+                    increaseOffsetTenth()
+                }}>&gt;&gt;</Button>
+                <br />
+                <br />
+                <DialogContentText>
+                    then click Continue
+                </DialogContentText>
+                </DialogContent>
+            <DialogActions>
+                <Button variant='outlined' onClick={() => {
+                    increaseOffsetHalf()
+                    setCalibrationStep(CalibrationStep.ADJUST_WHOLE_FLAP_OFFSET)
+                }}>Continue</Button>
+            </DialogActions>
+            </>,
+        [CalibrationStep.ADJUST_WHOLE_FLAP_OFFSET]: () => <>
+        <DialogContent>
+            <DialogContentText>
+                Now click the flap that is currently showing
+            </DialogContentText>
+            {
+                Array.from(FLAPS).map((f) => <Button key={`button-${f}`} variant='outlined' onClick={() => {
+                    goToFlap((FLAPS.length - FLAPS.indexOf(f)) % FLAPS.length)
+                    setCalibrationStep(CalibrationStep.CALIBRATING)
+                }}>{ f }</Button>)
+            }
+            </DialogContent>
+        </>,
+        [CalibrationStep.CALIBRATING]: () => 
+            <>
+            {
+                module.moving ? (
+                    <DialogContent>
+                        <DialogContentText>
+                            Calibrating, please wait...
+                        </DialogContentText>
+                    </DialogContent>
+                    ) : (
+                        <>
+                    <DialogContent>
+                        <DialogContentText>
+                            Has the module calibrated to the home position?
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button variant='outlined' onClick={() => {
+                            goToFlap(0);
+                            setCalibrationStep(CalibrationStep.FIND_FLAP_BOUNDARY)
+                        }}>Retry</Button>
+                        <Button variant='contained' onClick={() => {
+                            setOffsetToCurrentStep()
+                            setDialogOpen(false)
+                        }}>Done</Button>
+                    </DialogActions>
+                    </>
+                    )
+                }
+            </>,
+
+        [CalibrationStep.CONFIRM]: () => 
+            <>
+            <DialogContent>
+                <DialogContentText>
+                    Calibration complete!
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button variant='outlined' onClick={() => {
+                    setCalibrationStep(CalibrationStep.FIND_FLAP_BOUNDARY)
+                }}>Retry</Button>
+                <Button variant='contained' onClick={() => {
+                    setDialogOpen(false)
+                }}>Done</Button>
+            </DialogActions>
+            </>,
+    }
+
+    const onClick = (e: SyntheticEvent) => {
+        console.log(e)
+        if (e.type === 'click') {
+            setSplitflapConfig((curConfig) => {
+                return PB.SplitflapConfig.toObject(applyResetModule(PB.SplitflapConfig.create(curConfig), i), {
+                    defaults: true,
+                }) as NoUndefinedField<PB.ISplitflapConfig>
+            })
+        } else if (e.type === 'contextmenu') {
+            e.preventDefault()
+            goToFlap(0);
+            setCalibrationStep(CalibrationStep.FIND_FLAP_BOUNDARY);
+            setDialogOpen(true);
+        }
+    }
+    return (
+        <div
+            key={`reset-${i}`}
+            style={{
+                fontSize: `${charWidth}px`,
+                fontFamily: 'Roboto Mono',
+                letterSpacing: `${0.4 * charWidth}px`,
+                display: 'inline-block',
+                width: `${charWidth}px`,
+                cursor: 'pointer',
+                border: '1px solid black',
+            }}
+        >
+            <div
+                onClick={onClick}
+                onContextMenu={onClick}
+            >
+                <Tooltip title={
+                    <div>
+                        <div>State: {PB.SplitflapState.ModuleState.toObject(PB.SplitflapState.ModuleState.create(module), {
+                            enums: String,
+                        }).state}</div>
+                        <div>Missed home: {module.countMissedHome}</div>
+                        <div>Unexpected home: {module.countUnexpectedHome}</div>
+                        <br />
+                        <div><b>Click to reset module</b></div>
+                    </div>
+                }>
+                    <div
+                        style={{
+                            width: '100%',
+                            paddingLeft: module.state === PB.SplitflapState.ModuleState.State.LOOK_FOR_HOME ? 0 : `${charWidth*0.12}px`,
+                            backgroundColor: module.state === PB.SplitflapState.ModuleState.State.SENSOR_ERROR ? 'orange' : 'inherit',
+                            minWidth: module.state,
+                            textAlign: 'center',
+                        }}
+                    >{
+                        module.state === PB.SplitflapState.ModuleState.State.NORMAL ?
+                        <>{FLAPS[module.flapIndex]}&nbsp;</> :
+                        module.state === PB.SplitflapState.ModuleState.State.LOOK_FOR_HOME ?
+                        <CircularProgress size={charWidth * 0.7} /> :
+                        module.state === PB.SplitflapState.ModuleState.State.SENSOR_ERROR ?
+                        <>&nbsp;</> :
+                        'x'
+                    }
+                    </div>
+                </Tooltip>
+            </div>
+            <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+                <DialogTitle>Calibrate module</DialogTitle>
+                {calibrationComponent[calibrationStep]()}
+            </Dialog>
+        </div>
     )
 }
