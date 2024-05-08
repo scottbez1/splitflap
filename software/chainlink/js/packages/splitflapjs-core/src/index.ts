@@ -67,6 +67,16 @@ export class SplitflapCore {
         )
     }
 
+    public saveAllOffsets(): void {
+        this.enqueueMessage(
+            PB.ToSplitflap.create({
+                splitflapCommand: PB.SplitflapCommand.create({
+                    saveAllOffsets: true,
+                })
+            }),
+        )
+    }
+
     public offsetIncrementTenth(position: number): void {
         this.sendModuleCommand(position, PB.SplitflapCommand.ModuleCommand.create({action: PB.SplitflapCommand.ModuleCommand.Action.INCREASE_OFFSET_TENTH}))
     }

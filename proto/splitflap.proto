@@ -88,12 +88,12 @@ message SplitflapCommand {
             INCREASE_OFFSET_TENTH = 90;
             INCREASE_OFFSET_HALF = 91;
             SET_OFFSET = 92;
-            SAVE_OFFSET = 93;
         }
         Action action = 1;
         uint32 param = 2 [(nanopb).int_size = IS_8];
     }
     repeated ModuleCommand modules = 2 [(nanopb).max_count = 255];
+    bool save_all_offsets = 3;
 }
 
 message SplitflapConfig {
@@ -131,4 +131,10 @@ message ToSplitflap {
         SplitflapConfig splitflap_config = 3;
         RequestState request_state = 4;
     }
+}
+
+message PersistentConfiguration {
+    uint32 version = 1;
+    uint32 num_flaps = 2;
+    repeated uint32 module_offset_steps = 3  [(nanopb).max_count = 255, (nanopb).int_size = IS_16];
 }

@@ -21,22 +21,22 @@
 #define HOME_CALIBRATION_ENABLED true
 
 // 3) Flap Contents & Order
-#define NUM_FLAPS (52)
+#define NUM_FLAPS (40)
 
 // This should match the order of flaps on the spool, with the first being the
 // "home" flap.
-const uint8_t flaps[NUM_FLAPS] = {
-  ' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
-  'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y',
-  'Z', 'g', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'r',
-  '.', '?', '-', '$', '\'', '#', 'y', 'p', ',', '!', '~', '&', 'w'
-};
 // const uint8_t flaps[NUM_FLAPS] = {
 //   ' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
 //   'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y',
 //   'Z', 'g', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'r',
-//   '.',
+//   '.', '?', '-', '$', '\'', '#', 'y', 'p', ',', '!', '~', '&', 'w'
 // };
+const uint8_t flaps[NUM_FLAPS] = {
+  ' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+  'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y',
+  'Z', 'g', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'r',
+  '.',
+};
 
 // 4) Hardware configuration and features
 #ifndef SPLITFLAP_PIO_HARDWARE_CONFIG

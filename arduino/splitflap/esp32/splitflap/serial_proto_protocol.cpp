@@ -146,39 +146,40 @@ void SerialProtoProtocol::handlePacket(const uint8_t* buffer, size_t size) {
     switch (pb_rx_buffer_.which_payload) {
         case PB_ToSplitflap_splitflap_command_tag: {
             PB_SplitflapCommand command = pb_rx_buffer_.payload.splitflap_command;
-            Command c = {};
-            c.command_type = CommandType::MODULES;
-            for (uint8_t i = 0; i < min((int)command.modules_count, NUM_MODULES); i++) {
-                switch (command.modules[i].action) {
-                    case PB_SplitflapCommand_ModuleCommand_Action_NO_OP:
-                        c.data.module_command[i] = QCMD_NO_OP;
-                        break;
-                    case PB_SplitflapCommand_ModuleCommand_Action_RESET_AND_HOME:
-                        c.data.module_command[i] = QCMD_RESET_AND_HOME;
-                        break;
-                    case PB_SplitflapCommand_ModuleCommand_Action_GO_TO_FLAP:
-                        if (command.modules[i].param <= 255 - QCMD_FLAP) {
-                            c.data.module_command[i] = QCMD_FLAP + command.modules[i].param;
-                        }
-                        break;
-                    case PB_SplitflapCommand_ModuleCommand_Action_INCREASE_OFFSET_TENTH:
-                        c.data.module_command[i] = QCMD_INCR_OFFSET_TENTH;
-                        break;
-                    case PB_SplitflapCommand_ModuleCommand_Action_INCREASE_OFFSET_HALF:
-                        c.data.module_command[i] = QCMD_INCR_OFFSET_HALF;
-                        break;
-                    case PB_SplitflapCommand_ModuleCommand_Action_SET_OFFSET:
-                        c.data.module_command[i] = QCMD_SET_OFFSET;
-                        break;
-                    case PB_SplitflapCommand_ModuleCommand_Action_SAVE_OFFSET:
-                        c.data.module_command[i] = QCMD_SAVE_OFFSET;
-                        break;
-                    default:
-                        // Ignore unknown action
-                        break;
+            if (command.modules_count > 0) {
+                Command c = {};
+                c.command_type = CommandType::MODULES;
+                for (uint8_t i = 0; i < min((int)command.modules_count, NUM_MODULES); i++) {
+                    switch (command.modules[i].action) {
+                        case PB_SplitflapCommand_ModuleCommand_Action_NO_OP:
+                            c.data.module_command[i] = QCMD_NO_OP;
+                            break;
+                        case PB_SplitflapCommand_ModuleCommand_Action_RESET_AND_HOME:
+                            c.data.module_command[i] = QCMD_RESET_AND_HOME;
+                            break;
+                        case PB_SplitflapCommand_ModuleCommand_Action_GO_TO_FLAP:
+                            if (command.modules[i].param <= 255 - QCMD_FLAP) {
+                                c.data.module_command[i] = QCMD_FLAP + command.modules[i].param;
+                            }
+                            break;
+                        case PB_SplitflapCommand_ModuleCommand_Action_INCREASE_OFFSET_TENTH:
+                            c.data.module_command[i] = QCMD_INCR_OFFSET_TENTH;
+                            break;
+                        case PB_SplitflapCommand_ModuleCommand_Action_INCREASE_OFFSET_HALF:
+                            c.data.module_command[i] = QCMD_INCR_OFFSET_HALF;
+                            break;
+                        case PB_SplitflapCommand_ModuleCommand_Action_SET_OFFSET:
+                            c.data.module_command[i] = QCMD_SET_OFFSET;
+                            break;
+                        default:
+                            // Ignore unknown action
+                            break;
+                    }
                 }
+                splitflap_task_.postRawCommand(c);
+            } else if (command.save_all_offsets) {
+                splitflap_task_.saveAllOffsets();
             }
-            splitflap_task_.postRawCommand(c);
             break;
         }
         case PB_ToSplitflap_splitflap_config_tag: {

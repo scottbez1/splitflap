@@ -229,6 +229,7 @@ export const App: React.FC<AppProps> = () => {
                                         </div>
                                     </div>
                             </form>
+                            <Button onClick={() => splitflap.saveAllOffsets()}>Save calibration</Button>
                         </>
                     ) : navigator.serial ? (
                         <>

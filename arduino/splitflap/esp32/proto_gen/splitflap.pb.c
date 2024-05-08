@@ -48,6 +48,9 @@ PB_BIND(PB_RequestState, PB_RequestState, AUTO)
 PB_BIND(PB_ToSplitflap, PB_ToSplitflap, 2)
 
 
+PB_BIND(PB_PersistentConfiguration, PB_PersistentConfiguration, 2)
+
+
 
 
 

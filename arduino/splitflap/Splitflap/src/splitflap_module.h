@@ -124,6 +124,8 @@ class SplitflapModule {
 
   void IncreaseOffset(uint8_t flap_tenths);
   void SetOffset();
+  uint16_t GetOffset();
+  void RestoreOffset(uint16_t offset);
   
   uint8_t count_unexpected_home = 0;
   uint8_t count_missed_home = 0;
@@ -443,6 +445,17 @@ void SplitflapModule::SetOffset() {
     offset_steps = current_step;
     target_flap_index = 0;
     GoToTargetFlapIndex();
+}
+
+uint16_t SplitflapModule::GetOffset() {
+    return offset_steps;
+}
+
+void SplitflapModule::RestoreOffset(uint16_t offset) {
+    if (offset != offset_steps) {
+        offset_steps = offset;
+        FindAndRecalibrateHome();
+    }
 }
 
 #endif

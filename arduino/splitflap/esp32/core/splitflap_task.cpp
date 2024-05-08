@@ -28,9 +28,11 @@
 
 static_assert(QCMD_FLAP + NUM_FLAPS <= 255, "Too many flaps to fit in uint8_t command structure");
 
-SplitflapTask::SplitflapTask(const uint8_t task_core, const LedMode led_mode) : Task("Splitflap", 2048, 1, task_core), led_mode_(led_mode), state_semaphore_(xSemaphoreCreateMutex()) {
+SplitflapTask::SplitflapTask(const uint8_t task_core, const LedMode led_mode) : Task("Splitflap", 4096, 1, task_core), led_mode_(led_mode), state_semaphore_(xSemaphoreCreateMutex()), configuration_semaphore_(xSemaphoreCreateMutex()) {
   assert(state_semaphore_ != NULL);
   xSemaphoreGive(state_semaphore_);
+  assert(configuration_semaphore_ != NULL);
+  xSemaphoreGive(configuration_semaphore_);
 
   queue_ = xQueueCreate(5, sizeof(Command));
   assert(queue_ != NULL);
@@ -42,6 +44,9 @@ SplitflapTask::~SplitflapTask() {
   }
   if (state_semaphore_ != NULL) {
     vSemaphoreDelete(state_semaphore_);
+  }
+  if (configuration_semaphore_ != NULL) {
+    vSemaphoreDelete(configuration_semaphore_);
   }
 }
 
@@ -157,9 +162,6 @@ void SplitflapTask::processQueue() {
                         case QCMD_SET_OFFSET:
                             modules[i]->SetOffset();
                             break;
-                        case QCMD_SAVE_OFFSET:
-                            // Not implemented yet
-                            break;
                         default:
                             assert(data[i] >= QCMD_FLAP && data[i] < QCMD_FLAP + NUM_FLAPS);
                             modules[i]->GoToFlapIndex(data[i] - QCMD_FLAP);
@@ -200,6 +202,42 @@ void SplitflapTask::processQueue() {
                     }
                 }
                 current_configs_ = configs;
+                break;
+            }
+            case CommandType::SAVE_ALL_OFFSETS: {
+                char buffer[200] = {};
+
+                uint16_t offsets[NUM_MODULES];
+                for (uint8_t i = 0; i < NUM_MODULES; i++) {
+                    // Make sure all modules are stopped, since writing to config may take a while
+                    if (modules[i]->state != NORMAL || modules[i]->current_accel_step != 0) {
+                        snprintf(buffer, sizeof(buffer), "Can't save offsets; module %u isn't idle", i);
+                        log(buffer);
+                        return;
+                    }
+
+                    offsets[i] = modules[i]->GetOffset();
+                }
+
+                // Write to configuration
+                Configuration* configuration;
+                {
+                    SemaphoreGuard lock(configuration_semaphore_);
+                    configuration = configuration_;
+                }
+                if (configuration != nullptr) {
+                    configuration->setModuleOffsetsAndSave(offsets);
+                }
+                break;
+            }
+            case CommandType::RESTORE_ALL_OFFSETS:
+                for (uint8_t i = 0; i < NUM_MODULES; i++) {
+                    uint16_t offset = queue_receive_buffer_.data.module_offsets[i];
+                    modules[i]->RestoreOffset(offset);
+                }
+                break;
+            default: {
+                log("Unknown command");
                 break;
             }
         }
@@ -402,11 +440,9 @@ void SplitflapTask::setOffset(const uint8_t id) {
     assert(xQueueSendToBack(queue_, &command, portMAX_DELAY) == pdTRUE);
 }
 
-void SplitflapTask::saveOffset(const uint8_t id) {
-    Command command = {};
-    command.command_type = CommandType::MODULES;
-    command.data.module_command[id] = QCMD_SAVE_OFFSET;
-    assert(xQueueSendToBack(queue_, &command, portMAX_DELAY) == pdTRUE);
+void SplitflapTask::setConfiguration(Configuration* configuration) {
+    SemaphoreGuard lock(configuration_semaphore_);
+    configuration_ = configuration;
 }
 
 void SplitflapTask::setLogger(Logger* logger) {
@@ -414,5 +450,20 @@ void SplitflapTask::setLogger(Logger* logger) {
 }
 
 void SplitflapTask::postRawCommand(Command command) {
+    assert(xQueueSendToBack(queue_, &command, portMAX_DELAY) == pdTRUE);
+}
+
+void SplitflapTask::saveAllOffsets() {
+    Command command = {};
+    command.command_type = CommandType::SAVE_ALL_OFFSETS;
+    assert(xQueueSendToBack(queue_, &command, portMAX_DELAY) == pdTRUE);
+}
+
+void SplitflapTask::restoreAllOffsets(uint16_t offsets[NUM_MODULES]) {
+    Command command = {};
+    command.command_type = CommandType::RESTORE_ALL_OFFSETS;
+    for (uint8_t i = 0; i < NUM_MODULES; i++) {
+        command.data.module_offsets[i] = offsets[i];
+    }
     assert(xQueueSendToBack(queue_, &command, portMAX_DELAY) == pdTRUE);
 }

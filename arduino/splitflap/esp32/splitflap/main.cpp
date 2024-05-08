@@ -20,9 +20,12 @@
 
 #include "config.h"
 
+#include "../core/configuration.h"
 #include "../core/splitflap_task.h"
 #include "display_task.h"
 #include "serial_task.h"
+
+Configuration config;
 
 SplitflapTask splitflapTask(1, LedMode::AUTO);
 SerialTask serialTask(splitflapTask, 0);
@@ -49,7 +52,20 @@ HTTPTask httpTask(splitflapTask, displayTask, serialTask, 0);
 void setup() {
   serialTask.begin();
 
+  config.setLogger(&serialTask);
+  bool loaded = config.loadFromDisk();
+
   splitflapTask.begin();
+  splitflapTask.setConfiguration(&config);
+
+  if (loaded) {
+    PB_PersistentConfiguration saved = config.get();
+    uint16_t offsets[NUM_MODULES] = {};
+    for (uint8_t i = 0; i < min(saved.module_offset_steps_count, (pb_size_t)NUM_MODULES); i++) {
+      offsets[i] = saved.module_offset_steps[i];
+    }
+    splitflapTask.restoreAllOffsets(offsets);
+  }
 
   #if ENABLE_DISPLAY
   displayTask.begin();
