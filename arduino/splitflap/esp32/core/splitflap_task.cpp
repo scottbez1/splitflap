@@ -210,7 +210,7 @@ void SplitflapTask::processQueue() {
                 uint16_t offsets[NUM_MODULES];
                 for (uint8_t i = 0; i < NUM_MODULES; i++) {
                     // Make sure all modules are stopped, since writing to config may take a while
-                    if (modules[i]->state != NORMAL || modules[i]->current_accel_step != 0) {
+                    if (modules[i]->current_accel_step != 0) {
                         snprintf(buffer, sizeof(buffer), "Can't save offsets; module %u isn't idle", i);
                         log(buffer);
                         return;

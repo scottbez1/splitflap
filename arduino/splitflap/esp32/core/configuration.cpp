@@ -70,6 +70,26 @@ bool Configuration::loadFromDisk() {
         pb_buffer_.module_offset_steps_count
     );
     log(buf);
+
+    uint8_t previewN = min(pb_buffer_.module_offset_steps_count, static_cast<pb_size_t>(6));
+    snprintf(
+        buf,
+        sizeof(buf),
+        "First %u offsets:",
+        previewN
+    );
+    log(buf);
+    for (uint8_t i = 0; i < previewN; i++) {
+        snprintf(
+            buf,
+            sizeof(buf),
+            "  %u: %u",
+            i,
+            pb_buffer_.module_offset_steps[i]
+        );
+        log(buf);
+    }
+
     return true;
 }
 
