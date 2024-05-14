@@ -1,8 +1,8 @@
-import React, {SyntheticEvent, useCallback, useEffect, useRef, useState} from 'react'
+import React, {SyntheticEvent, useCallback, useEffect, useState} from 'react'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import {PB} from 'splitflapjs-proto'
-import {AppBar, Button, Card, CardContent, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Link, Toolbar, Tooltip,} from '@mui/material'
+import {AppBar, Button, Card, CardContent, Checkbox, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel, Link, Toolbar, Tooltip,} from '@mui/material'
 import {NoUndefinedField} from './util'
 import {SplitflapWebSerial} from 'splitflapjs-webserial'
 import { applyResetModule, applySetFlaps } from 'splitflapjs-core/dist/util'
@@ -27,17 +27,6 @@ type Config = NoUndefinedField<PB.ISplitflapConfig>
 const defaultConfig: Config = {
     modules: []
 }
-
-type MessageDelayMs = [string, number]
-
-const IDLE_MESSAGES: MessageDelayMs[] = [
-    ['SPLIT', 6000],
-    [' FLAP', 6000],
-    ['  BY', 6000],
-    ['BEZEK', 6000],
-    ['  LABS', 12000],
-    ['', 2 * 60 * 1000],
-]
 
 export type AppProps = object
 export const App: React.FC<AppProps> = () => {
@@ -99,6 +88,7 @@ export const App: React.FC<AppProps> = () => {
         }
     }
 
+    const [forceFullRotations, setForceFullRotations] = useState<boolean>(false)
     const updateSplitflap = useCallback((value: string) => {
         // TODO: should probably change types and use applySetFlaps?
         setSplitflapConfig((cur) => {
@@ -108,7 +98,7 @@ export const App: React.FC<AppProps> = () => {
                 newModules.push({
                     targetFlapIndex,
                     resetNonce: cur.modules[i]?.resetNonce ?? 0,
-                    movementNonce: (cur.modules[i]?.movementNonce ?? 0) + (targetFlapIndex === 0 ? 0 : 1),
+                    movementNonce: (cur.modules[i]?.movementNonce ?? 0) + (forceFullRotations ? (targetFlapIndex === 0 ? 0 : 1) : 0),
                 })
             }
             return {
@@ -117,27 +107,6 @@ export const App: React.FC<AppProps> = () => {
         })
     }, [splitflapState.modules])
 
-    const idleTimeout = useRef<ReturnType<typeof setTimeout>>();
-    const curMessage = useRef<number>(0);
-    const nextMessage = () => {
-        const m = IDLE_MESSAGES[(curMessage.current++) % IDLE_MESSAGES.length]
-        updateSplitflap(m[0])
-        idleTimeout.current = setTimeout(nextMessage, m[1])
-    }
-    useEffect(() => {
-        if (!inputValue.user) {
-            return
-        }
-        const t = idleTimeout.current
-        if (t) {
-            clearTimeout(t)
-            curMessage.current = 0
-        }
-        idleTimeout.current = setTimeout(() => {
-            setInputValue({val:'', user: false})
-            nextMessage()
-        }, 1 * 60 * 1000)
-    }, [inputValue])
 
     const numModules = splitflapState.modules.length
     const charWidth = Math.max(1000 / numModules, 40)
@@ -230,6 +199,7 @@ export const App: React.FC<AppProps> = () => {
                                     </div>
                             </form>
                             <Button onClick={() => splitflap.saveAllOffsets()}>Save calibration</Button>
+                            <FormControlLabel control={<Checkbox checked={forceFullRotations} onChange={() => setForceFullRotations((cur) => !cur)} />} label="Force full rotations" />
                         </>
                     ) : navigator.serial ? (
                         <>
