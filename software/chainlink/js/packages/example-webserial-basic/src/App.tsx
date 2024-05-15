@@ -2,7 +2,7 @@ import React, {SyntheticEvent, useCallback, useEffect, useState} from 'react'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import {PB} from 'splitflapjs-proto'
-import {AppBar, Button, Card, CardContent, Checkbox, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel, Link, Toolbar, Tooltip,} from '@mui/material'
+import {Alert, AlertTitle, AppBar, Button, Card, CardContent, Checkbox, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel, Link, Toolbar, Tooltip,} from '@mui/material'
 import {NoUndefinedField} from './util'
 import {SplitflapWebSerial} from 'splitflapjs-webserial'
 import { applyResetModule, applySetFlaps } from 'splitflapjs-core/dist/util'
@@ -11,7 +11,7 @@ const FLAPS = [
     ' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
     'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y',
     'Z', 'g', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'r',
-    '.', '?', '-', '$', '\'', '#', 'y', 'p', ',', '!', '~', '&', 'w',
+    '.', '?', '-', '$', '\'', '#', 'y', 'p', ',', '!', '@', '&', 'w',
 ]
 const legalString = (s: string) => {
     for (const c of s) {
@@ -26,6 +26,14 @@ type Config = NoUndefinedField<PB.ISplitflapConfig>
 
 const defaultConfig: Config = {
     modules: []
+}
+
+type LogLine = [Date, string]
+type LogDisplay = {
+    lastN: number,
+    after?: Date,
+    title: string,
+    body: string,
 }
 
 export type AppProps = object
@@ -54,6 +62,20 @@ export const App: React.FC<AppProps> = () => {
         splitflapConfig.modules,
     ])
 
+    useEffect(() => {
+        if (splitflapConfig.modules.length !== splitflapState.modules.length) {
+            setSplitflapConfig({
+                modules: Array(splitflapState.modules.length).fill(null).map(() => {
+                    return {targetFlapIndex: 0, resetNonce: 0, movementNonce: 0}
+                })
+            })
+        }
+    }, [splitflapConfig, splitflapState])
+
+    const [splitflapLogs, setSplitflapLogs] = useState<Array<LogLine>>([])
+    const [unsavedCalibration, setUnsavedCalibration] = useState<boolean>(false)
+    const [logDisplay, setLogDisplay] = useState<LogDisplay | null>(null);
+
     const connectToSerial = async () => {
         try {
             if (navigator.serial) {
@@ -71,7 +93,16 @@ export const App: React.FC<AppProps> = () => {
                         }) as NoUndefinedField<PB.ISplitflapState>
                         setSplitflapState(stateObj)
                     } else if (message.payload === 'log' && message.log !== null) {
-                        console.log('LOG from splitflap', message.log?.msg)
+                        const newLog = message.log?.msg
+                        console.log('LOG from splitflap', newLog)
+                        if (newLog != null) {
+                            const ts = new Date()
+                            setSplitflapLogs((cur) => {
+                                const newLogs = cur.slice(-30)
+                                newLogs.push([ts, newLog])
+                                return newLogs
+                            })
+                        }
                     }
                 })
                 setSplitflap(splitflap)
@@ -125,6 +156,28 @@ export const App: React.FC<AppProps> = () => {
             <CardContent>
                     {splitflap !== null ? (
                         <>
+                            {unsavedCalibration ? (
+                                <Alert
+                                severity="warning"
+                                action={
+                                    <Button color="inherit" size="small" onClick={() => {
+                                        setLogDisplay({
+                                            lastN: 20,
+                                            after: new Date(),
+                                            title: "Saving calibration...",
+                                            body: "Check the logs to confirm the calibration has saved successfully:"
+                                        })
+                                        setTimeout(() => splitflap.saveAllOffsets(), 200)
+                                        setUnsavedCalibration(false)
+                                    }}>
+                                    SAVE CALIBRATION
+                                    </Button>
+                                }
+                                >
+                                <AlertTitle>Unsaved calibration</AlertTitle>
+                                Module calibration has been modified but has not been saved yet. It will be lost when the ESP32 is restarted.
+                                </Alert>
+                            ) : null}
                             <Typography variant="h4" color="inherit">
                                 Current state
                             </Typography>
@@ -148,7 +201,12 @@ export const App: React.FC<AppProps> = () => {
                                                     }) as NoUndefinedField<PB.ISplitflapConfig>
                                                 })
                                             }}
-                                            setOffsetToCurrentStep={() => splitflap?.offsetSetToCurrentStep(i)}
+                                            setOffsetToCurrentStep={
+                                                () => {
+                                                    splitflap?.offsetSetToCurrentStep(i)
+                                                    setUnsavedCalibration(true);
+                                                }
+                                            }
                                         />)
                                 })
                             }
@@ -198,8 +256,31 @@ export const App: React.FC<AppProps> = () => {
                                         </div>
                                     </div>
                             </form>
-                            <Button onClick={() => splitflap.saveAllOffsets()}>Save calibration</Button>
                             <FormControlLabel control={<Checkbox checked={forceFullRotations} onChange={() => setForceFullRotations((cur) => !cur)} />} label="Force full rotations" />
+                            <br />
+                            <Link onClick={() => {
+                                setLogDisplay({lastN: 20, title: "Recent logs", body:""})
+                            }}>View logs</Link>
+                            { logDisplay !== null ? (
+                                <Dialog open={true} onClose={() => setLogDisplay(null)}>
+                                    <DialogTitle>{logDisplay.title}</DialogTitle>
+                                    <DialogContent>
+                                    <DialogContentText>
+                                        {logDisplay.body}
+                                    </DialogContentText>
+                                    <Logs
+                                        logs={splitflapLogs} 
+                                        lastN={20}
+                                        after={logDisplay.after}
+                                        />
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button variant='contained' onClick={() => {
+                                        setLogDisplay(null)
+                                    }}>Done</Button>
+                                </DialogActions>
+                                </Dialog>
+                            ) : null }
                         </>
                     ) : navigator.serial ? (
                         <>
@@ -270,11 +351,14 @@ const SplitflapModuleDisplay: React.FC<SplitflapModuleDisplayProps> = (props) =>
                     increaseOffsetTenth()
                 }}>&gt;&gt;</Button>
                 <br />
-                <br />
                 <DialogContentText>
-                    then click Continue
+                    then click Continue.
                 </DialogContentText>
-                </DialogContent>
+                <br />
+                <DialogContentText variant='caption'>
+                    (If you accidentally go too far, just keep clicking until the next flap flips)
+                </DialogContentText>
+            </DialogContent>
             <DialogActions>
                 <Button variant='outlined' onClick={() => {
                     increaseOffsetHalf()
@@ -344,6 +428,12 @@ const SplitflapModuleDisplay: React.FC<SplitflapModuleDisplayProps> = (props) =>
             </>,
     }
 
+    const startCalibration = () => {
+        goToFlap(0);
+        setCalibrationStep(CalibrationStep.FIND_FLAP_BOUNDARY);
+        setDialogOpen(true);
+    }
+
     const onClick = (e: SyntheticEvent) => {
         console.log(e)
         if (e.type === 'click') {
@@ -354,9 +444,7 @@ const SplitflapModuleDisplay: React.FC<SplitflapModuleDisplayProps> = (props) =>
             })
         } else if (e.type === 'contextmenu') {
             e.preventDefault()
-            goToFlap(0);
-            setCalibrationStep(CalibrationStep.FIND_FLAP_BOUNDARY);
-            setDialogOpen(true);
+            startCalibration()
         }
     }
     return (
@@ -412,5 +500,22 @@ const SplitflapModuleDisplay: React.FC<SplitflapModuleDisplayProps> = (props) =>
                 {calibrationComponent[calibrationStep]()}
             </Dialog>
         </div>
+    )
+}
+
+
+type LogsProps = {
+    logs: LogLine[],
+    lastN: number,
+    after?: Date,
+}
+
+const Logs: React.FC<LogsProps> = (props) => {
+    return (
+        <pre style={{
+            fontSize: "1em",
+            lineHeight: "1.2em",
+            height: (props.lastN * 1.2) + "em"
+        }}>{props.logs.slice(-props.lastN).filter(ll => props.after === undefined || ll[0] > props.after).map((ll => ll[0].toISOString() + ": " + ll[1])).join("\n")}</pre>
     )
 }

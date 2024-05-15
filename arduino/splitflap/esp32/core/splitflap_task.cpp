@@ -226,7 +226,13 @@ void SplitflapTask::processQueue() {
                     configuration = configuration_;
                 }
                 if (configuration != nullptr) {
-                    configuration->setModuleOffsetsAndSave(offsets);
+                    log("Saving calibration...");
+                    bool success = configuration->setModuleOffsetsAndSave(offsets);
+                    if (success) {
+                        log("SUCCESS - saved calibration!");
+                    } else {
+                        log("ERROR - failed to save calibration");
+                    }
                 }
                 break;
             }
