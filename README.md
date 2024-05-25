@@ -287,7 +287,7 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 
 This has been tested and appears to work, but is not yet recommended for general use. Firmware support is in progress.
 
-The Chainlink Base PCB is an optional alternative to a Chainink Buddym, designed for particularly large displays.
+The Chainlink Base PCB is an optional alternative to a Chainlink Buddy, designed for particularly large displays.
 It hosts the ESP32 and adds additional connectivity options (terminals for UART and RS485 serial) and
 power distribution (independently-monitored power channels for multiple "zones" of Driver boards).
 
