@@ -60,8 +60,8 @@ if __name__ == '__main__':
     parser.add_argument('--render-elecrow', action='store_true', help='Render an additional zipped pdf with labeled '
                                                                       'dimensions and only cut lines, for Elecrow. '
                                                                       'Requires Inkscape and pdfjam. Implies '
-                                                                      '--no-etch, --calculate-dimensions, and '
-                                                                      '--skip-optimize')
+                                                                      '--no-etch, --calculate-dimensions, '
+                                                                      '--skip-optimize, and --mirror')
     parser.add_argument('--no-alignment-bar', action='store_true', help='Do not include features for the alignment bar')
     parser.add_argument('--no-front-panel', action='store_true', help='Do not include the front face of the enclosure, '
                                                                       'e.g. if you will use '
@@ -75,10 +75,15 @@ if __name__ == '__main__':
                                                                           'indicator on the spool.')
 
     args = parser.parse_args()
+
+    if args.panelize > 1:
+        raise RuntimeError('The --panelize option is no longer supported for v2 hardware')
+
     if args.render_elecrow:
         args.no_etch = True
         args.calculate_dimensions = True
         args.skip_optimize = True
+        args.mirror = True
 
     laser_parts_directory = os.path.join(source_parts_dir, 'build', 'laser_parts')
 

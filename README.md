@@ -4,9 +4,9 @@ This is a DIY ESP32-based [split-flap display](https://en.wikipedia.org/wiki/Spl
 
 ![animated rendering](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_animation.gif)
 
-[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml/badge.svg?branch=master)](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml)
-[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml/badge.svg?branch=master)](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml)
-[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/pio.yml/badge.svg?branch=master)](https://github.com/scottbez1/splitflap/actions/workflows/pio.yml)
+[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml/badge.svg?branch=fontExploration)](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml?query=branch%3AfontExploration)
+[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml/badge.svg?branch=fontExploration)](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml?query=branch%3AfontExploration)
+[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/pio.yml/badge.svg?branch=fontExploration)](https://github.com/scottbez1/splitflap/actions/workflows/pio.yml?query=branch%3AfontExploration)
 
 The goal is to make a low-cost display that's easy to fabricate at home in small/single quantities (e.g. custom parts can be easily ordered online, and other hardware is generally available).
 
