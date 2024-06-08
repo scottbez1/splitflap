@@ -103,17 +103,24 @@ Please note, documentation for the Chainlink system a work in progress; you may 
 ## Mechanical
 The mechanical/structural components are made from laser-cut 3mm MDF or acrylic, and held together with M4 bolts and nuts. The design is parametric and built using OpenSCAD. See below for more info on rendering/modifying the design.
 
+### v2 (52-flap modules)
 ![2d laser cut rendering](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_raster.png)
 
 Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
-* For Ponoko 3mm MDF ([1x svg](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-ponoko-3mm-mdf_1x.svg), [4x svg](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-ponoko-3mm-mdf_4x.svg))
-* For Ponoko 3mm acrylic ([1x svg](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-ponoko-3mm-acrylic_1x.svg), [4x svg](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-ponoko-3mm-acrylic_4x.svg),)
-* For generic material (0.18mm kerf correction) ([1x svg](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector.svg))
-* For Elecrow 3mm Wood ([1x zipped pdf](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-elecrow-3mm-wood_1x.zip), note that Elecrow orders are automatically 5x)
-* For Elecrow 3mm Acrylic ([1x zipped pdf](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-elecrow-3mm-acrylic_1x.zip), note that Elecrow orders are automatically 5x)
+* For Ponoko 3mm MDF ([svg](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-ponoko-3mm-mdf_1x.svg))
+* For Ponoko 3mm acrylic ([svg](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-ponoko-3mm-acrylic_1x.svg))
+* For generic material (0.18mm kerf correction) ([svg](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector.svg))
+* For Elecrow 3mm Wood ([zipped pdf](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-elecrow-3mm-wood_1x.zip))
+* For Elecrow 3mm Acrylic ([zipped pdf](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-elecrow-3mm-acrylic_1x.zip))
 
 <sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases) instead
 
+### Legacy v0.7 (40-flap modules)
+<a href="https://s3.amazonaws.com/splitflap-artifacts/refs/tags/v0.7/3d/3d_laser_raster.png">
+<img width="200" src="https://s3.amazonaws.com/splitflap-artifacts/refs/tags/v0.7/3d/3d_laser_raster.png"/>
+</a>
+
+The older v0.7 stable release artifacts can be found at the [v0.7 tagged release](https://github.com/scottbez1/splitflap/releases/tag/v0.7)
 
 ## Electronics
 > [!NOTE]
@@ -139,6 +146,7 @@ power management/distribution and fault monitoring, UART and RS-485 connections,
 ### Sensor PCBs (1 per module)
 Each module needs a hall-effect sensor for start-up calibration and fault monitoring. 
 
+#### v2 for v2 laser-cut hardware
 These boards are small and the designs are available as single PCBs or as a panel, which can be snapped
 apart. The panelization is configurable and is optimized for production at low-cost PCB fabricators like JLCPCB, or PCBWay.
 
@@ -173,6 +181,13 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
   * PCB CPL (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-v2/sensor_smd-panelized-jlc/pos.csv)
 
 <sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases) instead
+
+#### Sensors for v0.7 legacy laser-cut hardware
+Older sensors for the v0.7 and older laser-cut hardware can be found in the [tagged sensor release](https://github.com/scottbez1/splitflap/releases/tag/releases%2Fsensor%2Fv1.1)
+
+<a href="https://s3.amazonaws.com/splitflap-artifacts/refs/tags/releases/sensor/v1.1/electronics-classic/sensor-panelized-pcb-raster.png">
+<img width="320" src="https://s3.amazonaws.com/splitflap-artifacts/refs/tags/releases/sensor/v1.1/electronics-classic/sensor-panelized-pcb-raster.png"/>
+</a>
 
 ### Chainlink Driver (1 per 6 modules)
 <a href="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-chainlink/chainlinkDriver-3d.png">
