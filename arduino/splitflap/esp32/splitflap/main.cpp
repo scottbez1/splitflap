@@ -22,6 +22,7 @@
 
 #include "../core/configuration.h"
 #include "../core/splitflap_task.h"
+#include "debug_build_info.h"
 #include "display_task.h"
 #include "serial_task.h"
 
@@ -82,6 +83,8 @@ void setup() {
   #ifdef CHAINLINK_BASE
   baseSupervisorTask.begin();
   #endif
+
+  logDebugBuildInfo(serialTask);
 
   // Delete the default Arduino loopTask to free up Core 1
   vTaskDelete(NULL);
