@@ -1,4 +1,4 @@
-import React, {SyntheticEvent, useCallback, useEffect, useState} from 'react'
+import React, {SyntheticEvent, useCallback, useEffect, useRef, useState} from 'react'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import {PB} from 'splitflapjs-proto'
@@ -44,6 +44,7 @@ export const App: React.FC<AppProps> = () => {
             defaults: true,
         }) as NoUndefinedField<PB.ISplitflapState>,
     )
+    const [splitflapGeneralState, setSplitflapGeneralState] = useState<NoUndefinedField<PB.IGeneralState> | null>();
     const [inputValue, setInputValue] = useState({val: '', user: true});
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,6 +77,8 @@ export const App: React.FC<AppProps> = () => {
     const [unsavedCalibration, setUnsavedCalibration] = useState<boolean>(false)
     const [logDisplay, setLogDisplay] = useState<LogDisplay | null>(null);
 
+    const initializationTimeoutRef = useRef<ReturnType<typeof setTimeout>>()
+
     const connectToSerial = async () => {
         try {
             if (navigator.serial) {
@@ -103,11 +106,34 @@ export const App: React.FC<AppProps> = () => {
                                 return newLogs
                             })
                         }
+                    } else if (message.payload === 'ack') {
+                        // Ignore (internal protocol implementation detail)
+                    } else if (message.payload === 'generalState' && message.generalState !== null) {
+                        const state = PB.GeneralState.create(message.generalState)
+                        const stateObj = PB.GeneralState.toObject(state, {
+                            defaults: true,
+                        }) as NoUndefinedField<PB.IGeneralState>
+                        setSplitflapGeneralState(stateObj)
+
+                        const initializationTimeout = initializationTimeoutRef.current;
+                        if (initializationTimeout !== undefined) {
+                            clearTimeout(initializationTimeout)
+                            initializationTimeoutRef.current = undefined;
+                            setSplitflap(splitflap)
+                        }
+                    } else {
+                        console.log('Unhandled message type', message);
                     }
                 })
-                setSplitflap(splitflap)
                 const loop = splitflap.openAndLoop()
                 splitflap.sendConfig(PB.SplitflapConfig.create(splitflapConfig))
+
+                // Older firmware did not send general state; use a timeout to determine if we should fall back to legacy mode
+                initializationTimeoutRef.current = setTimeout(() => {
+                    initializationTimeoutRef.current = undefined
+                    console.log('Timed out waiting for initial general state; assuming this is a legacy splitflap connected')
+                    setSplitflap(splitflap)
+                }, 3000)
                 await loop
             } else {
                 console.error('Web Serial API is not supported in this browser.')
@@ -261,6 +287,7 @@ export const App: React.FC<AppProps> = () => {
                             <Link onClick={() => {
                                 setLogDisplay({lastN: 20, title: "Recent logs", body:""})
                             }}>View logs</Link>
+                            <pre>{ JSON.stringify(splitflapGeneralState) }</pre>
                             { logDisplay !== null ? (
                                 <Dialog open={true} onClose={() => setLogDisplay(null)}>
                                     <DialogTitle>{logDisplay.title}</DialogTitle>
