@@ -122,6 +122,9 @@ void SerialProtoProtocol::loop() {
             snprintf(state.build_info.build_os, sizeof(state.build_info.build_os), BUILD_OS);
             state.has_build_info = true;
 
+            memcpy(&state.flap_character_set.bytes, flaps, NUM_FLAPS);
+            state.flap_character_set.size = NUM_FLAPS;
+
             pb_tx_buffer_ = {};
             pb_tx_buffer_.which_payload = PB_FromSplitflap_general_state_tag;
             pb_tx_buffer_.payload.general_state = state;

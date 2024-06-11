@@ -78,6 +78,7 @@ export const App: React.FC<AppProps> = () => {
     const [logDisplay, setLogDisplay] = useState<LogDisplay | null>(null);
 
     const initializationTimeoutRef = useRef<ReturnType<typeof setTimeout>>()
+    const [showOutdatedFirmwareMessage, setShowOutdatedFirmwareMessage] = useState<boolean>(false)
 
     const connectToSerial = async () => {
         try {
@@ -132,8 +133,9 @@ export const App: React.FC<AppProps> = () => {
                 initializationTimeoutRef.current = setTimeout(() => {
                     initializationTimeoutRef.current = undefined
                     console.log('Timed out waiting for initial general state; assuming this is a legacy splitflap connected')
+                    setShowOutdatedFirmwareMessage(true)
                     setSplitflap(splitflap)
-                }, 3000)
+                }, 500)
                 await loop
             } else {
                 console.error('Web Serial API is not supported in this browser.')
@@ -182,6 +184,21 @@ export const App: React.FC<AppProps> = () => {
             <CardContent>
                     {splitflap !== null ? (
                         <>
+                            {showOutdatedFirmwareMessage ? (
+                                <Alert
+                                severity="info"
+                                action={
+                                    <Button color="inherit" size="small" onClick={() => {
+                                        setShowOutdatedFirmwareMessage(false)
+                                    }}>
+                                    Dismiss
+                                    </Button>
+                                }
+                                >
+                                <AlertTitle>Outdated firmware</AlertTitle>
+                                The connected splitflap device is running outdated firmware; some functionality may be missing as a result. Please build and upload the latest firmware to the ESP32.
+                                </Alert>
+                            ) : null}
                             {unsavedCalibration ? (
                                 <Alert
                                 severity="warning"
@@ -287,7 +304,7 @@ export const App: React.FC<AppProps> = () => {
                             <Link onClick={() => {
                                 setLogDisplay({lastN: 20, title: "Recent logs", body:""})
                             }}>View logs</Link>
-                            <pre>{ JSON.stringify(splitflapGeneralState) }</pre>
+                            <pre>{ JSON.stringify(splitflapGeneralState, undefined, 4) }</pre>
                             { logDisplay !== null ? (
                                 <Dialog open={true} onClose={() => setLogDisplay(null)}>
                                     <DialogTitle>{logDisplay.title}</DialogTitle>

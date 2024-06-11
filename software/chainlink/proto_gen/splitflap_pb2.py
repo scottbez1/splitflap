@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0fsplitflap.proto\x12\x02PB\x1a\x0cnanopb.proto\"\x84\x03\n\x0eSplitflapState\x12\x37\n\x07modules\x18\x01 \x03(\x0b\x32\x1e.PB.SplitflapState.ModuleStateB\x06\x92?\x03\x10\xff\x01\x12\x14\n\x0cloopbacks_ok\x18\x02 \x01(\x08\x1a\xa2\x02\n\x0bModuleState\x12\x33\n\x05state\x18\x01 \x01(\x0e\x32$.PB.SplitflapState.ModuleState.State\x12\x19\n\nflap_index\x18\x02 \x01(\rB\x05\x92?\x02\x38\x08\x12\x0e\n\x06moving\x18\x03 \x01(\x08\x12\x12\n\nhome_state\x18\x04 \x01(\x08\x12$\n\x15\x63ount_unexpected_home\x18\x05 \x01(\rB\x05\x92?\x02\x38\x08\x12 \n\x11\x63ount_missed_home\x18\x06 \x01(\rB\x05\x92?\x02\x38\x08\"W\n\x05State\x12\n\n\x06NORMAL\x10\x00\x12\x11\n\rLOOK_FOR_HOME\x10\x01\x12\x10\n\x0cSENSOR_ERROR\x10\x02\x12\t\n\x05PANIC\x10\x03\x12\x12\n\x0eSTATE_DISABLED\x10\x04\"\x1a\n\x03Log\x12\x13\n\x03msg\x18\x01 \x01(\tB\x06\x92?\x03p\xff\x01\"\x14\n\x03\x41\x63k\x12\r\n\x05nonce\x18\x01 \x01(\r\"\xa4\x05\n\x0fSupervisorState\x12\x15\n\ruptime_millis\x18\x01 \x01(\r\x12(\n\x05state\x18\x02 \x01(\x0e\x32\x19.PB.SupervisorState.State\x12\x44\n\x0epower_channels\x18\x03 \x03(\x0b\x32%.PB.SupervisorState.PowerChannelStateB\x05\x92?\x02\x10\x05\x12\x31\n\nfault_info\x18\x04 \x01(\x0b\x32\x1d.PB.SupervisorState.FaultInfo\x1aL\n\x11PowerChannelState\x12\x15\n\rvoltage_volts\x18\x01 \x01(\x02\x12\x14\n\x0c\x63urrent_amps\x18\x02 \x01(\x02\x12\n\n\x02on\x18\x03 \x01(\x08\x1a\x81\x02\n\tFaultInfo\x12\x35\n\x04type\x18\x01 \x01(\x0e\x32\'.PB.SupervisorState.FaultInfo.FaultType\x12\x13\n\x03msg\x18\x02 \x01(\tB\x06\x92?\x03p\xff\x01\x12\x11\n\tts_millis\x18\x03 \x01(\r\"\x94\x01\n\tFaultType\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x08\n\x04NONE\x10\x01\x12\x1e\n\x1aINRUSH_CURRENT_NOT_SETTLED\x10\x02\x12\x16\n\x12SPLITFLAP_SHUTDOWN\x10\x03\x12\x10\n\x0cOUT_OF_RANGE\x10\x04\x12\x10\n\x0cOVER_CURRENT\x10\x05\x12\x14\n\x10UNEXPECTED_POWER\x10\x06\"\x84\x01\n\x05State\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x1b\n\x17STARTING_VERIFY_PSU_OFF\x10\x01\x12\x1c\n\x18STARTING_VERIFY_VOLTAGES\x10\x02\x12\x1c\n\x18STARTING_ENABLE_CHANNELS\x10\x03\x12\n\n\x06NORMAL\x10\x04\x12\t\n\x05\x46\x41ULT\x10\x05\"\xd7\x01\n\x0cGeneralState\x12&\n\x17serial_protocol_version\x18\x01 \x01(\rB\x05\x92?\x02\x38\x10\x12\x15\n\ruptime_millis\x18\x02 \x01(\r\x12.\n\nbuild_info\x18\x03 \x01(\x0b\x32\x1a.PB.GeneralState.BuildInfo\x1aX\n\tBuildInfo\x12\x17\n\x08git_hash\x18\x01 \x01(\tB\x05\x92?\x02pZ\x12\x19\n\nbuild_date\x18\x02 \x01(\tB\x05\x92?\x02p\x0c\x12\x17\n\x08\x62uild_os\x18\x03 \x01(\tB\x05\x92?\x02p\x0c\"\xd5\x01\n\rFromSplitflap\x12-\n\x0fsplitflap_state\x18\x01 \x01(\x0b\x32\x12.PB.SplitflapStateH\x00\x12\x16\n\x03log\x18\x02 \x01(\x0b\x32\x07.PB.LogH\x00\x12\x16\n\x03\x61\x63k\x18\x03 \x01(\x0b\x32\x07.PB.AckH\x00\x12/\n\x10supervisor_state\x18\x04 \x01(\x0b\x32\x13.PB.SupervisorStateH\x00\x12)\n\rgeneral_state\x18\x05 \x01(\x0b\x32\x10.PB.GeneralStateH\x00\x42\t\n\x07payload\"\xca\x02\n\x10SplitflapCommand\x12;\n\x07modules\x18\x02 \x03(\x0b\x32\".PB.SplitflapCommand.ModuleCommandB\x06\x92?\x03\x10\xff\x01\x12\x18\n\x10save_all_offsets\x18\x03 \x01(\x08\x1a\xde\x01\n\rModuleCommand\x12\x39\n\x06\x61\x63tion\x18\x01 \x01(\x0e\x32).PB.SplitflapCommand.ModuleCommand.Action\x12\x14\n\x05param\x18\x02 \x01(\rB\x05\x92?\x02\x38\x08\"|\n\x06\x41\x63tion\x12\t\n\x05NO_OP\x10\x00\x12\x0e\n\nGO_TO_FLAP\x10\x01\x12\x12\n\x0eRESET_AND_HOME\x10\x02\x12\x19\n\x15INCREASE_OFFSET_TENTH\x10Z\x12\x18\n\x14INCREASE_OFFSET_HALF\x10[\x12\x0e\n\nSET_OFFSET\x10\\\"\xb9\x01\n\x0fSplitflapConfig\x12\x39\n\x07modules\x18\x01 \x03(\x0b\x32 .PB.SplitflapConfig.ModuleConfigB\x06\x92?\x03\x10\xff\x01\x1ak\n\x0cModuleConfig\x12 \n\x11target_flap_index\x18\x01 \x01(\rB\x05\x92?\x02\x38\x08\x12\x1d\n\x0emovement_nonce\x18\x02 \x01(\rB\x05\x92?\x02\x38\x08\x12\x1a\n\x0breset_nonce\x18\x03 \x01(\rB\x05\x92?\x02\x38\x08\"\x0e\n\x0cRequestState\"\xb6\x01\n\x0bToSplitflap\x12\r\n\x05nonce\x18\x01 \x01(\r\x12\x31\n\x11splitflap_command\x18\x02 \x01(\x0b\x32\x14.PB.SplitflapCommandH\x00\x12/\n\x10splitflap_config\x18\x03 \x01(\x0b\x32\x13.PB.SplitflapConfigH\x00\x12)\n\rrequest_state\x18\x04 \x01(\x0b\x32\x10.PB.RequestStateH\x00\x42\t\n\x07payload\"g\n\x17PersistentConfiguration\x12\x0f\n\x07version\x18\x01 \x01(\r\x12\x11\n\tnum_flaps\x18\x02 \x01(\r\x12(\n\x13module_offset_steps\x18\x03 \x03(\rB\x0b\x92?\x03\x10\xff\x01\x92?\x02\x38\x10\x62\x06proto3'
+  serialized_pb=b'\n\x0fsplitflap.proto\x12\x02PB\x1a\x0cnanopb.proto\"\x84\x03\n\x0eSplitflapState\x12\x37\n\x07modules\x18\x01 \x03(\x0b\x32\x1e.PB.SplitflapState.ModuleStateB\x06\x92?\x03\x10\xff\x01\x12\x14\n\x0cloopbacks_ok\x18\x02 \x01(\x08\x1a\xa2\x02\n\x0bModuleState\x12\x33\n\x05state\x18\x01 \x01(\x0e\x32$.PB.SplitflapState.ModuleState.State\x12\x19\n\nflap_index\x18\x02 \x01(\rB\x05\x92?\x02\x38\x08\x12\x0e\n\x06moving\x18\x03 \x01(\x08\x12\x12\n\nhome_state\x18\x04 \x01(\x08\x12$\n\x15\x63ount_unexpected_home\x18\x05 \x01(\rB\x05\x92?\x02\x38\x08\x12 \n\x11\x63ount_missed_home\x18\x06 \x01(\rB\x05\x92?\x02\x38\x08\"W\n\x05State\x12\n\n\x06NORMAL\x10\x00\x12\x11\n\rLOOK_FOR_HOME\x10\x01\x12\x10\n\x0cSENSOR_ERROR\x10\x02\x12\t\n\x05PANIC\x10\x03\x12\x12\n\x0eSTATE_DISABLED\x10\x04\"\x1a\n\x03Log\x12\x13\n\x03msg\x18\x01 \x01(\tB\x06\x92?\x03p\xff\x01\"\x14\n\x03\x41\x63k\x12\r\n\x05nonce\x18\x01 \x01(\r\"\xa4\x05\n\x0fSupervisorState\x12\x15\n\ruptime_millis\x18\x01 \x01(\r\x12(\n\x05state\x18\x02 \x01(\x0e\x32\x19.PB.SupervisorState.State\x12\x44\n\x0epower_channels\x18\x03 \x03(\x0b\x32%.PB.SupervisorState.PowerChannelStateB\x05\x92?\x02\x10\x05\x12\x31\n\nfault_info\x18\x04 \x01(\x0b\x32\x1d.PB.SupervisorState.FaultInfo\x1aL\n\x11PowerChannelState\x12\x15\n\rvoltage_volts\x18\x01 \x01(\x02\x12\x14\n\x0c\x63urrent_amps\x18\x02 \x01(\x02\x12\n\n\x02on\x18\x03 \x01(\x08\x1a\x81\x02\n\tFaultInfo\x12\x35\n\x04type\x18\x01 \x01(\x0e\x32\'.PB.SupervisorState.FaultInfo.FaultType\x12\x13\n\x03msg\x18\x02 \x01(\tB\x06\x92?\x03p\xff\x01\x12\x11\n\tts_millis\x18\x03 \x01(\r\"\x94\x01\n\tFaultType\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x08\n\x04NONE\x10\x01\x12\x1e\n\x1aINRUSH_CURRENT_NOT_SETTLED\x10\x02\x12\x16\n\x12SPLITFLAP_SHUTDOWN\x10\x03\x12\x10\n\x0cOUT_OF_RANGE\x10\x04\x12\x10\n\x0cOVER_CURRENT\x10\x05\x12\x14\n\x10UNEXPECTED_POWER\x10\x06\"\x84\x01\n\x05State\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x1b\n\x17STARTING_VERIFY_PSU_OFF\x10\x01\x12\x1c\n\x18STARTING_VERIFY_VOLTAGES\x10\x02\x12\x1c\n\x18STARTING_ENABLE_CHANNELS\x10\x03\x12\n\n\x06NORMAL\x10\x04\x12\t\n\x05\x46\x41ULT\x10\x05\"\xfa\x01\n\x0cGeneralState\x12&\n\x17serial_protocol_version\x18\x01 \x01(\rB\x05\x92?\x02\x38\x10\x12\x15\n\ruptime_millis\x18\x02 \x01(\r\x12.\n\nbuild_info\x18\x03 \x01(\x0b\x32\x1a.PB.GeneralState.BuildInfo\x12!\n\x12\x66lap_character_set\x18\x04 \x01(\x0c\x42\x05\x92?\x02\x08P\x1aX\n\tBuildInfo\x12\x17\n\x08git_hash\x18\x01 \x01(\tB\x05\x92?\x02pZ\x12\x19\n\nbuild_date\x18\x02 \x01(\tB\x05\x92?\x02p\x0c\x12\x17\n\x08\x62uild_os\x18\x03 \x01(\tB\x05\x92?\x02p\x0c\"\xd5\x01\n\rFromSplitflap\x12-\n\x0fsplitflap_state\x18\x01 \x01(\x0b\x32\x12.PB.SplitflapStateH\x00\x12\x16\n\x03log\x18\x02 \x01(\x0b\x32\x07.PB.LogH\x00\x12\x16\n\x03\x61\x63k\x18\x03 \x01(\x0b\x32\x07.PB.AckH\x00\x12/\n\x10supervisor_state\x18\x04 \x01(\x0b\x32\x13.PB.SupervisorStateH\x00\x12)\n\rgeneral_state\x18\x05 \x01(\x0b\x32\x10.PB.GeneralStateH\x00\x42\t\n\x07payload\"\xca\x02\n\x10SplitflapCommand\x12;\n\x07modules\x18\x02 \x03(\x0b\x32\".PB.SplitflapCommand.ModuleCommandB\x06\x92?\x03\x10\xff\x01\x12\x18\n\x10save_all_offsets\x18\x03 \x01(\x08\x1a\xde\x01\n\rModuleCommand\x12\x39\n\x06\x61\x63tion\x18\x01 \x01(\x0e\x32).PB.SplitflapCommand.ModuleCommand.Action\x12\x14\n\x05param\x18\x02 \x01(\rB\x05\x92?\x02\x38\x08\"|\n\x06\x41\x63tion\x12\t\n\x05NO_OP\x10\x00\x12\x0e\n\nGO_TO_FLAP\x10\x01\x12\x12\n\x0eRESET_AND_HOME\x10\x02\x12\x19\n\x15INCREASE_OFFSET_TENTH\x10Z\x12\x18\n\x14INCREASE_OFFSET_HALF\x10[\x12\x0e\n\nSET_OFFSET\x10\\\"\xb9\x01\n\x0fSplitflapConfig\x12\x39\n\x07modules\x18\x01 \x03(\x0b\x32 .PB.SplitflapConfig.ModuleConfigB\x06\x92?\x03\x10\xff\x01\x1ak\n\x0cModuleConfig\x12 \n\x11target_flap_index\x18\x01 \x01(\rB\x05\x92?\x02\x38\x08\x12\x1d\n\x0emovement_nonce\x18\x02 \x01(\rB\x05\x92?\x02\x38\x08\x12\x1a\n\x0breset_nonce\x18\x03 \x01(\rB\x05\x92?\x02\x38\x08\"\x0e\n\x0cRequestState\"\xb6\x01\n\x0bToSplitflap\x12\r\n\x05nonce\x18\x01 \x01(\r\x12\x31\n\x11splitflap_command\x18\x02 \x01(\x0b\x32\x14.PB.SplitflapCommandH\x00\x12/\n\x10splitflap_config\x18\x03 \x01(\x0b\x32\x13.PB.SplitflapConfigH\x00\x12)\n\rrequest_state\x18\x04 \x01(\x0b\x32\x10.PB.RequestStateH\x00\x42\t\n\x07payload\"g\n\x17PersistentConfiguration\x12\x0f\n\x07version\x18\x01 \x01(\r\x12\x11\n\tnum_flaps\x18\x02 \x01(\r\x12(\n\x13module_offset_steps\x18\x03 \x03(\rB\x0b\x92?\x03\x10\xff\x01\x92?\x02\x38\x10\x62\x06proto3'
   ,
   dependencies=[nanopb__pb2.DESCRIPTOR,])
 
@@ -201,8 +201,8 @@ _SPLITFLAPCOMMAND_MODULECOMMAND_ACTION = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=1798,
-  serialized_end=1922,
+  serialized_start=1833,
+  serialized_end=1957,
 )
 _sym_db.RegisterEnumDescriptor(_SPLITFLAPCOMMAND_MODULECOMMAND_ACTION)
 
@@ -563,8 +563,8 @@ _GENERALSTATE_BUILDINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1285,
-  serialized_end=1373,
+  serialized_start=1320,
+  serialized_end=1408,
 )
 
 _GENERALSTATE = _descriptor.Descriptor(
@@ -596,6 +596,13 @@ _GENERALSTATE = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='flap_character_set', full_name='PB.GeneralState.flap_character_set', index=3,
+      number=4, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=b'\222?\002\010P', file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -609,7 +616,7 @@ _GENERALSTATE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=1158,
-  serialized_end=1373,
+  serialized_end=1408,
 )
 
 
@@ -673,8 +680,8 @@ _FROMSPLITFLAP = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=1376,
-  serialized_end=1589,
+  serialized_start=1411,
+  serialized_end=1624,
 )
 
 
@@ -713,8 +720,8 @@ _SPLITFLAPCOMMAND_MODULECOMMAND = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1700,
-  serialized_end=1922,
+  serialized_start=1735,
+  serialized_end=1957,
 )
 
 _SPLITFLAPCOMMAND = _descriptor.Descriptor(
@@ -751,8 +758,8 @@ _SPLITFLAPCOMMAND = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1592,
-  serialized_end=1922,
+  serialized_start=1627,
+  serialized_end=1957,
 )
 
 
@@ -797,8 +804,8 @@ _SPLITFLAPCONFIG_MODULECONFIG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2003,
-  serialized_end=2110,
+  serialized_start=2038,
+  serialized_end=2145,
 )
 
 _SPLITFLAPCONFIG = _descriptor.Descriptor(
@@ -828,8 +835,8 @@ _SPLITFLAPCONFIG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1925,
-  serialized_end=2110,
+  serialized_start=1960,
+  serialized_end=2145,
 )
 
 
@@ -853,8 +860,8 @@ _REQUESTSTATE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2112,
-  serialized_end=2126,
+  serialized_start=2147,
+  serialized_end=2161,
 )
 
 
@@ -911,8 +918,8 @@ _TOSPLITFLAP = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=2129,
-  serialized_end=2311,
+  serialized_start=2164,
+  serialized_end=2346,
 )
 
 
@@ -957,8 +964,8 @@ _PERSISTENTCONFIGURATION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2313,
-  serialized_end=2416,
+  serialized_start=2348,
+  serialized_end=2451,
 )
 
 _SPLITFLAPSTATE_MODULESTATE.fields_by_name['state'].enum_type = _SPLITFLAPSTATE_MODULESTATE_STATE
@@ -1163,6 +1170,7 @@ _GENERALSTATE_BUILDINFO.fields_by_name['git_hash']._options = None
 _GENERALSTATE_BUILDINFO.fields_by_name['build_date']._options = None
 _GENERALSTATE_BUILDINFO.fields_by_name['build_os']._options = None
 _GENERALSTATE.fields_by_name['serial_protocol_version']._options = None
+_GENERALSTATE.fields_by_name['flap_character_set']._options = None
 _SPLITFLAPCOMMAND_MODULECOMMAND.fields_by_name['param']._options = None
 _SPLITFLAPCOMMAND.fields_by_name['modules']._options = None
 _SPLITFLAPCONFIG_MODULECONFIG.fields_by_name['target_flap_index']._options = None

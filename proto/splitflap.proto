@@ -85,8 +85,8 @@ message GeneralState {
     }
 
     BuildInfo build_info = 3;
+    bytes flap_character_set = 4 [(nanopb).max_size = 80];
 
-    // TODO: Flap character set
     // TODO: Flap layout? (share with display code?)
     // TODO: Wifi status?
 }
