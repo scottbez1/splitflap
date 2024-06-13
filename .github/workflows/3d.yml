@@ -87,18 +87,18 @@ jobs:
           cp 3d/build/laser_parts/combined_panel_dimensions.svg 3d/build/outputs/3d_laser_vector-40-elecrow-3mm-acrylic_1x_dimensions.svg
           cp 3d/build/laser_parts/elecrow.zip 3d/build/outputs/3d_laser_vector-40-elecrow-3mm-acrylic_1x.zip
 
+      # FIXME
+      # - name: Generate animated gif
+      #   run: |
+      #     xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python3 -u 3d/scripts/generate_gif.py
+      #     cp 3d/build/animation/animation.gif 3d/build/outputs/3d_animation.gif
+      #     cp 3d/build/animation/all_flaps.gif 3d/build/outputs/all_flaps.gif
 
-      - name: Generate animated gif
-        run: |
-          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python3 -u 3d/scripts/generate_gif.py
-          cp 3d/build/animation/animation.gif 3d/build/outputs/3d_animation.gif
-          cp 3d/build/animation/all_flaps.gif 3d/build/outputs/all_flaps.gif
-
-      - name: Generate STLs for web viewer
-        run: |
-          python -u 3d/scripts/generate_stl.py
-          cp -r 3d/build/colored_stl 3d/build/outputs/3d_colored_stl
-          gzip 3d/build/outputs/3d_colored_stl/*.stl
+      # - name: Generate STLs for web viewer
+      #   run: |
+      #     python -u 3d/scripts/generate_stl.py
+      #     cp -r 3d/build/colored_stl 3d/build/outputs/3d_colored_stl
+      #     gzip 3d/build/outputs/3d_colored_stl/*.stl
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
