@@ -128,10 +128,11 @@ if __name__ == '__main__':
     logging.info(f'\n\n\nDone rendering to SVG: {svg_output}')
 
     if args.calculate_dimensions:
-        DIMENSION_SVG_TEMPLATE = '<svg height="40" width="1200" xmlns="http://www.w3.org/2000/svg" style="background-color:red;"><text x="4" y="32" fill="black" style="font-style:normal;font-variant:normal;font-weight:normal;font-size:28pt;font-family:sans-serif;">DIMENSIONS_PLACEHOLDER</text></svg>'
+        def getDimensionSvgContents(text, width):
+            return f'<svg height="40" width="{width}" xmlns="http://www.w3.org/2000/svg" style="background-color:#eeeeee;"><text x="4" y="32" fill="black" style="font-style:normal;font-variant:normal;font-weight:normal;font-size:28pt;font-family:sans-serif;">{text}</text></svg>'
         module_dimensions_file = os.path.join(laser_parts_directory, os.path.splitext(os.path.basename(svg_output))[0] + '_module_dimensions.svg')
         with open(module_dimensions_file, 'w') as f:
-            f.write(DIMENSION_SVG_TEMPLATE.replace('DIMENSIONS_PLACEHOLDER', f'{output_data["enclosure_width"]}mm width, {output_data["enclosure_height"]}mm height, {output_data["enclosure_length"]}mm depth'))
+            f.write(getDimensionSvgContents(f'{output_data["enclosure_width"]}mm width, {output_data["enclosure_height"]}mm height, {output_data["enclosure_length"]}mm depth', 1100))
 
         svg_for_dimensions = os.path.join(laser_parts_directory, os.path.splitext(os.path.basename(svg_output))[0] + '_dimensions.svg')
         processor.apply_dimension_calculation_style()
@@ -154,7 +155,7 @@ if __name__ == '__main__':
 
         panel_dimensions_file = os.path.join(laser_parts_directory, os.path.splitext(os.path.basename(svg_output))[0] + '_panel_dimensions.svg')
         with open(panel_dimensions_file, 'w') as f:
-            f.write(DIMENSION_SVG_TEMPLATE.replace('DIMENSIONS_PLACEHOLDER', f'{width_mm:.2f}mm x {height_mm:.2f}mm'))
+            f.write(getDimensionSvgContents(f'{width_mm:.2f}mm x {height_mm:.2f}mm', 500))
 
     if args.render_elecrow:
         elecrow_svg = os.path.join(laser_parts_directory, 'elecrow.svg')

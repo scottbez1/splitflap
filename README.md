@@ -114,11 +114,11 @@ The v0.7 stable release artifacts can be found at the [v0.7 tagged release](http
 ### Beta v2 (52-flap modules)
 ![2d laser cut rendering](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_raster-52.png)
 
-Module dimensions: <img height="32" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-52-module_dimensions.svg" />
+Module dimensions: <img height="16" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-52-module_dimensions.svg" />
 
 Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
-* For Ponoko 3mm MDF ([svg](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-52-ponoko-3mm-mdf_1x.svg)) <img height="32" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-52-ponoko-3mm-mdf_1x_dimensions.svg" />
-* For Ponoko 3mm acrylic ([svg](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-52-ponoko-3mm-acrylic_1x.svg)) <img height="32" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-52-ponoko-3mm-acrylic_1x_dimensions.svg" />
+* For Ponoko 3mm MDF ([svg](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-52-ponoko-3mm-mdf_1x.svg)) <img height="16" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-52-ponoko-3mm-mdf_1x_dimensions.svg" />
+* For Ponoko 3mm acrylic ([svg](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-52-ponoko-3mm-acrylic_1x.svg)) <img height="16" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-52-ponoko-3mm-acrylic_1x_dimensions.svg" />
 * For generic material (0.18mm kerf correction) ([svg](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-52.svg))
 * For Elecrow 3mm Wood ([zipped pdf](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-52-elecrow-3mm-wood_1x.zip))
 * For Elecrow 3mm Acrylic ([zipped pdf](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-52-elecrow-3mm-acrylic_1x.zip))
@@ -128,11 +128,11 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 ### Beta v2 (40-flap modules)
 ![2d laser cut rendering](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_raster-40.png)
 
-Module dimensions: <img height="32" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-40-module_dimensions.svg" />
+Module dimensions: <img height="16" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-40-module_dimensions.svg" />
 
 Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
-* For Ponoko 3mm MDF ([svg](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-40-ponoko-3mm-mdf_1x.svg))
-* For Ponoko 3mm acrylic ([svg](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-40-ponoko-3mm-acrylic_1x.svg))
+* For Ponoko 3mm MDF ([svg](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-40-ponoko-3mm-mdf_1x.svg)) <img height="16" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-40-ponoko-3mm-mdf_1x_dimensions.svg" />
+* For Ponoko 3mm acrylic ([svg](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-40-ponoko-3mm-acrylic_1x.svg)) <img height="16" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-40-ponoko-3mm-acrylic_1x_dimensions.svg" />
 * For generic material (0.18mm kerf correction) ([svg](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-52.svg))
 * For Elecrow 3mm Wood ([zipped pdf](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-40-elecrow-3mm-wood_1x.zip))
 * For Elecrow 3mm Acrylic ([zipped pdf](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-40-elecrow-3mm-acrylic_1x.zip))
