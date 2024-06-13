@@ -70,7 +70,6 @@ if __name__ == '__main__':
     parser.add_argument('--no-mounting-holes', action='store_true', help='Do not include mounting hole on top/bottom '
                                                                          'enclosure pieces.')
     parser.add_argument('--no-connectors', action='store_true', help='Do not include inter-module connector pieces.')
-    parser.add_argument('--no-sensor-jig', action='store_true', help='Do not include the sensor spacing jig.')
     parser.add_argument('--no-source-info', action='store_true', help='Do not include the source info: revision, date, url.')
     parser.add_argument('--cut-home-indicator', action='store_true', help='Cut, instead of etch, the home position '
                                                                           'indicator on the spool.')
@@ -97,7 +96,6 @@ if __name__ == '__main__':
         'render_front_panel': not args.no_front_panel,
         'enable_mounting_holes': not args.no_mounting_holes,
         'enable_connectors': not args.no_connectors,
-        'enable_sensor_jig': not args.no_sensor_jig,
         'enable_source_info': not args.no_source_info,
         'render_home_indicator_as_cut': args.cut_home_indicator,
     }

@@ -58,7 +58,6 @@ render_front_panel = true;
 enable_connectors = true;
 enable_alignment_bar = true;
 enable_mounting_holes = true;
-enable_sensor_jig = true;
 enable_source_info = true;
 
 // Panelization:
