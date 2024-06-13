@@ -53,6 +53,7 @@ if __name__ == '__main__':
                                                                      'Inkscape)')
     parser.add_argument('--calculate-dimensions', action='store_true', help='Calculate overall cut file dimensions ('
                                                                             'requires Inkscape)')
+    parser.add_argument('--num-flaps', type=int, help='Override NUM_FLAPS')
     parser.add_argument('--thickness', type=float, help='Override panel thickness value')
     parser.add_argument('--no-etch', action='store_true', help='Do not render laser-etched features')
     parser.add_argument('--mirror', action='store_true', help='Mirror the assembly so the outside faces are facing up. '
@@ -106,12 +107,15 @@ if __name__ == '__main__':
         extra_variables['kerf_width'] = KERF_PRESETS[args.kerf_preset]
     if args.thickness is not None:
         extra_variables['thickness'] = args.thickness
+    if args.num_flaps is not None:
+        extra_variables['num_flaps'] = args.num_flaps
 
     print('Variables:\n' + json.dumps(extra_variables, indent=4))
 
     renderer = Renderer(os.path.join(source_parts_dir, 'splitflap.scad'), laser_parts_directory, extra_variables)
     renderer.clean()
-    svg_output = renderer.render_svgs(panelize_quantity=args.panelize)
+    svg_output, output_data = renderer.render_svgs(panelize_quantity=args.panelize)
+    logging.debug(f'Output data: {output_data}')
 
     processor = SvgProcessor(svg_output)
 
@@ -124,6 +128,11 @@ if __name__ == '__main__':
     logging.info(f'\n\n\nDone rendering to SVG: {svg_output}')
 
     if args.calculate_dimensions:
+        DIMENSION_SVG_TEMPLATE = '<svg height="40" width="1280" xmlns="http://www.w3.org/2000/svg"><text x="4" y="32" fill="black" style="font-style:normal;font-variant:normal;font-weight:normal;font-size:28;line-height:1.25;font-family:sans-serif;">DIMENSIONS_PLACEHOLDER</text></svg>'
+        module_dimensions_file = os.path.join(laser_parts_directory, os.path.splitext(os.path.basename(svg_output))[0] + '_module_dimensions.svg')
+        with open(module_dimensions_file, 'w') as f:
+            f.write(DIMENSION_SVG_TEMPLATE.replace('DIMENSIONS_PLACEHOLDER', f'{output_data["enclosure_width"]}mm width, {output_data["enclosure_height"]}mm height, {output_data["enclosure_length"]}mm depth'))
+
         svg_for_dimensions = os.path.join(laser_parts_directory, os.path.splitext(os.path.basename(svg_output))[0] + '_dimensions.svg')
         processor.apply_dimension_calculation_style()
         processor.write(svg_for_dimensions)
@@ -142,9 +151,10 @@ if __name__ == '__main__':
             svg_for_dimensions,
         ]))
         height_mm = height_px * 25.4 / 96 # Assuming 96dpi...
-        dimensions_file = os.path.join(laser_parts_directory, os.path.splitext(os.path.basename(svg_output))[0] + '_dimensions.txt')
-        with open(dimensions_file, 'w') as f:
-            f.write(f'{width_mm:.2f}mm x {height_mm:.2f}mm')
+
+        panel_dimensions_file = os.path.join(laser_parts_directory, os.path.splitext(os.path.basename(svg_output))[0] + '_panel_dimensions.svg')
+        with open(panel_dimensions_file, 'w') as f:
+            f.write(DIMENSION_SVG_TEMPLATE.replace('DIMENSIONS_PLACEHOLDER', f'{width_mm:.2f}mm x {height_mm:.2f}mm'))
 
     if args.render_elecrow:
         elecrow_svg = os.path.join(laser_parts_directory, 'elecrow.svg')

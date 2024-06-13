@@ -43,7 +43,7 @@ Here's a video of a large 108-module display powered by 18 Chainlink Driver boar
 [![Video: animations on 108-module display](https://raw.githubusercontent.com/wiki/scottbez1/splitflap/images/animationsThumb.gif)](https://youtu.be/g9EPabcxBsM)
 
 ## v2 (coming soon!)
-A minor refresh of the design is expected Summer 2024.
+A minor refresh of the design is in progress, and the stable release is expected in Summer 2024.
 
 <img src="https://github.com/scottbez1/splitflap/assets/414890/9ffab4fa-a2db-4b5e-915a-915f81faa193" height="200" />
 <img src="https://github.com/scottbez1/splitflap/assets/414890/d89254a4-46de-4303-8402-8a4d7989d25e" height="200" />
@@ -85,7 +85,6 @@ Please note, documentation for the Chainlink system a work in progress; you may 
       - [Chainlink Buddy \[Breadboard\]](#chainlink-buddy-breadboard-1-for-entire-display-alternative-to-t-display)
       - [Chainlink Base](#chainlink-base-1-for-entire-display-large-displays)
     - [Older designs](#older-designs)
-      - [Legacy sensor PCBs (v1)](#legacy-sensor-pcbs-v1)
       - [Classic controller](#classic-controller-electronics-deprecated)
     + [Miscellaneous Tools](#miscellaneous-tools)
       - [Flaps and Fonts](#flaps-and-fonts)
@@ -103,24 +102,43 @@ Please note, documentation for the Chainlink system a work in progress; you may 
 ## Mechanical
 The mechanical/structural components are made from laser-cut 3mm MDF or acrylic, and held together with M4 bolts and nuts. The design is parametric and built using OpenSCAD. See below for more info on rendering/modifying the design.
 
-### v2 (52-flap modules)
-![2d laser cut rendering](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_raster.png)
+The beta v2 mechanical design officially supports variants with 52 flaps (perfect for use with the new ["Epilogue" printed flaps](https://www.etsy.com/listing/1685633114/)) and 40 flaps. But you can always modify the design to customize it further.
 
-Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
-* For Ponoko 3mm MDF ([svg](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-ponoko-3mm-mdf_1x.svg))
-* For Ponoko 3mm acrylic ([svg](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-ponoko-3mm-acrylic_1x.svg))
-* For generic material (0.18mm kerf correction) ([svg](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector.svg))
-* For Elecrow 3mm Wood ([zipped pdf](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-elecrow-3mm-wood_1x.zip))
-* For Elecrow 3mm Acrylic ([zipped pdf](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-elecrow-3mm-acrylic_1x.zip))
-
-<sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases) instead
-
-### Legacy v0.7 (40-flap modules)
+### v0.7 (40-flap modules)
 <a href="https://s3.amazonaws.com/splitflap-artifacts/refs/tags/v0.7/3d/3d_laser_raster.png">
 <img width="200" src="https://s3.amazonaws.com/splitflap-artifacts/refs/tags/v0.7/3d/3d_laser_raster.png"/>
 </a>
 
-The older v0.7 stable release artifacts can be found at the [v0.7 tagged release](https://github.com/scottbez1/splitflap/releases/tag/v0.7)
+The v0.7 stable release artifacts can be found at the [v0.7 tagged release](https://github.com/scottbez1/splitflap/releases/tag/v0.7).
+
+### Beta v2 (52-flap modules)
+![2d laser cut rendering](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_raster-52.png)
+
+Module dimensions: <img height="1em" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-52-module_dimensions.svg" />
+
+Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
+* For Ponoko 3mm MDF ([svg](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-52-ponoko-3mm-mdf_1x.svg)) <img height="1em" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-52-ponoko-3mm-mdf_1x_dimensions.svg" />
+* For Ponoko 3mm acrylic ([svg](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-52-ponoko-3mm-acrylic_1x.svg)) <img height="1em" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-52-ponoko-3mm-acrylic_1x_dimensions.svg" />
+* For generic material (0.18mm kerf correction) ([svg](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-52.svg))
+* For Elecrow 3mm Wood ([zipped pdf](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-52-elecrow-3mm-wood_1x.zip))
+* For Elecrow 3mm Acrylic ([zipped pdf](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-52-elecrow-3mm-acrylic_1x.zip))
+
+<sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases) instead
+
+### Beta v2 (40-flap modules)
+![2d laser cut rendering](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_raster-40.png)
+
+Module dimensions: <img height="1em" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-40-module_dimensions.svg" />
+
+Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
+* For Ponoko 3mm MDF ([svg](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-40-ponoko-3mm-mdf_1x.svg))
+* For Ponoko 3mm acrylic ([svg](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-40-ponoko-3mm-acrylic_1x.svg))
+* For generic material (0.18mm kerf correction) ([svg](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-52.svg))
+* For Elecrow 3mm Wood ([zipped pdf](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-40-elecrow-3mm-wood_1x.zip))
+* For Elecrow 3mm Acrylic ([zipped pdf](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-40-elecrow-3mm-acrylic_1x.zip))
+
+<sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases) instead
+
 
 ## Electronics
 > [!NOTE]
@@ -348,26 +366,6 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 officially supported design
 
 ## Older designs
-### Legacy sensor PCBs (v1)
-The sensor can be mounted in
-[different ways](https://github.com/scottbez1/splitflap/wiki/Electronics#sensor-board-alternative) but the recommended
-approach is to use a small PCB, with an AH3391Q (or similar) sensor and connector, which mounts to the side of the
-module with a single screw and can easily be adjusted for precise calibration.
-
-These boards are small (about 16mm x 16 mm) and the designs are available as a panelized PCB, which can be snapped
-apart. The panelization is configurable and is optimized for production at low-cost PCB fabricators like SeeedStudio, JLCPCB, or PCBWay.
-
-<a href="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-classic/sensor-panelized-pcb-raster.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-classic/sensor-panelized-pcb-raster.png"/>
-</a>
-
-Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
-
-* Sensor PCB, single ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-classic/sensor-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-classic/sensor-pcb-packet.pdf))
-* Sensor PCB, panelized ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-classic/sensor-panelized-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-classic/sensor-panelized-pcb-packet.pdf))
-
-<sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases) instead
-
 ### Classic Controller Electronics (deprecated)
 The Classic driver board is deprecated and unsupported.
 

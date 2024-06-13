@@ -127,7 +127,7 @@ spool_joint_clearance = 0.10;  // for the notched joints on the spool struts
 
 character_list = get_character_list();
 echo(character_list=len(character_list));
-assert(len(character_list) == num_flaps, "WARNING: num_flaps and character_list mismatch!");
+assert(len(character_list) == num_flaps || _is_projection_rendering, "WARNING: num_flaps and character_list mismatch!");
 render_flap_index = undef;
 render_string = is_undef(render_flap_index) ? render_message : character_list[render_flap_index];
 render_units = len(render_string);
