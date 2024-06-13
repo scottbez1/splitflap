@@ -1,4 +1,4 @@
-import React, {SyntheticEvent, useCallback, useEffect, useRef, useState} from 'react'
+import React, {ReactNode, SyntheticEvent, useCallback, useEffect, useRef, useState} from 'react'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import {PB} from 'splitflapjs-proto'
@@ -7,19 +7,19 @@ import {NoUndefinedField} from './util'
 import {SplitflapWebSerial} from 'splitflapjs-webserial'
 import { applyResetModule, applySetFlaps } from 'splitflapjs-core/dist/util'
 
-const FLAPS = [
-    ' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
-    'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y',
-    'Z', 'g', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'r',
-    '.', '?', '-', '$', '\'', '#', 'y', 'p', ',', '!', '@', '&', 'w',
+const LEGACY_FLAPS = [
+    ' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
+    'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
+    'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '0', '1', '2',
+    '3', '4', '5', '6', '7', '8', '9', '.', ',', "'",
 ]
-const legalString = (s: string) => {
-    for (const c of s) {
-        if (!FLAPS.includes(c)) {
-            return false
-        }
-    }
-    return true
+
+const FLAP_COLOR_BLOCKS: Record<string, string> = {
+    'g': '#66d7d1',
+    'p': '#7a28cb',
+    'r': '#e63946',
+    'w': '#ffffff',
+    'y': '#ffd639',
 }
 
 type Config = NoUndefinedField<PB.ISplitflapConfig>
@@ -36,6 +36,11 @@ type LogDisplay = {
     body: string,
 }
 
+const renderFlapCharacter = (flapCharacter: string): ReactNode => 
+    FLAP_COLOR_BLOCKS[flapCharacter] !== undefined ? (
+            <span style={{color: FLAP_COLOR_BLOCKS[flapCharacter]}}>█</span>
+        ) : ( flapCharacter.replace(' ', "\u00A0") )
+
 export type AppProps = object
 export const App: React.FC<AppProps> = () => {
     const [splitflap, setSplitflap] = useState<SplitflapWebSerial | null>(null)
@@ -46,6 +51,18 @@ export const App: React.FC<AppProps> = () => {
     )
     const [splitflapGeneralState, setSplitflapGeneralState] = useState<NoUndefinedField<PB.IGeneralState> | null>();
     const [inputValue, setInputValue] = useState({val: '', user: true});
+
+    // Flap character set defaults to the legacy set, but will be updated if we get a GeneralState message
+    // from firmware that supports reporting the flap character set.
+    const [flapCharacterSet, setFlapCharacterSet] = useState(LEGACY_FLAPS)
+    const legalString = (s: string) => {
+        for (const c of s) {
+            if (!flapCharacterSet.includes(c) && !Object.values(FLAP_COLOR_BLOCKS).includes(c)) {
+                return false
+            }
+        }
+        return true
+    }
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
@@ -75,7 +92,8 @@ export const App: React.FC<AppProps> = () => {
 
     const [splitflapLogs, setSplitflapLogs] = useState<Array<LogLine>>([])
     const [unsavedCalibration, setUnsavedCalibration] = useState<boolean>(false)
-    const [logDisplay, setLogDisplay] = useState<LogDisplay | null>(null);
+    const [logDisplay, setLogDisplay] = useState<LogDisplay | null>(null)
+    const [showDebugInfo, setShowDebugInfo] = useState(false)
 
     const initializationTimeoutRef = useRef<ReturnType<typeof setTimeout>>()
     const [showOutdatedFirmwareMessage, setShowOutdatedFirmwareMessage] = useState<boolean>(false)
@@ -147,13 +165,21 @@ export const App: React.FC<AppProps> = () => {
         }
     }
 
-    const [forceFullRotations, setForceFullRotations] = useState<boolean>(false)
+    useEffect(() => {
+        if (splitflapGeneralState?.flapCharacterSet !== undefined) {
+            console.log('Updating flap character set')
+            const flaps = String.fromCharCode(...Array.from(splitflapGeneralState.flapCharacterSet)).split('')
+            setFlapCharacterSet(flaps)
+        }
+    }, [JSON.stringify(splitflapGeneralState?.flapCharacterSet)])
+
+    const [forceFullRotations, setForceFullRotations] = useState<boolean>(true)
     const updateSplitflap = useCallback((value: string) => {
         // TODO: should probably change types and use applySetFlaps?
         setSplitflapConfig((cur) => {
             const newModules = []
             for (let i = 0; i < splitflapState.modules.length; i++) {
-                const targetFlapIndex = value[i] !== undefined ? FLAPS.indexOf(value[i]) : 0
+                const targetFlapIndex = value[i] !== undefined ? flapCharacterSet.indexOf(value[i]) : 0
                 newModules.push({
                     targetFlapIndex,
                     resetNonce: cur.modules[i]?.resetNonce ?? 0,
@@ -231,6 +257,7 @@ export const App: React.FC<AppProps> = () => {
                                     return (<SplitflapModuleDisplay
                                             i={i}
                                             module={module}
+                                            flapCharacterSet={flapCharacterSet}
                                             charWidth={charWidth}
                                             setSplitflapConfig={setSplitflapConfig}
                                             increaseOffsetTenth={() => splitflap?.offsetIncrementTenth(i)}
@@ -300,11 +327,21 @@ export const App: React.FC<AppProps> = () => {
                                     </div>
                             </form>
                             <FormControlLabel control={<Checkbox checked={forceFullRotations} onChange={() => setForceFullRotations((cur) => !cur)} />} label="Force full rotations" />
-                            <br />
+                            <p>
                             <Link onClick={() => {
-                                setLogDisplay({lastN: 20, title: "Recent logs", body:""})
-                            }}>View logs</Link>
-                            <pre>{ JSON.stringify(splitflapGeneralState, undefined, 4) }</pre>
+                                setShowDebugInfo((cur) => !cur)
+                            }}>{ showDebugInfo ? <>Hide debug info</> : <>Show debug info</> }</Link>
+                            </p>
+                            { 
+                                showDebugInfo ? (
+                                    <>
+                                        <Link onClick={() => {
+                                            setLogDisplay({lastN: 20, title: "Recent logs", body:""})
+                                        }}>View logs</Link>
+                                        <pre>{ JSON.stringify(splitflapGeneralState, undefined, 4) }</pre>
+                                    </>
+                                ) : null
+                            }
                             { logDisplay !== null ? (
                                 <Dialog open={true} onClose={() => setLogDisplay(null)}>
                                     <DialogTitle>{logDisplay.title}</DialogTitle>
@@ -364,6 +401,7 @@ export const App: React.FC<AppProps> = () => {
 type SplitflapModuleDisplayProps = {
     charWidth: number,
     i: number,
+    flapCharacterSet: string[],
     setSplitflapConfig: React.Dispatch<React.SetStateAction<NoUndefinedField<PB.ISplitflapConfig>>>,
     module: NoUndefinedField<PB.SplitflapState.IModuleState>,
     increaseOffsetTenth: () => void,
@@ -380,7 +418,7 @@ enum CalibrationStep {
 }
 
 const SplitflapModuleDisplay: React.FC<SplitflapModuleDisplayProps> = (props) => {
-    const {charWidth, i, setSplitflapConfig, module, increaseOffsetTenth, increaseOffsetHalf, goToFlap, setOffsetToCurrentStep } = props
+    const {charWidth, i, flapCharacterSet, setSplitflapConfig, module, increaseOffsetTenth, increaseOffsetHalf, goToFlap, setOffsetToCurrentStep } = props
     const [dialogOpen, setDialogOpen] = useState<boolean>(false)
     const [calibrationStep, setCalibrationStep] = useState<CalibrationStep>(CalibrationStep.FIND_FLAP_BOUNDARY);
 
@@ -411,16 +449,24 @@ const SplitflapModuleDisplay: React.FC<SplitflapModuleDisplayProps> = (props) =>
             </DialogActions>
             </>,
         [CalibrationStep.ADJUST_WHOLE_FLAP_OFFSET]: () => <>
-        <DialogContent>
-            <DialogContentText>
-                Now click the flap that is currently showing
-            </DialogContentText>
-            {
-                Array.from(FLAPS).map((f) => <Button key={`button-${f}`} variant='outlined' onClick={() => {
-                    goToFlap((FLAPS.length - FLAPS.indexOf(f)) % FLAPS.length)
-                    setCalibrationStep(CalibrationStep.CALIBRATING)
-                }}>{ f }</Button>)
-            }
+            <DialogContent>
+                <DialogContentText>
+                    Now click the flap that is currently showing
+                </DialogContentText>
+                {
+                    Array.from(flapCharacterSet).map((f) => (
+                        <Button
+                            key={`button-${f}`}
+                            variant='outlined'
+                            onClick={() => {
+                                goToFlap((flapCharacterSet.length - flapCharacterSet.indexOf(f)) % flapCharacterSet.length)
+                                setCalibrationStep(CalibrationStep.CALIBRATING)
+                            }}
+                        >
+                            { renderFlapCharacter(f) }
+                        </Button>
+                    ))
+                }
             </DialogContent>
         </>,
         [CalibrationStep.CALIBRATING]: () => 
@@ -502,6 +548,7 @@ const SplitflapModuleDisplay: React.FC<SplitflapModuleDisplayProps> = (props) =>
                 width: `${charWidth}px`,
                 cursor: 'pointer',
                 border: '1px solid black',
+                whiteSpace: 'nowrap',
             }}
         >
             <div
@@ -529,7 +576,7 @@ const SplitflapModuleDisplay: React.FC<SplitflapModuleDisplayProps> = (props) =>
                         }}
                     >{
                         module.state === PB.SplitflapState.ModuleState.State.NORMAL ?
-                        <>{FLAPS[module.flapIndex]}&nbsp;</> :
+                        renderFlapCharacter(flapCharacterSet[module.flapIndex]) :
                         module.state === PB.SplitflapState.ModuleState.State.LOOK_FOR_HOME ?
                         <CircularProgress size={charWidth * 0.7} /> :
                         module.state === PB.SplitflapState.ModuleState.State.SENSOR_ERROR ?
