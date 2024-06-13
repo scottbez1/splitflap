@@ -1,16 +1,12 @@
 # Split-Flap Display
 
-This is a DIY ESP32-based [split-flap display](https://en.wikipedia.org/wiki/Split-flap_display).
+This is a DIY ESP32-based [split-flap display](https://en.wikipedia.org/wiki/Split-flap_display), optimized for easy assembly at home in small quantities but able to be scaled up to large affordable displays.
 
 ![animated rendering](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_animation.gif)
 
 [![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml/badge.svg?branch=fontExploration)](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml?query=branch%3AfontExploration)
 [![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml/badge.svg?branch=fontExploration)](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml?query=branch%3AfontExploration)
 [![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/pio.yml/badge.svg?branch=fontExploration)](https://github.com/scottbez1/splitflap/actions/workflows/pio.yml?query=branch%3AfontExploration)
-
-The goal is to make a low-cost display that's easy to fabricate at home in small/single quantities (e.g. custom parts can be easily ordered online, and other hardware is generally available).
-
-You can view an interactive 3d model of the design on the [project website](https://scottbez1.github.io/splitflap/).
 
 The [splitflap community Discord server](https://discord.com/invite/wgehm3PcrC) is the best place to keep up with the latest changes or ask questions about the project!
 
@@ -19,7 +15,9 @@ Want to help support development or just say "thanks"? Consider a one-time or mo
 | [:heart: Sponsor scottbez1 on GitHub](https://github.com/sponsors/scottbez1) |
 |---|
 
-[![Video: how a split-flap display works](renders/howItWorksThumbnail.jpg)](https://www.youtube.com/watch?v=UAQJJAQSg_g)
+<a href="https://www.youtube.com/watch?v=UAQJJAQSg_g" target="_blank">
+  <img src="renders/howItWorksThumbnail.jpg" height=320 />
+</a>
 
 **Using this project in a commercial setting or for paid client work?** Go right ahead - it's open source (just make sure to follow the terms of the Apache License)! I would, however, ask that you consider [sponsoring the project](https://github.com/sponsors/scottbez1). I've been developing and maintaining this project in my free time for over 8 years, and I'd love to continue working on it. Sponsorships allow me to pay for prototypes and development tools that make this project possible. Unlike pure software projects, every iteration has real hardware costs; sponsorships allow me to keep iterating and improving the project faster. Thank you!
 
@@ -29,14 +27,16 @@ Want to help support development or just say "thanks"? Consider a one-time or mo
 
 Releases have been tested and used to produce working units, but as this is a continuously evolving open-source project, there may always be minor issues and/or incomplete documentation from time to time.
 
-## v0 stable release status
+## Stable release info
 
-| Component | Status | Notes |
+| Component | Version | Notes |
 | --- | --- | --- |
-| Enclosure/Mechanics | *Stable* | |
-| Classic Controller Electronics | *Stable* | |
-| Firmware | *Stable* | |
-| Control Software Example | *Stable* | Example python code for driving the display is in the [software](software) directory|
+| Enclosure/Mechanics | v0.7 | https://github.com/scottbez1/splitflap/releases/tag/v0.7 |
+| Electronics - Sensor | v1.1 | https://github.com/scottbez1/splitflap/releases/tag/releases%2Fsensor%2Fv1.1 |
+| Electronics - Chainlink Driver | v1.1 | https://github.com/scottbez1/splitflap/releases/tag/releases%2FchainlinkDriver%2Fv1.1 |
+| Electronics - Chainlink Buddy [T-Display] | v1.0 | https://github.com/scottbez1/splitflap/releases/tag/releases%2FchainlinkBuddyTDisplay%2Fv1.0 |
+| Firmware | latest | Current firmware is backwards-compatible and not strictly versioned; use the latest from the `master` branch |
+| Control Software Examples | latest | Example Typescript and Python code for driving the display is in the [software](software) directory. The Typescript library and examples are more actively developed. |
 
 Here's a video of a large 108-module display powered by 18 Chainlink Driver boards and a Chainlink Base:
 
@@ -101,6 +101,8 @@ Please note, documentation for the Chainlink system a work in progress; you may 
 
 ## Mechanical
 The mechanical/structural components are made from laser-cut 3mm MDF or acrylic, and held together with M4 bolts and nuts. The design is parametric and built using OpenSCAD. See below for more info on rendering/modifying the design.
+
+You can view an interactive 3d model of the design [here](https://scottbez1.github.io/splitflap/embed.html?branch=fontExploration).
 
 The beta v2 mechanical design officially supports variants with 52 flaps (perfect for use with the new ["Epilogue" printed flaps](https://www.etsy.com/listing/1685633114/)) and 40 flaps. But you can always modify the design to customize it further.
 
