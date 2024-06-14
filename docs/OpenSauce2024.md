@@ -11,7 +11,7 @@ But they have one BIG disadvantage: maintenance 🙀
 
 # How does it work?
 <a href="https://www.youtube.com/watch?v=UAQJJAQSg_g" target="_blank">
-  <img src="renders/howItWorksThumbnail.jpg" height=320 />
+  <img src="../renders/howItWorksThumbnail.jpg" height=320 />
 </a>
 
 # How do I build one?
