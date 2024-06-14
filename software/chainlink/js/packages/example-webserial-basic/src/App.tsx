@@ -18,8 +18,44 @@ const FLAP_COLOR_BLOCKS: Record<string, string> = {
     'g': '#66d7d1',
     'p': '#7a28cb',
     'r': '#e63946',
-    'w': '#ffffff',
+    'w': '#eeeeee',
     'y': '#ffd639',
+}
+
+type MessageDelayMs = [string, number]
+
+const IDLE_MESSAGES_BY_LENGTH: Record<number, MessageDelayMs[]> = {
+    6: [
+        ['SPLIT', 6000],
+        [' FLAP', 6000],
+        ['  BY', 6000],
+        ['BEZEK', 6000],
+        ['  LABS', 12000],
+        ['', 2 * 60 * 1000],
+    ],
+    12: [
+        ['gprwygprwygp', 6000],
+        ['wwwwwwwwwwww', 5000],
+        [' wwwwwwwwwww', 100],
+        ['  wwwwwwwwww', 100],
+        ['   wwwwwwwww', 100],
+        ['    wwwwwwww', 100],
+        ['     wwwwwww', 100],
+        ['      wwwwww', 100],
+        ['       wwwww', 100],
+        ['        wwww', 100],
+        ['         www', 100],
+        ['          ww', 100],
+        ['           w', 100],
+        ['            ', 500],
+        ['OPEN SOURCE ', 8000],
+        ['  @SCOTTBEZ1', 12000],
+        ['            ', 4000],
+        ['COFFEE $3.49', 6000],
+        ['g BUILD PASS', 4000],
+        ['r TEST FAIL', 4000],
+        ['', 2 * 60 * 1000],
+    ],
 }
 
 type Config = NoUndefinedField<PB.ISplitflapConfig>
@@ -39,7 +75,7 @@ type LogDisplay = {
 const renderFlapCharacter = (flapCharacter: string): ReactNode => 
     FLAP_COLOR_BLOCKS[flapCharacter] !== undefined ? (
             <span style={{color: FLAP_COLOR_BLOCKS[flapCharacter]}}>█</span>
-        ) : ( flapCharacter.replace(' ', "\u00A0") )
+        ) : ( String(flapCharacter).replace(' ', "\u00A0") )
 
 export type AppProps = object
 export const App: React.FC<AppProps> = () => {
@@ -174,7 +210,7 @@ export const App: React.FC<AppProps> = () => {
     }, [JSON.stringify(splitflapGeneralState?.flapCharacterSet)])
 
     const [forceFullRotations, setForceFullRotations] = useState<boolean>(true)
-    const updateSplitflap = useCallback((value: string) => {
+    const updateSplitflap = useCallback((value: string, doNotForceFullRotations = false) => {
         // TODO: should probably change types and use applySetFlaps?
         setSplitflapConfig((cur) => {
             const newModules = []
@@ -183,7 +219,7 @@ export const App: React.FC<AppProps> = () => {
                 newModules.push({
                     targetFlapIndex,
                     resetNonce: cur.modules[i]?.resetNonce ?? 0,
-                    movementNonce: (cur.modules[i]?.movementNonce ?? 0) + (forceFullRotations ? (targetFlapIndex === 0 ? 0 : 1) : 0),
+                    movementNonce: (cur.modules[i]?.movementNonce ?? 0) + (forceFullRotations && !doNotForceFullRotations ? (targetFlapIndex === 0 ? 0 : 1) : 0),
                 })
             }
             return {
@@ -192,6 +228,28 @@ export const App: React.FC<AppProps> = () => {
         })
     }, [splitflapState.modules])
 
+    const idleTimeout = useRef<ReturnType<typeof setTimeout>>();
+    const curMessage = useRef<number>(0);
+    const nextMessage = () => {
+        const idleMessages = IDLE_MESSAGES_BY_LENGTH[splitflapState.modules.length]
+        const m = idleMessages[(curMessage.current++) % idleMessages.length]
+        updateSplitflap(m[0], true)
+        idleTimeout.current = setTimeout(nextMessage, m[1])
+    }
+    useEffect(() => {
+        if (!inputValue.user) {
+            return
+        }
+        const t = idleTimeout.current
+        if (t) {
+            clearTimeout(t)
+            curMessage.current = 0
+        }
+        idleTimeout.current = setTimeout(() => {
+            setInputValue({val:'', user: false})
+            nextMessage()
+        }, 1 * 60 * 1000)
+    }, [inputValue, splitflapState.modules.length])
 
     const numModules = splitflapState.modules.length
     const charWidth = Math.max(1000 / numModules, 40)
