@@ -51,10 +51,10 @@ const IDLE_MESSAGES_BY_LENGTH: Record<number, MessageDelayMs[]> = {
         ['OPEN SOURCE ', 8000],
         ['  @SCOTTBEZ1', 12000],
         ['            ', 4000],
-        ['COFFEE $3.49', 6000],
-        ['g BUILD PASS', 4000],
-        ['r TEST FAIL', 4000],
-        ['', 2 * 60 * 1000],
+        ['COFFEE $3.49', 8000],
+        ['g BUILD PASS', 7000],
+        ['r TEST FAIL', 7000],
+        ['COME TRY ME!', 2 * 60 * 1000],
     ],
 }
 
