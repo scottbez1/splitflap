@@ -9,8 +9,10 @@
 
 // 2) General Settings
 #ifndef NUM_MODULES
+// Set NUM_MODULES in platformio.ini instead when using ESP32/PlatformIO
 #define NUM_MODULES (12)
 #endif
+
 
 // Whether to force a full rotation when the same letter is specified again
 #define FORCE_FULL_ROTATION true
@@ -21,19 +23,61 @@
 #define HOME_CALIBRATION_ENABLED true
 
 // 3) Flap Contents & Order
-#define NUM_FLAPS (40)
+// This `flaps` array should match the order of flaps on your spools, with
+// the first being the "home" flap.
+//
+// These are used for the built-in display, plaintext serial interface, and
+// can be referenced by interactive controllers using the proto interface, but
+// these are non-critical and only useful for interactive usage with the
+// standard interfaces. (If you are using custom control software with the
+// proto interface - you'll know if you are - you can ignore these since the
+// proto interface uses integer indexes to reference flap positions).
+//
+// The conventions for these are as follows:
+// - basic letters should be UPPER CASE
+// - lower-case letters can be used to represent color blocks:
+//   - g = green
+//   - p = purple
+//   - r = red
+//   - w = white
+//   - y = yellow
 
-// This should match the order of flaps on the spool, with the first being the
-// "home" flap.
+// Flap option 1: Legacy printed flaps (40 per module)
+// #define NUM_FLAPS (40)
+// const uint8_t flaps[NUM_FLAPS] = {
+//   ' ',
+//   'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+//   'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+//   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//   '.',
+//   ',',
+//   '\'',
+// };
+
+// Flap option 2: v2 flaps (52 per module)
+#define NUM_FLAPS (52)
 const uint8_t flaps[NUM_FLAPS] = {
-  ' ',
-  'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-  'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '.',
-  ',',
-  '\'',
+  ' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+  'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y',
+  'Z', 'g', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'r',
+  '.', '?', '-', '$', '\'', '#', 'y', 'p', ',', '!', '~', '&', 'w'
 };
+
+// Flap option 3: v2 flaps (limited 40-flap set using the first 40 flaps of the set)
+// #define NUM_FLAPS (40)
+// const uint8_t flaps[NUM_FLAPS] = {
+//   ' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+//   'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y',
+//   'Z', 'g', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'r',
+//   '.',
+// };
+
+// Flap option 4: YOUR CUSTOM CHARACTER SET HERE!
+// #define NUM_FLAPS (40)
+// const uint8_t flaps[NUM_FLAPS] = {
+//   <FILL THIS IN!>
+// };
+
 
 // 4) Hardware configuration and features
 #ifndef SPLITFLAP_PIO_HARDWARE_CONFIG
@@ -42,7 +86,6 @@ const uint8_t flaps[NUM_FLAPS] = {
   #define SPI_IO true
   #define REVERSE_MOTOR_DIRECTION false
   #define NEOPIXEL_DEBUGGING_ENABLED true
-  #define SSD1306_DISPLAY false
   #define INA219_POWER_SENSE false
 #endif
 
@@ -106,7 +149,7 @@ const uint8_t flaps[NUM_FLAPS] = {
  *
  *    Neopixel: 4
  *
- *    INA219 & SSD1306 Oled:
+ *    INA219:
  *      SDA: 20
  *      SCL: 21
  *

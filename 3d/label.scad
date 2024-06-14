@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-use<roboto/Roboto-Bold.ttf>;
+use<fonts/roboto/Roboto-Bold.ttf>;
 
 module roboto(text, size) {
     text(text=text, size=size, font="Roboto:style=Bold");

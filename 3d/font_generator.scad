@@ -24,29 +24,38 @@ use<splitflap.scad>;
 // Configurable parameters
 // -----------------------
 
-num_columns = 8;                // Number of columns for layout; 0 for infinite
+num_columns = 5;                // Number of columns for layout; 0 for infinite
 start_row = 0;                  // First row to render
 row_count = 1000;               // Number of rows to render
 
 only_side = 0;                  // 0=both, 1=top only, 2=bottom only
 
 // "Standard" layout, of all flaps front side or back side, which can be rendered to 2 separate files
-// for double-sided printing
+// for double-sided (duplex) printing on a single substrate. Note that the flap order goes
+// right-to-left on the back side, corresponding to the flipped order when printing on the back side
+// of the substrate. See MODE_FRONT_BACK for a better alternative when applying lettering to flaps
+// one-by-one.
 MODE_DOUBLE_SIDED = 0;
+
+// Similar to MODE_DOUBLE_SIDED, this generates separate front and back layouts, but both the front
+// and back sides are ordered left-to-right. This cannot be used for duplex printing on a single sheet
+// substrate, but is ideal for things like adhesive vinyl where each letter will be applied individually.
+MODE_FRONT_BACK = 1;
 
 // If you want to view the full font with each letter as it appears when at the front of the display,
 // it requires rendering twice as many flaps and a special layout with the bottom flaps flipped over.
 // You also probably want to set only_side to 1 when using this layout.
-MODE_FULL_FONT = 1;
+MODE_FULL_FONT = 2;
 
 // Each flap's front side is laid out side-by-side with its back side.
 // You probably want to set only_side to 1 when using this layout.
-MODE_SIDE_BY_SIDE = 2;
+MODE_SIDE_BY_SIDE = 3;
 
 
-layout_mode = MODE_SIDE_BY_SIDE;
+layout_mode = MODE_DOUBLE_SIDED;
 
-flip_over = false;              // Flip the entire layout of flaps over (e.g. when exporting the bottom sides)
+flip_individual_flaps = false;
+flip_entire_layout = false;              // Flip the entire layout of flaps over (e.g. when exporting the bottom sides)
 
 // Gap between flaps
 spacing_x = 5;
@@ -75,7 +84,7 @@ render_fill = false;
 
 flap_gap = get_flap_gap();
 
-assert(!(layout_mode != MODE_DOUBLE_SIDED && render_alignment_marks), "Alignment marks are only supported with standard front/back layout mode");
+assert(!(layout_mode != MODE_DOUBLE_SIDED && render_alignment_marks), "Alignment marks are only supported with duplex double-sided layout mode");
 
 if (!is_projection_rendering()) {
     echo("Info: this model is intended for use via generate_fonts.py in order to export flap font files.");
@@ -175,8 +184,16 @@ module alignment_marks() {
 }
 
 module _flip() {
-    translate([flip_over ? cols*flap_width + (cols-1)*spacing_x : 0, 0, 0]) {
-        rotate([0, flip_over ? 180 : 0, 0]) {
+    translate([flip_entire_layout ? cols*flap_width + (cols-1)*spacing_x : 0, 0, 0]) {
+        rotate([0, flip_entire_layout ? 180 : 0, 0]) {
+            children();
+        }
+    }
+}
+
+module _flip_flap() {
+    translate([flip_individual_flaps ? flap_width : 0, 0, 0]) {
+        rotate([0, flip_individual_flaps ? 180 : 0, 0]) {
             children();
         }
     }
@@ -189,7 +206,9 @@ projection_renderer(render_index = render_index, render_etch = render_etch, kerf
     _flip() {
         for(i = [0 : len(character_list) - 1]) {
             flap_pos(i) {
-                configured_flap(i, flap=true, front_letter=false, back_letter=false);
+                _flip_flap() {
+                    configured_flap(i, flap=true, front_letter=false, back_letter=false);
+                }
             }
         }
     }
@@ -200,7 +219,9 @@ projection_renderer(render_index = render_index, render_etch = render_etch, kerf
                 show_front = only_side == 0 || only_side == 1;
                 show_back = only_side == 0 || only_side == 2;
                 flap_pos(i) {
-                    configured_flap(i, flap=false, front_letter=show_front, back_letter=show_back);
+                    _flip_flap() {
+                        configured_flap(i, flap=false, front_letter=show_front, back_letter=show_back);
+                    }
                 }
             }
         }

@@ -65,6 +65,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('pcb')
     parser.add_argument('--assembly-schematic')
-    parser.add_argument('--alt-fields', nargs='+')
+    parser.add_argument('--alt-fields', nargs='+', default=[])
     args = parser.parse_args()
     export_jlcpcb(args.pcb, args.assembly_schematic, args.alt_fields)

@@ -43,7 +43,7 @@ class Renderer(object):
          v.update(variables)
          return v
 
-    def _get_num_components(self):
+    def _get_extracted_outputs(self):
         stdout, stderr = openscad.run(
             self.input_file,
             os.path.join(self.output_folder, 'dummy.png'),
@@ -59,7 +59,7 @@ class Renderer(object):
         for key, value in outputs.items():
             if key.startswith('debug_'):
                 logging.debug('DEBUG VALUE %r = %r', key, value)
-        return outputs['num_components']
+        return outputs
 
     def _get_component_file(self, i):
         return os.path.join(self.output_folder, 'component_%05d.svg' % i)
@@ -105,7 +105,8 @@ class Renderer(object):
 
     def render_svgs(self, panelize_quantity):
         assert panelize_quantity == 1 or panelize_quantity % 2 == 0, 'Panelize quantity must be 1 or an even number'
-        num_components = int(self._get_num_components())
+        outputs = self._get_extracted_outputs()
+        num_components = int(outputs['num_components'])
         logging.info('Found %d components to render', num_components)
         svg_output = None
 
@@ -121,6 +122,6 @@ class Renderer(object):
                         svg_output.import_paths(svg_processor)
         output_file_path = os.path.join(self.output_folder, 'combined.svg')
         svg_output.write(output_file_path)
-        return output_file_path
+        return output_file_path, outputs
 
 

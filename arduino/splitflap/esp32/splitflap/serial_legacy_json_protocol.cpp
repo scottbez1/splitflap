@@ -98,6 +98,17 @@ void SerialLegacyJsonProtocol::loop() {
                         splitflap_task_.showString(recv_buffer_, NUM_MODULES);
                     }
                     break;
+                case '>':
+                    // TODO: make the index configurable
+                    splitflap_task_.increaseOffsetTenth(0);
+                    break;
+                case '<':
+                    // TODO: make the index configurable
+                    splitflap_task_.increaseOffsetHalf(0);
+                    break;
+                case '\\':
+                    splitflap_task_.saveAllOffsets();
+                    break;
                 case '\r':
                     // Ignore
                     break;
