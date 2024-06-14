@@ -43,7 +43,9 @@ Here's a video of a large 108-module display powered by 18 Chainlink Driver boar
 [![Video: animations on 108-module display](https://raw.githubusercontent.com/wiki/scottbez1/splitflap/images/animationsThumb.gif)](https://youtu.be/g9EPabcxBsM)
 
 ## v2 (coming soon!)
-A minor refresh of the design is in progress, and the stable release is expected in Summer 2024.
+A minor refresh of the mechanical and sensor design is currently in beta, and the stable release is expected in Summer 2024.
+
+The beta designs (seen on this page) have been tested are nearly feature-complete, but documentation is still in progress.
 
 <img src="https://github.com/scottbez1/splitflap/assets/414890/9ffab4fa-a2db-4b5e-915a-915f81faa193" height="200" />
 <img src="https://github.com/scottbez1/splitflap/assets/414890/d89254a4-46de-4303-8402-8a4d7989d25e" height="200" />
@@ -52,22 +54,25 @@ A minor refresh of the design is in progress, and the stable release is expected
 **Here's what to expect in v2:**
 
 - **52 flaps per module** for more character/symbol options
-- **New printed flap design** with 52 flaps per set (see image above), including several color-block flaps
+- **New printed flap design ("Epilogue")** with 52 flaps per set (see animation above), including several color-block flaps
 - **Updated enclosure** and mechanical parts (laser-cut) to accomodate 52 flaps
   - Motor wires now exit downward for less awkward wiring!
 - **New sensor PCB** that's easier to assemble and includes an LED for checking the magnet status
-- **Software-configurable calibration** rather than mechanical sensor adjustment (expected shortly after launch)
+- **Software-configurable calibration** rather than mechanical sensor adjustment
 
 **But many things are staying the same for easy upgrades/compatibility:**
 - No change to flap dimensions!
 - No changes to Chainlink Driver, Chainlink Buddy boards, or system architecture!
+- 40-flap modules are still an officially supported option!
 - Open source, as always!
 - v0 parts (sensor kits) will continue to be stocked at Bezek Labs through 2024; don't worry if you haven't finished your build yet, the old sensor kits aren't going away!
 
 I'd love to hear your thoughts and questions about this project, and happy to incorporate any feedback you might have into these designs! Please feel free (and encouraged) to [open GitHub issues](https://github.com/scottbez1/splitflap/issues/new), email me directly, reach out [on Twitter](https://twitter.com/scottbez1), and [get involved](https://github.com/scottbez1/splitflap/pulls) in the open source development and let's keep chatting and building together!
 
 # Build Your Own
-Please note, documentation for the Chainlink system a work in progress; you may see outdated references to the "Classic" electronics in some documentation in the meantime. If you have any questions, please don't hesitate to ask in the [community Discord server](https://discord.gg/Hxnftc8PyW)!
+If you have any questions, please don't hesitate to ask in the [community Discord server](https://discord.gg/Hxnftc8PyW)!
+
+Note: the ordering and assembly guides have not yet been updated for the beta v2 designs. Ask in Discord if you have any questions about ordering or assembling a v2 display!
 
 * [**Ordering guide (the "easy" route) - updated for Chainlink**](https://paper.dropbox.com/doc/Splitflap-Ordering-the-easy-route--BsXzf8VyILR3nl1vUpOi28TWAg-0i6r3aqw6kZVXQOP2MyNr)
 * [**Chainlink Driver Electronics User Guide**](https://paper.dropbox.com/doc/Chainlink-Driver-v1.1-Electronics-User-Guide--BsVuP9OHVo952_ZdJDBomCCzAg-U0DAXrSxEoOhgSoRU39hq)
@@ -106,12 +111,12 @@ You can view an interactive 3d model of the design [here](https://scottbez1.gith
 
 The beta v2 mechanical design officially supports variants with 52 flaps (perfect for use with the new ["Epilogue" printed flaps](https://www.etsy.com/listing/1685633114/)) and 40 flaps. But you can always modify the design to customize it further.
 
-### v0.7 (40-flap modules)
+### Stable v0.7 (40-flap modules)
 ![2d laser cut rendering](https://s3.amazonaws.com/splitflap-artifacts/refs/tags/v0.7/3d/3d_laser_raster.png)
 
 The v0.7 stable release artifacts can be found at the [v0.7 tagged release](https://github.com/scottbez1/splitflap/releases/tag/v0.7).
 
-### Beta v2 (52-flap modules)
+### Beta v2 (52-flap module option - recommended)
 ![2d laser cut rendering](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_raster-52.png)
 
 Module dimensions: <img height="18" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-52-module_dimensions.svg" />
@@ -125,7 +130,7 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 
 <sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases) instead
 
-### Beta v2 (40-flap modules)
+### Beta v2 (40-flap module option)
 ![2d laser cut rendering](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_raster-40.png)
 
 Module dimensions: <img height="18" src="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/3d/3d_laser_vector-40-module_dimensions.svg" />
@@ -164,7 +169,14 @@ power management/distribution and fault monitoring, UART and RS-485 connections,
 ### Sensor PCBs (1 per module)
 Each module needs a hall-effect sensor for start-up calibration and fault monitoring. 
 
-#### v2 for v2 laser-cut hardware
+#### Sensors for stable v0.7 hardware
+Older sensors for the v0.7 and older laser-cut hardware can be found in the [tagged sensor release](https://github.com/scottbez1/splitflap/releases/tag/releases%2Fsensor%2Fv1.1)
+
+<a href="https://s3.amazonaws.com/splitflap-artifacts/refs/tags/releases/sensor/v1.1/electronics-classic/sensor-panelized-pcb-raster.png">
+<img width="320" src="https://s3.amazonaws.com/splitflap-artifacts/refs/tags/releases/sensor/v1.1/electronics-classic/sensor-panelized-pcb-raster.png"/>
+</a>
+
+#### Sensors for beta v2
 These boards are small and the designs are available as single PCBs or as a panel, which can be snapped
 apart. The panelization is configurable and is optimized for production at low-cost PCB fabricators like JLCPCB, or PCBWay.
 
@@ -201,13 +213,6 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
   * PCB CPL (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-v2/sensor_smd-panelized-jlc/pos.csv)
 
 <sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases) instead
-
-#### Sensors for v0.7 legacy laser-cut hardware
-Older sensors for the v0.7 and older laser-cut hardware can be found in the [tagged sensor release](https://github.com/scottbez1/splitflap/releases/tag/releases%2Fsensor%2Fv1.1)
-
-<a href="https://s3.amazonaws.com/splitflap-artifacts/refs/tags/releases/sensor/v1.1/electronics-classic/sensor-panelized-pcb-raster.png">
-<img width="320" src="https://s3.amazonaws.com/splitflap-artifacts/refs/tags/releases/sensor/v1.1/electronics-classic/sensor-panelized-pcb-raster.png"/>
-</a>
 
 ### Chainlink Driver (1 per 6 modules)
 <a href="https://s3.amazonaws.com/splitflap-artifacts/fontExploration/electronics-chainlink/chainlinkDriver-3d.png">
