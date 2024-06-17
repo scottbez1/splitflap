@@ -39,7 +39,7 @@ I love old mechanical technology, and I'm always a little sad when beautiful mec
 It's become a passion project of mine over the last 9 years, and I LOVE seeing the displays and art installations others have built based on my open-source design!
 
 # Contact info
- - Email: opensauce@bezeklabs.com
+ - Email: scott@bezeklabs.com
  - YouTube: [@scottbez1](https://youtube.com/scottbez1)
  - Twitter: [@scottbez1](https://twitter.com/scottbez1)
  - Mastodon: [@scottbez1@fosstodon.org](https://fosstodon.org/@scottbez1)
