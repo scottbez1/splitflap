@@ -1248,86 +1248,85 @@ if (render_3d) {
             // Main enclosure (left, right, front)
             translate([0, 0])
                 enclosure_left();
-
-            laser_etch()
-                translate([0, 0])
+            translate([0, 0])
+                laser_etch()
                     enclosure_left_etch();
 
-            translate([0, enclosure_length + kerf_width])
-                enclosure_right();
+            translate([enclosure_height + enclosure_length_right + kerf_width, 0])
+                rotate([0, 0, 90])
+                    enclosure_right();
+            translate([enclosure_height + enclosure_length_right + kerf_width, 0])
+                rotate([0, 0, 90])
+                    laser_etch()
+                        enclosure_right_etch();
 
-            laser_etch()
-                translate([0, enclosure_length + kerf_width])
-                    enclosure_right_etch();
+            front_panel_offset = enclosure_length + kerf_width + enclosure_width - enclosure_horizontal_inset;
 
-            if (render_front_panel) {
-                translate([0, enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width - enclosure_horizontal_inset])
+            if (render_front_panel)
+                translate([0, front_panel_offset])
                     rotate([0, 0, -90])
                         enclosure_front();
-            }
-
-            if (render_front_panel) {
-                laser_etch()
-                    translate([0, enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width - enclosure_horizontal_inset])
-                        rotate([0, 0, -90])
+            if (render_front_panel)
+                translate([0, front_panel_offset])
+                    rotate([0, 0, -90])
+                        laser_etch()
                             enclosure_front_etch();
-            }
+
+            front_panel_origin = [enclosure_height_lower - front_window_lower + kerf_width,
+                               front_panel_offset - front_window_right_inset - front_window_width + kerf_width];
+
+            // Pack the top enclosure and three of the spool struts inside the front panel window
+            translate(front_panel_origin)
+                translate([-thickness + side_tab_length, spool_strut_width + thickness + kerf_width])
+                    enclosure_top();
+            translate(front_panel_origin)
+                translate([0, 0, thickness/2])
+                    translate([0, spool_strut_width/2])
+                        spool_strut();
+            translate(front_panel_origin)
+                translate([0, 0, thickness/2])
+                    translate([front_window_lower + front_window_upper - spool_strut_width/2 - kerf_width*2, 0])
+                        rotate([0,0,90])
+                            spool_strut();
+            translate(front_panel_origin)
+                translate([0, 0, thickness/2])
+                    translate([front_window_lower + front_window_upper - 3*spool_strut_width/2 - kerf_width*3,
+                            spool_strut_length])
+                        rotate([0,0,-90])
+                            spool_strut();
 
             // Top and bottom
-            translate([enclosure_height + kerf_width + enclosure_length_right, enclosure_wall_to_wall_width + kerf_width - thickness * 3 + side_tab_length * 3])
-                rotate([0, 0, 90])
-                    enclosure_top();
-
-            translate([enclosure_height + kerf_width, enclosure_wall_to_wall_width - thickness + side_tab_length])
-                rotate([0, 0, -90])
-                    enclosure_bottom();
-
-            // Bottom laser etching
-            laser_etch()
-                translate([enclosure_height + kerf_width, enclosure_wall_to_wall_width])
-                    rotate([0, 0, -90])
+            translate([spool_outer_radius * 4 + 6, enclosure_height + 3]) {
+                enclosure_bottom();
+            }
+            translate([spool_outer_radius * 4 + 6, enclosure_height + 3]) {
+                laser_etch()
+                    translate([-thickness + side_tab_length, 0])
                         enclosure_bottom_etch();
-
-            // Spool struts cut out of right side
-            translate([thickness*2 + 5, enclosure_length + kerf_width + enclosure_length_right - spool_strut_width/2 - 3, thickness])
-                spool_strut();
-
-            // Spool struts at the top
-            spool_strut_y_offset = enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width + kerf_width + spool_strut_width/2;
-            translate([spool_strut_length, spool_strut_y_offset, thickness/2])
-                rotate([0, 0, 180])
-                    spool_strut();
-            translate([spool_strut_length*2 + kerf_width, spool_strut_y_offset, thickness/2])
-                rotate([0, 0, 180])
-                    spool_strut();
-            translate([spool_strut_length*3 + kerf_width*2, spool_strut_y_offset, thickness/2])
-                rotate([0, 0, 180])
-                    spool_strut();
-
-            if (enable_connectors) {
-                // Connector brackets on the top right
-                translate([enclosure_height + kerf_width, 2 * enclosure_wall_to_wall_width + 2 * kerf_width - 4 * thickness + 4 * side_tab_length, 0])
-                    connector_bracket();
             }
 
-            if (enable_connectors) {
-                // Connector brackets on the top right
-                translate([enclosure_height + kerf_width, 2 * enclosure_wall_to_wall_width + 3 * kerf_width - 4 * thickness + 4 * side_tab_length + connector_bracket_length_outer, 0])
-                    connector_bracket();
-            }
+            // Last spool strut at the side
+            translate([enclosure_height + enclosure_length_right + kerf_width*2, 0, thickness/2])
+                rotate([0, 0, 90])
+                    translate([0, -spool_strut_width/2])
+                        spool_strut();
 
-            // Flap spools in flap window
-            spools_too_large = spool_outer_radius*2 + kerf_width*3 + 1 > front_window_width || spool_outer_radius*4 + kerf_width*3 + 1 > front_window_height;
-            if (spools_too_large) {
-                echo("Note: spools are too large to place inside front window cutout; placing outside instead.");
-            }
-            flap_spool_y_off = spools_too_large ?
-                spool_outer_radius + spool_strut_y_offset + spool_strut_width / 2 + kerf_width :
-                enclosure_length + kerf_width + enclosure_length_right + kerf_width + enclosure_width - front_window_right_inset - enclosure_horizontal_inset - front_window_width/2;
-            flap_spool_x_off = spools_too_large ?
-                spool_outer_radius :
-                spool_outer_radius + enclosure_height_lower - front_window_lower + kerf_width + 0.5;
-            translate([flap_spool_x_off, flap_spool_y_off])
+            // Connector brackets on the side
+            if (enable_connectors)
+                translate([enclosure_height + enclosure_length_right + kerf_width*2, 0, thickness/2])
+                    rotate([0, 0, 90])
+                    translate([spool_strut_length + kerf_width, -connector_bracket_length_outer])
+                        connector_bracket();
+            if (enable_connectors)
+                translate([enclosure_height + enclosure_length_right + kerf_width*2, 0, thickness/2])
+                    rotate([0, 0, 90])
+                    translate([spool_strut_length + kerf_width, -connector_bracket_length_outer])
+                        translate([connector_bracket_width + kerf_width, 0])
+                            connector_bracket();
+
+            flap_spool_y_off = spool_outer_radius + enclosure_length + enclosure_width + kerf_width*2 + 3;
+            flap_spool_x_off = spool_outer_radius + 3;
+            translate([flap_spool_x_off, flap_spool_y_off,1])
                 flap_spool_complete(motor_shaft=true, magnet_hole=true);
             translate([flap_spool_x_off + spool_outer_radius*2 + kerf_width, flap_spool_y_off])
                 mirror([0, 1, 0])
