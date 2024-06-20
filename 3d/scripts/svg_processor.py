@@ -353,30 +353,31 @@ class SvgProcessor(object):
 
             self.svg_node.appendChild(new_path_node)
 
-    def add_dimensions(self, width_mm, height_mm):
+    def add_dimensions(self, width_mm, height_mm, mirror=False):
         width_node = self.dom.createElement("path")
-        width_node.setAttribute('d', f'M 0 10 l 0 5 l {width_mm} 0 l 0 -5')
+        mirror_dir = -1 if mirror else 1
+        width_node.setAttribute('d', f'M 0 10 l 0 5 l {mirror_dir * width_mm} 0 l 0 -5')
         width_node.setAttribute('fill', 'none')
         width_node.setAttribute('stroke', '#ff00ff')
         width_node.setAttribute('stroke-width', '1')
         self.svg_node.appendChild(width_node)
 
         width_label_node = self.dom.createElement('text')
-        width_label_node.setAttribute('x', f'{width_mm / 2}')
+        width_label_node.setAttribute('x', f'{mirror_dir * width_mm / 2}')
         width_label_node.setAttribute('y', '25')
         width_label_node.setAttribute('style', 'font: 5px sans-serif; fill: #ff00ff; text-anchor: middle;')
         width_label_node.appendChild(self.dom.createTextNode(f'{width_mm:.2f} mm'))
         self.svg_node.appendChild(width_label_node)
 
         height_node = self.dom.createElement("path")
-        height_node.setAttribute('d', f'M -10 0 l -5 0 l 0 -{height_mm} l 5 0')
+        height_node.setAttribute('d', f'M {-width_mm - 10 if mirror else -10} 0 l -5 0 l 0 -{height_mm} l 5 0')
         height_node.setAttribute('fill', 'none')
         height_node.setAttribute('stroke', '#ff00ff')
         height_node.setAttribute('stroke-width', '1')
         self.svg_node.appendChild(height_node)
 
         height_label_node = self.dom.createElement('text')
-        height_label_node.setAttribute('x', '-20')
+        height_label_node.setAttribute('x', f'{-width_mm - 20 if mirror else -20}')
         height_label_node.setAttribute('y', f'{-height_mm / 2}')
         height_label_node.setAttribute('style', 'font: 5px sans-serif; fill: #ff00ff; text-anchor: end;')
         height_label_node.appendChild(self.dom.createTextNode(f'{height_mm:.2f} mm'))
