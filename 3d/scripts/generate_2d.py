@@ -162,7 +162,7 @@ if __name__ == '__main__':
         elecrow_zip = os.path.join(laser_parts_directory, 'elecrow.zip')
 
         processor.apply_elecrow_style()
-        processor.add_dimensions(width_mm, height_mm)
+        processor.add_dimensions(width_mm, height_mm, args.mirror)
         processor.write(elecrow_svg)
 
         logging.info('Resize SVG canvas')
