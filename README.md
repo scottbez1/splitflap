@@ -93,6 +93,7 @@ Note: the ordering and assembly guides have not yet been updated for the beta v2
       - [Classic controller](#classic-controller-electronics-deprecated)
     + [Miscellaneous Tools](#miscellaneous-tools)
       - [Flaps and Fonts](#flaps-and-fonts)
+      - [Combined Front Panel Generator](#combined-front-panel-generator)
       - [3D Printed Tools](#3d-printed-tools)
       - [Chainlink Driver Tester](#chainlink-driver-tester)
   * [Code](#code)
@@ -109,7 +110,7 @@ The mechanical/structural components are made from laser-cut 3mm MDF or acrylic,
 
 You can view an interactive 3d model of the design [here](https://scottbez1.github.io/splitflap/embed.html?branch=master).
 
-The beta v2 mechanical design officially supports variants with 52 flaps (perfect for use with the new ["Epilogue" printed flaps](https://www.etsy.com/listing/1685633114/)) and 40 flaps. But you can always modify the design to customize it further.
+The beta v2 mechanical design officially supports variants with 52 flaps (perfect for use with the new ["Epilogue" printed flaps](https://bezeklabs.etsy.com/listing/1685633114/)) and 40 flaps. But you can always modify the design to customize it further.
 
 ### Stable v0.7 (40-flap modules)
 ![2d laser cut rendering](https://s3.amazonaws.com/splitflap-artifacts/refs/tags/v0.7/3d/3d_laser_raster.png)
@@ -170,19 +171,18 @@ power management/distribution and fault monitoring, UART and RS-485 connections,
 Each module needs a hall-effect sensor for start-up calibration and fault monitoring. 
 
 #### Sensors for stable v0.7 hardware
-Older sensors for the v0.7 and older laser-cut hardware can be found in the [tagged sensor release](https://github.com/scottbez1/splitflap/releases/tag/releases%2Fsensor%2Fv1.1)
+Older sensors for the v0.7 and older laser-cut hardware can be found in the [tagged sensor release](https://github.com/scottbez1/splitflap/releases/tag/releases%2Fsensor%2Fv1.1).
+
+These older sensors are not compatible with v2 laser-cut hardware.
 
 <a href="https://s3.amazonaws.com/splitflap-artifacts/refs/tags/releases/sensor/v1.1/electronics-classic/sensor-panelized-pcb-raster.png">
 <img width="320" src="https://s3.amazonaws.com/splitflap-artifacts/refs/tags/releases/sensor/v1.1/electronics-classic/sensor-panelized-pcb-raster.png"/>
 </a>
 
-#### Sensors for v0.7 legacy laser-cut hardware
-Older sensors for the v0.7 and older laser-cut hardware can be found in the [tagged sensor release](https://github.com/scottbez1/splitflap/releases/tag/releases%2Fsensor%2Fv1.1)
 
-<a href="https://s3.amazonaws.com/splitflap-artifacts/refs/tags/releases/sensor/v1.1/electronics-classic/sensor-panelized-pcb-raster.png">
-<img width="320" src="https://s3.amazonaws.com/splitflap-artifacts/refs/tags/releases/sensor/v1.1/electronics-classic/sensor-panelized-pcb-raster.png"/>
-</a>
-</a><a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-v2/panelized_sensor_smd-front-3d.png">
+#### Beta Sensors v2
+
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-v2/panelized_sensor_smd-front-3d.png">
 <img width="320" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-v2/panelized_sensor_smd-front-3d.png"/>
 </a>
 <a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-v2/panelized_sensor_smd-back-3d.png">
@@ -190,8 +190,13 @@ Older sensors for the v0.7 and older laser-cut hardware can be found in the [tag
 </a>
 
 <a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-v2/sensor_smd-schematic.pdf">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-v2/sensor_smd-schematic.png"/>
+<img width="320" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-v2/sensor_smd-schematic.png"/>
 </a>
+
+New sensors for the v2 laser-cut hardware - these use surface mount components and are optimized for PCB assembly at JLCPCB. These new sensors are not compatible with v0.7 and older laser-cut hardware.
+
+Packs of 6 sensors are [available mostly-assembled in the Bezek Labs store](https://bezeklabs.etsy.com/listing/1696745674),
+and come with the right-angle pin headers and magnets you'll need. Purchases support continued development of this project.
 
 Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 
@@ -207,6 +212,7 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
   * PCB gerbers [zip](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-v2/sensor_smd-panelized-jlc/gerbers.zip)
   * PCB BOM (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-v2/sensor_smd-panelized-jlc/bom.csv)
   * PCB CPL (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-v2/sensor_smd-panelized-jlc/pos.csv)
+* Purchase sensor kits in the US: [Bezek Labs](https://bezeklabs.etsy.com/listing/1696745674)
 
 <sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases) instead
 
@@ -224,7 +230,7 @@ for easy SMD/THT assembly
 to validate data integrity up and down the whole chain
 * Module order goes from right-to-left since this is intended to be installed and accessed from *behind* the modules
 
-Chainlink Driver boards are [available mostly-assembled in the Bezek Labs store](https://www.etsy.com/listing/1123280069/splitflap-chainlink-driver-v11),
+Chainlink Driver boards are [available mostly-assembled in the Bezek Labs store](https://bezeklabs.etsy.com/listing/1123280069/splitflap-chainlink-driver-v11),
 and come with the additional connectors and ribbon cables you'll need. Purchases support continued development of this project.
 
 More information on building and using Chainlink Drivers is available in the [Chainlink Driver User Guide](https://paper.dropbox.com/doc/Chainlink-Driver-v1.1-Electronics-User-Guide--BW2lxdjVkAxva68kYw2doWQEAg-U0DAXrSxEoOhgSoRU39hq).
@@ -272,7 +278,7 @@ and then run a wire from the onboard screw terminals to the Chainlink Driver's m
 * Optional 5V regulator allows for powering the ESP32 without a USB connection, using the 12V motor power supply
 
 
-Chainlink Buddy \[T-Display\] boards are [available in the Bezek Labs store](https://www.etsy.com/listing/1109357786/splitflap-chainlink-buddy-t-display),
+Chainlink Buddy \[T-Display\] boards are [available in the Bezek Labs store](https://bezeklabs.etsy.com/listing/1109357786/splitflap-chainlink-buddy-t-display),
 and come with the additional connectors you'll need. Purchases support continued development of this project. 
 
 
@@ -302,7 +308,7 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 The Chainlink Buddy \[Breadboard\] makes it easy to connect a Chainlink Driver to a breadboard for prototyping. You could use 5 dupont wires and have a
 messy rats nest, or you could use a single ribbon cable and this slick breakout board.
 
-Chainlink Buddy \[Breadboard\] boards are [available in the Bezek Labs store](https://www.etsy.com/listing/1123863267/splitflap-chainlink-buddy-breadboard),
+Chainlink Buddy \[Breadboard\] boards are [available in the Bezek Labs store](https://bezeklabs.etsy.com/listing/1123863267/splitflap-chainlink-buddy-breadboard),
 and come with the additional connectors you'll need. Purchases support continued development of this project. 
 
 <a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-schematic.pdf">
@@ -394,6 +400,20 @@ that is extremely configurable:
 
 TODO: finish documenting this and render some example images...
 
+#### Combined Front Panel Generator
+If you'd like to share a single front face across multiple modules (rather than each module having its own front face), the repo
+includes a script to generate a combined front panel for laser-cutting or CNC milling/routing.
+
+You can modify:
+* Number of rows and columns
+* Horizontal and vertical spacing/separation of modules
+* Overall outer width and height of the panel
+
+For CNC cutting, the script supports rendering a vector file optimized for thicker material (e.g. 6mm MDF) where only the bolt-holes will be through-cut. In this mode, the slots for the top/bottom enclosure pieces can be cut as ~4mm pockets so they aren't visible from the front face. The script automatically generates dog-bone shapes for these pocket cuts.
+
+
+TODO: finish documenting this and render some example images...
+
 #### 3D Printed Tools
 The project also includes a number of optional 3D printed designs to make assembly easier. These include:
 
@@ -454,53 +474,56 @@ The driver firmware is written using PlatformIO with the Arduino framework and i
 
 The firmware implements a closed-loop controller that accepts letters as input over USB serial and drives the stepper motors using a precomputed acceleration ramp for smooth control. The firmware automatically calibrates the spool position at startup, using the hall-effect magnetic sensor, and will automatically recalibrate itself if it ever detects that the spool position has gotten out of sync. If a commanded rotation is expected to bring the spool past the "home" position, it will confirm that the sensor is triggered neither too early nor too late; otherwise it will search for the "home" position to get in sync before continuing to the desired letter.
 
+### Serial protocol
+In order for a computer to communicate with the splitflap, it appears as a USB serial device.
+
+However, usage of Arduino’s `Serial` is strictly forbidden, and instead a `logger` abstraction is provided for sending basic text debug logs. Other data is transferred in a structured way, described below.
+
+This allows flexibility in the format of data transferred over serial, and in fact the splitflap provides 2 different serial modes that serve different purposes.
+
+
+#### Plaintext mode
+
+By default, it starts in “plaintext” mode, which is developer-friendly and you’re probably familiar with if you’ve opened a serial monitor with the splitflap connected:
+```
+{"type":"init", "num_modules":6}
+```
+
+However, this isn’t great for programmatically configuring or receiving updates from the splitflap, so instead the firmware offers a programmatic interface using a binary protocol based on Google’s Protobuf standard.
+
+
+#### Protobuf (binary/programmatic) mode
+
+The protobuf-based binary serial mode is a compact and flexible way to transfer structured data from the host computer to the splitflap and vice-versa.
+
+
+##### Benefits of protobuf
+protobuf provides several benefits over other encoding mechanisms like JSON:
+
+1. Well-defined schema. If you’re curious about the format of data to expect or send, you just need to check the protobuf file
+2. Code generation. Instead of hand-writing JSON parsers every time the data changes, protobuf provides code generation of the encoding and decoding logic, and data-structures. Splitflap uses nanopb to generate C structs based off the schema, and all the code for encoding/decoding that data from the binary format.
+3. Relatively compact/efficient wire encoding. It’s not a primary goal in this project, but the binary wire encoding is generally fairly compact, due to omitting default/unspecified fields, using variable length encodings, etc. It’s certainly much more compact than JSON which uses strings to describe every field in every message.
+4. Backwards/forwards compatibility. Not super relevant to this project, but many common schema changes are backwards and forwards compatible, meaning an older client or a newer client will be able to handle them gracefully.
+
+##### Disadvantages of protobuf
+
+1. Not human-readable. This makes it much harder to debug, as you need something that can interpret messages. Since they’re binary, viewing anything in a terminal directly will be fruitless.
+2. Not self-describing. If you come across a JSON document, you can generally tell what it means because fields have string names/labels describing their contents. Protobuf has no such thing (it uses integer field numbers, which does make renaming fields easier) so you need to have a copy of the schema (.proto file - and you’d better hope it matches the data!) in order to understand an encoded message.
+
+This is why the splitflap defaults to plaintext mode to make basic validation/debugging easier.
+
+##### How it works
+Protobuf messages are encoded to their binary wire format and a CRC32 checksum appended. Then that entire binary string is COBS encoded into a packet, and delimited/framed by 0 (NULL) bytes when sent over serial. This provides a basic packet-based interface with integrity checks (rather than the raw, stream-based interface of a serial connection).
+
+The splitflap automatically switches to binary protobuf mode when it receives a 0 byte.
+
+
 ### Computer Control Software
-The display can be controlled by a computer connected to the Arduino over USB serial. A basic python library for interfacing with the Arduino and a demo application that displays random words can be found in the [software](software) directory.
+The display can be controlled by a computer connected to the ESP32 over USB serial. If you've built a display and want to test it out, check out the web-based demo [here](https://scottbez1.github.io/splitflap) which will connect to your display using USB - no applications/installation necessary!
 
-Commands to the display are sent in a basic plain-text format, and messages _from_ the display are single-line JSON objects, always with a `type` entry describing which type of message it is.
+The firmware supports a plaintext serial mode (enabled by default) for ease of testing, and a protobuf-based binary mode used by the software libraries for enhanced programmatic control and feedback.
 
-When the Arduino starts up, it sends an initialization message that looks like:
-```
-{"type":"init", "num_modules":4}
-```
-
-The display will automatically calibrate all modules, and when complete it will send a status update message:
-```
-{
-    "type":"status",
-    "modules":[
-        {"state":"normal", "flap":" ", "count_missed_home":0, "count_unexpected_home":0},
-        {"state":"sensor_error", "flap":"e", "count_missed_home":0, "count_unexpected_home":0},
-        {"state":"sensor_error", "flap":"e", "count_missed_home":0, "count_unexpected_home":0},
-        {"state":"sensor_error", "flap":"e", "count_missed_home":0, "count_unexpected_home":0}
-    ]
-}
-```
-(Note: this is sent as a single line, but has been reformatted for readability above)
-
-In this case the Arduino was programmed to support 4 modules, but only 1 module is connected, so the other 3 end up in `"sensor_error"` state. More on status updates below.
-
-At this point you can command the display to show some letters. To do this, send a message to the Arduino that looks like this:
-```
-=hiya\n
-```
-The `=` indicates a movement command, followed by any number of letters, followed by a newline. You don't have to send the exact number of modules - if you send fewer letters than modules, only the first N modules will be updated and the remainder won't move. For instance, you could send `=a\n` as shorthand to only set the first module (even if there are 12 modules connected). Any letters that can't be displayed are considered a no-op for that module.
-
-Whenever ALL modules come to a stop, the Arduino will send a status update message (just like the one following initialization, shown above). Here's what the fields mean in each module's status entry:
-- **state** - `normal` indicates it's working as intended, `sensor_error` indicates the module can't find the home position and has given up trying (it will no longer respond to movement commands until told to recalibrate - see below). `panic` indicates the firmware detected a programming bug and has gone into failsafe mode (it will no longer respond to movement commands and requires a full reset of the Arduino to recover - should never happen).
-- **flap** - which letter is shown by this module
-- **count\_missed\_home** - number of times the module expected to pass the home position but failed to detect it. If this is non-zero, it indicates either a flaky sensor or that the motor may have jammed up. The module automatically attempts to recalibrate whenever it misses the home position, so if this number is non-zero and the module is still in the `normal` state, it means the module successfully recovered from the issue(s). However, if this number keeps going up over continued use, it may indicate a recurrent transient issue that warrants investigation.
-- **count\_unexpected\_home** - number of times the module detected the home position when it wasn't supposed to. This is rare, but would indicate a flaky/broken sensor that is tripping at the wrong time. Just like with missed home errors, unexpected home errors will cause the module to attempt to recalibrate itself.
-
-If you want to make all modules recalibrate their home position, send a single @ symbol (no newline follows):
-```
-@
-```
-This recalibrates all modules, including any that were in the `sensor_error` state; if recalibration succeeds they will return to the `normal` state and start responding to movement commands again.
-
-
-
-
+You can find example Typescript and Python libraries in the [`software/chainlink`](software/chainlink) folder.
 
 # Contributing/Modifying
 
@@ -562,7 +585,7 @@ I'd love to hear your thoughts and questions about this project, and happy to in
 
 This project is licensed under Apache v2 (see [LICENSE.txt](LICENSE.txt)).
 
-    Copyright 2015-2021 Scott Bezek and the splitflap contributors
+    Copyright 2015-2024 Scott Bezek and the splitflap contributors
     
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
