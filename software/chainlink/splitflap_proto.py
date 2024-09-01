@@ -42,14 +42,25 @@ class Splitflap(object):
     RETRY_TIMEOUT = 0.25
 
     # TODO: read alphabet from splitflap once this is possible
+
+    # Flap option 1: Legacy Flaps
+    #_DEFAULT_ALPHABET = [
+    #    ' ',
+    #    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+    #    'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+    #    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+    #    '.',
+    #    ',',
+    #    '\'',
+    #]
+
+    # Flap option 2: v2 Flaps
     _DEFAULT_ALPHABET = [
         ' ',
-        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-        'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-        '.',
-        ',',
-        '\'',
+        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+        'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+        'g', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'r',
+        '.', '?', '-', '$', '\'', '#', 'y', 'p', ',', '!', '@', '&', 'w',
     ]
 
     def __init__(self, serial_instance):
