@@ -54,7 +54,7 @@ class Splitflap(object):
     #    '\'',
     #]
 
-    # Flap option 2: v2 Flaps
+    # Flap option 2: v2 flaps (52 per module)
     _DEFAULT_ALPHABET = [
         ' ',
         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
@@ -62,6 +62,19 @@ class Splitflap(object):
         'g', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'r',
         '.', '?', '-', '$', '\'', '#', 'y', 'p', ',', '!', '@', '&', 'w',
     ]
+
+    # Flap option 3: v2 flaps (limited 40-flap set using the first 40 flaps of the set)
+    #_DEFAULT_ALPHABET = [
+    #    ' ',
+    #    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+    #    'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+    #    'g', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'r', '.',
+    #]
+
+    # Flap option 4: YOUR CUSTOM CHARACTER SET HERE!
+    #_DEFAULT_ALPHABET = [
+    #    <FILL THIS IN!>
+    #]
 
     def __init__(self, serial_instance):
         self._serial = serial_instance
