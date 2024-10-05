@@ -87,7 +87,7 @@ jobs:
           ls -lah electronics/build/outputs
 
       - name: Archive artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: electronics-v2

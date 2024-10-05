@@ -100,7 +100,7 @@ jobs:
           gzip 3d/build/outputs/3d_colored_stl/*.stl
 
       - name: Archive artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: 3d
