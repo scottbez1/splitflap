@@ -335,7 +335,7 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 
 For larger displays, you should take additional care to make the hardware more robust to potential faults. The Chainlink Base is an experimental (but unsupported) controller design that adds some additional functionality. This has been tested and appears to work, but is not recommended for general use.
 
-The Chainlink Base PCB is an optional alternative to a Chainink Buddy, designed for particularly large displays.
+The Chainlink Base PCB is an optional alternative to a Chainlink Buddy, designed for particularly large displays.
 It hosts the ESP32 and adds additional connectivity options (terminals for UART and RS485 serial) and
 power distribution (independently-monitored power channels for multiple "zones" of Driver boards).
 
