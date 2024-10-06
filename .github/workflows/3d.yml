@@ -20,7 +20,7 @@ jobs:
 
       - name: 'Generate 2d output :: 52 flap :: generic'
         run: |
-          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python -u 3d/scripts/generate_2d.py --no-connectors --calculate-dimensions --render-raster
+          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python -u 3d/scripts/generate_2d.py --calculate-dimensions --render-raster
           cp 3d/build/laser_parts/combined.svg 3d/build/outputs/3d_laser_vector-52.svg
           cp 3d/build/laser_parts/raster.png 3d/build/outputs/3d_laser_raster-52.png
           ./scripts/annotate_image.sh 3d/build/outputs/3d_laser_raster-52.png
@@ -28,26 +28,26 @@ jobs:
 
       - name: 'Generate 2d output :: 52 flap :: Ponoko 3mm MDF)'
         run: |
-          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python3 -u 3d/scripts/generate_2d.py --no-connectors --calculate-dimensions --kerf-preset ponoko-3mm-mdf
+          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python3 -u 3d/scripts/generate_2d.py --calculate-dimensions --kerf-preset ponoko-3mm-mdf
           cp 3d/build/laser_parts/combined.svg 3d/build/outputs/3d_laser_vector-52-ponoko-3mm-mdf_1x.svg
           cp 3d/build/laser_parts/combined_panel_dimensions.svg 3d/build/outputs/3d_laser_vector-52-ponoko-3mm-mdf_1x_dimensions.svg
 
       - name: 'Generate 2d output :: 52 flap :: Ponoko 3mm Acrylic'
         run: |
-          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python3 -u 3d/scripts/generate_2d.py --no-connectors --calculate-dimensions --kerf-preset ponoko-3mm-acrylic
+          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python3 -u 3d/scripts/generate_2d.py --calculate-dimensions --kerf-preset ponoko-3mm-acrylic
           cp 3d/build/laser_parts/combined.svg 3d/build/outputs/3d_laser_vector-52-ponoko-3mm-acrylic_1x.svg
           cp 3d/build/laser_parts/combined_panel_dimensions.svg 3d/build/outputs/3d_laser_vector-52-ponoko-3mm-acrylic_1x_dimensions.svg
 
       - name: 'Generate 2d output :: 52 flap :: Elecrow 3mm Wood'
         run: |
-          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python3 -u 3d/scripts/generate_2d.py --no-connectors --kerf-preset elecrow-3mm-wood --render-elecrow
+          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python3 -u 3d/scripts/generate_2d.py --kerf-preset elecrow-3mm-wood --render-elecrow
           cp 3d/build/laser_parts/combined.svg 3d/build/outputs/3d_laser_vector-52-elecrow-3mm-wood_1x.svg
           cp 3d/build/laser_parts/combined_panel_dimensions.svg 3d/build/outputs/3d_laser_vector-52-elecrow-3mm-wood_1x_dimensions.svg
           cp 3d/build/laser_parts/elecrow.zip 3d/build/outputs/3d_laser_vector-52-elecrow-3mm-wood_1x.zip
 
       - name: 'Generate 2d output :: 52 flap :: Elecrow 3mm Acrylic'
         run: |
-          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python3 -u 3d/scripts/generate_2d.py --no-connectors --kerf-preset elecrow-3mm-acrylic --render-elecrow
+          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python3 -u 3d/scripts/generate_2d.py --kerf-preset elecrow-3mm-acrylic --render-elecrow
           cp 3d/build/laser_parts/combined.svg 3d/build/outputs/3d_laser_vector-52-elecrow-3mm-acrylic_1x.svg
           cp 3d/build/laser_parts/combined_panel_dimensions.svg 3d/build/outputs/3d_laser_vector-52-elecrow-3mm-acrylic_1x_dimensions.svg
           cp 3d/build/laser_parts/elecrow.zip 3d/build/outputs/3d_laser_vector-52-elecrow-3mm-acrylic_1x.zip
@@ -55,7 +55,7 @@ jobs:
 
       - name: 'Generate 2d output :: 40 flap :: generic'
         run: |
-          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python -u 3d/scripts/generate_2d.py --no-connectors --calculate-dimensions --render-raster --num-flaps 40
+          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python -u 3d/scripts/generate_2d.py --calculate-dimensions --render-raster --num-flaps 40
           cp 3d/build/laser_parts/combined.svg 3d/build/outputs/3d_laser_vector-40.svg
           cp 3d/build/laser_parts/raster.png 3d/build/outputs/3d_laser_raster-40.png
           ./scripts/annotate_image.sh 3d/build/outputs/3d_laser_raster-40.png
@@ -63,26 +63,26 @@ jobs:
 
       - name: 'Generate 2d output :: 40 flap :: Ponoko 3mm MDF)'
         run: |
-          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python3 -u 3d/scripts/generate_2d.py --no-connectors --calculate-dimensions --kerf-preset ponoko-3mm-mdf --num-flaps 40
+          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python3 -u 3d/scripts/generate_2d.py --calculate-dimensions --kerf-preset ponoko-3mm-mdf --num-flaps 40
           cp 3d/build/laser_parts/combined.svg 3d/build/outputs/3d_laser_vector-40-ponoko-3mm-mdf_1x.svg
           cp 3d/build/laser_parts/combined_panel_dimensions.svg 3d/build/outputs/3d_laser_vector-40-ponoko-3mm-mdf_1x_dimensions.svg
 
       - name: 'Generate 2d output :: 40 flap :: Ponoko 3mm Acrylic'
         run: |
-          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python3 -u 3d/scripts/generate_2d.py --no-connectors --calculate-dimensions --kerf-preset ponoko-3mm-acrylic --num-flaps 40
+          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python3 -u 3d/scripts/generate_2d.py --calculate-dimensions --kerf-preset ponoko-3mm-acrylic --num-flaps 40
           cp 3d/build/laser_parts/combined.svg 3d/build/outputs/3d_laser_vector-40-ponoko-3mm-acrylic_1x.svg
           cp 3d/build/laser_parts/combined_panel_dimensions.svg 3d/build/outputs/3d_laser_vector-40-ponoko-3mm-acrylic_1x_dimensions.svg
 
       - name: 'Generate 2d output :: 40 flap :: Elecrow 3mm Wood'
         run: |
-          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python3 -u 3d/scripts/generate_2d.py --no-connectors --kerf-preset elecrow-3mm-wood --render-elecrow --num-flaps 40
+          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python3 -u 3d/scripts/generate_2d.py --kerf-preset elecrow-3mm-wood --render-elecrow --num-flaps 40
           cp 3d/build/laser_parts/combined.svg 3d/build/outputs/3d_laser_vector-40-elecrow-3mm-wood_1x.svg
           cp 3d/build/laser_parts/combined_panel_dimensions.svg 3d/build/outputs/3d_laser_vector-40-elecrow-3mm-wood_1x_dimensions.svg
           cp 3d/build/laser_parts/elecrow.zip 3d/build/outputs/3d_laser_vector-40-elecrow-3mm-wood_1x.zip
 
       - name: 'Generate 2d output :: 40 flap :: Elecrow 3mm Acrylic'
         run: |
-          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python3 -u 3d/scripts/generate_2d.py --no-connectors --kerf-preset elecrow-3mm-acrylic --render-elecrow --num-flaps 40
+          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python3 -u 3d/scripts/generate_2d.py --kerf-preset elecrow-3mm-acrylic --render-elecrow --num-flaps 40
           cp 3d/build/laser_parts/combined.svg 3d/build/outputs/3d_laser_vector-40-elecrow-3mm-acrylic_1x.svg
           cp 3d/build/laser_parts/combined_panel_dimensions.svg 3d/build/outputs/3d_laser_vector-40-elecrow-3mm-acrylic_1x_dimensions.svg
           cp 3d/build/laser_parts/elecrow.zip 3d/build/outputs/3d_laser_vector-40-elecrow-3mm-acrylic_1x.zip
