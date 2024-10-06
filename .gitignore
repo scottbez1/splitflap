@@ -20,3 +20,5 @@ sensor.xml
 
 # Arduino compiled output
 *.hex
+
+.pio
