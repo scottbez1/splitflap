@@ -60,7 +60,7 @@ const uint8_t flaps[NUM_FLAPS] = {
   ' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
   'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y',
   'Z', 'g', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'r',
-  '.', '?', '-', '$', '\'', '#', 'y', 'p', ',', '!', '~', '&', 'w'
+  '.', '?', '-', '$', '\'', '#', 'y', 'p', ',', '!', '@', '&', 'w'
 };
 
 // Flap option 3: v2 flaps (limited 40-flap set using the first 40 flaps of the set)

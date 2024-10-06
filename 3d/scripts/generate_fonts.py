@@ -44,7 +44,7 @@ _MODES = {
 def render(extra_variables, skip_optimize, output_directory):
     renderer = Renderer(os.path.join(source_parts_dir, 'font_generator.scad'), output_directory, extra_variables)
     renderer.clean()
-    svg_output = renderer.render_svgs(panelize_quantity = 1)
+    svg_output, _ = renderer.render_svgs(panelize_quantity = 1)
 
     processor = SvgProcessor(svg_output)
 

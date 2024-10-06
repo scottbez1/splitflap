@@ -162,18 +162,28 @@ if __name__ == '__main__':
         elecrow_zip = os.path.join(laser_parts_directory, 'elecrow.zip')
 
         processor.apply_elecrow_style()
-        processor.add_dimensions(width_mm, height_mm)
+        processor.add_dimensions(width_mm, height_mm, args.mirror)
         processor.write(elecrow_svg)
 
         logging.info('Resize SVG canvas')
-        subprocess.check_call([
-            app_paths.get('inkscape'),
-            '--verb=FitCanvasToDrawing',
-            '--verb=FileSave',
-            '--verb=FileClose',
-            '--verb=FileQuit',
-            elecrow_svg,
-        ])
+        # since version 1.2, inkscape has replaced 'verbs' with 'actions'
+        # see: https://wiki.inkscape.org/wiki/Using_the_Command_Line
+        if inkscape._version() < 1.2:
+            subprocess.check_call([
+                app_paths.get('inkscape'),
+                '--verb=FitCanvasToDrawing',
+                '--verb=FileSave',
+                '--verb=FileClose',
+                '--verb=FileQuit',
+                elecrow_svg,
+            ])
+        else:
+            subprocess.check_call([
+                app_paths.get('inkscape'),
+                "--actions=select-all;fit-canvas-to-selection;export-type:svg;export-plain-svg;export-do",
+                elecrow_svg,
+                "-o", elecrow_svg,
+            ])
 
         logging.info('Output PDF')
         subprocess.check_call([

@@ -22,48 +22,6 @@ const FLAP_COLOR_BLOCKS: Record<string, string> = {
     'y': '#ffd639',
 }
 
-type MessageDelayMs = [string, number]
-
-const IDLE_MESSAGES_BY_LENGTH: Record<number, MessageDelayMs[]> = {
-    6: [
-        ['SPLIT', 6000],
-        [' FLAP', 6000],
-        ['  BY', 6000],
-        ['BEZEK', 6000],
-        ['  LABS', 12000],
-        ['', 2 * 60 * 1000],
-    ],
-    12: [
-        ['gprwygprwygp', 6000],
-        ['wwwwwwwwwwww', 5000],
-        [' wwwwwwwwwww', 100],
-        ['  wwwwwwwwww', 100],
-        ['   wwwwwwwww', 100],
-        ['    wwwwwwww', 100],
-        ['     wwwwwww', 100],
-        ['      wwwwww', 100],
-        ['       wwwww', 100],
-        ['        wwww', 100],
-        ['         www', 100],
-        ['          ww', 100],
-        ['           w', 100],
-        ['            ', 500],
-        ['OPEN SOURCE ', 8000],
-        ['  @SCOTTBEZ1', 12000],
-        ['            ', 4000],
-        [' 999996 SUBS', 5000],
-        [' 999997 SUBS', 100],
-        [' 999998 SUBS', 600],
-        [' 999999 SUBS', 4000],
-        ['1000000 SUBS', 8000],
-        ['            ', 4000],
-        ['COFFEE $3.49', 7000],
-        ['g BUILD PASS', 7000],
-        ['r TEST FAIL', 7000],
-        ['            ', 4000],
-        ['COME TRY ME!', 2 * 60 * 1000],
-    ],
-}
 
 type Config = NoUndefinedField<PB.ISplitflapConfig>
 
@@ -234,29 +192,6 @@ export const App: React.FC<AppProps> = () => {
             }
         })
     }, [splitflapState.modules])
-
-    const idleTimeout = useRef<ReturnType<typeof setTimeout>>();
-    const curMessage = useRef<number>(0);
-    const nextMessage = () => {
-        const idleMessages = IDLE_MESSAGES_BY_LENGTH[splitflapState.modules.length]
-        const m = idleMessages[(curMessage.current++) % idleMessages.length]
-        updateSplitflap(m[0], true)
-        idleTimeout.current = setTimeout(nextMessage, m[1])
-    }
-    useEffect(() => {
-        if (!inputValue.user) {
-            return
-        }
-        const t = idleTimeout.current
-        if (t) {
-            clearTimeout(t)
-            curMessage.current = 0
-        }
-        idleTimeout.current = setTimeout(() => {
-            setInputValue({val:'', user: false})
-            nextMessage()
-        }, 1 * 60 * 1000)
-    }, [inputValue, splitflapState.modules.length])
 
     const numModules = splitflapState.modules.length
     const charWidth = Math.max(1000 / numModules, 40)
