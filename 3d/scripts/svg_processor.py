@@ -15,6 +15,8 @@
 from __future__ import print_function
 from collections import defaultdict
 import os
+
+svg_path_install = f'python3 -m pip install -r {os.path.join(os.path.dirname(__file__), "requirements.txt")}'
 try:
     from svg.path import (
         Path,
@@ -24,7 +26,11 @@ try:
         parse_path,
     )
 except:
-    raise RuntimeError(f'Error loading svg.path library. Run "python3 -m pip install -r {os.path.join(os.path.dirname(__file__), "requirements.txt")}" to install it')
+    raise RuntimeError(f'Error loading svg.path library. Run "{svg_path_install}" to install it')
+
+from importlib.metadata import version
+assert int(version('svg.path').split('.')[0]) == 6, f'svg.path library is not new enough (found {version("svg.path")}). Run "{svg_path_install}" to install it'
+
 
 from xml.dom import minidom
 
@@ -159,10 +165,11 @@ class SvgProcessor(object):
             path_text = path.attributes['d'].value
             path_obj = parse_path(path_text)
             for line_index, line in enumerate(path_obj):
-                # Moves don't draw anything by themselves, but they do set the
-                # target for subsequent closes, so they should not be removed.
-                slope, intersect = _get_slope_intersect(line.start, line.end)
-                if not isinstance(line, Move):
+                if isinstance(line, Close):
+                    # Treat Close as a Line
+                    line = Line(line.start, line.end)
+                if isinstance(line, Line):
+                    slope, intersect = _get_slope_intersect(line.start, line.end)
                     # TODO: float inaccuracy and rounding may cause collinear lines to end up in separate buckets in rare
                     # cases, so this is not quite correct. Would be better to put lines into *2* nearest buckets in each
                     # dimension to avoid edge cases.
@@ -203,12 +210,17 @@ class SvgProcessor(object):
             filtered_path = Path()
 
             for line_index, line in enumerate(path_obj):
+                if isinstance(line, Close):
+                    # Treat Close as a Line
+                    line = Line(line.start, line.end)
                 if i in to_remove:
+                    assert isinstance(line, Line)
                     assert path_index == to_remove[i][0]
                     assert line_index == to_remove[i][1]
                     removed += 1
                     removed_length += line.length()
                 elif i in to_update:
+                    assert isinstance(line, Line)
                     assert path_index == to_update[i][0]
                     assert line_index == to_update[i][1]
                     replacement_line = to_update[i][2]
@@ -216,22 +228,27 @@ class SvgProcessor(object):
                     filtered_path.append(replacement_line)
                     kept += 1
                     kept_length += replacement_line.length()
-                elif isinstance(line, Close):
-                    # Replace the close with a line, because if we removed all
-                    # or part of the previous line in this path, a close will
-                    # not work as expected.
-                    new_line = Line(line.start, line.end)
-                    filtered_path.append(new_line)
-                    kept += 1
-                    kept_length += new_line.length()
-                else:
+                elif isinstance(line, Line):
                     filtered_path.append(line)
                     kept += 1
                     kept_length += line.length()
+                else:
+                    print(f'Omitting non-line in reconstructed path at index {line_index}: {line!r}')
                 i += 1
 
             # Update the path data with the filtered path data
-            path.attributes['d'] = filtered_path.d()
+            last_line = None
+            new_path = Path()
+            for line in filtered_path:
+                # Newer versions of svg.path keep Moves but don't ensure consistency with line start/ends. We've stripped non-Lines above, so
+                # we need to add back Moves where Line segments are not connected
+                if last_line is None or abs(last_line.end.real - line.start.real) > 0.001 or abs(last_line.end.imag - line.start.imag) > 0.001:
+                    new_path.append(Move(line.start))
+                new_path.append(line)
+                last_line = line
+                
+            path.attributes['d'] = new_path.d()
+            print(f'Optimized line path from\n  {path_text!r}\n  to\n  {path.attributes["d"].value!r}')
 
         print('Removed {} lines ({} length) and kept {} lines ({} length)'.format(
             removed,
