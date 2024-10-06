@@ -16,7 +16,7 @@
  * BSD license, all text here must be included in any redistribution.
  *
  */
-#include "../config.h"
+#include "config.h"
 #if INA219_POWER_SENSE
 #ifndef _LIB_ADAFRUIT_INA219_
 #define _LIB_ADAFRUIT_INA219_

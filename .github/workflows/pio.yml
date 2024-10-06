@@ -49,12 +49,12 @@ jobs:
     #     pio run \
     #       -e uno-direct \
 
-    - name: Build Firmware (esp32)
+    - name: Build Firmware (esp32CustomAdvanced)
       # Run regardless of other build step failures, as long as setup steps completed
       if: always() && steps.pio_install.outcome == 'success'
       run: |
         pio run \
-          -e esp32 \
+          -e esp32CustomAdvanced
 
     - name: Build Firmware (chainlink)
       # Run regardless of other build step failures, as long as setup steps completed

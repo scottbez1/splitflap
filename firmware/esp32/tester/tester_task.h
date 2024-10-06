@@ -20,7 +20,7 @@
 #include <Wire.h>
 
 #include "Adafruit_MCP23017.h"
-#include "src/Adafruit_INA219.h"
+#include "Adafruit_INA219.h"
 
 #include "result.h"
 #include "../core/splitflap_task.h"

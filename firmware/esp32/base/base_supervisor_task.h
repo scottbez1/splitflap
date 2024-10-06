@@ -19,7 +19,7 @@
 #include <FastLED.h>
 
 #include "Adafruit_MCP23017.h"
-#include "src/Adafruit_INA219.h"
+#include "Adafruit_INA219.h"
 
 #include "../splitflap/serial_task.h"
 #include "../core/splitflap_task.h"
