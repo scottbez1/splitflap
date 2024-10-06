@@ -120,6 +120,8 @@ The v0.7 stable release artifacts can be found at the [v0.7 tagged release](http
 ### Beta v2 (52-flap module option - recommended)
 ![2d laser cut rendering](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_raster-52.png)
 
+Instructions: [v2 assembly guide](https://paper.dropbox.com/doc/Splitflap-v2-Assembly-Guide-vsT9BHwl9xhE9yZCMB3OC)
+
 Module dimensions: <img height="18" src="https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-52-module_dimensions.svg" />
 
 Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
@@ -133,6 +135,8 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 
 ### Beta v2 (40-flap module option)
 ![2d laser cut rendering](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_raster-40.png)
+
+Instructions: [v2 assembly guide](https://paper.dropbox.com/doc/Splitflap-v2-Assembly-Guide-vsT9BHwl9xhE9yZCMB3OC)
 
 Module dimensions: <img height="18" src="https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-40-module_dimensions.svg" />
 
