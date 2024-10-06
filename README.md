@@ -473,7 +473,7 @@ an informed decision about which revision(s) to use.
 
 ## Code
 ### Firmware
-The driver firmware is written using PlatformIO with the Arduino framework and is available at [`arduino/splitflap/Splitflap/Splitflap.ino`](arduino/splitflap/Splitflap/Splitflap.ino). 
+The driver firmware is written using PlatformIO with the Arduino framework and is available at [`firmware/`](firmware/). 
 
 The firmware implements a closed-loop controller that accepts letters as input over USB serial and drives the stepper motors using a precomputed acceleration ramp for smooth control. The firmware automatically calibrates the spool position at startup, using the hall-effect magnetic sensor, and will automatically recalibrate itself if it ever detects that the spool position has gotten out of sync. If a commanded rotation is expected to bring the spool past the "home" position, it will confirm that the sensor is triggered neither too early nor too late; otherwise it will search for the "home" position to get in sync before continuing to the desired letter.
 

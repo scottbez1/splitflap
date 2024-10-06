@@ -21,7 +21,7 @@
 
 #include "acceleration.h"
 #include "splitflap_module_data.h"
-#include "../config.h"
+#include "config.h"
 
 // Logging and assertions are useful for debugging, but likely add too much time/space overhead to be used when
 // driving many SplitflapModules at once.

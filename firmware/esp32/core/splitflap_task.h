@@ -17,7 +17,7 @@
 
 #include "config.h"
 #include "logger.h"
-#include "src/splitflap_module_data.h"
+#include "splitflap_module_data.h"
 #include "configuration.h"
 
 #include "task.h"

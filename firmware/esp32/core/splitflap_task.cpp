@@ -18,8 +18,8 @@
 
 // General splitflap includes
 #include "config.h"
-#include "src/splitflap_module.h"
-#include "src/spi_io_config.h"
+#include "splitflap_module.h"
+#include "spi_io_config.h"
 
 // ESP32-specific includes
 #include "semaphore_guard.h"

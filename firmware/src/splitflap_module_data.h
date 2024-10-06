@@ -15,7 +15,7 @@
 */
 #pragma once
 
-#include "../config.h"
+#include "config.h"
 
 #if HOME_CALIBRATION_ENABLED
 enum HomeState {

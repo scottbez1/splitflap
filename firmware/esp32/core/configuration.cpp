@@ -126,7 +126,7 @@ bool Configuration::saveToDisk() {
     }
     File f = FFat.open(CONFIG_PATH, FILE_WRITE);
     if (!f) {
-        log("Failed to read config file");
+        log("Failed to open config file");
         return false;
     }
     size_t written = f.write(buffer_, stream.bytes_written);
