@@ -1,0 +1,108 @@
+name: Export Electronics (v2)
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  export-electronics-sensor-smd:
+    name: Export Electronics (Sensor SMD)
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up outputs directory
+        run: mkdir -p electronics/build/outputs
+
+      - name: Install dependencies
+        run: ./electronics/scripts/dependencies_v2.sh
+
+# Sensor board:
+      - name: Export PCB fabrication files [sensor_smd, single]
+        run: |
+          ./electronics/scripts/export_jlcpcb.py electronics/sensor_smd/sensor_smd.kicad_pcb --assembly-schematic electronics/sensor_smd/sensor_smd.kicad_sch
+          cp -r electronics/build/sensor_smd-jlc electronics/build/outputs/sensor_smd-jlc
+
+      - name: Panelize sensor PCB
+        run: |
+          kikit panelize -p electronics/sensor_smd/kikit_panelize.json electronics/sensor_smd/sensor_smd.kicad_pcb electronics/build/panelized_sensor_smd.kicad_pcb
+
+      - name: Export PCB fabrication files [sensor_smd, panelized]
+        run: |
+          ./electronics/scripts/export_jlcpcb.py electronics/build/panelized_sensor_smd.kicad_pcb --assembly-schematic electronics/sensor_smd/sensor_smd.kicad_sch
+          cp -r electronics/build/panelized_sensor_smd-jlc electronics/build/outputs/sensor_smd-panelized-jlc
+
+      # Note: These kibot scripts are run last because they mess with file permissions which breaks other scripts, not sure why
+      - name: Exports [sensor_smd, single]
+        uses: INTI-CMNB/KiBot@v2_k6_1_6_3
+        with:
+          config: electronics/sensor_smd/sensor_smd.kibot.yml
+          dir: electronics/build/outputs
+          schema: 'electronics/sensor_smd/sensor_smd.kicad_sch'
+          board: 'electronics/sensor_smd/sensor_smd.kicad_pcb'
+
+      - name: Exports [sensor_smd, panelized]
+        uses: INTI-CMNB/KiBot@v2_k6_1_6_3
+        with:
+          config: electronics/sensor_smd/sensor_smd-panelized.kibot.yml
+          dir: electronics/build/outputs
+          schema: 'electronics/sensor_smd/sensor_smd.kicad_sch'
+          board: 'electronics/build/panelized_sensor_smd.kicad_pcb'
+
+      - name: Fix permissions
+        # Need to chown files back to runner, as ownership gets set to root by the KiBot Actions
+        run: |
+          sudo chown runner:docker electronics/build/outputs/*
+          sudo chown runner:docker electronics/build/*
+
+      - name: Update 3D artifacts [sensor_smd, single]
+        run: |
+          mv electronics/build/outputs/sensor_smd-3D_top.png electronics/build/outputs/sensor_smd-front-3d.png
+          ./scripts/annotate_image.sh electronics/build/outputs/sensor_smd-front-3d.png
+          mv electronics/build/outputs/sensor_smd-3D_bottom.png electronics/build/outputs/sensor_smd-back-3d.png
+          ./scripts/annotate_image.sh electronics/build/outputs/sensor_smd-back-3d.png
+        env:
+          PYTHONUNBUFFERED: 1
+
+      - name: Update 3D artifacts [sensor_smd, panelized]
+        run: |
+          mv electronics/build/outputs/panelized_sensor_smd-3D_top.png electronics/build/outputs/panelized_sensor_smd-front-3d.png
+          ./scripts/annotate_image.sh electronics/build/outputs/panelized_sensor_smd-front-3d.png
+          mv electronics/build/outputs/panelized_sensor_smd-3D_bottom.png electronics/build/outputs/panelized_sensor_smd-back-3d.png
+          ./scripts/annotate_image.sh electronics/build/outputs/panelized_sensor_smd-back-3d.png
+        env:
+          PYTHONUNBUFFERED: 1
+
+      - name: Rasterise schematic [sensor_smd]
+        run: |
+         convert -density 96 electronics/build/outputs/sensor_smd-schematic.pdf -background white -alpha remove electronics/build/outputs/sensor_smd-schematic.png
+          ./scripts/annotate_image.sh electronics/build/outputs/sensor_smd-schematic.png
+
+      - name: Show artifacts
+        if: always()
+        run: |
+          ls -lah electronics/build
+          ls -lah electronics/build/outputs
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: electronics-v2
+          path: |
+            electronics/build
+
+      - name: Configure AWS Credentials
+        if: github.event_name == 'push' && github.repository_owner == 'scottbez1'
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Sync artifacts to S3
+        if: github.event_name == 'push' && github.repository_owner == 'scottbez1'
+        run: |
+          aws s3 sync electronics/build/outputs s3://splitflap-artifacts/${GITHUB_REF#refs/heads/}/electronics-v2 --delete --acl public-read --cache-control max-age=0,no-cache

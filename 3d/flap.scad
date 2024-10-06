@@ -15,13 +15,21 @@
 */
 include<flap_dimensions.scad>;
 include<global_constants.scad>;
-
 use<flap_fonts.scad>;
+use<flap_characters.scad>;
 
 // TODO: extract core flap spool dimensions used for vertical_keepout_size instead of using the full splitflap file
 use<splitflap.scad>;
 
-character_list = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,'";
+character_list = get_character_list();
+color_list = [
+    ["p", [122,  40, 203] / 255], // #7a28cb
+    ["r", [230,  57,  70] / 255], // "#e63946
+    ["y", [255, 214,  57] / 255], // "#ffd639
+    ["g", [102, 215, 209] / 255], // "#66d7d1
+    ["w", [255, 255, 255] / 255], // "#ffffff
+];
+
 
 // Facet number variable refers to a special variable "$fn" that is used to control the number of facets to generate an arc.
 // Higher than 100 is not recommended according to the docs as it demands a lot resources
@@ -34,7 +42,6 @@ vertical_keepout_size_factor = 1.1;     // Expand calculated keepout region by t
 
 vertical_keepout_size = get_flap_arc_separation() * vertical_keepout_size_factor;
 
-function get_character_list() = character_list;
 function get_flap_index_for_letter(letter) = search(letter, character_list)[0];
 function get_letter_for_front(flap_index) =
     flap_index >= len(character_list) ? get_letter_for_front(flap_index - len(character_list)) :
@@ -79,23 +86,51 @@ module _flap(flap_color) {
     }
 }
 
-module _draw_letter(letter) {
+module _apply_special_color(letter, standard_letter_color) {
+    color_index = search([letter], color_list);
+    if (len(color_index) > 0 && is_num(color_index[0])) {
+        color(color_list[color_index[0]][1]) {
+            children();
+        }
+    } else {
+        color(standard_letter_color) {
+            children();
+        }
+    }
+}
+
+module _draw_letter(letter, flap_gap) {
     overrides = get_letter_overrides(letter);
     height = is_undef(overrides[3]) ? get_font_setting("height") : overrides[3];
     width = is_undef(overrides[4]) ? get_font_setting("width") : overrides[4];
-    translate([0, -flap_height * height, 0]) {  // valign compensation
-        scale([width, 1, 1]) {
-            offset_x = is_undef(overrides[1]) ? get_font_setting("offset_x") : get_font_setting("offset_x") + overrides[1];
-            offset_y = is_undef(overrides[2]) ? get_font_setting("offset_y") : get_font_setting("offset_y") + overrides[2];
-            translate([offset_x, offset_y]) {
-                text(text=letter, size=flap_height * height * 2, font=get_font_setting("font"), halign="center", $fn=letter_facet_number);
+    offset_x = is_undef(overrides[1]) ? get_font_setting("offset_x") : get_font_setting("offset_x") + overrides[1];
+    offset_y = is_undef(overrides[2]) ? get_font_setting("offset_y") : get_font_setting("offset_y") + overrides[2];
+    thickness_offset = is_undef(overrides[5]) ? (is_undef(get_font_setting("thickness_offset")) ? 0 : get_font_setting("thickness_offset")) : overrides[5];
+
+    color_index = search([letter], color_list);
+    if (len(color_index) > 0 && is_num(color_index[0])) {
+        color_height = get_font_setting("color_height");
+        color_height_with_default = is_undef(color_height) ? height : color_height;
+        color_offset_y = get_font_setting("color_offset_y");
+        color_offset_y_with_default = is_undef(color_offset_y) ? offset_y : color_offset_y;
+        translate([0, color_offset_y_with_default]) {
+            square([flap_width - flap_notch_depth * 2 - 4, (flap_height * 2 + flap_gap) * color_height_with_default], center=true);
+        }
+    } else {
+        translate([0, -flap_height * height, 0]) {  // valign compensation
+            scale([width, 1, 1]) {
+                translate([offset_x, offset_y]) {
+                    offset(delta=thickness_offset) {
+                        text(text=letter, size=flap_height * height * 2, font=get_font_setting("font"), halign="center", $fn=letter_facet_number);
+                    }
+                }
             }
         }
     }
 }
 
 module _flap_letter(letter, letter_color, flap_gap, front=true, bleed = 0) {
-    color(letter_color) {
+    _apply_special_color(letter, letter_color) {
         translate([0, 0, front ? flap_thickness/2 + eps : -flap_thickness/2 - eps]) {
             linear_extrude(height=0.1, center=true) {
                 intersection() {
@@ -121,7 +156,7 @@ module _flap_letter(letter, letter_color, flap_gap, front=true, bleed = 0) {
                         gap_comp = (use_letter_gap_compensation() == true) ? -flap_gap/2 : 0;
                         translate([0, gap_comp, 0]) {
                             rotate([rotation, 0, 0]) {
-                                _draw_letter(letter);
+                                _draw_letter(letter, flap_gap);
                             }
                         }
                     }
@@ -147,7 +182,7 @@ module _flap_letter(letter, letter_color, flap_gap, front=true, bleed = 0) {
                             gap_comp = (use_letter_gap_compensation() == true) ? -flap_gap/2 : 0;
                             translate([0, gap_comp, 0]) {
                                 rotate([rotation, 0, 0]) {
-                                    _draw_letter(letter);
+                                    _draw_letter(letter, flap_gap);
                                 }
                             }
                         }
@@ -159,6 +194,9 @@ module _flap_letter(letter, letter_color, flap_gap, front=true, bleed = 0) {
 }
 
 module flap_with_letters(flap_color, letter_color, flap_index, flap_gap, flap=true, front_letter=true, back_letter=true, bleed=0) {
+    if (len(character_list) != get_num_flaps()) {
+        echo("Warning: character_list and num_flaps mismatch!");
+    }
     if (flap) {
         _flap(flap_color);
     }

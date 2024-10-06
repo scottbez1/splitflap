@@ -41,15 +41,11 @@ class Splitflap(object):
 
     RETRY_TIMEOUT = 0.25
 
-    # TODO: read alphabet from splitflap once this is possible
-    _DEFAULT_ALPHABET = [
-        ' ',
-        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-        'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-        '.',
-        ',',
-        '\'',
+    _LEGACY_ALPHABET = [
+        ' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
+        'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
+        'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '0', '1', '2',
+        '3', '4', '5', '6', '7', '8', '9', '.', ',', "'",
     ]
 
     def __init__(self, serial_instance):
@@ -66,7 +62,8 @@ class Splitflap(object):
         self._current_config = splitflap_pb2.SplitflapConfig()
         self._num_modules = None
 
-        self._alphabet = Splitflap._DEFAULT_ALPHABET
+        self._alphabet = Splitflap._LEGACY_ALPHABET
+        self._alphabet_received = False
 
     def _read_loop(self):
         self._logger.debug('Read loop started')
@@ -125,6 +122,9 @@ class Splitflap(object):
                     self._current_config.modules.append(splitflap_pb2.SplitflapConfig.ModuleConfig())
             else:
                 assert self._num_modules == num_modules_reported, f'Number of reported modules changed (was {self._num_modules}, now {num_modules_reported})'
+        elif payload_type == 'general_state' and not self._alphabet_received:
+            self._alphabet_received = True
+            self._alphabet = list(message.general_state.flap_character_set.decode('utf-8'))
 
         with self._lock:
             for handler in self._message_handlers[payload_type] + self._message_handlers[None]:

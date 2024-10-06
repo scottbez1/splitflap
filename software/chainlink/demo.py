@@ -7,10 +7,10 @@ from splitflap_proto import (
 )
 
 words = [
-    'alpaca', 'baboon', 'badger', 'beluga', 'bobcat', 'ferret',
-    'gopher', 'impala', 'jackal', 'jaguar', 'kitten', 'marmot',
-    'monkey', 'ocelot', 'rabbit', 'racoon', 'turtle', 'walrus',
-    'weasel', 'wombat',
+    'ALPACA', 'BABOON', 'BADGER', 'BELUGA', 'BOBCAT', 'FERRET',
+    'GOPHER', 'IMPALA', 'JACKAL', 'JAGUAR', 'KITTEN', 'MARMOT',
+    'MONKEY', 'OCELOT', 'RABBIT', 'RACOON', 'TURTLE', 'WALRUS',
+    'WEASEL', 'WOMBAT',
 ]
 
 

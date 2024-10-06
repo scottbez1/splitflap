@@ -2,7 +2,7 @@
 
 set -e
 
-FONT="3d/roboto/RobotoMono-Bold.ttf"
+FONT="3d/fonts/roboto/RobotoMono-Bold.ttf"
 
 # Make sure font exists
 ls "$FONT"

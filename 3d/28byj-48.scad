@@ -22,7 +22,7 @@
 28byj48_mount_center_offset = 35/2;
 28byj48_mount_bracket_height = 0.8;
 
-28byj48_shaft_collar_radius = 9/2;
+28byj48_shaft_collar_radius = 9.4/2;
 28byj48_shaft_collar_height = 1.5;
 
 28byj48_shaft_radius = 5/2;
@@ -37,6 +37,7 @@
 // Exports for use in other files:
 function 28byj48_mount_bracket_height() = 28byj48_mount_bracket_height;
 function 28byj48_shaft_radius() = 28byj48_shaft_radius;
+function 28byj48_shaft_collar_radius() = 28byj48_shaft_collar_radius;
 function 28byj48_mount_center_offset() = 28byj48_mount_center_offset;
 function 28byj48_chassis_radius() = 28byj48_chassis_radius;
 function 28byj48_shaft_offset() = 28byj48_shaft_offset;

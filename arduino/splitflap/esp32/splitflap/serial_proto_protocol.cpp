@@ -73,31 +73,70 @@ void SerialProtoProtocol::loop() {
         packet_serial_.update();
     } while (stream_.available());
 
-    // Rate limit state change transmissions
-    bool state_changed = latest_state_ != last_sent_state_ && millis() - last_sent_state_millis_ >= MIN_STATE_INTERVAL_MILLIS;
+    {
+        // SplitflapState updates
+            
+        // Rate limit state change transmissions
+        bool state_changed = latest_state_ != last_sent_state_ && millis() - last_sent_state_millis_ >= MIN_STATE_INTERVAL_MILLIS;
 
-    // Send state periodically or when forced, regardless of rate limit for state changes
-    bool force_send_state = state_requested_ || millis() - last_sent_state_millis_ > PERIODIC_STATE_INTERVAL_MILLIS;
-    if (state_changed || force_send_state) {
-        state_requested_ = false;
-        pb_tx_buffer_ = {};
-        pb_tx_buffer_.which_payload = PB_FromSplitflap_splitflap_state_tag;
-        pb_tx_buffer_.payload.splitflap_state.modules_count = NUM_MODULES;
-        for (uint8_t i = 0; i < NUM_MODULES; i++) {
-            pb_tx_buffer_.payload.splitflap_state.modules[i] = {
-                .state = (PB_SplitflapState_ModuleState_State) latest_state_.modules[i].state,
-                .flap_index = latest_state_.modules[i].flap_index,
-                .moving = latest_state_.modules[i].moving,
-                .home_state = latest_state_.modules[i].home_state,
-                .count_unexpected_home = latest_state_.modules[i].count_unexpected_home,
-                .count_missed_home = latest_state_.modules[i].count_missed_home,
-            };
+        // Send state periodically or when forced, regardless of rate limit for state changes
+        bool force_send_state = state_requested_ || millis() - last_sent_state_millis_ > PERIODIC_STATE_INTERVAL_MILLIS;
+        if (state_changed || force_send_state) {
+            pb_tx_buffer_ = {};
+            pb_tx_buffer_.which_payload = PB_FromSplitflap_splitflap_state_tag;
+            pb_tx_buffer_.payload.splitflap_state.modules_count = NUM_MODULES;
+            for (uint8_t i = 0; i < NUM_MODULES; i++) {
+                pb_tx_buffer_.payload.splitflap_state.modules[i] = {
+                    .state = (PB_SplitflapState_ModuleState_State) latest_state_.modules[i].state,
+                    .flap_index = latest_state_.modules[i].flap_index,
+                    .moving = latest_state_.modules[i].moving,
+                    .home_state = latest_state_.modules[i].home_state,
+                    .count_unexpected_home = latest_state_.modules[i].count_unexpected_home,
+                    .count_missed_home = latest_state_.modules[i].count_missed_home,
+                };
+            }
+            #ifdef CHAINLINK
+            pb_tx_buffer_.payload.splitflap_state.loopbacks_ok = latest_state_.loopbacks_ok;
+            #endif
+
+            sendPbTxBuffer();
+
+            last_sent_state_ = latest_state_;
+            last_sent_state_millis_ = millis();
         }
+    }
 
-        sendPbTxBuffer();
+    {
+        // GeneralState updates
 
-        last_sent_state_ = latest_state_;
-        last_sent_state_millis_ = millis();
+        // Send state periodically or when forced
+        bool force_send_state = state_requested_ || millis() - last_sent_general_state_millis_ > 2000;
+        if (force_send_state) {
+            PB_GeneralState state = {};
+
+            state.serial_protocol_version = SERIAL_PROTOCOL_VERSION;
+            state.uptime_millis = millis();
+
+            snprintf(state.build_info.git_hash, sizeof(state.build_info.git_hash), BUILD_GIT_HASH);
+            snprintf(state.build_info.build_date, sizeof(state.build_info.build_date), BUILD_DATE);
+            snprintf(state.build_info.build_os, sizeof(state.build_info.build_os), BUILD_OS);
+            state.has_build_info = true;
+
+            memcpy(&state.flap_character_set.bytes, flaps, NUM_FLAPS);
+            state.flap_character_set.size = NUM_FLAPS;
+
+            pb_tx_buffer_ = {};
+            pb_tx_buffer_.which_payload = PB_FromSplitflap_general_state_tag;
+            pb_tx_buffer_.payload.general_state = state;
+            sendPbTxBuffer();
+
+            last_sent_general_state_millis_ = millis();
+        }
+    }
+
+    if (state_requested_) {
+        // Handled above
+        state_requested_ = false;
     }
 }
 
@@ -146,27 +185,40 @@ void SerialProtoProtocol::handlePacket(const uint8_t* buffer, size_t size) {
     switch (pb_rx_buffer_.which_payload) {
         case PB_ToSplitflap_splitflap_command_tag: {
             PB_SplitflapCommand command = pb_rx_buffer_.payload.splitflap_command;
-            Command c = {};
-            c.command_type = CommandType::MODULES;
-            for (uint8_t i = 0; i < min((int)command.modules_count, NUM_MODULES); i++) {
-                switch (command.modules[i].action) {
-                    case PB_SplitflapCommand_ModuleCommand_Action_NO_OP:
-                        c.data.module_command[i] = QCMD_NO_OP;
-                        break;
-                    case PB_SplitflapCommand_ModuleCommand_Action_RESET_AND_HOME:
-                        c.data.module_command[i] = QCMD_RESET_AND_HOME;
-                        break;
-                    case PB_SplitflapCommand_ModuleCommand_Action_GO_TO_FLAP:
-                        if (command.modules[i].param <= 255 - QCMD_FLAP) {
-                            c.data.module_command[i] = QCMD_FLAP + command.modules[i].param;
-                        }
-                        break;
-                    default:
-                        // Ignore unknown action
-                        break;
+            if (command.modules_count > 0) {
+                Command c = {};
+                c.command_type = CommandType::MODULES;
+                for (uint8_t i = 0; i < min((int)command.modules_count, NUM_MODULES); i++) {
+                    switch (command.modules[i].action) {
+                        case PB_SplitflapCommand_ModuleCommand_Action_NO_OP:
+                            c.data.module_command[i] = QCMD_NO_OP;
+                            break;
+                        case PB_SplitflapCommand_ModuleCommand_Action_RESET_AND_HOME:
+                            c.data.module_command[i] = QCMD_RESET_AND_HOME;
+                            break;
+                        case PB_SplitflapCommand_ModuleCommand_Action_GO_TO_FLAP:
+                            if (command.modules[i].param <= 255 - QCMD_FLAP) {
+                                c.data.module_command[i] = QCMD_FLAP + command.modules[i].param;
+                            }
+                            break;
+                        case PB_SplitflapCommand_ModuleCommand_Action_INCREASE_OFFSET_TENTH:
+                            c.data.module_command[i] = QCMD_INCR_OFFSET_TENTH;
+                            break;
+                        case PB_SplitflapCommand_ModuleCommand_Action_INCREASE_OFFSET_HALF:
+                            c.data.module_command[i] = QCMD_INCR_OFFSET_HALF;
+                            break;
+                        case PB_SplitflapCommand_ModuleCommand_Action_SET_OFFSET:
+                            c.data.module_command[i] = QCMD_SET_OFFSET;
+                            break;
+                        default:
+                            // Ignore unknown action
+                            break;
+                    }
                 }
+                splitflap_task_.postRawCommand(c);
+            } else if (command.save_all_offsets) {
+                splitflap_task_.saveAllOffsets();
             }
-            splitflap_task_.postRawCommand(c);
             break;
         }
         case PB_ToSplitflap_splitflap_config_tag: {

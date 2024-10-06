@@ -16,43 +16,28 @@
 
 include <m4_dimensions.scad>;
 
-pcb_thickness = 1.6;
-sensor_spool_distance = 0.70;  // distance from the sensor to the face of the spool
+pcb_thickness = 0.8;
 
 // From datasheet:
-hall_effect_height = (2.8 + 3.2) / 2;
-hall_effect_width = (3.9 + 4.3) / 2;
-hall_effect_thickness = (1.40 + 1.60) / 2;
-hall_effect_sensor_offset_y = hall_effect_height - 1.25;
-hall_effect_pin_length_max = 14.5;
+hall_effect_height = 1.7;
+hall_effect_width = 3;
+hall_effect_thickness = 1.22;
 
 // From sensor.kicad_pcb:
-pcb_height = 16.256;
-pcb_length = 16.256;
-pcb_hole_to_sensor_pin_1_x = 10.16;
-pcb_hole_to_sensor_pin_1_y = 1.27;
-sensor_pin_pitch = 2.54;
-pcb_hole_to_connector_pin_1_x = 8.636;
-pcb_hole_to_connector_pin_1_y = 8.636;
+pcb_height = 20;
+pcb_length = 40;
+pcb_hole_to_sensor_x = 17.5;
+pcb_hole_to_sensor_y = 0;
+pcb_hole_to_connector_pin_2_x = 28;
+pcb_hole_to_connector_pin_2_y = 10;
+pcb_hole_to_bolt_hole_x = 17.5;     // 28byj48_mount_center_offset
+pcb_hole_to_bolt_hole_y = 8;        // 28byj48_shaft_offset
 connector_pin_pitch = 2.54;
-pcb_edge_to_hole_x = 4.572;
-pcb_edge_to_hole_y = 4.572;
+pcb_edge_to_hole_x = 7;
+pcb_edge_to_hole_y = 7;
 
-pcb_adjustment_range = 4;
-pcb_hole_radius = m4_hole_diameter/2;
-
-// Jig dimensions
-pcb_jig_corner_fillet = 2;
-pcb_jig_align_thickness = 2;
-pcb_jig_align_length = 0;  // past the PCB thickness
-pcb_jig_align_clearance = 0.25;  // on x, around the PCB
-pcb_jig_depth_clearance = 0.1;  // on y, from sensor to jig
-
-
-// Computed dimensions
-pcb_hole_to_sensor_x = pcb_hole_to_sensor_pin_1_x - sensor_pin_pitch;
-pcb_hole_to_sensor_y = pcb_hole_to_sensor_pin_1_y + hall_effect_sensor_offset_y;
-
+pcb_hole_radius = 9.4/2;            // 28byj48_shaft_collar_radius
+pcb_bolt_hole_radius = 4.3/2;       // M4
 
 // Rough numbers for 3d rendering only (non-critical dimensions)
 pcb_connector_height = 3.2;
@@ -61,5 +46,3 @@ pcb_connector_length = 18;
 pcb_connector_pin_width = 0.64;
 pcb_connector_pin_slop = 0.4;
 pcb_connector_pin_tail_length = 3.05 + 2.5/2;
-
-pcb_sensor_pin_width = 0.43;

@@ -25,22 +25,22 @@ use<splitflap.scad>;
 // Configurable parameters
 // -----------------------
 
-rows = 6;
-cols = 18;
+rows = 4;
+cols = 13;
 
 // Set either frame_width/height, or frame_margin_x/y to set the overall frame dimensions. margin_x/y will calculate the necessary frame width
 // based on the number of modules and spacing and add the margin onto both sides.
-frame_width = 96*25.4;
-frame_height = 48*25.4;
+frame_width = 48*25.4;
+frame_height = 30*25.4;
 frame_margin_x = undef;
 frame_margin_y = undef;
 
 // Set either the center_center_* or gap_* values to distribute modules based on center-to-center distance or a gap between modules.
 // You can set gap_x and gap_y to 0 to get the closest possible spacing of modules.
-center_center_x = 4*25.4;
-center_center_y = 7.25*25.4;
-gap_x = undef;
-gap_y = undef;
+center_center_x = undef;
+center_center_y = undef;
+gap_x = 0;
+gap_y = 0;
 
 // Vertical centering mode
 //   0 = center based on letter/flap center
@@ -58,12 +58,10 @@ kerf_width = 0;
 // Preview-only paramters:
 
 display_text = [
-    "THIS IS SOME TEXT ",
-    "",
-    "    SPLIT     FLAP",
-    "           HI     ",
-    "WOW               ",
-    "                 .",
+    " ABCDEFGHIJKL",
+    "MNOPQRSTUVWXY",
+    "Zg0123456789r",
+    ".?-$'#yp,!@&w",
 ];
 
 // Number of full modules to render in 3d preview

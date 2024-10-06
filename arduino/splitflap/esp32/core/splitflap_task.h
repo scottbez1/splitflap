@@ -18,6 +18,7 @@
 #include "config.h"
 #include "logger.h"
 #include "src/splitflap_module_data.h"
+#include "configuration.h"
 
 #include "task.h"
 
@@ -85,6 +86,8 @@ enum class CommandType {
     SENSOR_TEST_SET,
     SENSOR_TEST_CLEAR,
     CONFIG,
+    SAVE_ALL_OFFSETS,
+    RESTORE_ALL_OFFSETS,
 };
 
 struct ModuleConfig {
@@ -102,16 +105,20 @@ struct Command {
     union CommandData {
         uint8_t module_command[NUM_MODULES];
         ModuleConfigs module_configs;
+        uint16_t module_offsets[NUM_MODULES];
     };
     CommandData data;
 };
 
-#define QCMD_NO_OP          0
-#define QCMD_RESET_AND_HOME 1
-#define QCMD_LED_ON         2
-#define QCMD_LED_OFF        3
-#define QCMD_DISABLE        4
-#define QCMD_FLAP           5
+#define QCMD_NO_OP              0
+#define QCMD_RESET_AND_HOME     1
+#define QCMD_LED_ON             2
+#define QCMD_LED_OFF            3
+#define QCMD_DISABLE            4
+#define QCMD_INCR_OFFSET_TENTH  5
+#define QCMD_INCR_OFFSET_HALF   6
+#define QCMD_SET_OFFSET         7
+#define QCMD_FLAP               99
 
 class SplitflapTask : public Task<SplitflapTask> {
     friend class Task<SplitflapTask>; // Allow base Task to invoke protected run()
@@ -127,8 +134,17 @@ class SplitflapTask : public Task<SplitflapTask> {
         void disableAll();
         void setLed(uint8_t id, bool on);
         void setSensorTest(bool sensor_test);
+
+        void increaseOffsetTenth(uint8_t id);
+        void increaseOffsetHalf(uint8_t id);
+        void setOffset(uint8_t id);
+        void saveAllOffsets();
+        void restoreAllOffsets(uint16_t offsets[NUM_MODULES]);
+
         void setLogger(Logger* logger);
         void postRawCommand(Command command);
+
+        void setConfiguration(Configuration* configuration);
 
     protected:
         void run();
@@ -136,9 +152,13 @@ class SplitflapTask : public Task<SplitflapTask> {
     private:
         const LedMode led_mode_;
         const SemaphoreHandle_t state_semaphore_;
+        const SemaphoreHandle_t configuration_semaphore_;
         QueueHandle_t queue_;
         Command queue_receive_buffer_ = {};
         Logger* logger_;
+        
+        // Protected by configuration_semaphore_
+        Configuration* configuration_;
 
         bool all_stopped_ = true;
 
