@@ -39,35 +39,35 @@ jobs:
     #   # Run regardless of other build step failures, as long as setup steps completed
     #   if: always() && steps.pio_install.outcome == 'success'
     #   run: |
-    #     pio run -d ./firmware \
+    #     pio run \
     #       -e uno-shift-register \
 
     # - name: Build Firmware (uno-direct)
     #   # Run regardless of other build step failures, as long as setup steps completed
     #   if: always() && steps.pio_install.outcome == 'success'
     #   run: |
-    #     pio run -d ./firmware \
+    #     pio run \
     #       -e uno-direct \
 
     - name: Build Firmware (esp32)
       # Run regardless of other build step failures, as long as setup steps completed
       if: always() && steps.pio_install.outcome == 'success'
       run: |
-        pio run -d ./firmware \
+        pio run \
           -e esp32 \
 
     - name: Build Firmware (chainlink)
       # Run regardless of other build step failures, as long as setup steps completed
       if: always() && steps.pio_install.outcome == 'success'
       run: |
-        pio run -d ./firmware \
+        pio run \
           -e chainlink
 
     - name: Build Firmware (chainlinkBase)
       # Run regardless of other build step failures, as long as setup steps completed
       if: always() && steps.pio_install.outcome == 'success'
       run: |
-        pio run -d ./firmware \
+        pio run \
           -e chainlinkBase
 
     # Temporarily disabled due to proto issue
@@ -76,5 +76,5 @@ jobs:
     #   if: always() && steps.pio_install.outcome == 'success'
     #   run: |
     #     cp firmware/esp32/tester/secrets.h.example firmware/esp32/tester/secrets.h &&
-    #     pio run -d ./firmware \
+    #     pio run \
     #       -e chainlinkDriverTester
