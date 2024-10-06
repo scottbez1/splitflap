@@ -29,7 +29,7 @@ except:
     raise RuntimeError(f'Error loading svg.path library. Run "{svg_path_install}" to install it')
 
 from importlib.metadata import version
-assert int(version('svg.path').split('.')[0]) >= 6, f'svg.path library is not new enough (found {version("svg.path")}). Run "{svg_path_install}" to install it'
+assert int(version('svg.path').split('.')[0]) == 6, f'svg.path library is not new enough (found {version("svg.path")}). Run "{svg_path_install}" to install it'
 
 
 from xml.dom import minidom
