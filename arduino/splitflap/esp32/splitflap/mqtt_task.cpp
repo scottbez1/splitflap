@@ -55,6 +55,10 @@ void MQTTTask::connectMQTT() {
     if (mqtt_client_.connect(HOSTNAME "-" MQTT_USER, MQTT_USER, MQTT_PASSWORD)) {
         logger_.log("MQTT connected");
         mqtt_client_.subscribe(MQTT_COMMAND_TOPIC);
+        char buf[256];
+        snprintf(buf, sizeof(buf), "{\"name\": \"%s\", \"command_topic\": \"%s\", \"state_topic\": \"%s\", \"unique_id\": \"%s\"}", HOSTNAME, MQTT_COMMAND_TOPIC, MQTT_COMMAND_TOPIC, HOSTNAME);
+        mqtt_client_.publish("homeassistant/text/splitflap/config", buf);
+        logger_.log("Published MQTT discovery message");
     } else {
         snprintf(buf, sizeof(buf), "MQTT failed rc=%d will try again in 5 seconds", mqtt_client_.state());
         logger_.log(buf);
@@ -76,4 +80,5 @@ void MQTTTask::run() {
         delay(1);
     }
 }
+
 #endif

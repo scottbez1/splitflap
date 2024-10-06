@@ -74,7 +74,7 @@ class ColoredStlExporter(object):
         def render_color(color):
             file_name = self._export_stl(color)
             if file_name is not None:
-                manifest[file_name] = ColoredStlExporter.parse_openscad_color(color)
+                manifest[file_name + '.gz'] = ColoredStlExporter.parse_openscad_color(color)
 
         pool = Pool()
         for _ in pool.imap_unordered(render_color, color_values):
@@ -130,7 +130,7 @@ module color_extractor(c) {
             contents = COLOR_REGEX.sub(' color_selector(', contents)
             return contents + '''
         module color_selector(c) {{
-            precision = 0.0000001;  // arbitrary
+            precision = 0.0001;  // arbitrary
             function compare_floats(x, y, i=0) = 
                   (len(x) != len(y)) ? false  // if arrays differ in length, they can't be equal
                 : (i >= len(x)) ? true  // if we've hit the end of the arrays without issue, we're equal
@@ -163,6 +163,7 @@ module color_extractor(c) {
         except openscad.OpenSCADException as e:
             if b'Current top level object is empty.' in e.stderr:
                 # No geometry in this color
+                self.logger.debug(f'Ignoring color due to empty top level object. {color} {color_hash}')
                 return None
             else:
                 raise

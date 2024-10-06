@@ -27,6 +27,12 @@ PB_BIND(PB_SupervisorState_PowerChannelState, PB_SupervisorState_PowerChannelSta
 PB_BIND(PB_SupervisorState_FaultInfo, PB_SupervisorState_FaultInfo, 2)
 
 
+PB_BIND(PB_GeneralState, PB_GeneralState, AUTO)
+
+
+PB_BIND(PB_GeneralState_BuildInfo, PB_GeneralState_BuildInfo, AUTO)
+
+
 PB_BIND(PB_FromSplitflap, PB_FromSplitflap, 4)
 
 
@@ -46,6 +52,9 @@ PB_BIND(PB_RequestState, PB_RequestState, AUTO)
 
 
 PB_BIND(PB_ToSplitflap, PB_ToSplitflap, 2)
+
+
+PB_BIND(PB_PersistentConfiguration, PB_PersistentConfiguration, 2)
 
 
 

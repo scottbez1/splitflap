@@ -1,5 +1,5 @@
 /*
-   Copyright 2021 Scott Bezek and the splitflap contributors
+   Copyright 2024 Scott Bezek and the splitflap contributors
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -19,6 +19,17 @@
 
 #include "serial_protocol.h"
 #include "../proto_gen/splitflap.pb.h"
+
+/*
+ * Serial protocol version changelog
+ *
+ * 0 (unset):
+ *      - No GeneralState message
+ *      - May or may not have software offset support
+ * 1:
+ *      - GeneralState is introduced (including introduction of serial protocol versioning)
+*/
+#define SERIAL_PROTOCOL_VERSION (1);
 
 class SerialProtoProtocol : public SerialProtocol {
     public:
@@ -45,6 +56,8 @@ class SerialProtoProtocol : public SerialProtocol {
         SplitflapState latest_state_ = {};
         SplitflapState last_sent_state_ = {};
         uint32_t last_sent_state_millis_ = 0;
+
+        uint32_t last_sent_general_state_millis_ = 0;
 
         bool state_requested_;
 

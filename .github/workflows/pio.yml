@@ -35,26 +35,19 @@ jobs:
         python -m pip install --upgrade pip
         pip install --upgrade platformio
 
-    - name: Build Firmware (uno-shift-register)
-      # Run regardless of other build step failures, as long as setup steps completed
-      if: always() && steps.pio_install.outcome == 'success'
-      run: |
-        pio run -d ./arduino/splitflap \
-          -e uno-shift-register \
+    # - name: Build Firmware (uno-shift-register)
+    #   # Run regardless of other build step failures, as long as setup steps completed
+    #   if: always() && steps.pio_install.outcome == 'success'
+    #   run: |
+    #     pio run -d ./arduino/splitflap \
+    #       -e uno-shift-register \
 
-    - name: Build Firmware (uno-direct)
-      # Run regardless of other build step failures, as long as setup steps completed
-      if: always() && steps.pio_install.outcome == 'success'
-      run: |
-        pio run -d ./arduino/splitflap \
-          -e uno-direct \
-
-    - name: Build Firmware (mega-direct)
-      # Run regardless of other build step failures, as long as setup steps completed
-      if: always() && steps.pio_install.outcome == 'success'
-      run: |
-        pio run -d ./arduino/splitflap \
-          -e mega-direct \
+    # - name: Build Firmware (uno-direct)
+    #   # Run regardless of other build step failures, as long as setup steps completed
+    #   if: always() && steps.pio_install.outcome == 'success'
+    #   run: |
+    #     pio run -d ./arduino/splitflap \
+    #       -e uno-direct \
 
     - name: Build Firmware (esp32)
       # Run regardless of other build step failures, as long as setup steps completed
@@ -77,10 +70,11 @@ jobs:
         pio run -d ./arduino/splitflap \
           -e chainlinkBase
 
-    - name: Build Firmware (chainlinkDriverTester)
-      # Run regardless of other build step failures, as long as setup steps completed
-      if: always() && steps.pio_install.outcome == 'success'
-      run: |
-        cp arduino/splitflap/esp32/tester/secrets.h.example arduino/splitflap/esp32/tester/secrets.h &&
-        pio run -d ./arduino/splitflap \
-          -e chainlinkDriverTester
+    # Temporarily disabled due to proto issue
+    # - name: Build Firmware (chainlinkDriverTester)
+    #   # Run regardless of other build step failures, as long as setup steps completed
+    #   if: always() && steps.pio_install.outcome == 'success'
+    #   run: |
+    #     cp arduino/splitflap/esp32/tester/secrets.h.example arduino/splitflap/esp32/tester/secrets.h &&
+    #     pio run -d ./arduino/splitflap \
+    #       -e chainlinkDriverTester

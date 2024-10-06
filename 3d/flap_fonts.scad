@@ -16,13 +16,19 @@
 
 include<flap_dimensions.scad>;
 
-use<roboto/RobotoCondensed-Regular.ttf>;
+use<fonts/roboto/RobotoCondensed-Regular.ttf>;
+use<fonts/Epilogue/Epilogue-VariableFont_wght.ttf>;
+
+// To try other experimental fonts, download fonts from Google Fonts to these locations and add `use` statements
+// fonts/PoiretOne/PoiretOne-Regular.ttf
+// fonts/Voltaire/Voltaire-Regular.otf
+// fonts/PTSansNarrow/PTSansNarrow-Regular.ttf
 
 // -----------------------
 // Configurable parameters
 // -----------------------
 
-font_preset = "Roboto-Example";   // See available presets below
+font_preset = "Epilogue";       // See available presets below
 letter_gap_comp = true;         // Shifts letter positions to compensate for gap between flaps
 
 // ---------------------------
@@ -50,14 +56,17 @@ letter_gap_comp = true;         // Shifts letter positions to compensate for gap
 //              - Additional Y position offset, in mm (e.g. 2.5). Can be undef or 0 to omit.
 //              - Height override, as a value relative to flap height (e.g. 0.7). Replaces letter_height for this letter. Can be undef to omit.
 //              - Width override, as a value relative to default font width (e.g. 0.7). Replaces letter_width for this letter. Can be undef to omit.
+//              - Thickness offset override.
 _font_settings = [
-    "Roboto-Example", [
+    "Roboto", [
         "font", "RobotoCondensed",
-        "height", 0.75,
-        "width", 0.8,
+        "height", 0.6,
+        "width", 1,
         "offset_x", -0.78,
-        "offset_y", 0.5,
-        "overrides", [],
+        "offset_y", 0.7,
+        "overrides", [
+            ["@", 0, 1],
+        ],
     ],
 
     // https://fonts.google.com/specimen/Bangers
@@ -84,10 +93,85 @@ _font_settings = [
         "offset_y", 0,
         "overrides", [],
     ],
+
+    "Epilogue", [
+        "font", "Epilogue:style=Medium",
+        "height",             0.7,
+        "width",                1,
+        "offset_x",         -0.65,
+        "offset_y",          -0.8,
+        "color_offset_y",     0.4,
+        "thickness_offset",     0,
+        "overrides", [
+            //        x,     y, height, width, thickness
+            ["@",   1.2,     0,    .65,   0.7,       0.4],
+            ["&",   1.2,     0,  undef,   0.9,         0],
+            ["C",     0,     0,  undef,  0.95,         0],
+            ["G",   0.9,     0,  undef,  0.98,         0],
+            ["W", -0.15, undef,  undef,  0.72,         1],
+            ["M", -0.16, undef,  undef, 0.795,       0.6],
+            ["O",     0,     0,  undef,  0.92,         0],
+            ["Q",     0,     3,   0.62, undef,       0.4],
+            [",",     0,  -1.6,    0.6, undef,         0],
+        ],
+    ],
+
+    "Poiret", [
+        "font", "PoiretOne",
+        "height", 0.65,
+        "width", 0.75,
+        "offset_x", -0.6,
+        "offset_y", 0.65,
+        "overrides", [
+            ["W", 0, 0, 0.65, 0.7]
+        ],
+        "thickness_offset", 2,
+        "color_height", 0.455,
+        "color_offset_y", 1.4,
+    ],
+
+    "Voltaire", [
+        "font", "Voltaire:style=Regular",
+        "height", 0.75,
+        "width", 1,
+        "offset_x", -0.6,
+        "offset_y", -0.65,
+        "overrides", [],
+        // "color_height", 0.455,
+        // "color_offset_y", 1.4,
+    ],
+
+    "PTSansNarrow", [
+        "font", "PTSansNarrow",
+        "height", 0.7,
+        "width", 1,
+        "offset_x", -0.6,
+        "offset_y", 2,
+        "overrides", [
+            ["@", 0, 4, 0.65, 0.8],
+            ["Q", 0, 4, 0.6],
+        ],
+        // "color_height", 0.455,
+        // "color_offset_y", 1.4,
+    ],
+
+    "Righteous", [
+        "font", "Righteous",
+        "height", 0.6,
+        "width", 1,
+        "offset_x", 0,
+        "offset_y", 0,
+        "overrides", [
+            // ["@", 0, 4, 0.65, 0.8],
+            // ["Q", 0, 4, 0.6],
+        ],
+        // "color_height", 0.455,
+        // "color_offset_y", 1.4,
+    ],
 ];
 
 // Private functions
-function _get_entry_in_dict_array(arr, key) = arr[search([key], arr)[0] + 1];
+function _get_entry_in_dict_array(arr, key) = search([key], arr) != [[]] ? arr[search([key], arr)[0] + 1] : undef;
 function _get_font_settings() = _get_entry_in_dict_array(_font_settings, font_preset);
 
 // Public functions
@@ -95,4 +179,3 @@ function use_letter_gap_compensation() = letter_gap_comp;
 function get_font_setting(key) = _get_entry_in_dict_array(_get_font_settings(), key);
 function get_letter_overrides(letter) =
     get_font_setting("overrides")[search([letter], get_font_setting("overrides"))[0]];
-

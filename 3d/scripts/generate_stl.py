@@ -36,7 +36,7 @@ if __name__ == '__main__':
         'render_3d': True,
         'render_enclosure': 2,
         'render_flaps': 2,
-        'render_units': 1,
+        'render_message': 'Ag',
         'render_pcb': True,
         'render_revision': rev_info.git_short_rev(),
         'render_date': rev_info.current_date(),

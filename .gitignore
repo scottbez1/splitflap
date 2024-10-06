@@ -11,6 +11,8 @@ build/
 *.net
 *.dsn
 fp-info-cache
+*-backups
+\#auto_saved_files\#
 
 # KiCAD bom
 splitflap.xml

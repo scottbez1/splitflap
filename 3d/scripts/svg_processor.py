@@ -15,14 +15,22 @@
 from __future__ import print_function
 from collections import defaultdict
 import os
+
+svg_path_install = f'python3 -m pip install -r {os.path.join(os.path.dirname(__file__), "requirements.txt")}'
 try:
     from svg.path import (
         Path,
         Line,
+        Move,
+        Close,
         parse_path,
     )
 except:
-    raise RuntimeError(f'Error loading svg.path library. Run "python3 -m pip install -r {os.path.join(os.path.dirname(__file__), "requirements.txt")}" to install it')
+    raise RuntimeError(f'Error loading svg.path library. Run "{svg_path_install}" to install it')
+
+from importlib.metadata import version
+assert int(version('svg.path').split('.')[0]) == 6, f'svg.path library is not new enough (found {version("svg.path")}). Run "{svg_path_install}" to install it'
+
 
 from xml.dom import minidom
 
@@ -157,20 +165,23 @@ class SvgProcessor(object):
             path_text = path.attributes['d'].value
             path_obj = parse_path(path_text)
             for line_index, line in enumerate(path_obj):
-                slope, intersect = _get_slope_intersect(line.start, line.end)
-
-                # TODO: float inaccuracy and rounding may cause collinear lines to end up in separate buckets in rare
-                # cases, so this is not quite correct. Would be better to put lines into *2* nearest buckets in each
-                # dimension to avoid edge cases.
-                if slope is not None:
-                    slope = round(slope, ndigits=3)
-                intersect = round(intersect, ndigits=3)
-                lines_bucketed_by_slope_intersect[(slope, intersect)].append({
-                    'overall_index': overall_index,
-                    'path_index': path_index,
-                    'line_index': line_index,
-                    'line': line,
-                })
+                if isinstance(line, Close):
+                    # Treat Close as a Line
+                    line = Line(line.start, line.end)
+                if isinstance(line, Line):
+                    slope, intersect = _get_slope_intersect(line.start, line.end)
+                    # TODO: float inaccuracy and rounding may cause collinear lines to end up in separate buckets in rare
+                    # cases, so this is not quite correct. Would be better to put lines into *2* nearest buckets in each
+                    # dimension to avoid edge cases.
+                    if slope is not None:
+                        slope = round(slope, ndigits=3)
+                    intersect = round(intersect, ndigits=3)
+                    lines_bucketed_by_slope_intersect[(slope, intersect)].append({
+                        'overall_index': overall_index,
+                        'path_index': path_index,
+                        'line_index': line_index,
+                        'line': line,
+                    })
                 overall_index += 1
 
         to_remove = {}
@@ -199,12 +210,17 @@ class SvgProcessor(object):
             filtered_path = Path()
 
             for line_index, line in enumerate(path_obj):
+                if isinstance(line, Close):
+                    # Treat Close as a Line
+                    line = Line(line.start, line.end)
                 if i in to_remove:
+                    assert isinstance(line, Line)
                     assert path_index == to_remove[i][0]
                     assert line_index == to_remove[i][1]
                     removed += 1
                     removed_length += line.length()
                 elif i in to_update:
+                    assert isinstance(line, Line)
                     assert path_index == to_update[i][0]
                     assert line_index == to_update[i][1]
                     replacement_line = to_update[i][2]
@@ -212,14 +228,27 @@ class SvgProcessor(object):
                     filtered_path.append(replacement_line)
                     kept += 1
                     kept_length += replacement_line.length()
-                else:
+                elif isinstance(line, Line):
                     filtered_path.append(line)
                     kept += 1
                     kept_length += line.length()
+                else:
+                    print(f'Omitting non-line in reconstructed path at index {line_index}: {line!r}')
                 i += 1
 
             # Update the path data with the filtered path data
-            path.attributes['d'] = filtered_path.d()
+            last_line = None
+            new_path = Path()
+            for line in filtered_path:
+                # Newer versions of svg.path keep Moves but don't ensure consistency with line start/ends. We've stripped non-Lines above, so
+                # we need to add back Moves where Line segments are not connected
+                if last_line is None or abs(last_line.end.real - line.start.real) > 0.001 or abs(last_line.end.imag - line.start.imag) > 0.001:
+                    new_path.append(Move(line.start))
+                new_path.append(line)
+                last_line = line
+                
+            path.attributes['d'] = new_path.d()
+            print(f'Optimized line path from\n  {path_text!r}\n  to\n  {path.attributes["d"].value!r}')
 
         print('Removed {} lines ({} length) and kept {} lines ({} length)'.format(
             removed,
@@ -341,30 +370,31 @@ class SvgProcessor(object):
 
             self.svg_node.appendChild(new_path_node)
 
-    def add_dimensions(self, width_mm, height_mm):
+    def add_dimensions(self, width_mm, height_mm, mirror=False):
         width_node = self.dom.createElement("path")
-        width_node.setAttribute('d', f'M 0 10 l 0 5 l {width_mm} 0 l 0 -5')
+        mirror_dir = -1 if mirror else 1
+        width_node.setAttribute('d', f'M 0 10 l 0 5 l {mirror_dir * width_mm} 0 l 0 -5')
         width_node.setAttribute('fill', 'none')
         width_node.setAttribute('stroke', '#ff00ff')
         width_node.setAttribute('stroke-width', '1')
         self.svg_node.appendChild(width_node)
 
         width_label_node = self.dom.createElement('text')
-        width_label_node.setAttribute('x', f'{width_mm / 2}')
+        width_label_node.setAttribute('x', f'{mirror_dir * width_mm / 2}')
         width_label_node.setAttribute('y', '25')
         width_label_node.setAttribute('style', 'font: 5px sans-serif; fill: #ff00ff; text-anchor: middle;')
         width_label_node.appendChild(self.dom.createTextNode(f'{width_mm:.2f} mm'))
         self.svg_node.appendChild(width_label_node)
 
         height_node = self.dom.createElement("path")
-        height_node.setAttribute('d', f'M -10 0 l -5 0 l 0 -{height_mm} l 5 0')
+        height_node.setAttribute('d', f'M {-width_mm - 10 if mirror else -10} 0 l -5 0 l 0 -{height_mm} l 5 0')
         height_node.setAttribute('fill', 'none')
         height_node.setAttribute('stroke', '#ff00ff')
         height_node.setAttribute('stroke-width', '1')
         self.svg_node.appendChild(height_node)
 
         height_label_node = self.dom.createElement('text')
-        height_label_node.setAttribute('x', '-20')
+        height_label_node.setAttribute('x', f'{-width_mm - 20 if mirror else -20}')
         height_label_node.setAttribute('y', f'{-height_mm / 2}')
         height_label_node.setAttribute('style', 'font: 5px sans-serif; fill: #ff00ff; text-anchor: end;')
         height_label_node.appendChild(self.dom.createTextNode(f'{height_mm:.2f} mm'))

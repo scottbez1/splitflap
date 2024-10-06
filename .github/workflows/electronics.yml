@@ -6,7 +6,7 @@ on:
 
 jobs:
   export-electronics-classic:
-    name: Export Electronics (Classic + Sensor)
+    name: Export Electronics (Sensor)
     runs-on: ubuntu-20.04
 
     steps:
@@ -18,59 +18,6 @@ jobs:
 
       - name: Install dependencies
         run: ./electronics/scripts/dependencies.sh
-
-# Classic Controller board:
-      - name: Export Classic Controller schematic
-        run: |
-          ./electronics/scripts/export_schematic.py electronics/splitflap.sch
-          cp electronics/build/splitflap.pdf electronics/build/outputs/classic-schematic.pdf
-          cp electronics/build/splitflap.png electronics/build/outputs/classic-schematic.png
-        env:
-          PYTHONUNBUFFERED: 1
-
-      - name: Export Classic Controller PCB SVG
-        run: |
-          ./electronics/scripts/generate_svg.py electronics/splitflap.kicad_pcb
-          cp electronics/build/splitflap_merged.png electronics/build/outputs/classic-pcb-raster.png
-          ./scripts/annotate_image.sh electronics/build/outputs/classic-pcb-raster.png
-        env:
-          PYTHONUNBUFFERED: 1
-
-      - name: Export Classic Controller PCB fabrication files
-        run: |
-          ./electronics/scripts/export_jlcpcb.py electronics/splitflap.kicad_pcb
-          cp -r electronics/build/splitflap-jlc electronics/build/outputs/classic-jlc
-
-      - name: Export Classic Controller PCB overview PDF
-        run: |
-          ./electronics/scripts/generate_pdf.py electronics/splitflap.kicad_pcb
-          cp electronics/build/splitflap-pcb-packet.pdf electronics/build/outputs/classic-pcb-packet.pdf
-        env:
-          PYTHONUNBUFFERED: 1
-
-      - name: Panelize Classic Controller PCB
-        run: |
-          kikit panelize -p electronics/scripts/config/kikit_panelize_classic.json electronics/splitflap.kicad_pcb electronics/build/panelized_splitflap.kicad_pcb
-
-      - name: Export panelized Classic Controller PCB SVG
-        run: |
-          ./electronics/scripts/generate_svg.py electronics/build/panelized_splitflap.kicad_pcb
-          cp electronics/build/panelized_splitflap_merged.png electronics/build/outputs/classic-panelized-pcb-raster.png
-          ./scripts/annotate_image.sh electronics/build/outputs/classic-panelized-pcb-raster.png
-        env:
-          PYTHONUNBUFFERED: 1
-
-      - name: Export panelized Classic Controller PCB fabrication files
-        run: |
-          ./electronics/scripts/export_jlcpcb.py electronics/build/panelized_splitflap.kicad_pcb
-          cp -r electronics/build/panelized_splitflap-jlc electronics/build/outputs/classic-panelized-jlc
-
-      - name: Export panelized Classic Controller PCB overview PDF
-        run: |
-          ./electronics/scripts/generate_pdf.py electronics/build/panelized_splitflap.kicad_pcb
-          cp electronics/build/panelized_splitflap-pcb-packet.pdf electronics/build/outputs/classic-panelized-pcb-packet.pdf
-        env:
-          PYTHONUNBUFFERED: 1
 
 # Sensor board:
       - name: Export sensor schematic
@@ -117,20 +64,8 @@ jobs:
         env:
           PYTHONUNBUFFERED: 1
 
-      # Note: These kibot scripts are run last because they mess with file permissions which breaks other scripts, not sure why
-      - name: Export BOM [classic + sensors]
-        uses: INTI-CMNB/KiBot@2ddbea3e681de09147cb1677890694857def32a8
-        with:
-          config: electronics/splitflap.kibot.yml
-          dir: electronics/build
-          schema: 'electronics/splitflap.sch'
-          board: 'electronics/splitflap.kicad_pcb'
-
-      - name: Copy BOM outputs
-        run: cp -r electronics/build/bom electronics/build/outputs
-
       - name: Archive artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: electronics-classic
@@ -204,7 +139,7 @@ jobs:
 
       # Note: These kibot scripts are run last because they mess with file permissions which breaks other scripts, not sure why
       - name: Export BOM [chainlinkDriver]
-        uses: INTI-CMNB/KiBot@2ddbea3e681de09147cb1677890694857def32a8
+        uses: INTI-CMNB/KiBot@c723b51327c2d9b7863672698ae5fd3da58b386e
         with:
           config: electronics/chainlinkDriver/chainlinkDriver.kibot.yml
           dir: electronics/build
@@ -215,7 +150,7 @@ jobs:
         run: cp -r electronics/build/bom electronics/build/outputs
 
       - name: Archive artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: electronics-chainlink
@@ -291,7 +226,7 @@ jobs:
 
       # Note: These kibot scripts are run last because they mess with file permissions which breaks other scripts, not sure why
       - name: Export BOM [chainlinkDriverTester]
-        uses: INTI-CMNB/KiBot@2ddbea3e681de09147cb1677890694857def32a8
+        uses: INTI-CMNB/KiBot@c723b51327c2d9b7863672698ae5fd3da58b386e
         with:
           config: electronics/chainlinkDriverTester/chainlinkDriverTester.kibot.yml
           dir: electronics/build
@@ -302,7 +237,7 @@ jobs:
         run: cp -r electronics/build/bom electronics/build/outputs
 
       - name: Archive artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: electronics-chainlink-tester
@@ -376,7 +311,7 @@ jobs:
 
       # Note: These kibot scripts are run last because they mess with file permissions which breaks other scripts, not sure why
       - name: Export BOM [chainlinkBase]
-        uses: INTI-CMNB/KiBot@2ddbea3e681de09147cb1677890694857def32a8
+        uses: INTI-CMNB/KiBot@c723b51327c2d9b7863672698ae5fd3da58b386e
         with:
           config: electronics/chainlinkBase/chainlinkBase.kibot.yml
           dir: electronics/build
@@ -387,7 +322,7 @@ jobs:
         run: cp -r electronics/build/bom electronics/build/outputs
 
       - name: Archive artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: electronics-chainlink-base
@@ -484,7 +419,7 @@ jobs:
 
       # Note: These kibot scripts are run last because they mess with file permissions which breaks other scripts, not sure why
       - name: Export BOM [chainlinkBuddyTDisplay]
-        uses: INTI-CMNB/KiBot@2ddbea3e681de09147cb1677890694857def32a8
+        uses: INTI-CMNB/KiBot@c723b51327c2d9b7863672698ae5fd3da58b386e
         with:
           config: electronics/chainlinkBuddyTDisplay/chainlinkBuddyTDisplay.kibot.yml
           dir: electronics/build
@@ -495,7 +430,7 @@ jobs:
         run: cp -r electronics/build/bom electronics/build/outputs
 
       - name: Archive artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: electronics-chainlink-buddy-t-display
@@ -592,7 +527,7 @@ jobs:
 
       # Note: These kibot scripts are run last because they mess with file permissions which breaks other scripts, not sure why
       - name: Export BOM [chainlinkBuddyBreadboard]
-        uses: INTI-CMNB/KiBot@2ddbea3e681de09147cb1677890694857def32a8
+        uses: INTI-CMNB/KiBot@c723b51327c2d9b7863672698ae5fd3da58b386e
         with:
           config: electronics/chainlinkBuddyBreadboard/chainlinkBuddyBreadboard.kibot.yml
           dir: electronics/build
@@ -603,7 +538,7 @@ jobs:
         run: cp -r electronics/build/bom electronics/build/outputs
 
       - name: Archive artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: electronics-chainlink-buddy-breadboard

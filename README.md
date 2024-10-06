@@ -1,18 +1,12 @@
-# DIY Split-Flap Display
+# Split-Flap Display
 
-This is a DIY [split-flap display](https://en.wikipedia.org/wiki/Split-flap_display).
-Prototype four-character display: [video](https://www.youtube.com/watch?v=vq4o_88kN8g).
+This is a DIY ESP32-based [split-flap display](https://en.wikipedia.org/wiki/Split-flap_display), optimized for easy assembly at home in small quantities but able to be scaled up to large affordable displays.
 
 ![animated rendering](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_animation.gif)
-[![prototype video](renders/prototypeVideoThumbnail.jpg)](https://www.youtube.com/watch?v=vq4o_88kN8g)
 
-[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml/badge.svg?branch=master)](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml)
-[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml/badge.svg?branch=master)](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml)
-[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/pio.yml/badge.svg?branch=master)](https://github.com/scottbez1/splitflap/actions/workflows/pio.yml)
-
-The goal is to make a low-cost display that's easy to fabricate at home in small/single quantities (e.g. custom materials can be ordered from Ponoko or similar, and other hardware is generally available).
-
-You can view an interactive 3d model of the design on the [project website](https://scottbez1.github.io/splitflap/).
+[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml/badge.svg?branch=master)](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml?query=branch%3Amaster)
+[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml/badge.svg?branch=master)](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml?query=branch%3Amaster)
+[![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/pio.yml/badge.svg?branch=master)](https://github.com/scottbez1/splitflap/actions/workflows/pio.yml?query=branch%3Amaster)
 
 The [splitflap community Discord server](https://discord.com/invite/wgehm3PcrC) is the best place to keep up with the latest changes or ask questions about the project!
 
@@ -21,34 +15,64 @@ Want to help support development or just say "thanks"? Consider a one-time or mo
 | [:heart: Sponsor scottbez1 on GitHub](https://github.com/sponsors/scottbez1) |
 |---|
 
-[![Video: how a split-flap display works](renders/howItWorksThumbnail.jpg)](https://www.youtube.com/watch?v=UAQJJAQSg_g)
+<a href="https://www.youtube.com/watch?v=UAQJJAQSg_g" target="_blank">
+  <img src="renders/howItWorksThumbnail.jpg" height=320 />
+</a>
 
-**Using this project in a commercial setting or for paid client work?** Go right ahead - it's open source (just make sure to follow the terms of the Apache License)! I would, however, ask that you consider [sponsoring the project](https://github.com/sponsors/scottbez1). I've been developing and maintaining this project in my free time for over 6 years, and I'd love to continue working on it. Sponsorships allow me to pay for prototypes and development tools that make this project possible. Unlike pure software projects, every iteration has real hardware costs; sponsorships allow me to keep iterating and improving the project faster. Thank you!
+**Using this project in a commercial setting or for paid client work?** Go right ahead - it's open source (just make sure to follow the terms of the Apache License)! I would, however, ask that you consider [sponsoring the project](https://github.com/sponsors/scottbez1). I've been developing and maintaining this project in my free time for over 8 years, and I'd love to continue working on it. Sponsorships allow me to pay for prototypes and development tools that make this project possible. Unlike pure software projects, every iteration has real hardware costs; sponsorships allow me to keep iterating and improving the project faster. Thank you!
 
 
 # Current Status
-[You can download the **latest stable release** from the official 'releases' page.](https://github.com/scottbez1/splitflap/releases)
+[You can download the **latest stable releases** of the hardware designs from the official 'releases' page.](https://github.com/scottbez1/splitflap/releases)
 
 Releases have been tested and used to produce working units, but as this is a continuously evolving open-source project, there may always be minor issues and/or incomplete documentation from time to time.
 
-| Component | Status | Notes |
+## Stable release info
+
+| Component | Version | Notes |
 | --- | --- | --- |
-| Enclosure/Mechanics | *Stable* | |
-| Classic Controller Electronics | *Stable* | |
-| Firmware | *Stable* | |
-| Control Software Example | *Stable* | Example python code for driving the display is in the [software](software) directory|
-
-
-:bulb: There's a new electronics system, called the *Chainlink* system (more on this [below](#chainlink-electronics)), which makes assembly easier and supports larger displays (100+ modules), using an ESP32 for the controller. It's stable and recommended over the older "Classic" controller for new builds.
+| Enclosure/Mechanics | v0.7 | https://github.com/scottbez1/splitflap/releases/tag/v0.7 |
+| Electronics - Sensor | v1.1 | https://github.com/scottbez1/splitflap/releases/tag/releases%2Fsensor%2Fv1.1 |
+| Electronics - Chainlink Driver | v1.1 | https://github.com/scottbez1/splitflap/releases/tag/releases%2FchainlinkDriver%2Fv1.1 |
+| Electronics - Chainlink Buddy [T-Display] | v1.0 | https://github.com/scottbez1/splitflap/releases/tag/releases%2FchainlinkBuddyTDisplay%2Fv1.0 |
+| Firmware | latest | Current firmware is backwards-compatible and not strictly versioned; use the latest from the `master` branch |
+| Control Software Examples | latest | Example Typescript and Python code for driving the display is in the [software](software) directory. The Typescript library and examples are more actively developed. |
 
 Here's a video of a large 108-module display powered by 18 Chainlink Driver boards and a Chainlink Base:
 
 [![Video: animations on 108-module display](https://raw.githubusercontent.com/wiki/scottbez1/splitflap/images/animationsThumb.gif)](https://youtu.be/g9EPabcxBsM)
 
+## v2 (coming soon!)
+A minor refresh of the mechanical and sensor design is currently in beta, and the stable release is expected in Summer 2024.
+
+The beta designs (seen on this page) have been tested are nearly feature-complete, but documentation is still in progress.
+
+<img src="https://github.com/scottbez1/splitflap/assets/414890/9ffab4fa-a2db-4b5e-915a-915f81faa193" height="200" />
+<img src="https://github.com/scottbez1/splitflap/assets/414890/d89254a4-46de-4303-8402-8a4d7989d25e" height="200" />
+<img src="https://github.com/scottbez1/splitflap/assets/414890/9193a9e3-a4f5-4a54-868a-badd74168181" height="200" />
+
+**Here's what to expect in v2:**
+
+- **52 flaps per module** for more character/symbol options
+- **New printed flap design ("Epilogue")** with 52 flaps per set (see animation above), including several color-block flaps
+- **Updated enclosure** and mechanical parts (laser-cut) to accomodate 52 flaps
+  - Motor wires now exit downward for less awkward wiring!
+- **New sensor PCB** that's easier to assemble and includes an LED for checking the magnet status
+- **Software-configurable calibration** rather than mechanical sensor adjustment
+
+**But many things are staying the same for easy upgrades/compatibility:**
+- No change to flap dimensions!
+- No changes to Chainlink Driver, Chainlink Buddy boards, or system architecture!
+- 40-flap modules are still an officially supported option!
+- Open source, as always!
+- v0 parts (sensor kits) will continue to be stocked at Bezek Labs through 2024; don't worry if you haven't finished your build yet, the old sensor kits aren't going away!
+
 I'd love to hear your thoughts and questions about this project, and happy to incorporate any feedback you might have into these designs! Please feel free (and encouraged) to [open GitHub issues](https://github.com/scottbez1/splitflap/issues/new), email me directly, reach out [on Twitter](https://twitter.com/scottbez1), and [get involved](https://github.com/scottbez1/splitflap/pulls) in the open source development and let's keep chatting and building together!
 
 # Build Your Own
-Please note, updated documentation for the Chainlink system is still in progress; you may see outdated references to the "Classic" electronics in some documentation in the meantime. If you have any questions, please don't hesitate to ask in the [community Discord server](https://discord.gg/Hxnftc8PyW)!
+If you have any questions, please don't hesitate to ask in the [community Discord server](https://discord.gg/Hxnftc8PyW)!
+
+Note: the ordering and assembly guides have not yet been updated for the beta v2 designs. Ask in Discord if you have any questions about ordering or assembling a v2 display!
 
 * [**Ordering guide (the "easy" route) - updated for Chainlink**](https://paper.dropbox.com/doc/Splitflap-Ordering-the-easy-route--BsXzf8VyILR3nl1vUpOi28TWAg-0i6r3aqw6kZVXQOP2MyNr)
 * [**Chainlink Driver Electronics User Guide**](https://paper.dropbox.com/doc/Chainlink-Driver-v1.1-Electronics-User-Guide--BsVuP9OHVo952_ZdJDBomCCzAg-U0DAXrSxEoOhgSoRU39hq)
@@ -57,19 +81,21 @@ Please note, updated documentation for the Chainlink system is still in progress
 
 # Table of Contents
 - [Design Overview](#design-overview)
-  * [Mechanical](#mechanical)
-  * [Electronics](#electronics)
-    + [Module Electronics](#module-electronics)
-    + [Chainlink Electronics](#chainlink-electronics)
-      - [Chainlink Driver](#chainlink-driver)
-      - [Chainlink Buddy \[T-Display\]](#chainlink-buddy-t-display)
-      - [Chainlink Buddy \[Breadboard\]](#chainlink-buddy-breadboard)
-      - [Chainlink Base](#chainlink-base)
+  - [Mechanical](#mechanical)
+  - [Electronics](#electronics)
+    - [Sensor PCBs](#sensor-pcbs-1-per-module)
+    - [Chainlink Driver](#chainlink-driver-1-per-6-modules)
+    - [Chainlink Buddy \[T-Display\]](#chainlink-buddy-t-display-1-for-entire-display)
+    - [Advanced items](#advanced-items)
+      - [Chainlink Buddy \[Breadboard\]](#chainlink-buddy-breadboard-1-for-entire-display-alternative-to-t-display)
+      - [Chainlink Base](#chainlink-base-1-for-entire-display-large-displays)
+    - [Older designs](#older-designs)
+      - [Classic controller](#classic-controller-electronics-deprecated)
     + [Miscellaneous Tools](#miscellaneous-tools)
       - [Flaps and Fonts](#flaps-and-fonts)
+      - [Combined Front Panel Generator](#combined-front-panel-generator)
       - [3D Printed Tools](#3d-printed-tools)
       - [Chainlink Driver Tester](#chainlink-driver-tester)
-    + [Classic Controller Electronics (deprecated)](#classic-controller-electronics)
   * [Code](#code)
     + [Firmware](#firmware)
     + [Computer Control Software](#computer-control-software)
@@ -82,87 +108,129 @@ Please note, updated documentation for the Chainlink system is still in progress
 ## Mechanical
 The mechanical/structural components are made from laser-cut 3mm MDF or acrylic, and held together with M4 bolts and nuts. The design is parametric and built using OpenSCAD. See below for more info on rendering/modifying the design.
 
-![2d laser cut rendering](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_raster.png)
+You can view an interactive 3d model of the design [here](https://scottbez1.github.io/splitflap/embed.html?branch=master).
+
+The beta v2 mechanical design officially supports variants with 52 flaps (perfect for use with the new ["Epilogue" printed flaps](https://bezeklabs.etsy.com/listing/1685633114/)) and 40 flaps. But you can always modify the design to customize it further.
+
+### Stable v0.7 (40-flap modules)
+![2d laser cut rendering](https://s3.amazonaws.com/splitflap-artifacts/refs/tags/v0.7/3d/3d_laser_raster.png)
+
+The v0.7 stable release artifacts can be found at the [v0.7 tagged release](https://github.com/scottbez1/splitflap/releases/tag/v0.7).
+
+### Beta v2 (52-flap module option - recommended)
+![2d laser cut rendering](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_raster-52.png)
+
+Module dimensions: <img height="18" src="https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-52-module_dimensions.svg" />
 
 Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
-* For Ponoko 3mm MDF ([1x svg](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-ponoko-3mm-mdf_1x.svg), [4x svg](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-ponoko-3mm-mdf_4x.svg))
-* For Ponoko 3mm acrylic ([1x svg](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-ponoko-3mm-acrylic_1x.svg), [4x svg](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-ponoko-3mm-acrylic_4x.svg),)
-* For generic material (0.18mm kerf correction) ([1x svg](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector.svg))
-* For Elecrow 3mm Wood ([1x zipped pdf](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-elecrow-3mm-wood_1x.zip), note that Elecrow orders are automatically 5x)
-* For Elecrow 3mm Acrylic ([1x zipped pdf](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-elecrow-3mm-acrylic_1x.zip), note that Elecrow orders are automatically 5x)
+* For Ponoko 3mm MDF ([svg](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-52-ponoko-3mm-mdf_1x.svg)) <img height="18" src="https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-52-ponoko-3mm-mdf_1x_dimensions.svg" />
+* For Ponoko 3mm acrylic ([svg](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-52-ponoko-3mm-acrylic_1x.svg)) <img height="18" src="https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-52-ponoko-3mm-acrylic_1x_dimensions.svg" />
+* For generic material (0.18mm kerf correction) ([svg](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-52.svg))
+* For Elecrow 3mm Wood ([zipped pdf](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-52-elecrow-3mm-wood_1x.zip))
+* For Elecrow 3mm Acrylic ([zipped pdf](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-52-elecrow-3mm-acrylic_1x.zip))
+
+<sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases) instead
+
+### Beta v2 (40-flap module option)
+![2d laser cut rendering](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_raster-40.png)
+
+Module dimensions: <img height="18" src="https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-40-module_dimensions.svg" />
+
+Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
+* For Ponoko 3mm MDF ([svg](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-40-ponoko-3mm-mdf_1x.svg)) <img height="18" src="https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-40-ponoko-3mm-mdf_1x_dimensions.svg" />
+* For Ponoko 3mm acrylic ([svg](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-40-ponoko-3mm-acrylic_1x.svg)) <img height="18" src="https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-40-ponoko-3mm-acrylic_1x_dimensions.svg" />
+* For generic material (0.18mm kerf correction) ([svg](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-52.svg))
+* For Elecrow 3mm Wood ([zipped pdf](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-40-elecrow-3mm-wood_1x.zip))
+* For Elecrow 3mm Acrylic ([zipped pdf](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-40-elecrow-3mm-acrylic_1x.zip))
 
 <sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases) instead
 
 
 ## Electronics
-For small displays (up to 3 modules), you can skip the custom controller boards and use off-the-shelf ULN2003A driver
+> [!NOTE]
+> For small displays (up to 3 modules), you can skip the custom controller boards and use off-the-shelf ULN2003A driver
 modules plugged into an Arduino Uno. This is [partially documented in the wiki](https://github.com/scottbez1/splitflap/wiki/Electronics#basic-prototyping-alternative-electronics-approach)
-but may require some additional tinkering to get it to work. _Help wanted: if you'd like to help improve these instructions,
-please reach out in the Discord server, thanks!_
+> but may require some additional tinkering to get it to work. _Help wanted: if you'd like to help improve these instructions,
+> please reach out in the Discord server, thanks!_
 
-The Chainlink electronics system is the current recommended design, which allows for larger-scale displays by chaining more
-modules together and uses a more powerful microcontroller (ESP32) compared to the older "Classic" controller. It also adds 
-the possibility of wifi and BLE control, though firmware support for this is very limited for now.
-
-The older design ("Classic" controller board), which plugs into an Arduino Uno as a shield and can control up to 4 modules is
-no longer recommended and will not receive firmware updates going forward. New builds are recommended to use the Chainlink
-ESP32-based system instead.
-
-### Module Electronics
-Each module needs a hall-effect sensor for start-up calibration and fault monitoring. This can be mounted in
-[different ways](https://github.com/scottbez1/splitflap/wiki/Electronics#sensor-board-alternative) but the recommended
-approach is to use a small PCB, with an AH3391Q (or similar) sensor and connector, which mounts to the side of the
-module with a single screw and can easily be adjusted for precise calibration.
-
-These boards are small (about 16mm x 16 mm) and the designs are available as a panelized PCB, which can be snapped
-apart. The panelization is configurable and is optimized for production at low-cost PCB fabricators like SeeedStudio, JLCPCB, or PCBWay.
-
-<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics/sensor-panelized-pcb-raster.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics/sensor-panelized-pcb-raster.png"/>
-</a>
-
-Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
-
-* Sensor PCB, single ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/sensor-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/sensor-pcb-packet.pdf))
-* Sensor PCB, panelized ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/sensor-panelized-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics/sensor-panelized-pcb-packet.pdf))
-
-<sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases) instead
-
-### Chainlink Electronics
-The Chainlink system replaces the older "Classic" controller electronics and is designed to support long chains of driver boards
-to control large displays (think 100+ split-flap modules). It's also designed to be easy and cheap to build, especially in higher
+The "Chainlink" electronics system is designed to support long chains of driver boards to control medium/large displays (up to 100+ split-flap modules).
+It's also designed to be easy and cheap to order pre-assembled or build yourself, especially in higher
 quantities, due to its simple BOM and surface-mount components.
 
-The Chainlink system requires 2 core elements:
-* One or more **Chainlink Driver** board. This is what interfaces with the motors and sensors of each module. Each Driver board
-supports up to **6** individual split-flap modules. Chainlink Driver boards can be chained together to construct a large display.
-* Some kind of ESP32 microcontroller board. There are a few options:
+To build a display, you'll need 3 different electronics:
+* One **Sensor PCB** for every split-flap module
+* One **Chainlink Driver** board for every 6 split-flap modules. This is what interfaces with the motors and sensors of each module. Chainlink Driver boards can be chained together to construct a large display.
+* An ESP32 microcontroller board. There are a few options:
     * For small/medium displays, one of the **Chainlink Buddy** boards are recommended
         * **Chainlink Buddy [T-Display]**  holds a Lilygo T-Display ESP32 module which includes a built-in LCD and 2 buttons
         * **Chainlink Buddy [Breadboard]** makes it easy to connect a Chainlink Driver to a breadboard for prototyping, though you can also easily connect a Chainlink Driver to a breadboard with a few dupont wires.
     * For large displays, the **Chainlink Base** provides a number of advanced features: central
 power management/distribution and fault monitoring, UART and RS-485 connections, configuration switches, and status LEDs.
 
-#### Chainlink Driver
+### Sensor PCBs (1 per module)
+Each module needs a hall-effect sensor for start-up calibration and fault monitoring. 
+
+#### Sensors for stable v0.7 hardware
+Older sensors for the v0.7 and older laser-cut hardware can be found in the [tagged sensor release](https://github.com/scottbez1/splitflap/releases/tag/releases%2Fsensor%2Fv1.1).
+
+These older sensors are not compatible with v2 laser-cut hardware.
+
+<a href="https://s3.amazonaws.com/splitflap-artifacts/refs/tags/releases/sensor/v1.1/electronics-classic/sensor-panelized-pcb-raster.png">
+<img width="320" src="https://s3.amazonaws.com/splitflap-artifacts/refs/tags/releases/sensor/v1.1/electronics-classic/sensor-panelized-pcb-raster.png"/>
+</a>
+
+
+#### Beta Sensors v2
+
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-v2/panelized_sensor_smd-front-3d.png">
+<img width="320" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-v2/panelized_sensor_smd-front-3d.png"/>
+</a>
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-v2/panelized_sensor_smd-back-3d.png">
+<img width="320" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-v2/panelized_sensor_smd-back-3d.png"/>
+</a>
+
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-v2/sensor_smd-schematic.pdf">
+<img width="320" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-v2/sensor_smd-schematic.png"/>
+</a>
+
+New sensors for the v2 laser-cut hardware - these use surface mount components and are optimized for PCB assembly at JLCPCB. These new sensors are not compatible with v0.7 and older laser-cut hardware.
+
+Packs of 6 sensors are [available mostly-assembled in the Bezek Labs store](https://bezeklabs.etsy.com/listing/1696745674),
+and come with the right-angle pin headers and magnets you'll need. Purchases support continued development of this project.
+
+Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
+
+* Schematic [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-v2/sensor_smd-schematic.pdf)
+* Interactive BOM (for manual assembly) [interactive](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-v2/sensor_smd-ibom.html)
+* Fabrication files (single)
+  * NOTE: PCBs must be 0.8mm! (rather than the more typical 1.6mm thickness)
+  * PCB gerbers [zip](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-v2/sensor_smd-jlc/gerbers.zip)
+  * PCB BOM (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-v2/sensor_smd-jlc/bom.csv)
+  * PCB CPL (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-v2/sensor_smd-jlc/pos.csv)
+* Fabrication files (panelized)
+  * NOTE: PCBs must be 0.8mm! (rather than the more typical 1.6mm thickness)
+  * PCB gerbers [zip](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-v2/sensor_smd-panelized-jlc/gerbers.zip)
+  * PCB BOM (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-v2/sensor_smd-panelized-jlc/bom.csv)
+  * PCB CPL (for JLCPCB assembly) [csv](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-v2/sensor_smd-panelized-jlc/pos.csv)
+* Purchase sensor kits in the US: [Bezek Labs](https://bezeklabs.etsy.com/listing/1696745674)
+
+<sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases) instead
+
+### Chainlink Driver (1 per 6 modules)
 <a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/chainlinkDriver-3d.png">
 <img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink/chainlinkDriver-3d.png"/>
 </a>
 
-Key features (compared to the older "Classic" Controller):
-* Controls 6 split-flap modules per board instead of just 4 - fewer PCBs means lower cost and less wiring
-* Longer PCB (200mm) gets connectors closer to each module so wires have more slack
+Key features:
+* Controls 6 split-flap modules per board
 * Primarily SMD and all components (except the pin headers and motor connectors) are available in JLCPCB's parts library
 for easy SMD/THT assembly
 * Clock and latch lines are buffered on each board with a 74HC125 to support longer chains
-* Neopixels replaced by shift-register-driven single-color LED per module (one fewer data line needed in the chain, lower current draw, and 3.3v IO friendly)
-* 2 bits of loopback (connecting 2 spare output bits on output shift registers to 2 spare inputs) allows the controller
+* 2 bits of loopback error checking per board (connecting 2 spare output bits on output shift registers to 2 spare inputs) allows the controller
 to validate data integrity up and down the whole chain
-* ~~TPL7407L mosfet low-side drivers instead of ULN2003A/MIC5842 (lower on-resistance means less voltage drop in the driver = more torque, less waste heat, and less total current consumption)~~
-Due to the chip shortage, TPL7407L ICs are not currently available and will likely not be available again until mid-2022, so the auto-generated
-JLC component/bom files below currently use ULN2003A darlington drivers as a suitable drop-in replacement.
 * Module order goes from right-to-left since this is intended to be installed and accessed from *behind* the modules
 
-Chainlink Driver boards are [available mostly-assembled in the Bezek Labs store](https://www.etsy.com/listing/1123280069/splitflap-chainlink-driver-v11),
+Chainlink Driver boards are [available mostly-assembled in the Bezek Labs store](https://bezeklabs.etsy.com/listing/1123280069/splitflap-chainlink-driver-v11),
 and come with the additional connectors and ribbon cables you'll need. Purchases support continued development of this project.
 
 More information on building and using Chainlink Drivers is available in the [Chainlink Driver User Guide](https://paper.dropbox.com/doc/Chainlink-Driver-v1.1-Electronics-User-Guide--BW2lxdjVkAxva68kYw2doWQEAg-U0DAXrSxEoOhgSoRU39hq).
@@ -194,7 +262,7 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 
 <sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases) instead
 
-#### Chainlink Buddy \[T-Display\]
+### Chainlink Buddy \[T-Display\] (1 for entire display)
 <a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-3d.png">
 <img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-t-display/chainlinkBuddyTDisplay-3d.png"/>
 </a>
@@ -210,7 +278,7 @@ and then run a wire from the onboard screw terminals to the Chainlink Driver's m
 * Optional 5V regulator allows for powering the ESP32 without a USB connection, using the 12V motor power supply
 
 
-Chainlink Buddy \[T-Display\] boards are [available in the Bezek Labs store](https://www.etsy.com/listing/1109357786/splitflap-chainlink-buddy-t-display),
+Chainlink Buddy \[T-Display\] boards are [available in the Bezek Labs store](https://bezeklabs.etsy.com/listing/1109357786/splitflap-chainlink-buddy-t-display),
 and come with the additional connectors you'll need. Purchases support continued development of this project. 
 
 
@@ -231,7 +299,8 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 
 <sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases) instead
 
-#### Chainlink Buddy \[Breadboard\]
+### Advanced items
+#### Chainlink Buddy \[Breadboard\] (1 for entire display; alternative to T-Display)
 <a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-3d.png">
 <img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-3d.png"/>
 </a>
@@ -239,7 +308,7 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 The Chainlink Buddy \[Breadboard\] makes it easy to connect a Chainlink Driver to a breadboard for prototyping. You could use 5 dupont wires and have a
 messy rats nest, or you could use a single ribbon cable and this slick breakout board.
 
-Chainlink Buddy \[Breadboard\] boards are [available in the Bezek Labs store](https://www.etsy.com/listing/1123863267/splitflap-chainlink-buddy-breadboard),
+Chainlink Buddy \[Breadboard\] boards are [available in the Bezek Labs store](https://bezeklabs.etsy.com/listing/1123863267/splitflap-chainlink-buddy-breadboard),
 and come with the additional connectors you'll need. Purchases support continued development of this project. 
 
 <a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-buddy-breadboard/chainlinkBuddyBreadboard-schematic.pdf">
@@ -259,14 +328,14 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 
 <sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases) instead
 
-#### Chainlink Base
+#### Chainlink Base (1 for entire display; large displays)
 <a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/chainlinkBase-3d.png">
 <img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/chainlinkBase-3d.png"/>
 </a>
 
-This has been tested and appears to work, but is not yet recommended for general use. Firmware support is in progress.
+For larger displays, you should take additional care to make the hardware more robust to potential faults. The Chainlink Base is an experimental (but unsupported) controller design that adds some additional functionality. This has been tested and appears to work, but is not recommended for general use.
 
-The Chainlink Base PCB is an optional alternative to a Chainink Buddym, designed for particularly large displays.
+The Chainlink Base PCB is an optional alternative to a Chainink Buddy, designed for particularly large displays.
 It hosts the ESP32 and adds additional connectivity options (terminals for UART and RS485 serial) and
 power distribution (independently-monitored power channels for multiple "zones" of Driver boards).
 
@@ -300,39 +369,18 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 * PCB gerbers [zip](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/chainlinkBase-jlc/gerbers.zip)
 * PCB bom (for manual assembly) [interactive](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-chainlink-base/bom/chainlinkBase-ibom.html)
 
-<sup>:warning:</sup>There are currently no stable releases of this board. Once the board design is tested and recommended, a stable release will be created on the [Releases dashboard](https://github.com/scottbez1/splitflap/releases)
+<sup>:warning:</sup>There are currently no stable releases of this board, and none are planned. Some past variants of this board have been used, to some success, but it is not considered an
+officially supported design
 
-
+## Older designs
 ### Classic Controller Electronics (deprecated)
-The Classic driver board is not recommended for new designs.
+The Classic driver board is deprecated and unsupported.
 
-The Classic controller board is designed to plug into an Arduino like a shield, and can control 4 stepper motors.
-Up to 3 driver boards can be chained together, for up to 12 modules controlled by a single Arduino.
-The designs for the controller can be found under [`electronics/splitflap.pro`](electronics/splitflap.pro) (KiCad 5 project).
-Nearly everything is a through-hole component rather than SMD, so it's very easy to hand-solder.
+The Classic controller board was designed to plug into an Arduino like a shield, and could control 4 stepper motors.
+Up to 3 driver boards could be chained together, for up to 12 modules controlled by a single Arduino.
 
 The driver uses 2 MIC5842 low-side shift-register drivers, with built-in transient-suppression diodes, to control the motors, and a 74HC165 shift register to read from 4 hall-effect magnetic home position sensors.
 There are optional WS2812B RGB LEDs which can be used to indicate the status of each of the 4 channels.
-
-<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/classic-schematic.pdf">
-<img height="320" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/classic-schematic.png"/>
-</a>
-
-The PCB layout is 10cm x 5cm which makes it fairly cheap to produce using a low-cost PCB manufacturer (e.g. Seeed Studio).
-
-<a href="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/classic-pcb-raster.png">
-<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/classic-pcb-raster.png"/>
-</a>
-
-
-Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
-
-* Bill of Materials ([csv](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/bom/splitflap-bom.csv), [interactive](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/bom/splitflap-ibom.html))
-* PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/classic-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/classic-pcb-packet.pdf))
-* Panelized PCB ([gerbers](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/classic-panelized-jlc/gerbers.zip) / [pdf](https://s3.amazonaws.com/splitflap-artifacts/master/electronics-classic/classic-panelized-pcb-packet.pdf))
-
-<sup>:warning:</sup>For tested/stable/recommended artifacts, use the [latest release](https://github.com/scottbez1/splitflap/releases) instead
-
 
 
 ### Miscellaneous Tools
@@ -352,13 +400,26 @@ that is extremely configurable:
 
 TODO: finish documenting this and render some example images...
 
+#### Combined Front Panel Generator
+If you'd like to share a single front face across multiple modules (rather than each module having its own front face), the repo
+includes a script to generate a combined front panel for laser-cutting or CNC milling/routing.
+
+You can modify:
+* Number of rows and columns
+* Horizontal and vertical spacing/separation of modules
+* Overall outer width and height of the panel
+
+For CNC cutting, the script supports rendering a vector file optimized for thicker material (e.g. 6mm MDF) where only the bolt-holes will be through-cut. In this mode, the slots for the top/bottom enclosure pieces can be cut as ~4mm pockets so they aren't visible from the front face. The script automatically generates dog-bone shapes for these pocket cuts.
+
+
+TODO: finish documenting this and render some example images...
+
 #### 3D Printed Tools
 The project also includes a number of optional 3D printed designs to make assembly easier. These include:
 
 * [a flap scoring jig](3d/tools/scoring_jig.scad) for precisely marking the cut point when splitting CR80 cards
 * [a flap punch jig](3d/tools/punch_jig.scad) for aligning the punch when making the pin cutouts on either side of a flap
 * [a flap container](3d/tools/flap_container.scad) for storing and organizing stacks of completed flaps
-* [a sensor PCB holder](3d/tools/pcb_case.scad) for storing and protecting soldered sensor boards
 
 All of these designs are parametric and customizable within OpenSCAD. To print them, open up the relevant file in OpenSCAD and use `File -> Export -> Export as STL` to render the design as an STL file for your slicer.
 
@@ -408,57 +469,60 @@ an informed decision about which revision(s) to use.
 
 ## Code
 ### Firmware
-The driver firmware is written using Arduino and is available at [`arduino/splitflap/Splitflap/Splitflap.ino`](arduino/splitflap/Splitflap/Splitflap.ino). 
+The driver firmware is written using PlatformIO with the Arduino framework and is available at [`arduino/splitflap/Splitflap/Splitflap.ino`](arduino/splitflap/Splitflap/Splitflap.ino). 
 
 The firmware implements a closed-loop controller that accepts letters as input over USB serial and drives the stepper motors using a precomputed acceleration ramp for smooth control. The firmware automatically calibrates the spool position at startup, using the hall-effect magnetic sensor, and will automatically recalibrate itself if it ever detects that the spool position has gotten out of sync. If a commanded rotation is expected to bring the spool past the "home" position, it will confirm that the sensor is triggered neither too early nor too late; otherwise it will search for the "home" position to get in sync before continuing to the desired letter.
 
+### Serial protocol
+In order for a computer to communicate with the splitflap, it appears as a USB serial device.
+
+However, usage of Arduino’s `Serial` is strictly forbidden, and instead a `logger` abstraction is provided for sending basic text debug logs. Other data is transferred in a structured way, described below.
+
+This allows flexibility in the format of data transferred over serial, and in fact the splitflap provides 2 different serial modes that serve different purposes.
+
+
+#### Plaintext mode
+
+By default, it starts in “plaintext” mode, which is developer-friendly and you’re probably familiar with if you’ve opened a serial monitor with the splitflap connected:
+```
+{"type":"init", "num_modules":6}
+```
+
+However, this isn’t great for programmatically configuring or receiving updates from the splitflap, so instead the firmware offers a programmatic interface using a binary protocol based on Google’s Protobuf standard.
+
+
+#### Protobuf (binary/programmatic) mode
+
+The protobuf-based binary serial mode is a compact and flexible way to transfer structured data from the host computer to the splitflap and vice-versa.
+
+
+##### Benefits of protobuf
+protobuf provides several benefits over other encoding mechanisms like JSON:
+
+1. Well-defined schema. If you’re curious about the format of data to expect or send, you just need to check the protobuf file
+2. Code generation. Instead of hand-writing JSON parsers every time the data changes, protobuf provides code generation of the encoding and decoding logic, and data-structures. Splitflap uses nanopb to generate C structs based off the schema, and all the code for encoding/decoding that data from the binary format.
+3. Relatively compact/efficient wire encoding. It’s not a primary goal in this project, but the binary wire encoding is generally fairly compact, due to omitting default/unspecified fields, using variable length encodings, etc. It’s certainly much more compact than JSON which uses strings to describe every field in every message.
+4. Backwards/forwards compatibility. Not super relevant to this project, but many common schema changes are backwards and forwards compatible, meaning an older client or a newer client will be able to handle them gracefully.
+
+##### Disadvantages of protobuf
+
+1. Not human-readable. This makes it much harder to debug, as you need something that can interpret messages. Since they’re binary, viewing anything in a terminal directly will be fruitless.
+2. Not self-describing. If you come across a JSON document, you can generally tell what it means because fields have string names/labels describing their contents. Protobuf has no such thing (it uses integer field numbers, which does make renaming fields easier) so you need to have a copy of the schema (.proto file - and you’d better hope it matches the data!) in order to understand an encoded message.
+
+This is why the splitflap defaults to plaintext mode to make basic validation/debugging easier.
+
+##### How it works
+Protobuf messages are encoded to their binary wire format and a CRC32 checksum appended. Then that entire binary string is COBS encoded into a packet, and delimited/framed by 0 (NULL) bytes when sent over serial. This provides a basic packet-based interface with integrity checks (rather than the raw, stream-based interface of a serial connection).
+
+The splitflap automatically switches to binary protobuf mode when it receives a 0 byte.
+
+
 ### Computer Control Software
-The display can be controlled by a computer connected to the Arduino over USB serial. A basic python library for interfacing with the Arduino and a demo application that displays random words can be found in the [software](software) directory.
+The display can be controlled by a computer connected to the ESP32 over USB serial. If you've built a display and want to test it out, check out the web-based demo [here](https://scottbez1.github.io/splitflap) which will connect to your display using USB - no applications/installation necessary!
 
-Commands to the display are sent in a basic plain-text format, and messages _from_ the display are single-line JSON objects, always with a `type` entry describing which type of message it is.
+The firmware supports a plaintext serial mode (enabled by default) for ease of testing, and a protobuf-based binary mode used by the software libraries for enhanced programmatic control and feedback.
 
-When the Arduino starts up, it sends an initialization message that looks like:
-```
-{"type":"init", "num_modules":4}
-```
-
-The display will automatically calibrate all modules, and when complete it will send a status update message:
-```
-{
-    "type":"status",
-    "modules":[
-        {"state":"normal", "flap":" ", "count_missed_home":0, "count_unexpected_home":0},
-        {"state":"sensor_error", "flap":"e", "count_missed_home":0, "count_unexpected_home":0},
-        {"state":"sensor_error", "flap":"e", "count_missed_home":0, "count_unexpected_home":0},
-        {"state":"sensor_error", "flap":"e", "count_missed_home":0, "count_unexpected_home":0}
-    ]
-}
-```
-(Note: this is sent as a single line, but has been reformatted for readability above)
-
-In this case the Arduino was programmed to support 4 modules, but only 1 module is connected, so the other 3 end up in `"sensor_error"` state. More on status updates below.
-
-At this point you can command the display to show some letters. To do this, send a message to the Arduino that looks like this:
-```
-=hiya\n
-```
-The `=` indicates a movement command, followed by any number of letters, followed by a newline. You don't have to send the exact number of modules - if you send fewer letters than modules, only the first N modules will be updated and the remainder won't move. For instance, you could send `=a\n` as shorthand to only set the first module (even if there are 12 modules connected). Any letters that can't be displayed are considered a no-op for that module.
-
-Whenever ALL modules come to a stop, the Arduino will send a status update message (just like the one following initialization, shown above). Here's what the fields mean in each module's status entry:
-- **state** - `normal` indicates it's working as intended, `sensor_error` indicates the module can't find the home position and has given up trying (it will no longer respond to movement commands until told to recalibrate - see below). `panic` indicates the firmware detected a programming bug and has gone into failsafe mode (it will no longer respond to movement commands and requires a full reset of the Arduino to recover - should never happen).
-- **flap** - which letter is shown by this module
-- **count\_missed\_home** - number of times the module expected to pass the home position but failed to detect it. If this is non-zero, it indicates either a flaky sensor or that the motor may have jammed up. The module automatically attempts to recalibrate whenever it misses the home position, so if this number is non-zero and the module is still in the `normal` state, it means the module successfully recovered from the issue(s). However, if this number keeps going up over continued use, it may indicate a recurrent transient issue that warrants investigation.
-- **count\_unexpected\_home** - number of times the module detected the home position when it wasn't supposed to. This is rare, but would indicate a flaky/broken sensor that is tripping at the wrong time. Just like with missed home errors, unexpected home errors will cause the module to attempt to recalibrate itself.
-
-If you want to make all modules recalibrate their home position, send a single @ symbol (no newline follows):
-```
-@
-```
-This recalibrates all modules, including any that were in the `sensor_error` state; if recalibration succeeds they will return to the `normal` state and start responding to movement commands again.
-
-
-
-
+You can find example Typescript and Python libraries in the [`software/chainlink`](software/chainlink) folder.
 
 # Contributing/Modifying
 
@@ -520,7 +584,7 @@ I'd love to hear your thoughts and questions about this project, and happy to in
 
 This project is licensed under Apache v2 (see [LICENSE.txt](LICENSE.txt)).
 
-    Copyright 2015-2021 Scott Bezek and the splitflap contributors
+    Copyright 2015-2024 Scott Bezek and the splitflap contributors
     
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
