@@ -420,7 +420,6 @@ The project also includes a number of optional 3D printed designs to make assemb
 * [a flap scoring jig](3d/tools/scoring_jig.scad) for precisely marking the cut point when splitting CR80 cards
 * [a flap punch jig](3d/tools/punch_jig.scad) for aligning the punch when making the pin cutouts on either side of a flap
 * [a flap container](3d/tools/flap_container.scad) for storing and organizing stacks of completed flaps
-* [a sensor PCB holder](3d/tools/pcb_case.scad) for storing and protecting soldered sensor boards
 
 All of these designs are parametric and customizable within OpenSCAD. To print them, open up the relevant file in OpenSCAD and use `File -> Export -> Export as STL` to render the design as an STL file for your slicer.
 
