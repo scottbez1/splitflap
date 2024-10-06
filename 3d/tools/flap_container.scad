@@ -16,6 +16,7 @@
 
 include <../flap_dimensions.scad>
 use <../splitflap.scad>
+use <../flap.scad>
 
 num_flaps = 40;
 containers_x = 1;
