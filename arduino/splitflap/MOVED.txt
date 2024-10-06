@@ -1,0 +1,4 @@
+As of 2024-10-06, the firmware code that used to live in this directory has been moved to the "firmware" directory at the root of the repo.
+
+In VS Code, you'll want to re-open this project by using "Open Folder" and selecting the entire "splitflap" repository folder.
+If you run into any issues, please reach out in the discord community (https://discord.com/invite/wgehm3PcrC) for help.
