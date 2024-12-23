@@ -3,7 +3,7 @@
 
 # Intro
 
-If you’re just getting started and want to learn more about the Chainlink Driver, jump to the [bottom of this document](https://paper.dropbox.com/doc/Chainlink-Driver-v1.1-User-Guide-BWhbqC5xa02TlskitjhIE95eAg-U0DAXrSxEoOhgSoRU39hq#:uid=233215592336409945310151&h2=What-is-the-Chainlink-Driver?) which includes some more background and general info.
+If you’re just getting started and want to learn more about the Chainlink Driver, jump to the [bottom of this document](#what-is-the-chainlink-driver) which includes some more background and general info.
 
 Please let me know if you have any questions or suggestions on how to improve these instructions - feel free to open a pull request or joing the [community Discord server](https://discord.gg/wgehm3PcrC)
 
@@ -11,7 +11,7 @@ Building a split-flap display? I would love to hear from you and see photos/vide
 
 
 # 1. Gather the parts
-- Chainlink Driver PCB assembly (see [appendix](https://paper.dropbox.com/doc/Chainlink-Driver-v1.1-User-Guide--BWhbqC5xa02TlskitjhIE95eAg-U0DAXrSxEoOhgSoRU39hq#:uid=792547574481491886826014&h2=Where-to-buy-a-Chainlink-Drive) for ordering info)
+- Chainlink Driver PCB assembly (see [appendix](#appendix) for ordering info)
 - Connectors (all included with the Chainlink Driver boards I sell on Etsy)
     - 6x JST XH 5-pin
     - 6x 3-pin male headers
@@ -22,13 +22,13 @@ Building a split-flap display? I would love to hear from you and see photos/vide
         - e.g. 22AWG solid hookup wire
     - 12v power/ground wires
         - 20AWG up to 14AWG depending on number of modules
-- 12V Power supply (see [appendix](https://paper.dropbox.com/doc/Chainlink-Driver-v1.1-User-Guide--BWhbqC5xa02TlskitjhIE95eAg-U0DAXrSxEoOhgSoRU39hq#:uid=087574108452977023222089&h2=Power-supply-tips) for more info)
+- 12V Power supply (see [appendix](#appendix) for more info)
 - ESP32
 ![Chainlink Buddy [T-Display]](https://paper-attachments.dropbox.com/s_BBABC117AF455DD9F0525297940CD25AF9A358008ED7FF73463824486BCF5E62_1637360060741_DSC_5014_s.jpg)
 
     - The [TTGO T-Display](https://amzn.to/3kHwhMm) [affiliate links help support this project at no cost to you, or use a [non-affiliate link](https://www.amazon.com/LILYGO-T-Display-Arduino-Development-CH9102F/dp/B099MPFJ9M) if you’d prefer] is the recommended ESP32 board, which includes a 240x135 LCD that the splitflap firmware supports out of the box. (Also available on [aliexpress](https://www.aliexpress.com/item/33048962331.html), which may be cheaper)
-    - An optional [Chainlink Buddy [T-Display]](https://www.etsy.com/listing/1109357786/splitflap-chainlink-buddy-t-display) is also highly recommended for most users, which makes it easy and clean to connect a T-Display to the Chainlink Driver.
-    - If you want to use an ESP32 module other than a T-Display, a [Chainlink Buddy [Breadboard]](https://www.etsy.com/listing/1123863267/splitflap-chainlink-buddy-breadboard) may be helpful in lieu of the T-Display Buddy. See the [appendix](https://paper.dropbox.com/doc/Chainlink-Driver-v1.1-User-Guide-BWhbqC5xa02TlskitjhIE95eAg-U0DAXrSxEoOhgSoRU39hq#:uid=376453206579860306500313&h2=Using-a-different-ESP32-module) for more info on using other ESP32 modules.
+    - An optional [Chainlink Buddy [T-Display]](https://bezeklabs.etsy.com/listing/1109357786/splitflap-chainlink-buddy-t-display) is also highly recommended for most users, which makes it easy and clean to connect a T-Display to the Chainlink Driver.
+    - If you want to use an ESP32 module other than a T-Display, a [Chainlink Buddy [Breadboard]](https://bezeklabs.etsy.com/listing/1123863267/splitflap-chainlink-buddy-breadboard) may be helpful in lieu of the T-Display Buddy. See the [appendix](#appendix) for more info on using other ESP32 modules.
 
 
 
@@ -53,7 +53,7 @@ Building a split-flap display? I would love to hear from you and see photos/vide
 
 On the T-Display itself, you will solder the 2 rows of male headers (included in the box) to the T-Display, and then the whole module will plug into the matching female headers you soldered on the Buddy board.
 
-You may notice a few empty spaces in the lower left of the T-Display Buddy PCB labeled C1 and C2 along with 3 through-holes; don’t worry, those are optional components and not needed for a basic setup. See [Standalone T-Display operation](https://paper.dropbox.com/doc/Chainlink-Driver-v1.1-Electronics-User-Guide--BlREVjC8f3CL~b2gMbh4IclCAg-U0DAXrSxEoOhgSoRU39hq#:uid=387792691852404644801520&h2=8.-(Optional)-Standalone-T-Dis) for more info.
+You may notice a few empty spaces in the lower left of the T-Display Buddy PCB labeled C1 and C2 along with 3 through-holes; don’t worry, those are optional components and not needed for a basic setup. See [Standalone T-Display operation](#8-optional-standalone-t-display-operation) for more info.
 
 
 ![](https://paper-attachments.dropbox.com/s_BBABC117AF455DD9F0525297940CD25AF9A358008ED7FF73463824486BCF5E62_1647556549613_PXL_20220317_223022886.jpg)
@@ -92,7 +92,7 @@ We’ll start by connecting and testing just the Chainlink Driver, without conne
 - Connect the ribbon cable from the Chainlink Buddy’s **Output** to the Chainlink Driver’s **Input**
 - Connect a wire from the Chainlink Driver’s “Logic 3.3-5V” screw terminal to a 3.3v supply on your breadboard
 - Connect a wire from the Chainlink Driver’s “GND” screw terminal to your breadboard’s ground rail
-- Connect the 5 pins to your ESP32. See the [appendix](https://paper.dropbox.com/doc/Chainlink-Driver-v1.1-Electronics-User-Guide--BWhbqC5xa02TlskitjhIE95eAg-U0DAXrSxEoOhgSoRU39hq#:uid=376453206579860306500313&h2=Using-a-different-ESP32-module) for more info. Default pin assignments are:
+- Connect the 5 pins to your ESP32. See the [appendix](#appendix) for more info. Default pin assignments are:
     - Clock: 33
     - Motor Data: 32
     - Sensor Data: 39
@@ -134,7 +134,7 @@ You’ll need to configure NUM_MODULES in platformio.ini to match the number of 
         -DNUM_MODULES=6
 
 
-- (If you’re *no*t **using a T-Display, see the [appendix](https://paper.dropbox.com/doc/Chainlink-Driver-v1.1-Electronics-User-Guide--BWhbqC5xa02TlskitjhIE95eAg-U0DAXrSxEoOhgSoRU39hq#:uid=376453206579860306500313&h2=Using-a-different-ESP32-module) for a few more changes you’ll need to make at this point)
+- (If you’re *no*t **using a T-Display, see the [appendix](#appendix) for a few more changes you’ll need to make at this point)
 - Mac Users: you will likely need to install updated drivers for the CH9102 USB-serial adapter used on newer versions of the ESP32 T-Display: https://learn.adafruit.com/how-to-install-drivers-for-wch-usb-to-serial-chips-ch9102f-ch9102/mac-driver-installation
 
 
@@ -174,16 +174,17 @@ The ESP32 and 3.3v electronics on the Chainlink Drivers are typically powered by
 **T-Display**
 
 - You can plug a DC 12v barrel jack into the T-Display Buddy when using 1 or 2 Chainlink Drivers
-- ⚠️ For more than 2 Chainlink Drivers, the barrel jack cannot handle enough current, so you should instead connect your power supply directly to the Motor Power terminals of the first Chainlink Driver. Make sure you are using the [appropriate wire gauge](https://paper.dropbox.com/doc/Chainlink-Driver-v1.1-Electronics-User-Guide--BWhbqC5xa02TlskitjhIE95eAg-U0DAXrSxEoOhgSoRU39hq#:uid=087574108452977023222089&h2=Power-supply-tips), and [never chain power to more than 6 Chainlink Drivers](https://paper.dropbox.com/doc/Chainlink-Driver-v1.1-Electronics-User-Guide--BWhbqC5xa02TlskitjhIE95eAg-U0DAXrSxEoOhgSoRU39hq#:uid=280278286811718750760936&h2=Large-displays)
-https://www.dropbox.com/s/4xpvtycwrw21g0e/chainlinkBuddyWiringv1.1.pdf?dl=0
+- ⚠️ For more than 2 Chainlink Drivers, the barrel jack cannot handle enough current, so you should instead connect your power supply directly to the Motor Power terminals of the first Chainlink Driver. Make sure you are using the [appropriate wire gauge](#power-supply-tips), and [never chain power to more than 6 Chainlink Drivers](#large-displays)
+
+[Wiring diagram](img/chainlinkWiringv1.1.pdf)
 
 
 **Breadboard**
 
-- Connect your power supply directly to the Motor Power terminals of the first Chainlink Driver. Make sure you are using the [appropriate wire gauge](https://paper.dropbox.com/doc/Chainlink-Driver-v1.1-Electronics-User-Guide--BWhbqC5xa02TlskitjhIE95eAg-U0DAXrSxEoOhgSoRU39hq#:uid=087574108452977023222089&h2=Power-supply-tips), and [never chain power to more than 6 Chainlink Drivers](https://paper.dropbox.com/doc/Chainlink-Driver-v1.1-Electronics-User-Guide--BWhbqC5xa02TlskitjhIE95eAg-U0DAXrSxEoOhgSoRU39hq#:uid=280278286811718750760936&h2=Large-displays)
+- Connect your power supply directly to the Motor Power terminals of the first Chainlink Driver. Make sure you are using the [appropriate wire gauge](#power-supply-tips), and [never chain power to more than 6 Chainlink Drivers](#large-displays)
 
 
-https://www.dropbox.com/s/hkv3p7253qu6991/chainlinkWiringv1.1%20%281%29.pdf?dl=0
+[Wiring diagram](img/chainlinkWiringv1.1.pdf)
 
 
 
@@ -194,7 +195,7 @@ You can easily chain several Chainlink Drivers by connecting ribbon cables, and 
 
     ⚠️ Never chain power to more than 6 Chainlink Drivers in a row ⚠️ 
 
-The screw terminals have a limited current rating (10A on the ones sold by Bezek Labs), so **using more than 6 Chainlink Drivers will require power to be wired differently**. See [+Chainlink Driver v1.1 Electronics User Guide: Large-displays](https://paper.dropbox.com/doc/Chainlink-Driver-v1.1-Electronics-User-Guide-Large-displays-U0DAXrSxEoOhgSoRU39hq#:uid=280278286811718750760936&amp;h2=Large-displays) below for more info on wiring large displays.
+The screw terminals have a limited current rating (10A on the ones sold by Bezek Labs), so **using more than 6 Chainlink Drivers will require power to be wired differently**. See [+Chainlink Driver v1.1 Electronics User Guide: Large-displays](#large-displays) below for more info on wiring large displays.
 
 
 # 8. (Optional) Standalone T-Display operation
@@ -239,7 +240,7 @@ https://www.youtube.com/watch?v=g9EPabcxBsM&
 ![](https://paper-attachments.dropbox.com/s_BBABC117AF455DD9F0525297940CD25AF9A358008ED7FF73463824486BCF5E62_1637358766420_DSC_4994_s.jpg)
 
 
-The design is open source, so you can order them directly from a PCB manufacturer using the design files provided, but I also [sell them in my Bezek Labs Etsy store](https://www.etsy.com/listing/1123280069/splitflap-chainlink-driver-v11) within the US.
+The design is open source, so you can order them directly from a PCB manufacturer using the design files provided, but I also [sell them in my Bezek Labs Etsy store](https://bezeklabs.etsy.com/listing/1123280069/splitflap-chainlink-driver-v11) within the US.
 
 Buying them from my store has the advantage of being [100% functionality tested after assembly using a custom testbed](https://twitter.com/scottbez1/status/1414986069586575360), and it helps support further development and prototyping of this project. I also include all the connectors and a ribbon cable for your convenience.
 
@@ -286,8 +287,7 @@ The power should branch into **separate chains of up to 6 Drivers** (or fewer if
 
 Chaining power continuously like the data would overload the screw terminals and wires at the beginning of the chain, potentially causing damage/fire. Note how the yellow and black wires in the diagram below branch *at the power supply* and do not continue past each sub-chain of 6 Drivers.
 
-https://www.dropbox.com/s/i0w7crtejz69kyz/chainlinkWiringAdvanced.pdf?dl=0
-
+[Advanced wiring diagram](img/chainlinkWiringAdvanced.pdf)
 
 I would also strongly recommend adding additional safety measures with a display of this size, considering the total power involved. For instance:
 
