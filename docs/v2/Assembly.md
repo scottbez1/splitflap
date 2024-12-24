@@ -56,7 +56,8 @@ Solder the connectors into place (make sure the IDC connector notch faces the le
 
 On the T-Display itself, you will solder the 2 rows of male headers (included in the box) to the T-Display, and then the whole module will plug into the matching female headers you soldered on the Buddy board.
 
-You may notice a few empty spaces in the lower left of the T-Display Buddy PCB labeled C1 and C2 along with 3 through-holes; don’t worry, those are optional components for an advanced build and are not needed for a basic setup. See [Standalone T-Display operation](https://paper.dropbox.com/doc/Chainlink-Driver-v1.1-Electronics-User-Guide--BlREVjC8f3CL~b2gMbh4IclCAg-U0DAXrSxEoOhgSoRU39hq#:uid=387792691852404644801520&h2=8.-(Optional)-Standalone-T-Dis) for more info.
+You may notice a few empty spaces in the lower left of the T-Display Buddy PCB labeled C1 and C2 along with 3 through-holes; don’t worry, those are optional components for an advanced build and are not needed for a basic setup. 
+See [Standalone T-Display operation](../ElectronicsGuide.md#8-optional-standalone-t-display-operation) for more info.
 
 
 ![](https://paper-attachments.dropboxusercontent.com/s_BBABC117AF455DD9F0525297940CD25AF9A358008ED7FF73463824486BCF5E62_1647556549613_PXL_20220317_223022886.jpg)
@@ -91,7 +92,7 @@ We’ll start by connecting and testing just the Chainlink Driver, without conne
 
 
 **Breadboard (if you’re not using the T-Display Buddy)**
-If you are using a different ESP32 module with the Breadboard Buddy rather than the T-Display Buddy, see the instructions in the full [Chainlink User Guide](https://paper.dropbox.com/doc/Chainlink-Driver-v1.1-Electronics-User-Guide--CYK3h0U5HNaCBuUqqlZP0jqEAg-U0DAXrSxEoOhgSoRU39hq).
+If you are using a different ESP32 module with the Breadboard Buddy rather than the T-Display Buddy, see the instructions in the full [Chainlink User Guide](../ElectronicsGuide.md).
 
 
 # Mechanical: Laser-cut Assembly
@@ -323,26 +324,27 @@ The ESP32 and 3.3v electronics on the Chainlink Drivers are typically powered by
 **T-Display**
 
 - You can plug a DC 12v barrel jack into the T-Display Buddy when using 1 or 2 Chainlink Drivers for up to 12 modules.
-- ⚠️ For more than 2 Chainlink Drivers, the barrel jack **cannot handle enough current**, so you should instead connect your power supply directly to the Motor Power terminals of the first Chainlink Driver. Make sure you are using the [appropriate wire gauge](https://paper.dropbox.com/doc/Chainlink-Driver-v1.1-Electronics-User-Guide--BWhbqC5xa02TlskitjhIE95eAg-U0DAXrSxEoOhgSoRU39hq#:uid=087574108452977023222089&h2=Power-supply-tips), and [never chain power to more than 6 Chainlink Drivers](https://paper.dropbox.com/doc/Chainlink-Driver-v1.1-Electronics-User-Guide--BWhbqC5xa02TlskitjhIE95eAg-U0DAXrSxEoOhgSoRU39hq#:uid=280278286811718750760936&h2=Large-displays)
+- ⚠️ For more than 2 Chainlink Drivers, the barrel jack **cannot handle enough current**, so you should instead connect your power supply directly to the Motor Power terminals of the first Chainlink Driver.
+Make sure you are using the [appropriate wire gauge](../ElectronicsGuide.md#power-supply-tips), and [never chain power to more than 6 Chainlink Drivers](../ElectronicsGuide.md#large-displays)
 https://www.dropbox.com/s/4xpvtycwrw21g0e/chainlinkBuddyWiringv1.1.pdf?dl=0
 
 
 **Breadboard**
 
-- Connect your power supply directly to the Motor Power terminals of the first Chainlink Driver. Make sure you are using the [appropriate wire gauge](https://paper.dropbox.com/doc/Chainlink-Driver-v1.1-Electronics-User-Guide--BWhbqC5xa02TlskitjhIE95eAg-U0DAXrSxEoOhgSoRU39hq#:uid=087574108452977023222089&h2=Power-supply-tips), and [never chain power to more than 6 Chainlink Drivers](https://paper.dropbox.com/doc/Chainlink-Driver-v1.1-Electronics-User-Guide--BWhbqC5xa02TlskitjhIE95eAg-U0DAXrSxEoOhgSoRU39hq#:uid=280278286811718750760936&h2=Large-displays)
+- Connect your power supply directly to the Motor Power terminals of the first Chainlink Driver. Make sure you are using the [appropriate wire gauge](../ElectronicsGuide.md#power-supply-tips), and [never chain power to more than 6 Chainlink Drivers](../ElectronicsGuide.md#large-displays)
 
 
-For further wiring info, see the full [Chainlink User Guide](https://paper.dropbox.com/doc/Chainlink-Driver-v1.1-Electronics-User-Guide--CYK3h0U5HNaCBuUqqlZP0jqEAg-U0DAXrSxEoOhgSoRU39hq).
+For further wiring info, see the full [Chainlink User Guide](../ElectronicsGuide.md).
 
 
 # Initial Setup & Calibration
 - Turn on your 12V supply and plug the ESP32 into your computer.
 - You should see the modules start to find their home positions.
-    - If none of modules move, try restarting the ESP32. If they still don’t move, turn off your 12V supply and see the [troubleshooting section](https://paper.dropbox.com/doc/Splitflap-v2-Assembly-Guide-DRAFT--CYJ~qk9J5vSt959lbVOJhB1EAg-vsT9BHwl9xhE9yZCMB3OC#:uid=245488276391748425063853&h2=Troubleshooting)
+    - If none of modules move, try restarting the ESP32. If they still don’t move, turn off your 12V supply and see the [troubleshooting section](#troubleshooting)
 - In Chrome or Edge (unfortunately Firefox will not work, as of 2024-10-05), go to https://scottbez1.github.io/splitflap/ and connect to your display via Web Serial
-- If a module is showing as an orange square, you should first try re-homing the module by left-clicking it. You should see the module spin and find its home position. If this does not resolve the sensor error, see the [troubleshooting section](https://paper.dropbox.com/doc/Splitflap-v2-Assembly-Guide-DRAFT--CYJ~qk9J5vSt959lbVOJhB1EAg-vsT9BHwl9xhE9yZCMB3OC#:uid=245488276391748425063853&h2=Troubleshooting)
+- If a module is showing as an orange square, you should first try re-homing the module by left-clicking it. You should see the module spin and find its home position. If this does not resolve the sensor error, see the [troubleshooting section](#troubleshooting)
 - Right-click a module to open the calibration flow, and follow the instructions to complete calibration. Save the calibration before continuing to calibrate the other modules.
-    - If saving the calibration fails, see the [troubleshooting section](https://paper.dropbox.com/doc/Splitflap-v2-Assembly-Guide-DRAFT--CYJ~qk9J5vSt959lbVOJhB1EAg-vsT9BHwl9xhE9yZCMB3OC#:uid=245488276391748425063853&h2=Troubleshooting)
+    - If saving the calibration fails, see the [troubleshooting section](#troubleshooting)
 
 
 
@@ -370,7 +372,7 @@ https://www.dropbox.com/scl/fi/aqilx2zk5q8ic1kwi2ki7/PXL_20240330_182017129.TS.m
         - Press the reset button on the ESP32 and confirm that the red LEDs on the Chainlink Drivers each flash sequentially once
         
 
-if you have questions not covered here, please reach out in the [splitflap Discord server](https://paper.dropbox.com/doc/Splitflap-v2-Assembly-Guide-DRAFT--CYJ~qk9J5vSt959lbVOJhB1EAg-vsT9BHwl9xhE9yZCMB3OC#:uid=245488276391748425063853&h2=Troubleshooting).
+if you have questions not covered here, please reach out in the [splitflap Discord server](#troubleshootings).
 
 
 

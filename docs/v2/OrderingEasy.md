@@ -34,9 +34,9 @@ I’ve previously recommended ordering from Ponoko - and while I still believe t
 - [ ] [Chainlink Driver](https://bezeklabs.etsy.com/listing/1123280069/splitflap-chainlink-driver-v11) (1 for every 6 character modules)
     - Ribbon cable length: **45cm**
     - Add motors? **Yes, add 6x 28BYJ-48**
-- [ ] [Sensor kit v2 (6x,](https://www.etsy.com/listing/1139795321/splitflap-sensor-kit-6x-with-sensors) [with magnets and headers)](https://bezeklabs.etsy.com/listing/1696745674/splitflap-sensor-kit-v2-beta-6x-with)  (1 for every 6 character modules)
+- [ ] [Sensor kit v2 (6x with magnets and headers)](https://bezeklabs.etsy.com/listing/1696745674/splitflap-sensor-kit-v2-beta-6x-with)  (1 for every 6 character modules)
     - Include cables? **YES**
-- [ ] [Chainlink Buddy](https://www.etsy.com/listing/1109357786/splitflap-chainlink-buddy-t-display) [[T-Display]](https://bezeklabs.etsy.com/listing/1109357786/splitflap-chainlink-buddy-t-display) (1 for your *entire* display, up to 36 total character modules)
+- [ ] [Chainlink Buddy [T-Display]](https://bezeklabs.etsy.com/listing/1109357786/splitflap-chainlink-buddy-t-display) (1 for your *entire* display, up to 36 total character modules)
     - Include ESP32 T-Display Module: **YES**
 
 

@@ -253,7 +253,7 @@ You’ll need a 12V supply with a current rating that depends on the number of m
 
 A good starting assumption is that each motor will draw 0.25A each (typical estimate for motors with 100 ohm half-winding resistance), but you should always test your motors, and include a safety margin.
 
-So for every Chainlink Driver you use, plan for at least 1.25A capacity, but many cheap power supplies have questionable/overstated ratings, so you probably want 2A minimum.
+So for every Chainlink Driver you use, plan for at least 1.5A capacity, but many cheap power supplies have questionable/overstated ratings, so you probably want 2A minimum.
 
 For a large display, I’ve used a [Mean Well LRS-350-12](https://amzn.to/3cdjuwD) [affiliate links help support this project at no cost to you, or use a [non-affiliate link](https://www.amazon.com/MEAN-WELL-LRS-350-12-Computer-Project/dp/B07VTLJS18) if you’d prefer] which I found to easily supply 22+ amps with little voltage ripple.
 
@@ -261,7 +261,8 @@ Make sure to select appropriate gauge copper wire for power (this includes the G
 
 I also recommend adding fuses near the power supply as an added layer of protection, especially on larger displays. The LRS-350-12 mentioned above is capable of supplying 29A *continuously* which is a lot of current and potentially destructive in case of a fault. Since each power branch (see advanced wiring diagram) will use less than this, you should protect each branch with its own appropriately-sized fuse.
 
-Make sure to buy power wiring from a reputable seller with a trustworthy supply chain (e.g. an electronics supplier or a big box hardware store, not AliExpress or Amazon). Unfortunately, as the cost of copper has gone up it’s more common to find wire using other metals which may not meet its advertised specs.
+Make sure to buy power wiring from a reputable seller with a trustworthy supply chain (e.g. an electronics supplier or a big box hardware store, not AliExpress or Amazon). 
+Unfortunately, as the cost of copper has gone up it’s [more common to find wire using other metals](https://www.youtube.com/watch?v=15sMogK3vTI) which may not meet its advertised specs.
 
 
 ## Using a different ESP32 module

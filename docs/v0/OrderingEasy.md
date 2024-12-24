@@ -29,9 +29,9 @@ For reference, the front face of each module is approximately **82.6mm wide** an
 - [ ]  [Chainlink Driver v1.1](https://bezeklabs.etsy.com/listing/1123280069/splitflap-chainlink-driver-v11) (1 for every 6 modules)
     - Ribbon cable length: **45cm**
     - Add motors? **Yes, add 6x 28BYJ-48**
-- [ ]  [Sensor kit (6x,](https://www.etsy.com/listing/1139795321/splitflap-sensor-kit-6x-with-sensors) [with sensors, magnets, and headers)](https://bezeklabs.etsy.com/listing/1139795321/splitflap-sensor-kit-6x-with-sensors)  (1 for every 6 modules)
+- [ ]  [Sensor kit (6x, with sensors, magnets, and headers)](https://bezeklabs.etsy.com/listing/1139795321/splitflap-sensor-kit-6x-with-sensors)  (1 for every 6 modules)
     - Include cables? **YES**
-- [ ]  [Chainlink Buddy](https://www.etsy.com/listing/1109357786/splitflap-chainlink-buddy-t-display) [[T-Display]](https://bezeklabs.etsy.com/listing/1109357786/splitflap-chainlink-buddy-t-display) (1 for your *entire* display, up to 36 total modules)
+- [ ]  [Chainlink Buddy [T-Display]](https://bezeklabs.etsy.com/listing/1109357786/splitflap-chainlink-buddy-t-display) (1 for your *entire* display, up to 36 total modules)
     - Include ESP32 T-Display Module: **YES**
 
 
