@@ -35,7 +35,7 @@ include<m4_dimensions.scad>;
 render_3d = true;
 
 // 3d parameters:
-render_enclosure = 2; // 0=invisible; 1=translucent; 2=opaque color;
+render_enclosure = 1; // 0=invisible; 1=translucent; 2=opaque color;
 render_flaps = 2; // 0=invisible; 1=front flap only; 2=all flaps
 render_flap_area = 0; // 0=invisible; 1=collapsed flap exclusion; 2=collapsed+extended flap exclusion
 render_letters = 2;  // 0=invisible; 1=front flap only; 2=all flaps
@@ -227,8 +227,8 @@ connector_bracket_length_inner = connector_bracket_length_outer;
 connector_bracket_thickness = 5;
 connector_bracket_width = enclosure_width - enclosure_wall_to_wall_width + thickness*2 + connector_bracket_thickness*2;
 connector_bracket_overlap = connector_bracket_length_inner/2;
-connector_bracket_clearance = 0.40;
-connector_bracket_depth_clearance = 0;
+connector_bracket_clearance = 0.1;
+connector_bracket_depth_clearance = -.4;
 
 mounting_hole_inset = m4_button_head_diameter/2 + 2;
 
