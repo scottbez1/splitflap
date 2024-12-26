@@ -228,7 +228,7 @@ connector_bracket_thickness = 5;
 connector_bracket_width = enclosure_width - enclosure_wall_to_wall_width + thickness*2 + connector_bracket_thickness*2;
 connector_bracket_overlap = connector_bracket_length_inner/2;
 connector_bracket_clearance = 0.1;
-connector_bracket_depth_clearance = -.4;
+connector_bracket_depth_clearance = 0.1;
 
 mounting_hole_inset = m4_button_head_diameter/2 + 2;
 
@@ -534,15 +534,15 @@ module connector_bracket_2d() {
         translate([connector_bracket_thickness - connector_bracket_clearance/2, -eps]) {
             square([thickness + connector_bracket_clearance, connector_bracket_length_outer - connector_bracket_overlap + connector_bracket_depth_clearance + eps]);
         }
-        translate([connector_bracket_thickness + thickness/2, connector_bracket_length_outer - connector_bracket_overlap + connector_bracket_depth_clearance]) {
-            circle(d=thickness+connector_bracket_clearance, $fn=30);
-        }
+        // translate([connector_bracket_thickness + thickness/2, connector_bracket_length_outer - connector_bracket_overlap + connector_bracket_depth_clearance]) {
+        //     circle(d=thickness+connector_bracket_clearance, $fn=30);
+        // }
         translate([connector_bracket_width - connector_bracket_thickness - thickness - connector_bracket_clearance/2, -eps]) {
             square([thickness + connector_bracket_clearance, connector_bracket_length_outer - connector_bracket_overlap + connector_bracket_depth_clearance + eps]);
         }
-        translate([connector_bracket_width - connector_bracket_thickness - thickness/2, connector_bracket_length_outer - connector_bracket_overlap + connector_bracket_depth_clearance]) {
-            circle(d=thickness+connector_bracket_clearance, $fn=30);
-        }
+        // translate([connector_bracket_width - connector_bracket_thickness - thickness/2, connector_bracket_length_outer - connector_bracket_overlap + connector_bracket_depth_clearance]) {
+        //     circle(d=thickness+connector_bracket_clearance, $fn=30);
+        // }
     }
 }
 
@@ -657,9 +657,9 @@ module connector_bracket_side_holes() {
     translate([enclosure_vertical_inset + thickness + connector_bracket_clearance/2, -connector_bracket_overlap]) {
         square([thickness + connector_bracket_clearance, connector_bracket_overlap + eps]);
     }
-    translate([enclosure_vertical_inset + thickness + connector_bracket_clearance/2 + (thickness+connector_bracket_clearance)/2, -connector_bracket_overlap]) {
-        circle(d=thickness + connector_bracket_clearance, $fn=30);
-    }
+    // translate([enclosure_vertical_inset + thickness + connector_bracket_clearance/2 + (thickness+connector_bracket_clearance)/2, -connector_bracket_overlap]) {
+    //     circle(d=thickness + connector_bracket_clearance, $fn=30);
+    // }
 }
 
 module alignment_bar() {
