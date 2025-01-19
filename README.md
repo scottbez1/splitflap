@@ -74,10 +74,10 @@ If you have any questions, please don't hesitate to ask in the [community Discor
 
 Note: the ordering and assembly guides have not yet been updated for the beta v2 designs. Ask in Discord if you have any questions about ordering or assembling a v2 display!
 
-* [**Ordering guide (the "easy" route) - updated for Chainlink**](https://paper.dropbox.com/doc/Splitflap-Ordering-the-easy-route--BsXzf8VyILR3nl1vUpOi28TWAg-0i6r3aqw6kZVXQOP2MyNr)
-* [**Chainlink Driver Electronics User Guide**](https://paper.dropbox.com/doc/Chainlink-Driver-v1.1-Electronics-User-Guide--BsVuP9OHVo952_ZdJDBomCCzAg-U0DAXrSxEoOhgSoRU39hq)
+* [**Ordering guide (the "easy" route) v0**](/docs/v0/OrderingEasy.md)
+* [**Chainlink Driver Electronics User Guide**](/docs/ElectronicsGuide.md)
+* [**Assembly instructions v0**](/docs/v0/Assembly.md)
 * [**Latest stable release**](https://github.com/scottbez1/splitflap/releases)
-* [**Assembly instructions (v0.5/0.6/0.7)**](https://paper.dropbox.com/doc/Splitflap-Kit-v0.5v1.0-Instructions--ASQDu1uoa6n4_t1pva1bM1MgAg-bxXJlke5ROmamcx4OH44r)
 
 # Table of Contents
 - [Design Overview](#design-overview)
@@ -120,7 +120,7 @@ The v0.7 stable release artifacts can be found at the [v0.7 tagged release](http
 ### Beta v2 (52-flap module option - recommended)
 ![2d laser cut rendering](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_raster-52.png)
 
-Instructions: [v2 assembly guide](https://paper.dropbox.com/doc/Splitflap-v2-Assembly-Guide-vsT9BHwl9xhE9yZCMB3OC)
+Instructions: [v2 assembly guide](/docs/v2/Assembly.md)
 
 Module dimensions: <img height="18" src="https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-52-module_dimensions.svg" />
 
@@ -136,7 +136,7 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 ### Beta v2 (40-flap module option)
 ![2d laser cut rendering](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_raster-40.png)
 
-Instructions: [v2 assembly guide](https://paper.dropbox.com/doc/Splitflap-v2-Assembly-Guide-vsT9BHwl9xhE9yZCMB3OC)
+Instructions: [v2 assembly guide](/docs/v2/Assembly.md)
 
 Module dimensions: <img height="18" src="https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-40-module_dimensions.svg" />
 
@@ -237,7 +237,7 @@ to validate data integrity up and down the whole chain
 Chainlink Driver boards are [available mostly-assembled in the Bezek Labs store](https://bezeklabs.etsy.com/listing/1123280069/splitflap-chainlink-driver-v11),
 and come with the additional connectors and ribbon cables you'll need. Purchases support continued development of this project.
 
-More information on building and using Chainlink Drivers is available in the [Chainlink Driver User Guide](https://paper.dropbox.com/doc/Chainlink-Driver-v1.1-Electronics-User-Guide--BW2lxdjVkAxva68kYw2doWQEAg-U0DAXrSxEoOhgSoRU39hq).
+More information on building and using Chainlink Drivers is available in the [Chainlink Driver User Guide](/docs/ElectronicsGuide.md).
 
 Or if you'd like to order these directly from a fab, this design is optimized for assembly at JLCPCB, and files are automatically generated
 for ordering *assembled* PCBs there. Or if you wish to assemble this board yourself instead of paying for assembly, 
