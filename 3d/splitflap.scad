@@ -35,7 +35,7 @@ include<m4_dimensions.scad>;
 render_3d = true;
 
 // 3d parameters:
-render_enclosure = 2; // 0=invisible; 1=translucent; 2=opaque color;
+render_enclosure = 1; // 0=invisible; 1=translucent; 2=opaque color;
 render_flaps = 2; // 0=invisible; 1=front flap only; 2=all flaps
 render_flap_area = 0; // 0=invisible; 1=collapsed flap exclusion; 2=collapsed+extended flap exclusion
 render_letters = 2;  // 0=invisible; 1=front flap only; 2=all flaps
@@ -222,13 +222,13 @@ motor_backpack_extent = 28byj48_backpack_extent() + 2; // Add 2mm to make sure t
 motor_hole_slop = 1;
 motor_window_radius = 5;
 
-connector_bracket_length_outer = 14;
-connector_bracket_length_inner = enclosure_length_right / 2 - m4_button_head_diameter/2 - 1;
-connector_bracket_thickness = captive_nut_inset - thickness - 0.2;
+connector_bracket_length_outer = enclosure_length_right / 2 - max(m4_button_head_diameter/2, m4_nut_width_flats/2) - 1;
+connector_bracket_length_inner = connector_bracket_length_outer;
+connector_bracket_thickness = 5;
 connector_bracket_width = enclosure_width - enclosure_wall_to_wall_width + thickness*2 + connector_bracket_thickness*2;
-connector_bracket_overlap = 4;
-connector_bracket_clearance = 0.40;
-connector_bracket_depth_clearance = 0.20;
+connector_bracket_overlap = connector_bracket_length_inner/2;
+connector_bracket_clearance = 0.1;
+connector_bracket_depth_clearance = 0.1;
 
 mounting_hole_inset = m4_button_head_diameter/2 + 2;
 
@@ -236,7 +236,7 @@ enclosure_indicator_inset = 3.0;  // inset on both X and Y
 enclosure_indicator_size = 1.75;  // symbol size
 enclosure_indicator_arrow_width = 2.25;
 enclosure_indicator_arrow_height = enclosure_indicator_arrow_width * 2;
-enclosure_indicator_position_y = (enclosure_height - enclosure_vertical_inset - thickness) - enclosure_indicator_inset;
+enclosure_indicator_position_y = (enclosure_height - enclosure_vertical_inset - thickness * 2) - enclosure_indicator_inset;
 
 zip_tie_height = 3.0;  // height of the zip-tie hole
 zip_tie_width = 2.0;  // width of the zip-tie holes
@@ -514,17 +514,35 @@ module front_tabs_negative(upper, tool_diameter=0) {
 }
 
 module connector_bracket_2d() {
+    fillet_r = 3;
     difference() {
-        square([connector_bracket_width, connector_bracket_length_outer]);
+        hull() {
+            translate([0, fillet_r]) {
+                square([connector_bracket_width, connector_bracket_length_outer - fillet_r]);
+            }
+            translate([fillet_r, fillet_r]) {
+                circle(r=fillet_r, $fn=30);
+            }
+            translate([connector_bracket_width - fillet_r, fillet_r]) {
+                circle(r=fillet_r, $fn=30);
+            }
+        }
+
         translate([connector_bracket_thickness, -eps]) {
             square([connector_bracket_width - connector_bracket_thickness*2, connector_bracket_length_outer - connector_bracket_length_inner + eps]);
         }
         translate([connector_bracket_thickness - connector_bracket_clearance/2, -eps]) {
             square([thickness + connector_bracket_clearance, connector_bracket_length_outer - connector_bracket_overlap + connector_bracket_depth_clearance + eps]);
         }
+        // translate([connector_bracket_thickness + thickness/2, connector_bracket_length_outer - connector_bracket_overlap + connector_bracket_depth_clearance]) {
+        //     circle(d=thickness+connector_bracket_clearance, $fn=30);
+        // }
         translate([connector_bracket_width - connector_bracket_thickness - thickness - connector_bracket_clearance/2, -eps]) {
             square([thickness + connector_bracket_clearance, connector_bracket_length_outer - connector_bracket_overlap + connector_bracket_depth_clearance + eps]);
         }
+        // translate([connector_bracket_width - connector_bracket_thickness - thickness/2, connector_bracket_length_outer - connector_bracket_overlap + connector_bracket_depth_clearance]) {
+        //     circle(d=thickness+connector_bracket_clearance, $fn=30);
+        // }
     }
 }
 
@@ -636,9 +654,12 @@ module backstop_bolt_slot(radius) {
 
 module connector_bracket_side_holes() {
     // overlap slot
-    translate([enclosure_vertical_inset - thickness - connector_bracket_clearance/2, -connector_bracket_overlap]) {
+    translate([enclosure_vertical_inset + thickness + connector_bracket_clearance/2, -connector_bracket_overlap]) {
         square([thickness + connector_bracket_clearance, connector_bracket_overlap + eps]);
     }
+    // translate([enclosure_vertical_inset + thickness + connector_bracket_clearance/2 + (thickness+connector_bracket_clearance)/2, -connector_bracket_overlap]) {
+    //     circle(d=thickness + connector_bracket_clearance, $fn=30);
+    // }
 }
 
 module alignment_bar() {
@@ -988,13 +1009,13 @@ module split_flap_3d(front_flap_index, include_connector, include_front_panel=tr
     }
 
     module positioned_top_connector() {
-        translate([enclosure_wall_to_wall_width - thickness - connector_bracket_thickness, front_forward_offset - connector_bracket_length_outer, enclosure_height_upper - enclosure_vertical_inset]) {
+        translate([enclosure_wall_to_wall_width - thickness - connector_bracket_thickness, front_forward_offset - connector_bracket_length_outer, enclosure_height_upper - enclosure_vertical_inset - thickness * 2 - connector_bracket_clearance]) {
             connector_bracket();
         }
     }
 
     module positioned_bottom_connector() {
-        translate([enclosure_wall_to_wall_width - thickness - connector_bracket_thickness, front_forward_offset - connector_bracket_length_outer, - enclosure_height_lower + enclosure_vertical_inset - thickness]) {
+        translate([enclosure_wall_to_wall_width - thickness - connector_bracket_thickness, front_forward_offset - connector_bracket_length_outer, - enclosure_height_lower + enclosure_vertical_inset + thickness + connector_bracket_clearance]) {
             connector_bracket();
         }
     }
