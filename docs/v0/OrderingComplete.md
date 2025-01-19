@@ -3,11 +3,9 @@
 
 The instructions below will walk you through ordering all the parts (excluding common tools) needed to build a splitflap v0.7 display with **6 modules** using the latest Chainlink electronics.
 
-Ready to assemble? Jump ahead to the [Assembly Guide](Assembly.md) 
+Ready to assemble? Jump ahead to the [Assembly Guide](Assembly.md)
 
-Please leave inline comments below if you have any questions or come across anything that looks incorrect!
-
-If you have any questions, please feel free to reach out to me (scottbez1 at gmail or just mention me @Scott B in a comment on this doc). Or, join the [Discord server](https://discord.gg/wgehm3PcrC), to discuss or ask questions from the wider split-flap community!
+If you have any questions, please feel free to reach out to me (scott@bezeklabs.com). Or, join the [Discord server](https://discord.gg/wgehm3PcrC), to discuss or ask questions from the wider split-flap community!
 
 
 😩 Feeling overwhelmed by this document? I don’t blame you, there’s a LOT here… So I put together a much shorter document that favors simplicity over comprehensiveness/lowest-cost,
