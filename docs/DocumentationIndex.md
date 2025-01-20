@@ -4,9 +4,9 @@ This is the documentation for the open-source splitflap display project: https:/
 Questions or comments? Join the [community Discord server](https://discord.gg/wgehm3PcrC) to chat with other split-flap enthusiasts.
 
 # General
+* [Flaps Guide](Flaps.md) - overview of the flaps - the most repetitive (and sometimes tedious) part of this project: How to cut them yourself or purchase them pre-cut and pre-printed
 * [28BYJ-48 Motor Buying Guide](MotorGuide.md) — motor buying guide (finding good motors is a little tricky, so it has its own guide)
 * [Electronics User Guide](ElectronicsGuide.md)  — Chainlink electronics setup guide
-
 
 # v0 [stable]
 ## Ordering

@@ -18,8 +18,12 @@ The v2 design officially supports either 52 flaps per module or 40 flaps per mod
 
 For reference, the front face of each module is approximately **82.6mm wide** and **143.53mm tall**.
 
-
-- [ ] Use this file to order a 52-flap design, made of 3mm acrylic (Matte Black (P502) is recommended): <TBD>
+- [ ] Use this file to order a 52-flap design, made of 3mm acrylic (Matte Black (P502) is recommended): [zip](https://s3.amazonaws.com/splitflap-artifacts/refs/tags/releases/mechanics/v2/3d/3d_laser_vector-52-elecrow-3mm-acrylic_1x.zip)
+    - Go to [Elecrow acrylic laser cutting](https://www.elecrow.com/acrylic-cutting.html) and upload the zip file
+    - Enter dimensions: 195.60 mm x 196.25 mm
+    - Select thickness: 3mm
+    - Engrave: No
+    - Acrylic color: Matte Black (P502) is recommended
 
 Full ordering instructions, and alternative files for acrylic/mdf or for 40- rather than 52-flap modules can be found [here](OrderingComplete.md).
 

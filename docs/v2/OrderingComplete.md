@@ -58,12 +58,13 @@ For advanced makers: if you want to cut a single front panel that will be shared
 ![](https://paper-attachments.dropbox.com/s_175A71EF755D30C645040845CEAC36F09A2519808F9780643CBAC746263B696C_1592618387746_Screenshot+from+2020-06-19+18-59-27.png)
 
 ## Ponoko (also recommended, but pricey)
+- Download the appropriate file
     - 52-flap design
-        - 3mm Acrylic: https://s3.amazonaws.com/splitflap-artifacts/refs/tags/releases/mechanics/v2/3d/3d_laser_vector-52-ponoko-3mm-acrylic_1x.svg <img height="18" src="https://s3.amazonaws.com/splitflap-artifacts/refs/tags/releases/mechanics/v2/3d/3d_laser_vector-52-ponoko-3mm-acrylic_1x_dimensions.svg" />
-        - 3mm MDF: https://s3.amazonaws.com/splitflap-artifacts/refs/tags/releases/mechanics/v2/3d/3d_laser_vector-52-ponoko-3mm-mdf_1x.svg <img height="18" src="https://s3.amazonaws.com/splitflap-artifacts/refs/tags/releases/mechanics/v2/3d/3d_laser_vector-52-ponoko-3mm-mdf_1x_dimensions.svg" />
+        - 3mm Acrylic: [svg](https://s3.amazonaws.com/splitflap-artifacts/refs/tags/releases/mechanics/v2/3d/3d_laser_vector-52-ponoko-3mm-acrylic_1x.svg) <img height="18" src="https://s3.amazonaws.com/splitflap-artifacts/refs/tags/releases/mechanics/v2/3d/3d_laser_vector-52-ponoko-3mm-acrylic_1x_dimensions.svg" />
+        - 3mm MDF: [svg](https://s3.amazonaws.com/splitflap-artifacts/refs/tags/releases/mechanics/v2/3d/3d_laser_vector-52-ponoko-3mm-mdf_1x.svg) <img height="18" src="https://s3.amazonaws.com/splitflap-artifacts/refs/tags/releases/mechanics/v2/3d/3d_laser_vector-52-ponoko-3mm-mdf_1x_dimensions.svg" />
     - 40-flap design
-        - 3mm Acrylic: https://s3.amazonaws.com/splitflap-artifacts/refs/tags/releases/mechanics/v2/3d/3d_laser_vector-40-ponoko-3mm-acrylic_1x.svg <img height="18" src="https://s3.amazonaws.com/splitflap-artifacts/refs/tags/releases/mechanics/v2/3d/3d_laser_vector-40-ponoko-3mm-acrylic_1x_dimensions.svg" />
-        - 3mm MDF: https://s3.amazonaws.com/splitflap-artifacts/refs/tags/releases/mechanics/v2/3d/3d_laser_vector-40-ponoko-3mm-mdf_1x.svg <img height="18" src="https://s3.amazonaws.com/splitflap-artifacts/refs/tags/releases/mechanics/v2/3d/3d_laser_vector-40-ponoko-3mm-mdf_1x_dimensions.svg" />
+        - 3mm Acrylic: [svg](https://s3.amazonaws.com/splitflap-artifacts/refs/tags/releases/mechanics/v2/3d/3d_laser_vector-40-ponoko-3mm-acrylic_1x.svg) <img height="18" src="https://s3.amazonaws.com/splitflap-artifacts/refs/tags/releases/mechanics/v2/3d/3d_laser_vector-40-ponoko-3mm-acrylic_1x_dimensions.svg" />
+        - 3mm MDF: [svg](https://s3.amazonaws.com/splitflap-artifacts/refs/tags/releases/mechanics/v2/3d/3d_laser_vector-40-ponoko-3mm-mdf_1x.svg) <img height="18" src="https://s3.amazonaws.com/splitflap-artifacts/refs/tags/releases/mechanics/v2/3d/3d_laser_vector-40-ponoko-3mm-mdf_1x_dimensions.svg" />
 
 
 - Go to [Ponoko](https://www.ponoko.com/) and sign up for an account.
@@ -72,7 +73,7 @@ For advanced makers: if you want to cut a single front panel that will be shared
 
 - Select a material - [MDF](https://www.ponoko.com/materials/mdf-fiberboard) or [Acrylic](https://www.ponoko.com/materials/black-matte-acrylic) are recommended — choose 3.0mm (0.12 inches) thickness. Make sure to check the material’s maximum size against the dimensions provided next to the file links above; some materials may be too small to order the 4x versions.
 
-💡 **Important note if ordering** **Matte 1-Side** ****acrylic at Ponoko: you ***must*** immediately send special instructions to Ponoko after placing your order, requesting to have the design engraved on the *glossy* side. This will result in the design being correctly cut so the matte surface will be on the exterior of the display when assembled. From Ponoko support (as of 2021-05-13): 
+💡 **Important note if ordering Matte 1-Side acrylic at Ponoko:** you ***must*** immediately send special instructions to Ponoko after placing your order, requesting to have the design engraved on the *glossy* side. This will result in the design being correctly cut so the matte surface will be on the exterior of the display when assembled. From Ponoko support (as of 2021-05-13): 
 
 > The matte is [by default] cut with the matte side up (so engraving happens on this side as well).
 > 
