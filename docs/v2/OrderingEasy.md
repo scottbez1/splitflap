@@ -1,4 +1,4 @@
-# [Beta] Splitflap v2 Ordering guide (not yet ready!)
+# Splitflap v2 Ordering guide
 [<< Back to Documentation Index](../DocumentationIndex.md)
 
 This is the “easy” way to order the parts for your splitflap display (United States only). It optimizes for *simplicity in ordering*, not the *lowest possible cost*.

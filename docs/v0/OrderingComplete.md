@@ -1,4 +1,4 @@
-# Ordering Parts to build a Splitflap (Comprehensive guide)
+# Splitflap v0 Comprehensive Ordering Guide
 [<< Back to Documentation Index](../DocumentationIndex.md)
 
 The instructions below will walk you through ordering all the parts (excluding common tools) needed to build a splitflap v0.7 display with **6 modules** using the latest Chainlink electronics.

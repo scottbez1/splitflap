@@ -1,4 +1,4 @@
-# [Beta] Splitflap v2 Assembly Guide
+# Splitflap v2 Assembly Guide
 [<< Back to Documentation Index](../DocumentationIndex.md)
 
 # Electronics Part 1: Sensor PCBs
