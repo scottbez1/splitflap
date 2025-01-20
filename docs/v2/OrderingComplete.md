@@ -279,21 +279,22 @@ To order:
 
 - Go to JLCPCB https://cart.jlcpcb.com/quote
 - Upload gerber zip
-- Set parameters:
-    - Layers: 2
-    - Dimensions: 94.2 x 75.6
-    - PCB Qty: 5 (remember, the "panel" that you're ordering includes 6x sensors per panel, so the total sensors will be 6x the PCB Quantity you enter here! i.e. you will end up with 30 sensor PCBs with an order of 5 PCBs. You can have fewer than this quantity assembled)
-    - Product Type: Industrial/Consumer electronics
-- PCB specifications
-    - Different design: 1
-    - Delivery format: Panel by Customer
-    - Panel Format:
-        - Column: 2
-        - Row: 3
-    - PCB Thickness: 0.8mm ⚠️ This is not the default PCB thickness - make sure to select 0.8mm!
-    - PCB Color: green is cheapest considering the less-common 0.8mm thickness
-    - LeadFree HASL
-- Other options - leave all of these as defaults
+  - Set parameters:
+      - Layers: 2
+      - Dimensions: 94.2 x 75.6
+      - PCB Qty: 5 (remember, the "panel" that you're ordering includes 6x sensors per panel, so the total sensors will be 6x the PCB Quantity you enter here! i.e. you will end up with 30 sensor PCBs with an order of 5 PCBs. You can have fewer than this quantity assembled)
+      - Product Type: Industrial/Consumer electronics
+  - PCB specifications
+      - Different design: 1
+      - Delivery format: Panel by Customer
+      - Panel Format:
+          - Column: 2
+          - Row: 3
+      - PCB Thickness: 0.8mm ⚠️ This is not the default PCB thickness - make sure to select 0.8mm!
+      - PCB Color: green is cheapest considering the less-common 0.8mm thickness
+      - LeadFree HASL
+  - Other options - leave all of these as defaults<br><a href="https://github.com/user-attachments/assets/5bc0a67e-3750-40d8-8386-1222e3ebc33c"><img src="https://github.com/user-attachments/assets/5bc0a67e-3750-40d8-8386-1222e3ebc33c" width="500" /></a>
+
 
 - Select PCB Assembly
     - Assemble top side
@@ -302,16 +303,19 @@ To order:
     - Tooling holes: Added by JLCPCB
     - Confirm Parts Placement: No (select Yes if you'd like extra assurance and know how to review the production gerber files they provide)
     - Parts Selection: By Customer
-    - Advanced Options: leave these all as defaults
+    - Advanced Options: leave these all as defaults<br><a href="https://github.com/user-attachments/assets/b4becb1c-d82d-4de8-8d68-b9cb381e58a8"><img src="https://github.com/user-attachments/assets/b4becb1c-d82d-4de8-8d68-b9cb381e58a8" width="500" /></a>
+
 
 - Upload BOM File
 - Upload CPL (csv) file
 
-
 - Review parts
-    - ⚠️ Make sure you check this step carefully, as any parts that are out of stock will simply be omitted! ⚠️ 
+    - ⚠️ Make sure you check this step carefully, as any parts that are out of stock will simply be omitted! ⚠️
+  ![Screenshot from 2025-01-19 23-49-50](https://github.com/user-attachments/assets/fa1f178c-e486-4c37-8991-1234c5b0b4f6)
 
 - Review parts placement
+  ![Screenshot from 2025-01-19 23-50-15](https://github.com/user-attachments/assets/6bd5e016-f792-46d8-ace7-8fe11aba9cfb)
+
 - Save to Cart
 - Checkout (note that JLC does NOT reserve parts until you’ve checked out and paid your order, so if stock is low there is a chance parts will be missing if you wait to pay!)
 
