@@ -1,5 +1,5 @@
 # 28BYJ-48 Motor Buying Guide
-[<< Back to Documentation Index](https://paper.dropbox.com/doc/Splitflap-Documentation-Index--BfK6yrHXvLHu_lqLxHSyabHuAg-9t3gJyFBoD3vKI3Tl5VDb)
+[<< Back to Documentation Index](DocumentationIndex.md)
 
 There are a *lot* of different motors that go by the same “28BYJ-48” name.
 

@@ -41,7 +41,7 @@ I sell packs of blank flaps in the <a href="https://bezeklabs.etsy.com/listing/9
 <img src="img/flaps/bezekLabsBlankFlapsListing.png" width="500" />
 </a>
 
-You'll need to [apply letter stickers](#3-apply-letter-stickers) to the blank flaps.
+You'll need to [apply letter stickers](#33-apply-letter-stickers) to the blank flaps.
 
 [^ Up to top](#about-flaps)
 
@@ -54,7 +54,7 @@ If you want the full DIY experience, the flaps can be created by first cutting a
 
 If this sounds tedious, I'll admit that it is, but it's how I built the first few splitflap modules.
 
-## 1) Build a flap cutting jig
+## 3.1 Build a flap cutting jig
 
 The notch cut-outs need to be done consistently for all 40 flaps, so we'll first create a jig for the [badge slot punch](http://www.amazon.com/gp/product/B009YDRRB4) to hold a flap in a precise position while cutting it.
 
@@ -104,11 +104,12 @@ Insert the jig into the punch (the same orientation you originally punched it), 
 
 Your flap-cutting jig is complete!
 
-[^ Up to top](#1-build-a-flap-cutting-jig)
+[^ Up to top](#about-flaps)
+
 [<< Back to Documentation Index](../DocumentationIndex.md)
 
 
-## Cut flaps
+## 3.2 Cut flaps
 
 To cut the flaps from CR80 PVC cards, they first need to be cut in half. You could probably do this with a paper guillotine, but I don't own one so I made a jig to score them with a utility knife and then snap them in half.
 
@@ -154,7 +155,7 @@ If you'd like to save yourself some time, an alternative to cutting your own fla
 
 [<< Back to Documentation Index](../DocumentationIndex.md)
 
-## 3) Apply letter stickers
+## 3.3 Apply letter stickers
 
 For applying letter stickers to the flaps, I generally recommend purchasing store-bought vinyl letter sticker packs (see the [v2 complete ordering guide](/docs/v2/OrderingComplete.md) or [v0 complete ordering guide](/docs/v0/OrderingComplete.md) for details).
 

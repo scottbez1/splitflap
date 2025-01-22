@@ -20,7 +20,7 @@ For reference, the front face of each module is approximately **82.6mm wide** an
 
 - [ ] Use this file to order a 52-flap design, made of 3mm acrylic (Matte Black (P502) is recommended): [zip](https://s3.amazonaws.com/splitflap-artifacts/refs/tags/releases/mechanics/v2/3d/3d_laser_vector-52-elecrow-3mm-acrylic_1x.zip)
     - Go to [Elecrow acrylic laser cutting](https://www.elecrow.com/acrylic-cutting.html) and upload the zip file
-    - Enter dimensions: 195.60 mm x 196.25 mm
+    - Enter dimensions: <img height="18" src="https://s3.amazonaws.com/splitflap-artifacts/refs/tags/releases/mechanics/v2/3d/3d_laser_vector-52-elecrow-3mm-acrylic_1x_dimensions.svg" />
     - Select thickness: 3mm
     - Engrave: No
     - Acrylic color: Matte Black (P502) is recommended
@@ -46,7 +46,7 @@ I’ve previously recommended ordering from Ponoko - and while I still believe t
 
 ## Flaps
 
-**Supplier:** [Bezek Labs](https://bezeklabs.etsy.com) (again, I’m biased, but there aren’t any commercial alternatives and making them yourself requires a lot of [time and patience](https://github.com/scottbez1/splitflap/wiki/Cut-flaps))
+**Supplier:** [Bezek Labs](https://bezeklabs.etsy.com) (again, I’m biased, but there aren’t any commercial alternatives and making them yourself requires a lot of [time and patience](../Flaps.md#option-3-diy-flaps))
 
 **Two good options** (this tradeoff is totally up to you):
 

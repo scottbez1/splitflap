@@ -37,7 +37,7 @@ For reference, the front face of each module is approximately **82.6mm wide** an
 
 ## Flaps
 
-**Supplier:** [Bezek Labs](https://bezeklabs.etsy.com) (again, I’m biased, but there aren’t any commercial alternatives and making them yourself requires a lot of [time and patience](https://github.com/scottbez1/splitflap/wiki/Cut-flaps))
+**Supplier:** [Bezek Labs](https://bezeklabs.etsy.com) (again, I’m biased, but there aren’t any commercial alternatives and making them yourself requires a lot of [time and patience](../Flaps.md#option-3-diy-flaps))
 
 **Two good options** (this tradeoff is totally up to you):
 

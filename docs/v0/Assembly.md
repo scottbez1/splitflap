@@ -146,7 +146,7 @@ Rough steps:
 - Send `@` in Serial Monitor to force all modules to recalibrate, and `=    \n` to tell all the modules to go to the home position
 - Install flaps
 
-  ![Gently bend the flap with your thumb to add or remove it](https://github.com/scottbez1/splitflap/wiki/images/flaps/addRemoveSpool.jpg)
+  ![Gently bend the flap with your thumb to add or remove it](../img/flaps/addRemoveSpool.jpg)
 
     - Start by taking the top and bottom halves of the empty (space) character. Insert the top half into the holes marked with a “-” on the spool. Insert the bottom half into the spool holes below it. 
     - Rotate the spool forward a few characters (e.g. by sending `=e\n` or by gently rotating the spool by hand) and insert the next few flaps. Repeat this until all 40 flaps are installed.
