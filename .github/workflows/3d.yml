@@ -18,6 +18,27 @@ jobs:
       - name: Install dependencies
         run: ./3d/scripts/dependencies.sh
 
+      - name: 'Generate front panel example :: 52 flap :: 6x1 :: Elecrow acrylic kerf'
+        run: |
+          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python3 -u 3d/scripts/generate_combined_front_panel.py --kerf-preset elecrow-3mm-acrylic --rows 1 --cols 6 --spacing-x 0 --spacing-y 0 --frame-margin-x 0 --frame-margin-y 0 --center-mode module --num-flaps 52 --render-raster
+          cp 3d/build/front_panel/combined.svg 3d/build/outputs/3d_front_panel-52-elecrow-3mm-acrylic-6x1.svg
+          cp 3d/build/front_panel/raster.png 3d/build/outputs/3d_front_panel_raster-52-elecrow-3mm-acrylic-6x1.png
+          ./scripts/annotate_image.sh 3d/build/outputs/3d_front_panel_raster-52-elecrow-3mm-acrylic-6x1.png
+
+      - name: 'Generate front panel example :: 52 flap :: 12x2 :: 1/8 in tool diameter :: frame margin=20mm, 4mm'
+        run: |
+          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python3 -u 3d/scripts/generate_combined_front_panel.py --tool-diameter 3.175 --rows 2 --cols 12 --spacing-x 0 --spacing-y 0 --frame-margin-x 20 --frame-margin-y 4 --center-mode module --num-flaps 52 --render-raster
+          cp 3d/build/front_panel/combined.svg 3d/build/outputs/3d_front_panel-52-3.175-20x4margin-12x2.svg
+          cp 3d/build/front_panel/raster.png 3d/build/outputs/3d_front_panel_raster-52-3.175-20x4margin-12x2.png
+          ./scripts/annotate_image.sh 3d/build/outputs/3d_front_panel_raster-52-3.175-20x4margin-12x2.png
+
+      - name: 'Generate font example :: 52 flap :: Epilogue :: 1mm bleed'
+        run: |
+          xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python3 -u 3d/scripts/generate_fonts.py --mode side-by-side --font Epilogue --columns 4 --bleed 1 --fill --render-raster
+          cp 3d/build/fonts/combined.svg 3d/build/outputs/font_example-Epilogue-1mmBleed.svg
+          cp 3d/build/fonts/raster.png 3d/build/outputs/font_example-Epilogue-1mmBleed.png
+          ./scripts/annotate_image.sh 3d/build/outputs/font_example-Epilogue-1mmBleed.png
+
       - name: 'Generate 2d output :: 52 flap :: generic'
         run: |
           xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python -u 3d/scripts/generate_2d.py --calculate-dimensions --render-raster
@@ -26,7 +47,7 @@ jobs:
           ./scripts/annotate_image.sh 3d/build/outputs/3d_laser_raster-52.png
           cp 3d/build/laser_parts/combined_module_dimensions.svg 3d/build/outputs/3d_laser_vector-52-module_dimensions.svg
 
-      - name: 'Generate 2d output :: 52 flap :: Ponoko 3mm MDF)'
+      - name: 'Generate 2d output :: 52 flap :: Ponoko 3mm MDF'
         run: |
           xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" python3 -u 3d/scripts/generate_2d.py --calculate-dimensions --kerf-preset ponoko-3mm-mdf
           cp 3d/build/laser_parts/combined.svg 3d/build/outputs/3d_laser_vector-52-ponoko-3mm-mdf_1x.svg
