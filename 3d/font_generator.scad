@@ -16,6 +16,7 @@
 
 include<flap_dimensions.scad>;
 use<flap.scad>;
+use<flap_characters.scad>;
 use<projection_renderer.scad>;
 use<splitflap.scad>;
 
@@ -92,7 +93,7 @@ if (!is_projection_rendering()) {
 
 module flap_transform(row, col) {
     x_pos = layout_mode == MODE_SIDE_BY_SIDE ?
-        (flap_width*2 + spacing_x*2) * col :
+        (flap_width*2 + spacing_x*3) * col :
         (flap_width + spacing_x) * col;
     y_pos = layout_mode == MODE_FULL_FONT ?
         (flap_height*2 + flap_gap + spacing_y) * row:

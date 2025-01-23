@@ -20,6 +20,7 @@ from __future__ import print_function
 import argparse
 import logging
 import os
+import subprocess
 import sys
 
 from kerf_presets import KERF_PRESETS
@@ -30,6 +31,11 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 source_parts_dir = os.path.dirname(script_dir)
 repo_root = os.path.dirname(source_parts_dir)
 sys.path.append(repo_root)
+
+from util import (
+    app_paths,
+    inkscape,
+)
 
 CENTER_MODES = {
     'letter': 0,
@@ -42,6 +48,7 @@ def render(extra_variables, output_directory):
     renderer.clean()
     svg_output, _ = renderer.render_svgs(panelize_quantity = 1)
     logging.info('\n\n\nDone rendering to SVG: ' + svg_output)
+    return svg_output
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
@@ -53,8 +60,12 @@ if __name__ == '__main__':
     kerf_group.add_argument('--kerf-preset', choices=KERF_PRESETS, help='Set kerf_width using a defined preset')
     kerf_group.add_argument('--tool-diameter', type=float, help='Diameter of cutting tool')
 
+    parser.add_argument('--render-raster', action='store_true', help='Render raster PNG from the output SVG (requires '
+                                                                     'Inkscape)')
+
     parser.add_argument('--rows', type=int, required=True, help='Number of rows')
     parser.add_argument('--cols', type=int, required=True, help='Number of columns')
+    parser.add_argument('--num-flaps', type=int, help='Override NUM_FLAPS')
 
     x_group = parser.add_mutually_exclusive_group(required=True)
     x_group.add_argument('--spacing-x', type=float, help='Horizontal gap between modules')
@@ -89,6 +100,9 @@ if __name__ == '__main__':
     extra_variables['rows'] = args.rows
     extra_variables['cols'] = args.cols
 
+    if args.num_flaps is not None:
+        extra_variables['num_flaps'] = args.num_flaps
+
     if args.spacing_x is not None:
         extra_variables['gap_x'] = args.spacing_x
     if args.spacing_y is not None:
@@ -112,4 +126,32 @@ if __name__ == '__main__':
 
     output_dir = os.path.join(source_parts_dir, 'build', 'front_panel')
 
-    render(extra_variables, output_dir)
+    svg_output = render(extra_variables, output_dir)
+
+    if args.render_raster:
+        # Export to png
+        logging.info('Generating raster preview')
+        processor = SvgProcessor(svg_output)
+        raster_svg = os.path.join(output_dir, 'raster.svg')
+        raster_png = os.path.join(output_dir, 'raster.png')
+        processor.apply_raster_render_style()
+        processor.write(raster_svg)
+
+        # logging.info('Resize SVG canvas')
+        # subprocess.check_call([
+        #     app_paths.get('inkscape'),
+        #     '--verb=FitCanvasToDrawing',
+        #     '--verb=FileSave',
+        #     '--verb=FileClose',
+        #     '--verb=FileQuit',
+        #     raster_svg,
+        # ])
+
+        logging.info('Export PNG')
+        subprocess.check_call([
+            app_paths.get('inkscape'),
+            '--export-width=1080',
+            '--export-background=white',
+        ] + inkscape.export_png(raster_png) + [
+            raster_svg,
+        ])

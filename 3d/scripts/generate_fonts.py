@@ -32,7 +32,11 @@ source_parts_dir = os.path.dirname(script_dir)
 repo_root = os.path.dirname(source_parts_dir)
 sys.path.append(repo_root)
 
-from util import rev_info
+from util import (
+    app_paths,
+    inkscape,
+    rev_info,
+)
 
 _MODES = {
     'double-sided': 0,
@@ -41,7 +45,7 @@ _MODES = {
     'side-by-side': 3,
 }
 
-def render(extra_variables, skip_optimize, output_directory):
+def render(extra_variables, skip_optimize, output_directory, render_raster):
     renderer = Renderer(os.path.join(source_parts_dir, 'font_generator.scad'), output_directory, extra_variables)
     renderer.clean()
     svg_output, _ = renderer.render_svgs(panelize_quantity = 1)
@@ -55,12 +59,29 @@ def render(extra_variables, skip_optimize, output_directory):
     processor.write(svg_output)
     logging.info('\n\n\nDone rendering to SVG: ' + svg_output)
 
+    if render_raster:
+        # Export to png
+        logging.info('Generating raster preview')
+        raster_png = os.path.join(output_directory, 'raster.png')
+
+        logging.info('Export PNG')
+        subprocess.check_call([
+            app_paths.get('inkscape'),
+            '--export-width=1080',
+            '--export-background=white',
+        ] + inkscape.export_png(raster_png) + [
+            svg_output,
+        ])
+
+
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
 
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--mode', choices=_MODES.keys(), required=True)
+    parser.add_argument('--render-raster', action='store_true', help='Render raster PNG from the output SVG (requires '
+                                                                     'Inkscape)')
 
     parser.add_argument('-f', '--font', type=str, help='Name of font preset to use - see flap_fonts.scad')
     parser.add_argument('-t', '--text', type=str, help='String of text to generate')
@@ -126,7 +147,7 @@ if __name__ == '__main__':
         extra_variables['only_side'] = 1
         extra_variables['flip_entire_layout'] = False
         extra_variables['flip_individual_flaps'] = False
-        render(extra_variables, args.skip_optimize, os.path.join(fonts_directory, 'front'))
+        render(extra_variables, args.skip_optimize, os.path.join(fonts_directory, 'front'), args.render_raster)
 
         extra_variables['only_side'] = 2
         if args.mode == 'double-sided':
@@ -135,11 +156,11 @@ if __name__ == '__main__':
         elif args.mode == 'front-back':
             extra_variables['flip_entire_layout'] = False
             extra_variables['flip_individual_flaps'] = True
-        render(extra_variables, args.skip_optimize, os.path.join(fonts_directory, 'back'))
+        render(extra_variables, args.skip_optimize, os.path.join(fonts_directory, 'back'), args.render_raster)
     else:
         if args.alignment:
             raise RuntimeError('Alignment markers are only compatible with double-sided rendering')
 
         extra_variables['only_side'] = 1
         extra_variables['flip_entire_layout'] = False
-        render(extra_variables, args.skip_optimize, fonts_directory)
+        render(extra_variables, args.skip_optimize, fonts_directory, args.render_raster)

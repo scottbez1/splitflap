@@ -235,6 +235,7 @@ if __name__ == '__main__':
         subprocess.check_call([
             app_paths.get('inkscape'),
             '--export-width=320',
+            '--export-background=white',
         ] + inkscape.export_png(raster_png) + [
             raster_svg,
         ])
