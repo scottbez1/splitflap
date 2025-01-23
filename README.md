@@ -3,6 +3,7 @@
 This is a DIY ESP32-based [split-flap display](https://en.wikipedia.org/wiki/Split-flap_display), optimized for easy assembly at home in small quantities but able to be scaled up to large affordable displays.
 
 ![animated rendering](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_animation.gif)
+<img src="https://s3.amazonaws.com/splitflap-artifacts/master/3d/all_flaps.gif" height="320" />
 
 [![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml/badge.svg?branch=master)](https://github.com/scottbez1/splitflap/actions/workflows/3d.yml?query=branch%3Amaster)
 [![Build Status](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml/badge.svg?branch=master)](https://github.com/scottbez1/splitflap/actions/workflows/electronics.yml?query=branch%3Amaster)
@@ -130,6 +131,76 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 * For Elecrow 3mm Acrylic ([zipped pdf](https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_laser_vector-40-elecrow-3mm-acrylic_1x.zip))
 
 <sup>:warning:</sup>For tested/stable/recommended artifacts, always use the [latest release](https://github.com/scottbez1/splitflap/releases) instead, as the links on this page will change over time.
+
+### Combined front panel (script)
+By default, the design will have a separate laser-cut faceplate for each individual module. For larger displays you may want to combine front panels into a single piece, and the repo has a script to help with this.
+
+There are a lot of options; see the `--help` for explanations.
+
+#### Example 1 - Laser cut 6x1
+
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_front_panel-52-elecrow-3mm-acrylic-6x1.svg">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_front_panel_raster-52-elecrow-3mm-acrylic-6x1.png"/>
+</a>
+
+```
+python3 3d/scripts/generate_combined_front_panel.py \
+  --kerf-preset elecrow-3mm-acrylic \
+  --num-flaps 52 \
+  --cols 6 \
+  --rows 1 \
+  --spacing-x 0 \
+  --spacing-y 0 \
+  --frame-margin-x 0 \
+  --frame-margin-y 0 \
+  --center-mode module
+```
+
+#### Example 2 - CNC router 12x2, with frame margin
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_front_panel-52-3.175-20x4margin-12x2.svg">
+<img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_front_panel_raster-52-3.175-20x4margin-12x2.png"/>
+</a>
+
+If you want to cut a front panel with a CNC router (useful for _very_ large displays), use the `--tool-diameter` argument to remove kerf-correction and instead add dogbones to the tab slots.
+
+With the dogbones added to the tab slots, these would be unsightly if cut as through-slots, but because this is CNC cut rather than laser-cut, you can do partial Z-depth slots. For example, for a 6mm thick MDF front panel, I'd recommend cutting the dogbone tab slots to a depth of 4mm. This way, only the 2 front bolt heads are visible from the front, and not the tab slots.
+
+This example also demonstrates use of the --frame-margin-x and --frame-margin-y options to add an additional margin of 20mm horizontally and 4mm vertically to the front panel dimensions.
+
+```
+python3 3d/scripts/generate_combined_front_panel.py \
+  --tool-diameter 3.175 \
+  --num-flaps 52 \
+  --cols 12 \
+  --rows 2 \
+  --spacing-x 0 \
+  --spacing-y 0 \
+  --frame-margin-x 20 \
+  --frame-margin-y 4 \
+  --center-mode module
+```
+
+### Flap font/sticker generator (script)
+If you'd like to customize the font or character set of your display, you can use the `generate_fonts.py` script to generate a vector file that can be used for cutting vinyl stickers or can be sent to a print shop that can produce printed flaps directly.
+
+There are a lot of options; see the `--help` for explanations.
+
+You'll also need to edit `flap_fonts.scad` if you want to use a custom font -- this is where font parameters are defined like the overall font scale, position offsets, and even per-character scale and position overrides in case you need to tweak particularly problematic letters (e.g. a really wide "W" or an "@" with too thin of a stroke).
+
+#### Example 1 - Epilogue font, rendered in front+back pairs, default character set, 1mm bleed (for printing)
+
+<a href="https://s3.amazonaws.com/splitflap-artifacts/master/3d/font_example-Epilogue-1mmBleed.svg">
+<img width="400" src="https://s3.amazonaws.com/splitflap-artifacts/master/3d/font_example-Epilogue-1mmBleed.png"/>
+</a>
+
+```
+python3 3d/scripts/generate_fonts.py \
+  --mode side-by-side \
+  --font Epilogue \
+  --columns 4 \
+  --bleed 1 \
+  --fill
+```
 
 
 ## Electronics
