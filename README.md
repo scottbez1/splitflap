@@ -35,10 +35,6 @@ Here's a video of a large 108-module display powered by 18 Chainlink Driver boar
 ## Stable v2 Mechanical Release
 As of 2025-01-19, the v2 refresh of the mechanical and sensor design is considered stable and recommended for new builds.
 
-<img src="https://github.com/scottbez1/splitflap/assets/414890/9ffab4fa-a2db-4b5e-915a-915f81faa193" height="200" />
-<img src="https://github.com/scottbez1/splitflap/assets/414890/d89254a4-46de-4303-8402-8a4d7989d25e" height="200" />
-<img src="https://github.com/scottbez1/splitflap/assets/414890/9193a9e3-a4f5-4a54-868a-badd74168181" height="200" />
-
 **Here's what's new in v2:**
 
 - **52 flaps per module** for more character/symbol options
@@ -70,6 +66,8 @@ If you have any questions, please don't hesitate to ask in the [community Discor
 # Table of Contents
 - [Design Overview](#design-overview)
   - [Mechanical](#mechanical)
+    - [Combined front panel (script)](#combined-front-panel-script)
+    - [Flap font/sticker generator (script)](#flap-fontsticker-generator-script)
   - [Electronics](#electronics)
     - [Sensor PCBs](#sensor-pcbs-1-per-module)
     - [Chainlink Driver](#chainlink-driver-1-per-6-modules)
@@ -80,8 +78,6 @@ If you have any questions, please don't hesitate to ask in the [community Discor
     - [Older designs](#older-designs)
       - [Classic controller](#classic-controller-electronics-deprecated)
     + [Miscellaneous Tools](#miscellaneous-tools)
-      - [Flaps and Fonts](#flaps-and-fonts)
-      - [Combined Front Panel Generator](#combined-front-panel-generator)
       - [3D Printed Tools](#3d-printed-tools)
       - [Chainlink Driver Tester](#chainlink-driver-tester)
   * [Code](#code)
@@ -135,6 +131,11 @@ Latest auto-generated (untested!) artifacts<sup>:warning:</sup>:
 ### Combined front panel (script)
 By default, the design will have a separate laser-cut faceplate for each individual module. For larger displays you may want to combine front panels into a single piece, and the repo has a script to help with this.
 
+You can modify:
+* Number of rows and columns
+* Horizontal and vertical spacing/separation of modules
+* Overall outer width and height of the panel
+
 There are a lot of options; see the `--help` for explanations.
 
 #### Example 1 - Laser cut 6x1
@@ -161,9 +162,7 @@ python3 3d/scripts/generate_combined_front_panel.py \
 <img width="640" src="https://s3.amazonaws.com/splitflap-artifacts/master/3d/3d_front_panel_raster-52-3.175-20x4margin-12x2.png"/>
 </a>
 
-If you want to cut a front panel with a CNC router (useful for _very_ large displays), use the `--tool-diameter` argument to remove kerf-correction and instead add dogbones to the tab slots.
-
-With the dogbones added to the tab slots, these would be unsightly if cut as through-slots, but because this is CNC cut rather than laser-cut, you can do partial Z-depth slots. For example, for a 6mm thick MDF front panel, I'd recommend cutting the dogbone tab slots to a depth of 4mm. This way, only the 2 front bolt heads are visible from the front, and not the tab slots.
+For CNC cutting, the script supports rendering a vector file optimized for thicker material (e.g. 6mm MDF) where only the bolt-holes will be through-cut. In this mode, the slots for the top/bottom enclosure pieces can be cut as ~4mm pockets so they aren't visible from the front face. The script automatically generates dog-bone shapes for these pocket cuts.
 
 This example also demonstrates use of the --frame-margin-x and --frame-margin-y options to add an additional margin of 20mm horizontally and 4mm vertically to the front panel dimensions.
 
@@ -181,11 +180,20 @@ python3 3d/scripts/generate_combined_front_panel.py \
 ```
 
 ### Flap font/sticker generator (script)
-If you'd like to customize the font or character set of your display, you can use the `generate_fonts.py` script to generate a vector file that can be used for cutting vinyl stickers or can be sent to a print shop that can produce printed flaps directly.
+If you'd like to print your own flaps, or cut custom vinyl letter stickers, the project includes a script (`generate_fonts.py`) to generate vector design files, which is extremely configurable:
+
+* Font for text
+  * This is further customizable in `flap_fonts.scad` -- this is where font parameters are defined like the overall font scale, position offsets, and even per-character scale and position overrides in case you need to tweak particularly problematic letters (e.g. a really wide "W" or an "@" with too thin of a stroke).
+* Character-set - which letters/numbers/symbols/colors are included and in what order
+* Bleed - extends rendering past the borders of the flaps to compensate for slight misalignment of printing and cutting operations
+* Keepout areas - option to highlight keepout violations for manual review, automatically clip them, or ignore them
+* Rendering options:
+    * Single-sided - useful for previewing how all letters will look on flaps
+    * Front/back - for batch duplex printing, generate separate front-side and back-side files (e.g. sign shop printing on a flat sheet of PVC)
+    * Side-by-side - for individual flap printing, each flap's front design is laid out side-by-side with its back design
 
 There are a lot of options; see the `--help` for explanations.
 
-You'll also need to edit `flap_fonts.scad` if you want to use a custom font -- this is where font parameters are defined like the overall font scale, position offsets, and even per-character scale and position overrides in case you need to tweak particularly problematic letters (e.g. a really wide "W" or an "@" with too thin of a stroke).
 
 #### Example 1 - Epilogue font, rendered in front+back pairs, default character set, 1mm bleed (for printing)
 
@@ -431,35 +439,6 @@ There are optional WS2812B RGB LEDs which can be used to indicate the status of 
 
 
 ### Miscellaneous Tools
-
-#### Flaps and Fonts
-If you'd like to print your own flaps, or cut custom vinyl letter stickers, the project includes a script to generate vector design files
-that is extremely configurable:
-
-* Font for text (this is further customizable in OpenSCAD)
-* Character-set - which letters/numbers/symbols/colors are included and in what order
-* Bleed - extends rendering past the borders of the flaps to compensate for slight misalignment of printing and cutting operations
-* Keepout areas - option to highlight keepout violations for manual review, automatically clip them, or ignore them
-* Rendering options:
-    * Single-sided - useful for previewing how all letters will look on flaps
-    * Front/back - for batch duplex printing, generate separate front-side and back-side files (e.g. sign shop printing on a flat sheet of PVC)
-    * Side-by-side - for individual flap printing, each flap's front design is laid out side-by-side with its back design
-
-TODO: finish documenting this and render some example images...
-
-#### Combined Front Panel Generator
-If you'd like to share a single front face across multiple modules (rather than each module having its own front face), the repo
-includes a script to generate a combined front panel for laser-cutting or CNC milling/routing.
-
-You can modify:
-* Number of rows and columns
-* Horizontal and vertical spacing/separation of modules
-* Overall outer width and height of the panel
-
-For CNC cutting, the script supports rendering a vector file optimized for thicker material (e.g. 6mm MDF) where only the bolt-holes will be through-cut. In this mode, the slots for the top/bottom enclosure pieces can be cut as ~4mm pockets so they aren't visible from the front face. The script automatically generates dog-bone shapes for these pocket cuts.
-
-
-TODO: finish documenting this and render some example images...
 
 #### 3D Printed Tools
 The project also includes a number of optional 3D printed designs to make assembly easier. These include:
