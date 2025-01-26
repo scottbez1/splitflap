@@ -119,7 +119,7 @@ jobs:
 
       - name: Export chainlinkDriver JLCPCB fabrication files
         run: |
-          ./electronics/scripts/export_jlcpcb.py electronics/chainlinkDriver/chainlinkDriver.kicad_pcb --assembly-schematic electronics/chainlinkDriver/chainlinkDriver.sch --alt-fields LCSC_ALT_ULN2003A LCSC_ALT_SCREW_DIBO
+          ./electronics/scripts/export_jlcpcb.py electronics/chainlinkDriver/chainlinkDriver.kicad_pcb --assembly-schematic electronics/chainlinkDriver/chainlinkDriver.sch --alt-fields LCSC_ALT_ULN2003A
           cp -r electronics/build/chainlinkDriver-jlc electronics/build/outputs
 
       - name: Export chainlinkDriver PCB overview PDF
