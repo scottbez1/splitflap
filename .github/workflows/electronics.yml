@@ -101,41 +101,41 @@ jobs:
         run: ./electronics/scripts/dependencies.sh
 
 # Chainlink Driver:
-      - name: Export chainlinkDriver schematic
-        run: |
-          ./electronics/scripts/export_schematic.py electronics/chainlinkDriver/chainlinkDriver.sch
-          cp electronics/build/chainlinkDriver.pdf electronics/build/outputs/chainlinkDriver-schematic.pdf
-          cp electronics/build/chainlinkDriver.png electronics/build/outputs/chainlinkDriver-schematic.png
-        env:
-          PYTHONUNBUFFERED: 1
+# - name: Export chainlinkDriver schematic
+#   run: |
+#     ./electronics/scripts/export_schematic.py electronics/chainlinkDriver/chainlinkDriver.sch
+#     cp electronics/build/chainlinkDriver.pdf electronics/build/outputs/chainlinkDriver-schematic.pdf
+#     cp electronics/build/chainlinkDriver.png electronics/build/outputs/chainlinkDriver-schematic.png
+#   env:
+#     PYTHONUNBUFFERED: 1
 
-      - name: Render chainlinkDriver PCB 3D
-        run: |
-          ./electronics/scripts/export_3d.py electronics/chainlinkDriver/chainlinkDriver.kicad_pcb --width 2000 --height 800 transform z+ z+ z+ z+ z+ z+ z+ z+ mr rx+ rx+ ry- ry- rz-
-          cp electronics/build/chainlinkDriver-3d.png electronics/build/outputs/chainlinkDriver-3d.png
-          ./scripts/annotate_image.sh electronics/build/outputs/chainlinkDriver-3d.png
-        env:
-          PYTHONUNBUFFERED: 1
+# - name: Render chainlinkDriver PCB 3D
+#   run: |
+#     ./electronics/scripts/export_3d.py electronics/chainlinkDriver/chainlinkDriver.kicad_pcb --width 2000 --height 800 transform z+ z+ z+ z+ z+ z+ z+ z+ mr rx+ rx+ ry- ry- rz-
+#     cp electronics/build/chainlinkDriver-3d.png electronics/build/outputs/chainlinkDriver-3d.png
+#     ./scripts/annotate_image.sh electronics/build/outputs/chainlinkDriver-3d.png
+#   env:
+#     PYTHONUNBUFFERED: 1
 
       - name: Export chainlinkDriver JLCPCB fabrication files
         run: |
           ./electronics/scripts/export_jlcpcb.py electronics/chainlinkDriver/chainlinkDriver.kicad_pcb --assembly-schematic electronics/chainlinkDriver/chainlinkDriver.sch --alt-fields LCSC_ALT_ULN2003A
           cp -r electronics/build/chainlinkDriver-jlc electronics/build/outputs
 
-      - name: Export chainlinkDriver PCB overview PDF
-        run: |
-          ./electronics/scripts/generate_pdf.py electronics/chainlinkDriver/chainlinkDriver.kicad_pcb
-          cp electronics/build/chainlinkDriver-pcb-packet.pdf electronics/build/outputs/chainlinkDriver-pcb-packet.pdf
-        env:
-          PYTHONUNBUFFERED: 1
+# - name: Export chainlinkDriver PCB overview PDF
+#   run: |
+#     ./electronics/scripts/generate_pdf.py electronics/chainlinkDriver/chainlinkDriver.kicad_pcb
+#     cp electronics/build/chainlinkDriver-pcb-packet.pdf electronics/build/outputs/chainlinkDriver-pcb-packet.pdf
+#   env:
+#     PYTHONUNBUFFERED: 1
 
-      - name: Export chainlinkDriver PCB SVG
-        run: |
-          ./electronics/scripts/generate_svg.py electronics/chainlinkDriver/chainlinkDriver.kicad_pcb
-          cp electronics/build/chainlinkDriver_merged.png electronics/build/outputs/chainlinkDriver-pcb-raster.png
-          ./scripts/annotate_image.sh electronics/build/outputs/chainlinkDriver-pcb-raster.png
-        env:
-          PYTHONUNBUFFERED: 1
+# - name: Export chainlinkDriver PCB SVG
+#   run: |
+#     ./electronics/scripts/generate_svg.py electronics/chainlinkDriver/chainlinkDriver.kicad_pcb
+#     cp electronics/build/chainlinkDriver_merged.png electronics/build/outputs/chainlinkDriver-pcb-raster.png
+#     ./scripts/annotate_image.sh electronics/build/outputs/chainlinkDriver-pcb-raster.png
+#   env:
+#     PYTHONUNBUFFERED: 1
 
       # Note: These kibot scripts are run last because they mess with file permissions which breaks other scripts, not sure why
       - name: Export BOM [chainlinkDriver]
