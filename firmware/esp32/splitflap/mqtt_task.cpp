@@ -17,6 +17,7 @@
 #include "mqtt_task.h"
 #include "secrets.h"
 
+bool forceFullRotation = 1;
 
 MQTTTask::MQTTTask(SplitflapTask& splitflap_task, Logger& logger, const uint8_t task_core) :
         Task("MQTT", 8192, 1, task_core),
@@ -45,7 +46,15 @@ void MQTTTask::mqttCallback(char *topic, byte *payload, unsigned int length) {
     char buf[256];
     snprintf(buf, sizeof(buf), "Received mqtt callback for topic %s, length %u", topic, length);
     logger_.log(buf);
-    splitflap_task_.showString((const char *)payload, length);
+    if (strcmp(topic, MQTT_COMMAND_TOPIC) == 0) {
+        splitflap_task_.showString((const char *)payload, length, forceFullRotation);
+    } else if (strcmp(topic, MQTT_FORCE_FULL_ROTATION_COMMAND_TOPIC) == 0) {
+        if (length == 2) { // ON 
+            forceFullRotation = 1;
+        } else {
+            forceFullRotation = 0; // OFF
+        }
+    }
 }
 
 void MQTTTask::connectMQTT() {
@@ -58,6 +67,15 @@ void MQTTTask::connectMQTT() {
         char buf[256];
         snprintf(buf, sizeof(buf), "{\"name\": \"%s\", \"command_topic\": \"%s\", \"state_topic\": \"%s\", \"unique_id\": \"%s\"}", HOSTNAME, MQTT_COMMAND_TOPIC, MQTT_COMMAND_TOPIC, HOSTNAME);
         mqtt_client_.publish("homeassistant/text/splitflap/config", buf);
+
+        mqtt_client_.subscribe(MQTT_FORCE_FULL_ROTATION_COMMAND_TOPIC);
+
+        snprintf(buf, sizeof(buf), "{\"name\": \"%s\", \"command_topic\": \"%s\", \"state_topic\": \"%s\", \"unique_id\": \"%s\"}", "Splitflap force full rotation", MQTT_FORCE_FULL_ROTATION_COMMAND_TOPIC, MQTT_FORCE_FULL_ROTATION_COMMAND_TOPIC, HOSTNAME);
+        mqtt_client_.publish("homeassistant/switch/splitflap/config", buf);
+
+        snprintf(buf, sizeof(buf), "ON");
+        mqtt_client_.publish("homeassistant/switch/splitflap/state", buf);
+
         logger_.log("Published MQTT discovery message");
     } else {
         snprintf(buf, sizeof(buf), "MQTT failed rc=%d will try again in 5 seconds", mqtt_client_.state());
