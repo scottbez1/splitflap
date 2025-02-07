@@ -57,8 +57,8 @@ I'd love to hear your thoughts and questions about this project, and happy to in
 If you have any questions, please don't hesitate to ask in the [community Discord server](https://discord.gg/Hxnftc8PyW)!
 
 * [**Documentation Index**](/docs/DocumentationIndex.md)
-* [**Ordering guide (the "easy" route) v2**](/docs/v2/OrderingEasy.md)
 * [**Comprehensive ordering guide**](/docs/v2/OrderingEasy.md)
+* [**Complete ordering guide**](/docs/v2/OrderingComplete.md)
 * [**Chainlink Driver Electronics User Guide**](/docs/ElectronicsGuide.md)
 * [**Assembly instructions v2**](/docs/v2/Assembly.md)
 * [**Latest stable release**](https://github.com/scottbez1/splitflap/releases)
