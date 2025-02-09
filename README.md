@@ -58,10 +58,10 @@ If you have any questions, please don't hesitate to ask in the [community Discor
 
 * [**Documentation Index**](/docs/DocumentationIndex.md)
 * [**Ordering guide (the "easy" route) v2**](/docs/v2/OrderingEasy.md)
-* [**Comprehensive ordering guide**](/docs/v2/OrderingEasy.md)
+* [**Comprehensive ordering guide**](/docs/v2/OrderingComplete.md)
 * [**Chainlink Driver Electronics User Guide**](/docs/ElectronicsGuide.md)
 * [**Assembly instructions v2**](/docs/v2/Assembly.md)
-* [**Latest stable release**](https://github.com/scottbez1/splitflap/releases)
+* [**Latest stable releases**](https://github.com/scottbez1/splitflap/releases)
 
 # Table of Contents
 - [Design Overview](#design-overview)
