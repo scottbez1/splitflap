@@ -3,6 +3,7 @@
 build/
 venv
 .venv
+.vscode
 
 # KiCAD files
 *.000
