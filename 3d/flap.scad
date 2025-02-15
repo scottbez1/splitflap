@@ -199,26 +199,9 @@ module flap_with_letters(flap_color, letter_color, flap_index, flap_gap, flap=tr
     if (len(character_list) != get_num_flaps()) {
         echo("Warning: character_list and num_flaps mismatch!");
     }
-    
-    // generate a flap with substracted characters
-    if (print_3d) {
-        difference() {
-            if (flap) {
-                _flap(flap_color);
-            }
-            if (front_letter) {
-                _flap_letter(get_letter_for_front(flap_index), letter_color, flap_gap, front=true, bleed=bleed, print_3d=print_3d);
-            }
-            if (back_letter) {
-                _flap_letter(get_letter_for_back(flap_index), letter_color, flap_gap, front=false, bleed=bleed, print_3d=print_3d);
-            }
-        }
-    } else {
-        if (flap) {
-            _flap(flap_color);
-        }
+    if (flap) {
+        _flap(flap_color);
     }
-
     if (front_letter) {
         _flap_letter(get_letter_for_front(flap_index), letter_color, flap_gap, front=true, bleed=bleed, print_3d=print_3d);
     }
