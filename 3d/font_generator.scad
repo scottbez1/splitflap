@@ -69,6 +69,8 @@ letter_color = [0,0,0];
 
 render_alignment_marks = false; // Whether to render markings to help with alignment/registration (e.g. for screen printing)
 
+print_3d = false; // embeds and substracts a 0.3mm think font into the flap. Used together with colored_stl_exporter.py
+
 // ---------------------------
 // End configurable parameters
 // ---------------------------
@@ -116,12 +118,12 @@ module flap_pos(i) {
 }
 
 module configured_flap(index, flap, front_letter, back_letter) {
-    flap_with_letters(flap_color, letter_color, index, flap_gap, flap=flap, front_letter=front_letter, back_letter=back_letter, bleed=bleed);
+    flap_with_letters(flap_color, letter_color, index, flap_gap, flap=flap, front_letter=front_letter, back_letter=back_letter, bleed=bleed, print_3d=print_3d);
 
     if (layout_mode == MODE_FULL_FONT) {
         translate([0, -flap_pin_width -flap_gap, 0]) {
             rotate([180,0,0]) {
-                flap_with_letters(flap_color, letter_color, index - 1, flap_gap, flap=flap, front_letter=back_letter, back_letter=front_letter, bleed=bleed);
+                flap_with_letters(flap_color, letter_color, index - 1, flap_gap, flap=flap, front_letter=back_letter, back_letter=front_letter, bleed=bleed, print_3d=print_3d);
             }
         }
     }
@@ -129,7 +131,7 @@ module configured_flap(index, flap, front_letter, back_letter) {
     if (layout_mode == MODE_SIDE_BY_SIDE) {
         translate([2*flap_width + spacing_x, 0]) {
             rotate([0, 180,0]) {
-                flap_with_letters(flap_color, letter_color, index, flap_gap, flap=flap, front_letter=back_letter, back_letter=front_letter, bleed=bleed);
+                flap_with_letters(flap_color, letter_color, index, flap_gap, flap=flap, front_letter=back_letter, back_letter=front_letter, bleed=bleed, print_3d=print_3d);
             }
         }
     }

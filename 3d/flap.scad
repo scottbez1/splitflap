@@ -39,6 +39,8 @@ letter_facet_number = 100;
 vertical_keepout_mode = 1;              // 0=ignore; 1=highlight; 2=cut
 vertical_keepout_size_factor = 1.1;     // Expand calculated keepout region by this factor. 1=no expansion, 1.5=50% expansion, etc
 
+_font_extrusion_3d = 0.3;
+_font_extrusion = 0.1;
 
 vertical_keepout_size = get_flap_arc_separation() * vertical_keepout_size_factor;
 
@@ -129,10 +131,10 @@ module _draw_letter(letter, flap_gap) {
     }
 }
 
-module _flap_letter(letter, letter_color, flap_gap, front=true, bleed = 0) {
+module _flap_letter(letter, letter_color, flap_gap, front = true, bleed = 0, print_3d = false) {
     _apply_special_color(letter, letter_color) {
-        translate([0, 0, front ? flap_thickness/2 + eps : -flap_thickness/2 - eps]) {
-            linear_extrude(height=0.1, center=true) {
+        translate([0, 0, front ? (flap_thickness/2 + eps - (print_3d ? _font_extrusion_3d : 0)) : (-flap_thickness/2 - eps)]) {
+            linear_extrude(height=print_3d ? _font_extrusion_3d : _font_extrusion, center=print_3d ? false : true) {
                 intersection() {
                     difference() {
                         offset(r=bleed) {
@@ -193,18 +195,35 @@ module _flap_letter(letter, letter_color, flap_gap, front=true, bleed = 0) {
     }
 }
 
-module flap_with_letters(flap_color, letter_color, flap_index, flap_gap, flap=true, front_letter=true, back_letter=true, bleed=0) {
+module flap_with_letters(flap_color, letter_color, flap_index, flap_gap, flap=true, front_letter=true, back_letter=true, bleed=0, print_3d=false) {
     if (len(character_list) != get_num_flaps()) {
         echo("Warning: character_list and num_flaps mismatch!");
     }
-    if (flap) {
-        _flap(flap_color);
+    
+    // generate a flap with substracted characters
+    if (print_3d) {
+        difference() {
+            if (flap) {
+                _flap(flap_color);
+            }
+            if (front_letter) {
+                _flap_letter(get_letter_for_front(flap_index), letter_color, flap_gap, front=true, bleed=bleed, print_3d=print_3d);
+            }
+            if (back_letter) {
+                _flap_letter(get_letter_for_back(flap_index), letter_color, flap_gap, front=false, bleed=bleed, print_3d=print_3d);
+            }
+        }
+    } else {
+        if (flap) {
+            _flap(flap_color);
+        }
     }
+
     if (front_letter) {
-        _flap_letter(get_letter_for_front(flap_index), letter_color, flap_gap, front=true, bleed=bleed);
+        _flap_letter(get_letter_for_front(flap_index), letter_color, flap_gap, front=true, bleed=bleed, print_3d=print_3d);
     }
     if (back_letter) {
-        _flap_letter(get_letter_for_back(flap_index), letter_color, flap_gap, front=false, bleed=bleed); 
+        _flap_letter(get_letter_for_back(flap_index), letter_color, flap_gap, front=false, bleed=bleed, print_3d=print_3d);
     }
 }
 
@@ -212,8 +231,8 @@ module flap_with_letters(flap_color, letter_color, flap_index, flap_gap, flap=tr
 i = 1;
 gap = 5;
 
-flap_with_letters([1,0,0], [1,1,0], flap_index=i, flap_gap=gap, bleed=2);
+flap_with_letters([1,0,0], [1,1,0], flap_index=i, flap_gap=gap, bleed=2, print_3d=false);
 translate([0, -flap_pin_width-gap, 0])
 rotate([180, 0, 0]) {
-    flap_with_letters([1,0,0], [1,1,0], flap_index=i - 1, flap_gap=gap, bleed=2);
+    flap_with_letters([1,0,0], [1,1,0], flap_index=i - 1, flap_gap=gap, bleed=2, print_3d=false);
 }
