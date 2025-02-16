@@ -17,7 +17,6 @@ include<flap_dimensions.scad>;
 include<global_constants.scad>;
 use<flap_fonts.scad>;
 use<flap_characters.scad>;
-use<splitflap.scad>;
 
 // TODO: extract core flap spool dimensions used for vertical_keepout_size instead of using the full splitflap file
 use<splitflap.scad>;

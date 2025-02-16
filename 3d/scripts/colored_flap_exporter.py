@@ -14,7 +14,7 @@ if __name__ == '__main__':
         flap_path = args.output_folder / f"flap_{flap}"
         flap_path.mkdir(parents=True, exist_ok=True)
         openscad_variables = {
-            "i": flap,
+            "flap_number": flap,
             "gap": 0,
             "print_3d": True,
             "generate_second_half": False,
