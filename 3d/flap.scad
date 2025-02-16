@@ -17,6 +17,7 @@ include<flap_dimensions.scad>;
 include<global_constants.scad>;
 use<flap_fonts.scad>;
 use<flap_characters.scad>;
+use<splitflap.scad>;
 
 // TODO: extract core flap spool dimensions used for vertical_keepout_size instead of using the full splitflap file
 use<splitflap.scad>;
@@ -44,9 +45,6 @@ generate_second_half = true;
 
 // index number of flap, see flap_characters.scad
 flap_number = 1;
-
-// gap between flaps
-gap = 5;
 
 // generate 3d printable flap for 0.15mm layer height
 print_3d = false;
@@ -221,11 +219,11 @@ module flap_with_letters(flap_color, letter_color, flap_index, flap_gap, flap=tr
     }
 }
 
-
-flap_with_letters([1,0,0], [1,1,0], flap_index=flap_number, flap_gap=0, bleed=0, print_3d=true);
-translate([0, -flap_pin_width-gap, 0])
+flap_gap = get_flap_gap();
+flap_with_letters([1,0,0], [1,1,0], flap_index=flap_number, flap_gap=flap_gap, bleed=0, print_3d=true);
+translate([0, -flap_pin_width-flap_gap, 0])
 if (generate_second_half) {
     rotate([180, 0, 0]) {
-        flap_with_letters([1,0,0], [1,1,0], flap_index=flap_number - 1, flap_gap=gap, bleed=0, print_3d=true);
+        flap_with_letters([1,0,0], [1,1,0], flap_index=flap_number - 1, flap_gap=flap_gap, bleed=0, print_3d=true);
     }
 }
