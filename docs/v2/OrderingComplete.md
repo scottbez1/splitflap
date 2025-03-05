@@ -173,7 +173,7 @@ To order:
 - Save to Cart
 - Checkout (note that JLC does NOT reserve parts until you’ve checked out and paid your order, so if stock is low there is a chance parts will be missing if you wait to pay!)
 
-To keep assembly costs lower, and to avoid fluctuating stock issues for parts that are readily available elsewhere and easy to hand-solder, the design files for assembly *do not include the following parts*, which you should order separately (or you can use the LCSC part numbers below to select them during the Review Parts step and pay the additional costs for assembly):
+If you wish to hand-assemble some of the through-hole connectors rather than having JLCPCB assemble them for you, you can unselect these components when placing your order, then order and assemble them yourself:
 
 - 2x IDC shrouded connectors, 2x4, 2.54mm spacing, e.g. JLC/LCSC [C601937](https://lcsc.com/product-detail/IDC-Connectors_JILN-321008SG0ABK00A01_C601937.html), or on [Digi-Key](https://www.digikey.com/en/products/detail/adam-tech/BHR-08-VUA/9832409)
 - 6x JST XH 5 pin connectors, e.g JLC/LCSC [C161872](https://lcsc.com/product-detail/Wire-To-Board-Wire-To-Wire-Connector_JST-Sales-America-B5B-XH-AM-LF-SN_C161872.html). or [C378947](https://lcsc.com/product-detail/Wire-To-Board-Wire-To-Wire-Connector_JST-Sales-America-B5B-XH-A-BK-LF-SN_C378947.html), or LCSC [C157991](https://lcsc.com/product-detail/Wire-To-Board-Wire-To-Wire-Connector_JST-Sales-America-B5B-XH-A-LF-SN_C157991.html), or on [Digi-Key](https://www.digikey.com/en/products/detail/jst-sales-america-inc/B5B-XH-AM-LF-SN/1651037)
@@ -182,7 +182,7 @@ To keep assembly costs lower, and to avoid fluctuating stock issues for parts th
 In order to connect your Chainlink Driver to your microcontroller (or to another Chainlink Driver in a chain), you’ll also need an IDC ribbon cable + connectors:
 
 - 1x 8 conductor 1.27mm spacing ribbon cable (45cm recommended minimum length for chaining), [e.g. on Digi-Key](https://www.digikey.com/en/products/detail/w%C3%BCrth-elektronik/63910815521CAB/8324550)
-- 2x IDC connectors, e.g. LCSC [C601910](https://lcsc.com/product-detail/IDC-Connectors_JILN-531408YBS0BW01_C601910.html), or on [Digi-Key](https://www.digikey.com/en/products/detail/adam-tech/FCS-08-SG/9832361)
+- 2x IDC cable connectors, e.g. LCSC [C601910](https://lcsc.com/product-detail/IDC-Connectors_JILN-531408YBS0BW01_C601910.html), or on [Digi-Key](https://www.digikey.com/en/products/detail/adam-tech/FCS-08-SG/9832361)
 - You could alternatively look for an assembled 8P IDC cable on e.g. Amazon, though make sure it's a straight-through cable (i.e. notches on the connectors both face the same way)
 
 You may get an email from JLCPCB after placing your order, asking to double-check the orientation of the screw terminals. See images below for the correct orientation: the wires would go *over* the Power labels on the PCB to be inserted into the front of the screw terminals.
@@ -297,9 +297,10 @@ To order:
 
 
 - Select PCB Assembly
+    - Note: JLCPCB gives you the choice to only assemble a portion of PCBs you've ordered. In this example, I've shown ordering 5 PCBs (the minimum quantity) and only having 2 of the 5 assembled (the minimum assembly quantity).
     - Assemble top side
     - PCBA Type: Economic
-    - PCBA Qty: 2 (This is 2 of the 6x _panels_, for 12x total sensor PCBs. This is the minimum assembly quantity.)
+    - PCBA Qty: 2 (This is 2 of the 6x _panels_, for 12x total sensor PCBs. If this option doesn't appear, change PCBA type to Standard then back to Economic!)
     - Tooling holes: Added by JLCPCB
     - Confirm Parts Placement: No (select Yes if you'd like extra assurance and know how to review the production gerber files they provide)
     - Parts Selection: By Customer
@@ -308,10 +309,14 @@ To order:
 
 - Upload BOM File
 - Upload CPL (csv) file
+- Make sure to select File provided as: "Complete File, just proceed with my own files"
+  ![Screenshot from 2025-03-04 22-32-38](https://github.com/user-attachments/assets/998ad9c8-3e1f-44dc-a046-e0e210b1d497)
+
 
 - Review parts
     - ⚠️ Make sure you check this step carefully, as any parts that are out of stock will simply be omitted! ⚠️
-  ![Screenshot from 2025-01-19 23-49-50](https://github.com/user-attachments/assets/fa1f178c-e486-4c37-8991-1234c5b0b4f6)
+  ![Screenshot from 2025-03-04 22-33-01](https://github.com/user-attachments/assets/62233f7d-e47d-4606-b3fb-e72767408937)
+
 
 - Review parts placement
   ![Screenshot from 2025-01-19 23-50-15](https://github.com/user-attachments/assets/6bd5e016-f792-46d8-ace7-8fe11aba9cfb)
