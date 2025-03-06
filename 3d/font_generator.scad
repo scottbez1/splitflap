@@ -69,8 +69,6 @@ letter_color = [0,0,0];
 
 render_alignment_marks = false; // Whether to render markings to help with alignment/registration (e.g. for screen printing)
 
-print_3d = false; // embeds and substracts a 0.3mm think font into the flap. Used together with colored_stl_exporter.py
-
 // ---------------------------
 // End configurable parameters
 // ---------------------------
