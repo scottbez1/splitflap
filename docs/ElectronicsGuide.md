@@ -148,6 +148,7 @@ To upload code to the ESP32 T-Display from VS Code, you’ll need to (see screen
 
 - If you reset the ESP32, you should see the LEDs on the Chainlink Drivers blink quickly and a message in the serial monitor that loopbacks are ok. If you see a loopback error message, troubleshoot that before continuing.
 
+*NOTE*: Make sure to exit the terminal window before starting calibration.  Otherwise, you might get an error as both should not be running at the same time.
 
 
 # 6. Connect modules and power
