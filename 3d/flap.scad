@@ -39,15 +39,6 @@ letter_facet_number = 100;
 vertical_keepout_mode = 1;              // 0=ignore; 1=highlight; 2=cut
 vertical_keepout_size_factor = 1.1;     // Expand calculated keepout region by this factor. 1=no expansion, 1.5=50% expansion, etc
 
-// generate lower half of the flap
-generate_second_half = true;
-
-// index number of flap, see flap_characters.scad
-flap_number = 1;
-
-// generate 3d printable flap for 0.15mm layer height
-print_3d = false;
-
 vertical_keepout_size = get_flap_arc_separation() * vertical_keepout_size_factor;
 font_extrusion_3d = 0.3;
 font_extrusion = 0.1;
@@ -208,18 +199,7 @@ module flap_with_letters(flap_color, letter_color, flap_index, flap_gap, flap=tr
         echo("Warning: character_list and num_flaps mismatch!");
     }
     if (flap) {
-        difference() {
-            _flap(flap_color);
-            if (print_3d)
-            {
-                if (print_3d && front_letter) {
-                    _flap_letter(get_letter_for_front(flap_index), flap_color, flap_gap, front=true, bleed=bleed, print_3d=print_3d);
-                }
-                if (back_letter) {
-                    _flap_letter(get_letter_for_back(flap_index), flap_color, flap_gap, front=false, bleed=bleed, print_3d=print_3d);
-                }
-            }
-        }
+        _flap(flap_color);
     }
     if (front_letter) {
         _flap_letter(get_letter_for_front(flap_index), letter_color, flap_gap, front=true, bleed=bleed, print_3d=print_3d);
@@ -229,11 +209,12 @@ module flap_with_letters(flap_color, letter_color, flap_index, flap_gap, flap=tr
     }
 }
 
-flap_gap = get_flap_gap();
-flap_with_letters([1,0,0], [1,1,0], flap_index=flap_number, flap_gap=flap_gap, bleed=0, print_3d=true);
-translate([0, -flap_pin_width-flap_gap, 0])
-if (generate_second_half) {
-    rotate([180, 0, 0]) {
-        flap_with_letters([1,0,0], [1,1,0], flap_index=flap_number - 1, flap_gap=flap_gap, bleed=0, print_3d=true);
-    }
+// Example:
+i = 1;
+gap = 5;
+
+flap_with_letters([1,0,0], [1,1,0], flap_index=i, flap_gap=gap, bleed=2);
+translate([0, -flap_pin_width-gap, 0])
+rotate([180, 0, 0]) {
+    flap_with_letters([1,0,0], [1,1,0], flap_index=i - 1, flap_gap=gap, bleed=2);
 }
