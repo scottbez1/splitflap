@@ -234,6 +234,10 @@ HTTPTask::HTTPTask(SplitflapTask& splitflap_task, DisplayTask& display_task, Log
 
 void HTTPTask::connectWifi() {
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+
+    // Disable WiFi sleep as it causes glitches on pin 39; see https://github.com/espressif/arduino-esp32/issues/4903#issuecomment-793187707
+    WiFi.setSleep(WIFI_PS_NONE);
+    
     char buf[256];
 
     logger_.log("Establishing connection to WiFi..");
