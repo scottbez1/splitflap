@@ -31,6 +31,9 @@ MQTTTask::MQTTTask(SplitflapTask& splitflap_task, Logger& logger, const uint8_t 
 void MQTTTask::connectWifi() {
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
+    // Disable WiFi sleep as it causes glitches on pin 39; see https://github.com/espressif/arduino-esp32/issues/4903#issuecomment-793187707
+    WiFi.setSleep(WIFI_PS_NONE);
+
     while (WiFi.status() != WL_CONNECTED) {
         delay(1000);
         logger_.log("Establishing connection to WiFi..");
