@@ -66,6 +66,7 @@ bleed = 0;                      // Amount of bleed (in mm) for text to expand be
 
 flap_color = [1,1,1];
 letter_color = [0,0,0];
+print_3d = false;
 
 render_alignment_marks = false; // Whether to render markings to help with alignment/registration (e.g. for screen printing)
 

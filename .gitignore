@@ -23,3 +23,5 @@ sensor.xml
 
 .pio
 .vscode
+.nvmrc
+.python_version

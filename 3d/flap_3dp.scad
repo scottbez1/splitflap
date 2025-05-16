@@ -20,8 +20,11 @@ use<splitflap.scad>;
 
 generateFullFlap = false; // If true, generates the full flap STL
 generateText = false; // If generateFullFlap is false, this controls what part of the STL to generate
+generateFrontText = true; // If generateText is true, this controls generation of the front text
+generateBackText = true; // If generateText is true, this controls generation of the back text
 
 flap_number = 0;
+
 flap_gap = get_flap_gap();
 if (generateFullFlap) {
 	// Generate the full flap using the standard function
@@ -35,6 +38,6 @@ if (generateFullFlap) {
         }
     } else {
 		// Generate just the letters STL
-        flap_with_letters([0,0,0], [1,1,1], flap=false, flap_index=flap_number, flap_gap=flap_gap, bleed=0, print_3d=true);
+        flap_with_letters([0,0,0], [1,1,1], front_letter=generateFrontText, back_letter=generateBackText, flap=false, flap_index=flap_number, flap_gap=flap_gap, bleed=0, print_3d=true);
     }
 }

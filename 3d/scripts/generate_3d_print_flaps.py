@@ -51,11 +51,25 @@ if __name__ == "__main__":
         action="store_true",
         help="Clip letters that violate vertical keepout zones",
     )
+    parser.add_argument(
+        "--single-stl",
+        action="store_true",
+        default=False,
+        help="Generate a single STL file for each flap",
+    )
+    parser.add_argument(
+        "--single-letter-stl",
+        action="store_true",
+        default=False,
+        help="Generate a single STL file for the front and back letters (only used if --single-stl is not set)",
+    )
     args = parser.parse_args()
 
     extra_variables = {}
+
     if args.font is not None:
         extra_variables["font_preset"] = args.font
+
     if args.text is not None:
         extra_variables["character_list"] = args.text
 
@@ -70,7 +84,7 @@ if __name__ == "__main__":
         file_util.mkdir_p(flap_path)
         openscad_variables = {
             "flap_number": flap_number,
-            "generateFullFlap": False,
+            "generateFullFlap": args.single_stl,
             "generateText": False,
         }
         openscad_variables.update(extra_variables)
@@ -82,16 +96,38 @@ if __name__ == "__main__":
             capture_output=True,
         )
 
-        openscad_variables["generateText"] = True
-        openscad.run(
-            os.path.join(source_parts_dir, "flap_3dp.scad"),
-            os.path.join(flap_path, f"letters.stl"),
-            variables=openscad_variables,
-            capture_output=True,
-        )
+        if not args.single_stl:
+            if args.single_letter_stl:
+                openscad_variables["generateText"] = True
+                openscad.run(
+                    os.path.join(source_parts_dir, "flap_3dp.scad"),
+                    os.path.join(flap_path, f"letters.stl"),
+                    variables=openscad_variables,
+                    capture_output=True,
+                )
+            else:
+                openscad_variables["generateText"] = True
+                openscad_variables["generateFrontText"] = True
+                openscad_variables["generateBackText"] = False
+                openscad.run(
+                    os.path.join(source_parts_dir, "flap_3dp.scad"),
+                    os.path.join(flap_path, f"letter_front.stl"),
+                    variables=openscad_variables,
+                    capture_output=True,
+                )
 
-        # wait for 10 seconds to allow the user to see the output
-        time.sleep(10)
+                openscad_variables["generateText"] = True
+                openscad_variables["generateFrontText"] = False
+                openscad_variables["generateBackText"] = True
+                openscad.run(
+                    os.path.join(source_parts_dir, "flap_3dp.scad"),
+                    os.path.join(flap_path, f"letter_back.stl"),
+                    variables=openscad_variables,
+                    capture_output=True,
+                )
+
+        # wait for 3 seconds to allow the user to see the output
+        time.sleep(3)
 
     pool = Pool()
     num_flaps = len(args.text) if args.text is not None else 52
