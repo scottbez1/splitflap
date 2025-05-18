@@ -154,7 +154,7 @@ export const App: React.FC<AppProps> = () => {
                     console.log('Timed out waiting for initial general state; assuming this is a legacy splitflap connected')
                     setShowOutdatedFirmwareMessage(true)
                     setSplitflap(splitflap)
-                }, 500)
+                }, 3000)
                 await loop
             } else {
                 console.error('Web Serial API is not supported in this browser.')
