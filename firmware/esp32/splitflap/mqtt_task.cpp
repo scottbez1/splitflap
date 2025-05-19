@@ -14,6 +14,8 @@
    limitations under the License.
 */
 #if MQTT
+#include <ArduinoOTA.h>
+
 #include "mqtt_task.h"
 #include "secrets.h"
 
@@ -65,17 +67,17 @@ void MQTTTask::connectMQTT() {
     snprintf(buf, sizeof(buf), "MQTT connecting to %s:%d", MQTT_SERVER, MQTT_PORT);
     display_task_.setMessage(1, String(buf));
 
-    if (mqtt_client_.connect(DEVICE_NAME, MQTT_USER, MQTT_PASSWORD, MQTT_AVAILABILITY_TOPIC, 1, true, "offline")) {
+    if (mqtt_client_.connect(DEVICE_INSTANCE_NAME, MQTT_USER, MQTT_PASSWORD, MQTT_AVAILABILITY_TOPIC, 1, true, "offline")) {
         logger_.log("MQTT connected");
         mqtt_client_.subscribe(MQTT_COMMAND_TOPIC);
         Json config = Json::object {
-            { "name", DEVICE_NAME },
+            { "name", DEVICE_INSTANCE_NAME },
             { "command_topic", MQTT_COMMAND_TOPIC },
             { "state_topic", MQTT_STATE_TOPIC },
             { "availability_topic", MQTT_AVAILABILITY_TOPIC },
             { "payload_available", "online" },
             { "payload_not_available", "offline" },
-            { "unique_id", DEVICE_NAME },
+            { "unique_id", DEVICE_INSTANCE_NAME },
             { "max", NUM_MODULES },
         };
         std::string json_str = config.dump();
@@ -104,6 +106,41 @@ void MQTTTask::run() {
     display_task_.setMessage(1, "");
     connectWifi();
     connectMQTT();
+
+    ArduinoOTA
+        .onStart([this]() {
+            if (ArduinoOTA.getCommand() == U_FLASH) {
+                logger_.log("Start OTA (flash)");
+            } else { // U_SPIFFS
+                logger_.log("Start OTA (filesystem)");
+                // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
+            }
+        })
+        .onEnd([this]() {
+            logger_.log("OTA End");
+        })
+        .onProgress([this](unsigned int progress, unsigned int total) {
+            char buf2[256];
+            static uint32_t last_progress;
+            if (millis() - last_progress > 1000) {
+                snprintf(buf2, sizeof(buf2), "OTA Progress: %d%%", (int)(progress * 100 / total));
+                logger_.log(buf2);
+                last_progress = millis();
+            }
+        })
+        .onError([this](ota_error_t error) {
+            char buf2[256];
+            snprintf(buf2, sizeof(buf2), "OTA Error: %u", error);
+            logger_.log(buf2);
+            if (error == OTA_AUTH_ERROR) logger_.log("Auth Failed");
+            else if (error == OTA_BEGIN_ERROR) logger_.log("Begin Failed");
+            else if (error == OTA_CONNECT_ERROR) logger_.log("Connect Failed");
+            else if (error == OTA_RECEIVE_ERROR) logger_.log("Receive Failed");
+            else if (error == OTA_END_ERROR) logger_.log("End Failed");
+        })
+        .setHostname(DEVICE_INSTANCE_NAME)
+        .setPassword(OTA_PASSWORD)
+        .begin();
 
     wl_status_t wifi_last_status = WL_DISCONNECTED;
     uint32_t last_state_publish = 0;
@@ -149,6 +186,7 @@ void MQTTTask::run() {
             }
         }
         mqtt_client_.loop();
+        ArduinoOTA.handle();
         delay(1);
     }
 }
