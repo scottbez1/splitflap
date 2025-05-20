@@ -75,7 +75,7 @@
   #define BUFFER_ATTRS WORD_ALIGNED_ATTR
 
   // Note: must use HSPI to avoid conflict with ST7789 driver which uses VSPI
-  #define SPI_HOST HSPI_HOST
+  #define SPLITFLAP_SPI_HOST HSPI_HOST
   #define DMA_CHANNEL 1
 
 
@@ -173,7 +173,7 @@ inline void initialize_modules() {
       .quadhd_io_num = -1,
       .max_transfer_sz = 1000,
   };
-  ret=spi_bus_initialize(SPI_HOST, &tx_bus_config, DMA_CHANNEL);
+  ret=spi_bus_initialize(SPLITFLAP_SPI_HOST, &tx_bus_config, DMA_CHANNEL);
   ESP_ERROR_CHECK(ret);
 
   spi_device_interface_config_t tx_device_config = {
@@ -192,7 +192,7 @@ inline void initialize_modules() {
       .pre_cb=NULL,
       .post_cb=NULL,
   };
-  ret=spi_bus_add_device(SPI_HOST, &tx_device_config, &spi_tx);
+  ret=spi_bus_add_device(SPLITFLAP_SPI_HOST, &tx_device_config, &spi_tx);
   ESP_ERROR_CHECK(ret);
 
   spi_device_interface_config_t rx_device_config = {
@@ -211,7 +211,7 @@ inline void initialize_modules() {
       .pre_cb=&latch_registers,
       .post_cb=&reset_latch,
   };
-  ret=spi_bus_add_device(SPI_HOST, &rx_device_config, &spi_rx);
+  ret=spi_bus_add_device(SPLITFLAP_SPI_HOST, &rx_device_config, &spi_rx);
   ESP_ERROR_CHECK(ret);
 
   memset(&tx_transaction, 0, sizeof(tx_transaction));
