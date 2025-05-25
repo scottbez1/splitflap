@@ -63,6 +63,12 @@ if __name__ == "__main__":
         default=False,
         help="Generate a single STL file for the front and back letters (only used if --single-stl is not set)",
     )
+    parser.add_argument(
+        "--parallelism",
+        type=int,
+        help="How many OpenSCAD exports to run in parallel. Defaults to CPU count if unspecified.",
+        default=None,
+    )
     args = parser.parse_args()
 
     extra_variables = {}
@@ -80,7 +86,7 @@ if __name__ == "__main__":
     rmtree(output_directory, ignore_errors=True)
 
     def render_flap(flap_number):
-        flap_path = os.path.join(output_directory, f"flap_{flap_number}")
+        flap_path = os.path.join(output_directory, f"flap_{flap_number:02}")
         file_util.mkdir_p(flap_path)
         openscad_variables = {
             "flap_number": flap_number,
@@ -91,7 +97,7 @@ if __name__ == "__main__":
 
         openscad.run(
             os.path.join(source_parts_dir, "flap_3dp.scad"),
-            os.path.join(flap_path, f"flap.stl"),
+            os.path.join(flap_path, f"{flap_number:02}_flap.stl"),
             variables=openscad_variables,
             capture_output=True,
         )
@@ -101,9 +107,10 @@ if __name__ == "__main__":
                 openscad_variables["generateText"] = True
                 openscad.run(
                     os.path.join(source_parts_dir, "flap_3dp.scad"),
-                    os.path.join(flap_path, f"letters.stl"),
+                    os.path.join(flap_path, f"{flap_number:02}_letters.stl"),
                     variables=openscad_variables,
                     capture_output=True,
+                    ignore_empty_top_level_object=True,
                 )
             else:
                 openscad_variables["generateText"] = True
@@ -111,9 +118,10 @@ if __name__ == "__main__":
                 openscad_variables["generateBackText"] = False
                 openscad.run(
                     os.path.join(source_parts_dir, "flap_3dp.scad"),
-                    os.path.join(flap_path, f"letter_front.stl"),
+                    os.path.join(flap_path, f"{flap_number:02}_letter_front.stl"),
                     variables=openscad_variables,
                     capture_output=True,
+                    ignore_empty_top_level_object=True,
                 )
 
                 openscad_variables["generateText"] = True
@@ -121,15 +129,13 @@ if __name__ == "__main__":
                 openscad_variables["generateBackText"] = True
                 openscad.run(
                     os.path.join(source_parts_dir, "flap_3dp.scad"),
-                    os.path.join(flap_path, f"letter_back.stl"),
+                    os.path.join(flap_path, f"{flap_number:02}_letter_back.stl"),
                     variables=openscad_variables,
                     capture_output=True,
+                    ignore_empty_top_level_object=True,
                 )
 
-        # wait for 3 seconds to allow the user to see the output
-        time.sleep(3)
-
-    pool = Pool()
+    pool = Pool(args.parallelism)
     num_flaps = len(args.text) if args.text is not None else 52
     for _ in pool.imap_unordered(render_flap, range(num_flaps)):
         # Consume results as they occur so any exception is rethrown

@@ -33,7 +33,7 @@ if (generateFullFlap) {
     if (generateText == false) {
 		// Generate just the flap STL with the letters removed
         difference() {
-            flap_with_letters([0,0,0], [1,1,1], front_letter=false, back_letter=false, flap_index=flap_number, flap_gap=flap_gap, bleed=0, print_3d=false);
+            flap_with_letters([0,0,0], [1,1,1], front_letter=false, back_letter=false, flap_index=flap_number, flap_gap=flap_gap, bleed=0, print_3d=true);
             flap_with_letters([0,0,0], [1,1,1], flap=false, flap_index=flap_number, flap_gap=flap_gap, bleed=0, print_3d=true);
         }
     } else {
