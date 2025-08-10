@@ -51,6 +51,7 @@ def run(
         variables=None,
         capture_output=False,
         colorscheme=None,
+        ignore_empty_top_level_object=False,
         ):
 
     command = [
@@ -96,6 +97,10 @@ def run(
 
     logger.info(command)
 
+    if ignore_empty_top_level_object:
+        # In order to ignore empty top level object errors, we need to be able to look at stderr
+        capture_output = True
+
     stdout_type = subprocess.PIPE if capture_output else None
     stderr_type = subprocess.PIPE if capture_output else None
     try:
@@ -111,7 +116,10 @@ def run(
 
     logger.debug('returncode:%d', returncode)
     if returncode != 0:
-        raise OpenSCADException('openscad returned non-zero!', returncode, stdout=stdout, stderr=stderr)
+        if ignore_empty_top_level_object and b'Current top level object is empty.' in stderr:
+            logger.info('Ignoring empty top level object!')
+        else:
+            raise OpenSCADException('openscad returned non-zero!', returncode, stdout=stdout, stderr=stderr)
     return stdout, stderr
 
 

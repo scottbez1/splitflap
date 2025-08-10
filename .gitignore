@@ -22,3 +22,6 @@ sensor.xml
 *.hex
 
 .pio
+.vscode
+.nvmrc
+.python_version
