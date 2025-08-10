@@ -22,10 +22,9 @@ def _run():
 
         # Show a random word every 10 seconds
         while True:
-            # word = random.choice(words)
-            word = input()[:modules]
+            word = random.choice(words)
             s.set_text(word)
-            # time.sleep(10)
+            time.sleep(10)
 
 
 if __name__ == '__main__':

@@ -18,7 +18,6 @@
 #define IO_CONFIG_H
 
 #include <SPI.h>
-#include <Arduino.h>
 
 #if defined(__AVR_ATmega168__) || defined(__AVR_ATmega328P__)
   #define OUT_LATCH_PIN (4)
@@ -133,8 +132,6 @@ static const uint8_t MOTOR_OFFSET[] = {0, 0, 1, 2, 3, 3};
 #endif
 
 inline void initialize_modules() {
-  pinMode(22, OUTPUT);
-  digitalWrite(22, HIGH);
   for (uint8_t i = 0; i < NUM_MODULES; i++) {
     // Create SplitflapModules in a statically allocated buffer using placement new
 #ifdef CHAINLINK
@@ -301,21 +298,21 @@ static uint8_t chainlink_loopbackSensorBitMask(uint8_t loopbackIndex) {
 bool chainlink_test_startup_loopback(bool results[NUM_LOOPBACKS]) {
     bool success = true;
 
-    // // Turn off all motors, leds, and loopbacks; make sure all loopback inputs read 0
-    // memset(motor_buffer, 0, MOTOR_BUFFER_LENGTH);
-    // motor_sensor_io();
-    // motor_sensor_io();
+    // Turn off all motors, leds, and loopbacks; make sure all loopback inputs read 0
+    memset(motor_buffer, 0, MOTOR_BUFFER_LENGTH);
+    motor_sensor_io();
+    motor_sensor_io();
 
-    // for (uint8_t i = 0; i < NUM_LOOPBACKS; i++) {
-    //   results[i] = ((sensor_buffer[chainlink_loopbackSensorByte(i)] & chainlink_loopbackSensorBitMask(i))) == 0;
-    //   success &= results[i];
-    // }
+    for (uint8_t i = 0; i < NUM_LOOPBACKS; i++) {
+      results[i] = ((sensor_buffer[chainlink_loopbackSensorByte(i)] & chainlink_loopbackSensorBitMask(i))) == 0;
+      success &= results[i];
+    }
     return success;
 }
 
 void chainlink_set_loopback(uint8_t loop_out_index) {
     // Turn on loopback output
-    // FIXME motor_buffer[chainlink_loopbackMotorByte(loop_out_index)] |= chainlink_loopbackMotorBitMask(loop_out_index);
+    motor_buffer[chainlink_loopbackMotorByte(loop_out_index)] |= chainlink_loopbackMotorBitMask(loop_out_index);
 }
 
 /**
@@ -329,7 +326,7 @@ bool chainlink_validate_loopback(uint8_t loop_out_index, bool results[NUM_LOOPBA
       uint8_t expected_bit_mask = (loop_out_index == loop_in_index) ? chainlink_loopbackSensorBitMask(loop_in_index) : 0;
       uint8_t actual_bit_mask = sensor_buffer[chainlink_loopbackSensorByte(loop_in_index)] & chainlink_loopbackSensorBitMask(loop_in_index);
 
-      bool ok = true; // FIXME actual_bit_mask == expected_bit_mask;
+      bool ok = actual_bit_mask == expected_bit_mask;
       success &= ok;
       if (results != nullptr) {
         results[loop_in_index] = ok;
@@ -344,15 +341,15 @@ bool chainlink_validate_loopback(uint8_t loop_out_index, bool results[NUM_LOOPBA
 bool chainlink_test_all_loopbacks(bool loopback_result[NUM_LOOPBACKS][NUM_LOOPBACKS], bool loopback_off_result[NUM_LOOPBACKS]) {
     bool loopback_success = true;
 
-    // // Turn one loopback bit on at a time and make sure only that loopback bit is set
-    // for (uint8_t loop_out_index = 0; loop_out_index < NUM_LOOPBACKS; loop_out_index++) {
-    //   chainlink_set_loopback(loop_out_index);
-    //   motor_sensor_io();
-    //   motor_sensor_io();
-    //   loopback_success &= chainlink_validate_loopback(loop_out_index, loopback_result[loop_out_index]);
-    // }
+    // Turn one loopback bit on at a time and make sure only that loopback bit is set
+    for (uint8_t loop_out_index = 0; loop_out_index < NUM_LOOPBACKS; loop_out_index++) {
+      chainlink_set_loopback(loop_out_index);
+      motor_sensor_io();
+      motor_sensor_io();
+      loopback_success &= chainlink_validate_loopback(loop_out_index, loopback_result[loop_out_index]);
+    }
 
-    // loopback_success &= chainlink_test_startup_loopback(loopback_off_result);
+    loopback_success &= chainlink_test_startup_loopback(loopback_off_result);
 
     return loopback_success;
 }

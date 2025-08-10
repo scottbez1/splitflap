@@ -21,6 +21,14 @@
 
 using namespace json11;
 
+// This MQTT demo assumes a home assistant MQTT instance, and will do automatic registration
+// via the home assistant config topic when it comes online and connects to MQTT. You shouldn't
+// need to change any of this to get it to work with home assistant.
+#define MQTT_CONFIG_TOPIC "homeassistant/text/" DEVICE_INSTANCE_NAME "/config"
+#define MQTT_COMMAND_TOPIC "home/" DEVICE_INSTANCE_NAME "/command"
+#define MQTT_STATE_TOPIC "home/" DEVICE_INSTANCE_NAME "/state"
+#define MQTT_AVAILABILITY_TOPIC "home/" DEVICE_INSTANCE_NAME "/availability"
+
 MQTTTask::MQTTTask(SplitflapTask& splitflap_task, DisplayTask& display_task, Logger& logger, const uint8_t task_core) :
         Task("MQTT", 8192, 1, task_core),
         splitflap_task_(splitflap_task),
@@ -34,15 +42,13 @@ MQTTTask::MQTTTask(SplitflapTask& splitflap_task, DisplayTask& display_task, Log
 
 void MQTTTask::connectWifi() {
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+    // Disable WiFi sleep as it causes glitches on pin 39; see https://github.com/espressif/arduino-esp32/issues/4903#issuecomment-793187707
     WiFi.setSleep(WIFI_PS_NONE);
 
     char buf[256];
 
     snprintf(buf, sizeof(buf), "Wifi connecting to %s", WIFI_SSID);
     display_task_.setMessage(0, String(buf));
-
-    // Disable WiFi sleep as it causes glitches on pin 39; see https://github.com/espressif/arduino-esp32/issues/4903#issuecomment-793187707
-    WiFi.setSleep(WIFI_PS_NONE);
 
     while (WiFi.status() != WL_CONNECTED) {
         delay(1000);
@@ -51,7 +57,7 @@ void MQTTTask::connectWifi() {
 
     snprintf(buf, sizeof(buf), "Connected to network %s", WIFI_SSID);
     logger_.log(buf);
-    
+
     snprintf(buf, sizeof(buf), "Wifi IP: %s", WiFi.localIP().toString().c_str());
     display_task_.setMessage(0, String(buf));
 }
@@ -61,7 +67,7 @@ void MQTTTask::mqttCallback(char *topic, byte *payload, unsigned int length) {
     snprintf(buf, sizeof(buf), "Received mqtt callback for topic %s, length %u", topic, length);
     logger_.log(buf);
 
-    
+
     splitflap_task_.showString((const char *)payload, length, false, true);
 }
 
@@ -75,6 +81,12 @@ void MQTTTask::connectMQTT() {
     if (mqtt_client_.connect(DEVICE_INSTANCE_NAME, MQTT_USER, MQTT_PASSWORD, MQTT_AVAILABILITY_TOPIC, 1, true, "offline")) {
         logger_.log("MQTT connected");
         mqtt_client_.subscribe(MQTT_COMMAND_TOPIC);
+
+        // TODO: I believe it's possible to do more complex config to register as a device with multiple
+        // entities; it'd be great to explore additional entities like a display backlight control,
+        // detailed module status info, etc. Though at a certain point it may be preferable to make the
+        // splitflap library an ESPHome external component for even more options, easier programming,
+        // and more customization than MQTT offers...
         Json config = Json::object {
             { "name", DEVICE_INSTANCE_NAME },
             { "command_topic", MQTT_COMMAND_TOPIC },

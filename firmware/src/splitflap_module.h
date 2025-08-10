@@ -65,7 +65,7 @@ class SplitflapModule {
   const uint8_t sensor_bitmask;
 
   // State:
-  bool last_home[3] = {true, true, true};
+  bool last_home = false;
   unsigned long last_update_micros = 0;
 
   // Tracks the most recent target flap index. Not used during motion, but needed to recalculate target step if we
@@ -179,10 +179,8 @@ void SplitflapModule::Panic(String message) {
 __attribute__((always_inline))
 inline bool SplitflapModule::CheckSensor() {
     bool cur_home = (sensor_in & sensor_bitmask) != 0;
-    bool shift = cur_home == true && last_home[0] == false;
-    last_home[2] = last_home[1];
-    last_home[1] = last_home[0];
-    last_home[0] = cur_home;
+    bool shift = cur_home == true && last_home == false;
+    last_home = cur_home;
 
     return shift;
 }
@@ -295,16 +293,6 @@ inline void SplitflapModule::Update() {
                 }
             } else if (home_state == UNEXPECTED) {
                 if (found_home) {
-                    digitalWrite(22, HIGH);
-                    delayMicroseconds(delta_time);
-                    digitalWrite(22, LOW);
-                    delayMicroseconds(100);
-                    digitalWrite(22, HIGH);
-                    delayMicroseconds(100);
-                    digitalWrite(22, LOW);
-                    delayMicroseconds(100);
-                    digitalWrite(22, HIGH);
-                    delay(1);
                   count_unexpected_home++;
 #if VERBOSE_LOGGING
                     Serial.print("VERBOSE: Unexpected home! At ");
@@ -363,8 +351,6 @@ inline void SplitflapModule::Update() {
 #endif
                 state = NORMAL;
                 target_accel_step = 0;
-
-                digitalWrite(22, LOW);
 
                 // Reset frame of reference
                 current_step = 0;
