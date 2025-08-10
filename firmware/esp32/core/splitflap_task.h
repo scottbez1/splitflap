@@ -129,7 +129,7 @@ class SplitflapTask : public Task<SplitflapTask> {
         
         SplitflapState getState();
 
-        void showString(const char *str, uint8_t length, bool force_full_rotation = FORCE_FULL_ROTATION);
+        void showString(const char *str, uint8_t length, bool force_full_rotation = FORCE_FULL_ROTATION, bool default_unspecified_home = false);
         void resetAll();
         void disableAll();
         void setLed(uint8_t id, bool on);

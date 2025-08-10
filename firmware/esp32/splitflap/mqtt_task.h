@@ -16,26 +16,29 @@
 #pragma once
 
 #include <Arduino.h>
+#include <PubSubClient.h>
+#include <WiFi.h>
+
+#include <json11.hpp>
 
 #include "../core/logger.h"
 #include "../core/splitflap_task.h"
 #include "../core/task.h"
 
-#include <PubSubClient.h>
-#include <WiFi.h>
-
+#include "display_task.h"
 
 class MQTTTask : public Task<MQTTTask> {
     friend class Task<MQTTTask>; // Allow base Task to invoke protected run()
 
     public:
-        MQTTTask(SplitflapTask& splitflapTask, Logger& logger, const uint8_t taskCore);
+        MQTTTask(SplitflapTask& splitflapTask, DisplayTask& DisplayTask, Logger& logger, const uint8_t taskCore);
 
     protected:
         void run();
 
     private:
         SplitflapTask& splitflap_task_;
+        DisplayTask& display_task_;
         Logger& logger_;
         WiFiClient wifi_client_;
         PubSubClient mqtt_client_;

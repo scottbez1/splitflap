@@ -42,7 +42,7 @@ BaseSupervisorTask baseSupervisorTask(splitflapTask, serialTask, 0);
 
 #if MQTT
 #include "mqtt_task.h"
-MQTTTask mqttTask(splitflapTask, serialTask, 0);
+MQTTTask mqttTask(splitflapTask, displayTask, serialTask, 0);
 #endif
 
 #if HTTP
