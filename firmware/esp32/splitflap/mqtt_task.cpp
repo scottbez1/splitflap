@@ -57,7 +57,9 @@ void MQTTTask::mqttCallback(char *topic, byte *payload, unsigned int length) {
     char buf[256];
     snprintf(buf, sizeof(buf), "Received mqtt callback for topic %s, length %u", topic, length);
     logger_.log(buf);
-    splitflap_task_.showString((const char *)payload, length);
+
+    
+    splitflap_task_.showString((const char *)payload, length, false, true);
 }
 
 void MQTTTask::connectMQTT() {
@@ -145,6 +147,7 @@ void MQTTTask::run() {
     wl_status_t wifi_last_status = WL_DISCONNECTED;
     uint32_t last_state_publish = 0;
     SplitflapState last_state = {};
+    uint32_t last_availability_publish = 0;
     while(1) {
         long now = millis();
         wl_status_t wifi_new_status = WiFi.status();
@@ -183,6 +186,10 @@ void MQTTTask::run() {
                     logger_.log(buf);
                     mqtt_client_.publish(MQTT_STATE_TOPIC, flap_buf);
                 }
+            }
+            if (now > last_availability_publish + 1800000) {
+                mqtt_client_.publish(MQTT_AVAILABILITY_TOPIC, "online", true);
+                last_availability_publish = now;
             }
         }
         mqtt_client_.loop();

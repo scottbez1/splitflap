@@ -373,11 +373,12 @@ void SplitflapTask::log(const char* msg) {
     }
 }
 
-void SplitflapTask::showString(const char* str, uint8_t length, bool force_full_rotation) {
+void SplitflapTask::showString(const char* str, uint8_t length, bool force_full_rotation, bool default_unspecified_home) {
     Command command = {};
     command.command_type = CommandType::MODULES;
-    for (uint8_t i = 0; i < length && i < NUM_MODULES; i++) {
-        int8_t index = findFlapIndex(str[i]);
+    uint8_t num_to_update = default_unspecified_home ? NUM_MODULES : length;
+    for (uint8_t i = 0; i < num_to_update && i < NUM_MODULES; i++) {
+        int8_t index = i >= length ? 0 : findFlapIndex(str[i]);
         if (index != -1) {
             if (force_full_rotation || index != modules[i]->GetTargetFlapIndex()) {
                 command.data.module_command[i] = QCMD_FLAP + index;
