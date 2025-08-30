@@ -28,12 +28,13 @@ use<splitflap.scad>;
 rows = 4;
 cols = 13;
 
-// Set either frame_width/height, or frame_margin_x/y to set the overall frame dimensions. margin_x/y will calculate the necessary frame width
-// based on the number of modules and spacing and add the margin onto both sides.
-frame_width = 48*25.4;
-frame_height = 30*25.4;
-frame_margin_x = undef;
-frame_margin_y = undef;
+// Set either frame_width/height, or frame_margin_x/y to set the overall frame dimensions. margin_x/y will calculate the necessary frame width based on the number of modules and spacing and add the margin onto both sides.
+// Choose what mode the engine uses to calculate frame dimensions
+frame_mode= "width"; // [width, margin]
+frame_width_units = 48;
+frame_height_units= 30;
+frame_margin_x = 0;
+frame_margin_y = 0;
 
 // Set either the center_center_* or gap_* values to distribute modules based on center-to-center distance or a gap between modules.
 // You can set gap_x and gap_y to 0 to get the closest possible spacing of modules.
@@ -74,6 +75,8 @@ render_full_modules_count = 4;
 
 render_index = -1;
 render_etch = false;
+frame_width = frame_width_units*25.4;
+frame_height = frame_height_units*25.4;
 
 assert(is_undef(center_center_x) || center_center_x >= get_enclosure_width(), "Horizontal center-to-center value must be at least the enclosure width");
 assert(is_undef(center_center_y) || center_center_y >= get_enclosure_height(), "Vertical center-to-center value must be at least the enclosure height");
@@ -86,8 +89,8 @@ layout_center_center_y = is_undef(gap_y) ? center_center_y : get_enclosure_heigh
 echo(debug_gap_x = layout_center_center_x - get_enclosure_width());
 echo(debug_gap_y = layout_center_center_y - get_enclosure_height());
 
-layout_frame_width = is_undef(frame_margin_x) ? frame_width : layout_center_center_x * (cols - 1) + get_enclosure_width() + frame_margin_x*2;
-layout_frame_height = is_undef(frame_margin_y) ? frame_height : layout_center_center_y * (rows - 1) + get_enclosure_height() + frame_margin_y*2;
+layout_frame_width = (frame_mode == "width") ? frame_width : layout_center_center_x * (cols - 1) + get_enclosure_width() + frame_margin_x*2;
+layout_frame_height = (frame_mode == "width") ? frame_height : layout_center_center_y * (rows - 1) + get_enclosure_height() + frame_margin_y*2;
 
 y_offset = center_mode == 0 ? 0 :
             center_mode == 1 ? get_front_window_lower() - (get_front_window_upper() + get_front_window_lower())/2 :
