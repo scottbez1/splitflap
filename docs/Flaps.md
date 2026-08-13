@@ -1,4 +1,4 @@
-[<< Back to Documentation Index](../DocumentationIndex.md)
+[<< Back to Documentation Index](DocumentationIndex.md)
 
 # About flaps
 ![Flap dimensions](img/flapAnnotated.svg)
@@ -27,7 +27,7 @@ Available in <a href="https://www.etsy.com/listing/1685633114">1-packs, 6-packs,
 
 [^ Up to top](#about-flaps)
 
-[<< Back to Documentation Index](../DocumentationIndex.md)
+[<< Back to Documentation Index](DocumentationIndex.md)
 
 # Option 2: Pre-cut blank flaps
 <img src="img/flaps/bezekLabsBlankFlaps.jpg" height="200" alt="Bezek Labs professionally cut blank white flaps" />
@@ -45,7 +45,7 @@ You'll need to [apply letter stickers](#33-apply-letter-stickers) to the blank f
 
 [^ Up to top](#about-flaps)
 
-[<< Back to Documentation Index](../DocumentationIndex.md)
+[<< Back to Documentation Index](DocumentationIndex.md)
 
 # Option 3: DIY flaps
 <img src="img/flapCuttingJig/flaps.jpg" height="200" alt="flap with notches cut by hand" />
@@ -106,7 +106,7 @@ Your flap-cutting jig is complete!
 
 [^ Up to top](#about-flaps)
 
-[<< Back to Documentation Index](../DocumentationIndex.md)
+[<< Back to Documentation Index](DocumentationIndex.md)
 
 
 ## 3.2 Cut flaps
@@ -153,7 +153,7 @@ If you'd like to save yourself some time, an alternative to cutting your own fla
 
 [^ Up to top](#about-flaps)
 
-[<< Back to Documentation Index](../DocumentationIndex.md)
+[<< Back to Documentation Index](DocumentationIndex.md)
 
 ## 3.3 Apply letter stickers
 
@@ -204,4 +204,4 @@ For each letter:
 
 [^ Up to top](#about-flaps)
 
-[<< Back to Documentation Index](../DocumentationIndex.md)
+[<< Back to Documentation Index](DocumentationIndex.md)
