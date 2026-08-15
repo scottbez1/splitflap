@@ -23,12 +23,16 @@ use<fonts/Epilogue/Epilogue-VariableFont_wght.ttf>;
 // fonts/PoiretOne/PoiretOne-Regular.ttf
 // fonts/Voltaire/Voltaire-Regular.otf
 // fonts/PTSansNarrow/PTSansNarrow-Regular.ttf
+// fonts/Instruction/Instruction.otf
+// fonts/NotoEmoji/NotoEmoji-Bold.ttf
 
 // -----------------------
 // Configurable parameters
 // -----------------------
 
-font_preset = "Epilogue";       // See available presets below
+font_preset = "Epilogue";    // See available presets below
+font_emoji_preset = "NotoEmoji";// Font preset to use for emojis. Defaults to "NotoEmoji" which is a good emoji font.
+
 letter_gap_comp = true;         // Shifts letter positions to compensate for gap between flaps
 
 // ---------------------------
@@ -48,6 +52,8 @@ letter_gap_comp = true;         // Shifts letter positions to compensate for gap
 //          Horizontal offset, in mm, of letters within flaps. A value of 0 uses default font centering.
 //      'offset_y'
 //          Vertical offset, in mm, of letters within flaps. A value of 0 uses default font centering.
+//      'thickness_offset'
+//          Vertical offset, in mm, of the thickness of the flap. A value of 0 uses default font thickness.
 //      'overrides'
 //          Array of position/size overrides for specific letters. Each entry is a set of overrides for a single letter,
 //          specified as an array with the following entries:
@@ -57,6 +63,11 @@ letter_gap_comp = true;         // Shifts letter positions to compensate for gap
 //              - Height override, as a value relative to flap height (e.g. 0.7). Replaces letter_height for this letter. Can be undef to omit.
 //              - Width override, as a value relative to default font width (e.g. 0.7). Replaces letter_width for this letter. Can be undef to omit.
 //              - Thickness offset override.
+//      'color_height'
+//          Height of the color bar relative to flap height. Defaults to 'height'.
+//      'color_offset_y'
+//          Vertical offset of the color bar relative to flap height. Defaults to 'offset_y'.
+
 _font_settings = [
     "Roboto", [
         "font", "RobotoCondensed",
@@ -168,14 +179,53 @@ _font_settings = [
         // "color_height", 0.455,
         // "color_offset_y", 1.4,
     ],
+
+    "Instruction", [
+        "font", "Instruction",
+        "height", .8,
+        "width", .9,
+        "offset_x", 4,
+        "offset_y", -.7,
+        "overrides", [
+            // letter, x, y, height, width, thickness
+            ["-", undef,    -7, undef, undef, undef],
+            [",",    14,     8, undef, undef, undef],
+            [".",    14, undef, undef, undef, undef],
+            ["!",    14, undef, undef, undef, undef],
+            ["'",    14, undef, undef, undef, undef],
+            [":",    14,    16, undef, undef, undef],
+        ],
+    ],
+
+    "NotoEmoji", [
+        "font", "NotoEmoji:style=Bold",
+        "height", .43,
+        "width", .85,
+        "offset_x", -.8,
+        "offset_y", 2,
+        "overrides", [
+            // letter, x, y, height, width, thickness
+            ["\U01F525", undef, undef,   .55, undef, undef], // Fire
+            ["\U01F90D", undef, undef, undef,   .75, undef], // Heart
+            ["\u2601",   undef, undef, undef,   .75, undef], // Cloudy
+            ["\U01F327", undef,     5, undef,    .8, undef], // Rain
+            ["\u2744",   undef,    -1,   .55,   .75, undef], // Snow
+            ["\U01F32C", undef,    -2, undef,   .72, undef], // Wind
+            ["\u26C5",   undef, undef, undef,   .73, undef], // Partly Cloudy
+        ],
+    ],
 ];
 
 // Private functions
 function _get_entry_in_dict_array(arr, key) = search([key], arr) != [[]] ? arr[search([key], arr)[0] + 1] : undef;
 function _get_font_settings() = _get_entry_in_dict_array(_font_settings, font_preset);
+function _get_emoji_font_settings() = _get_entry_in_dict_array(_font_settings, font_emoji_preset);
 
 // Public functions
 function use_letter_gap_compensation() = letter_gap_comp;
 function get_font_setting(key) = _get_entry_in_dict_array(_get_font_settings(), key);
 function get_letter_overrides(letter) =
     get_font_setting("overrides")[search([letter], get_font_setting("overrides"))[0]];
+function get_emoji_font_setting(key) = _get_entry_in_dict_array(_get_emoji_font_settings(), key);
+function get_emoji_letter_overrides(letter) =
+    get_emoji_font_setting("overrides")[search([letter], get_emoji_font_setting("overrides"))[0]];

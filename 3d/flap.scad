@@ -22,6 +22,7 @@ use<flap_characters.scad>;
 use<splitflap.scad>;
 
 character_list = get_character_list();
+
 color_list = [
     ["p", [122,  40, 203] / 255], // #7a28cb
     ["r", [230,  57,  70] / 255], // "#e63946
@@ -30,6 +31,20 @@ color_list = [
     ["w", [255, 255, 255] / 255], // "#ffffff
 ];
 
+// https://emojipedia.org/noto-emoji
+// Needs to not overlap with color_list
+emoji_list = [
+    ["a", "\u2600"], // sun
+    ["b", "\u2601"], // cloud
+    ["c", "\U01F327"], // rain
+    ["d", "\u2744"], // snow
+    ["e", "\U01F32C"], // wind
+    ["f", "\u26C5"], // partly cloudy
+    ["h", "\U01F603"], // smiley with big eyes
+    ["i", "\u2639"], // frowning face
+    ["j", "\U01F525"], // fire
+    ["k", "\U01F90D"], // heart
+];
 
 // Facet number variable refers to a special variable "$fn" that is used to control the number of facets to generate an arc.
 // Higher than 100 is not recommended according to the docs as it demands a lot resources
@@ -109,6 +124,8 @@ module _draw_letter(letter, flap_gap) {
     thickness_offset = is_undef(overrides[5]) ? (is_undef(get_font_setting("thickness_offset")) ? 0 : get_font_setting("thickness_offset")) : overrides[5];
 
     color_index = search([letter], color_list);
+    emoji_index = search([letter], emoji_list);
+
     if (len(color_index) > 0 && is_num(color_index[0])) {
         color_height = get_font_setting("color_height");
         color_height_with_default = is_undef(color_height) ? height : color_height;
@@ -116,6 +133,25 @@ module _draw_letter(letter, flap_gap) {
         color_offset_y_with_default = is_undef(color_offset_y) ? offset_y : color_offset_y;
         translate([0, color_offset_y_with_default]) {
             square([flap_width - flap_notch_depth * 2 - 4, (flap_height * 2 + flap_gap) * color_height_with_default], center=true);
+        }
+    } else if (len(emoji_index) > 0 && is_num(emoji_index[0])) {
+        // Re-calc for the emoji font
+        overrides = get_emoji_letter_overrides(emoji_list[emoji_index[0]][1]);
+        height = is_undef(overrides[3]) ? get_emoji_font_setting("height") : overrides[3];
+        width = is_undef(overrides[4]) ? get_emoji_font_setting("width") : overrides[4];
+        offset_x = is_undef(overrides[1]) ? get_emoji_font_setting("offset_x") : get_emoji_font_setting("offset_x") + overrides[1];
+        offset_y = is_undef(overrides[2]) ? get_emoji_font_setting("offset_y") : get_emoji_font_setting("offset_y") + overrides[2];
+        thickness_offset = is_undef(overrides[5]) ? (is_undef(get_emoji_font_setting("thickness_offset")) ? 0 : get_emoji_font_setting("thickness_offset")) : overrides[5];
+
+        translate([0, -flap_height * height, 0]) {
+            // valign compensation
+            scale([width, 1, 1]) {
+                translate([offset_x, offset_y]) {
+                    offset(delta=thickness_offset) {
+                        text(text=emoji_list[emoji_index[0]][1], size=flap_height * height * 2, font=get_emoji_font_setting("font"), halign="center", $fn=letter_facet_number);
+                    }
+                }
+            }
         }
     } else {
         translate([0, -flap_height * height, 0]) {  // valign compensation
