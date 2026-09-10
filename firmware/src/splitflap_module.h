@@ -436,12 +436,25 @@ bool SplitflapModule::GetHomeState() {
 }
 
 void SplitflapModule::IncreaseOffset(uint8_t flap_tenths) {
+    // Guard before mutating: GoToTargetFlapIndex() returns early unless the
+    // module is NORMAL, so without this check the offset would change while
+    // the module never moves, and SaveAllOffsets() would persist a value the
+    // hardware was never at.
+    if (state != NORMAL) {
+        return;
+    }
     offset_steps += flap_tenths * STEPS_PER_REVOLUTION / NUM_FLAPS / 10;
     offset_steps %= STEPS_PER_REVOLUTION;
     GoToTargetFlapIndex();
 }
 
 void SplitflapModule::SetOffset() {
+    // Same guard as IncreaseOffset(), and it matters more here: current_step is only
+    // meaningful while the module is tracking its position, so adopting it
+    // as the offset from a faulted module records an arbitrary value.
+    if (state != NORMAL) {
+        return;
+    }
     offset_steps = current_step;
     target_flap_index = 0;
     GoToTargetFlapIndex();
